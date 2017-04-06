@@ -211,10 +211,6 @@ distribution for effect sizes of confounders; typically used when run as
 command line application}
 
 \item{verbose}{[boolean]; if TRUE, progress info is printed to standard out}
-
-\item{NrFixedEffects}{number [integer] of different fixed effects to simulate;
-allows to simulate fixed effects from different distributions or with 
-differen parameters}
 }
 \value{
 named list of absolute levels of variance explained by each phenotype 
@@ -229,8 +225,7 @@ and combines the simulated phenotype components via create phenotype.
 }
 \examples{
 # simulate phenotype of 100 samples, 10 traits from genetic and noise 
-background effects, with variance explained of 0.2 and 
-# 0.8 respectively
+# background effects, with variance explained of 0.2 and 0.8 respectively
 genVar = 0.2
 simulatedPhenotype <- runSimulation(N=100, P=10, genVar=genVar, h2bg=genVar, 
 phi=1)

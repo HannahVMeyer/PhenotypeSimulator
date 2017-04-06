@@ -191,7 +191,7 @@ getCausalSNPs <- function(NrCausalSNPs=20,  genotypes=NULL, chr=NULL,
 		causalSNPs <- lapply(seq_along(ChrCausal), function(chrom) {
 			chromosomefile <- paste(genoFilePrefix, "chr", ChrCausal[chrom], 
 			                        genoFileSuffix, sep="")
-			SNPsOnChromosome <- R.utils::countLines(chromosomefile)
+			SNPsOnChromosome <- countLines(chromosomefile)
 			randomSNPindex <- sample(1:SNPsOnChromosome, NrCausalSNPsChr[chrom])
             randomSNPindex <- randomSNPindex[order(randomSNPindex, 
                                                    decreasing=FALSE)]

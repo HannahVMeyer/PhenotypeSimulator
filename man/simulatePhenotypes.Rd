@@ -8,7 +8,7 @@ simulatePhenotypes()
 }
 \description{
 simulatePhenotypes runs without arguments. Upon call, it reads command-line
-parameters via \coe{\link{get_options}} and supplies these to 
+parameters and supplies these to 
 \code{\link{runSimulation}} and \code{\link{savePheno}}. For details on input 
 to \code{\link{runSimulation}} and \code{\link{savePheno}}, please refer to 
 their help pages. For help on the command line arguments that can be passed, 

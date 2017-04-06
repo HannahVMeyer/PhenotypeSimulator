@@ -97,7 +97,7 @@ causalSNPs <- getCausalSNPs(genotypes=genotypes, standardise=FALSE)
 genFixed <- geneticFixedEffects(N=100, P=50, X_causal=causalSNPs)
 phenotypeNoiseBgOnlyGenFixed <- createPheno(P=50, N=100, noiseBg=noiseBg,
 genFixed=genFixed, modelNoise="noiseBgOnly", 
-modelGenetic="geneticFixedOnly", genVar=0.05, h2s=0.05)
+modelGenetic="geneticFixedOnly", genVar=0.05)
 }
 \seealso{
 \code{\link{rescaleVariance}} for the function used to rescale 

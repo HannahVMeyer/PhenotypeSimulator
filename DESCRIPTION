@@ -20,6 +20,8 @@ LinkingTo:
 Imports:
     methods,
     optparse,
+    R.utils,
+    plyr,
     Rcpp (>= 0.12.10)
 Suggests:
     testthat,

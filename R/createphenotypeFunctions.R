@@ -58,55 +58,43 @@ setModel <- function(genVar=NULL, h2s=NULL, theta=0.8, h2bg=NULL, eta=0.8,
             genVar <- 1 - noiseVar
         } 
     }
-    if (all(c(is.null(h2bg), is.null(h2s)))) {
-        stop("Neither h2bg nor h2s provided, at least one is required")
-    }
-    if (is.null(h2s)) {
-        h2s <- 1 - h2bg
-    } else {
-        h2bg <- 1 - h2s
-    }
-    if (h2bg + h2s != 1) {
-        stop("Sum of the proportion of the variance of genetic effects is 
-             greater than 1; change h2s (fixed effect variance) or h2bg (random 
-             effect variance)\n h2s + h2bg = 1")
-    } 
     if (is.null(noiseVar)) {
         noiseVar <- 1 - genVar
     }
     if (noiseVar + genVar > 1) {
         stop("Sum of genetic variance and noise variance is greater than 1")
     }
-    if (all(c(is.null(delta), is.null(rho), is.null(phi)))) {
-        stop("Neither delta nor rho or phi are provided, at least one is 
-             required")
-    } else if (all(c(!is.null(delta), !is.null(rho), !is.null(phi)))) {
-        if(delta + rho + phi != 1) {
-            stop("Sum of the proportion of the variance of noise effects is 
-                 greater than 1; change noiseVar, delta (fixed effect 
-                 variance), rho (correlated background variance) or phi 
-                 (random effect variance)\n delta + rho + phi = 1")
-        }
-    } else if (all(c(!is.null(delta), !is.null(rho)))) { 
-        phi <- 1 - delta - rho
-    } else if (all(c(!is.null(delta), !is.null(phi)))) { 
-        rho <- 1 - delta - phi
-    } else if (all(c(!is.null(rho), !is.null(phi)))) { 
-        delta <- 1 - rho - phi
-    } 
-    if (is.null(delta)) { 
-        delta <- 0
-    } 
-    if (is.null(phi)) { 
-        phi <- 0
-    } 
-    if (is.null(rho)) { 
-        rho  <- 0
-    }
     if ((noiseVar) == 0 ) {
         modelNoise="noNoise"
         vmessage(c("The noise model is:", modelNoise), verbose=v)
     } else {
+        if (all(c(is.null(delta), is.null(rho), is.null(phi)))) {
+            stop("Neither delta nor rho or phi are provided, at least one is 
+                 required")
+        } else if (all(c(!is.null(delta), !is.null(rho), !is.null(phi)))) {
+            if(delta + rho + phi != 1) {
+                stop("Sum of the proportion of the variance of noise effects is 
+                     greater than 1; change noiseVar, delta (fixed effect 
+                     variance), rho (correlated background variance) or phi 
+                     (random effect variance)\n delta + rho + phi = 1")
+            }
+            } else if (all(c(!is.null(delta), !is.null(rho)))) { 
+                phi <- 1 - delta - rho
+            } else if (all(c(!is.null(delta), !is.null(phi)))) { 
+                rho <- 1 - delta - phi
+            } else if (all(c(!is.null(rho), !is.null(phi)))) { 
+                delta <- 1 - rho - phi
+            } 
+        if (is.null(delta)) { 
+            delta <- 0
+        } 
+        if (is.null(phi)) { 
+            phi <- 0
+        } 
+        if (is.null(rho)) { 
+            rho  <- 0
+        }
+        
         if (phi == 1) {
             modelNoise="noiseBgOnly"
             vmessage(c("The noise model is:", modelNoise), verbose=v)
@@ -181,7 +169,20 @@ setModel <- function(genVar=NULL, h2s=NULL, theta=0.8, h2bg=NULL, eta=0.8,
     if ( genVar == 0 ) {
         modelGenetic="noGenetic"
         vmessage(c("The genetic model is:", modelGenetic), verbose=v)
-    } else {
+    } else {   
+        if (all(c(is.null(h2bg), is.null(h2s)))) {
+            stop("Neither h2bg nor h2s provided, at least one is required")
+        }
+        if (is.null(h2s)) {
+            h2s <- 1 - h2bg
+        } else {
+            h2bg <- 1 - h2s
+        }
+        if (h2bg + h2s != 1) {
+            stop("Sum of the proportion of the variance of genetic effects is 
+                 greater than 1; change h2s (fixed effect variance) or h2bg 
+                 (random effect variance)\n h2s + h2bg = 1")
+        } 
         if ( h2s == 0) {
             modelGenetic="geneticBgOnly"
             vmessage(c("The genetic model is:", modelGenetic), verbose=v)
@@ -281,7 +282,7 @@ setModel <- function(genVar=NULL, h2s=NULL, theta=0.8, h2bg=NULL, eta=0.8,
 #' genFixed <- geneticFixedEffects(N=100, P=50, X_causal=causalSNPs)
 #' phenotypeNoiseBgOnlyGenFixed <- createPheno(P=50, N=100, noiseBg=noiseBg,
 #' genFixed=genFixed, modelNoise="noiseBgOnly", 
-#' modelGenetic="geneticFixedOnly", genVar=0.05, h2s=0.05)
+#' modelGenetic="geneticFixedOnly", genVar=0.05)
 createPheno <- function(P, N, sampleID="ID_", phenoID="trait_", 
                         correlatedBg=NULL, genFixed=NULL, genBg=NULL, 
                         noiseFixed=NULL, noiseBg=NULL, genVar=NULL, h2s=NULL, 
@@ -776,9 +777,6 @@ createPheno <- function(P, N, sampleID="ID_", phenoID="trait_",
 #' @param eta Proportion [doubl:w
 #' e] of variance of common bg genetic effects
 #' @param noiseVar Proportion [double] of total noise variance
-#' @param NrFixedEffects number [integer] of different fixed effects to simulate;
-#' allows to simulate fixed effects from different distributions or with 
-#' differen parameters
 #' @param rho Proportion [double] of noise variance of correlated effects; sum 
 #' of rho, delta and phi cannot be greater than 1
 #' @param pcorr Correlation [double] between phenotypes
@@ -1015,7 +1013,8 @@ runSimulation <- function(N=1000, P=10, tNrSNP=5000, cNrSNP=20,
 #' @return no return value, sole purpose of function is writing output files
 #' @export
 #' @examples
-#' simulatedPhenotype <- runSimulation(N=100, P=10, verbose=FALSE)
+#' simulatedPhenotype <- runSimulation(N=100, P=10, genVar=0.4, h2bg=1, 
+#' phi=1, verbose=FALSE)
 #' #not run
 #' #savePheno(simulatedPhenotype, directoryGeno="/path/to/dir/",  
 #' #directoryPheno="/path/to/dir/", outstring="Date_simulation")
@@ -1087,8 +1086,8 @@ savePheno <- function(simulatedData, directoryGeno, directoryPheno,
            dir.create(directoryPheno, recursive=TRUE), FALSE)
     
     vmessage(c("Save simulation results"), verbose=verbose)
-    out <- plyr::l_ply(sample_subset, function(ss) {
-            plyr::l_ply(pheno_subset, function(sp, ss) {
+    out <- l_ply(sample_subset, function(ss) {
+            l_ply(pheno_subset, function(sp, ss) {
     
             nrsamples <- length(ss)
             nrpheno <- length(sp)
