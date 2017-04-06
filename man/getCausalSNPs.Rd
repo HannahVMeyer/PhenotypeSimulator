@@ -22,8 +22,8 @@ data is provided i.e. is.null(genoFilePrefix) == FALSE}
 separated by comma; 
 most often used when run as a command line application}
 
-\item{genoFilePrefix}{path/to/chromosome-wise-genotype-file-ending-before-
-"chrChromosomeNumber" [string]}
+\item{genoFilePrefix}{full path/to/chromosome-wise-genotype-file-ending-
+before-"chrChromosomeNumber" (no '~' expansion!) [string]}
 
 \item{genoFileSuffix}{[string] following chromosome number including 
 .fileformat (e.g. ".csv")}

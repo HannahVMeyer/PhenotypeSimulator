@@ -1,19 +1,39 @@
-#' Command line parser for PhenotypeSimulator
+#' Command line execution for PhenotypeSimulator
 #' 
-#' get_options runs without arguments. Upon call, it reads command-line
-#' parameters via parse_args.
+#' simulatePhenotypes runs without arguments. Upon call, it reads command-line
+#' parameters via \code{\link{get_options}} and supplies these to 
+#' \code{\link{runSimulation}} and \code{\link{savePheno}}. For details on input 
+#' to \code{\link{runSimulation}} and \code{\link{savePheno}}, please refer to 
+#' their help pages. For help on the command line arguments that can be passed, 
+#' see first examples below.
 #' 
-#' @return args [list] of command line arguments
 #' @export
 #' 
 #' @examples
-#' # for help on usage of the command line interface run (on command line):
 #' # (not run)
-#' # Rscript --vanilla --default-packages=R.utils,PhenotypeSimulator,optparse
-#' -e 'get_options()'  
-#' 
+#' # Simulate simple phenotype of genetic and noise background effects only:
+#' # (not run)
+#' # Rscript  --vanilla 
+#' # --default-packages=R.utils,PhenotypeSimulator,optparse,stats 
+#' # --N=100 --P=15 --tNrSNP=10000 --cNrSNP=30 
+#' # --SNPfrequencies=0.05,0.1,0.3,0.4
+#' # --genVar=0.4 --h2s=0.025 --phi=0.6 --delta=0.3 --gamma=1
+#' # --pcorr=0.8
+#' # --NrFixedEffects=4 --NrConfounders=1,2,1,2
+#' # --pSpecificConfounders=0,1,1,0.5  
+#' # --distConfounders=bin,cat_norm,cat_unif,norm 
+#' # --probConfounders=0.2 
+#' # --catConfounders=0,3,4,0
+#' # --directoryGeno=~/tmp/genotypes
+#' # --directoryPheno=~/tmp/phenotypes 
+#' # --subdirectory=2017_04_04_simulation
+#' # --sampleSubset=50,70
+#' # --phenoSubset=5,10
+#' # --normalise
+#' # --verbose
 
-get_options <- function() {
+
+simulatePhenotypes <- function() {
     option_list <- list(
         make_option(c("-P", "--NrPhenotypes"), action="store", dest="P", 
                     default=10, type="integer", help="Number of phenotypes to 
@@ -212,45 +232,7 @@ get_options <- function() {
                     and saved from simulation [default %default]")
         )
     args <- parse_args(OptionParser(option_list=option_list))
-}
-
-#' Command line execution for PhenotypeSimulator
-#' 
-#' simulatePhenotypes runs without arguments. Upon call, it reads command-line
-#' parameters via \coe{\link{get_options}} and supplies these to 
-#' \code{\link{runSimulation}} and \code{\link{savePheno}}. For details on input 
-#' to \code{\link{runSimulation}} and \code{\link{savePheno}}, please refer to 
-#' their help pages. For help on the command line arguments that can be passed, 
-#' see first examples below.
-#' 
-#' @export
-#' 
-#' @examples
-#' # (not run)
-#' # Simulate simple phenotype of genetic and noise background effects only:
-#' # (not run)
-#' # Rscript  --vanilla 
-#' # --default-packages=R.utils,PhenotypeSimulator,optparse,stats 
-#' # --N=100 --P=15 --tNrSNP=10000 --cNrSNP=30 
-#' # --SNPfrequencies=0.05,0.1,0.3,0.4
-#' # --genVar=0.4 --h2s=0.025 --phi=0.6 --delta=0.3 --gamma=1
-#' # --pcorr=0.8
-#' # --NrFixedEffects=4 --NrConfounders=1,2,1,2
-#' # --pSpecificConfounders=0,1,1,0.5  
-#' # --distConfounders=bin,cat_norm,cat_unif,norm 
-#' # --probConfounders=0.2 
-#' # --catConfounders=0,3,4,0
-#' # --directoryGeno=~/tmp/genotypes
-#' # --directoryPheno=~/tmp/phenotypes 
-#' # --subdirectory=2017_04_04_simulation
-#' # --sampleSubset=50,70
-#' # --phenoSubset=5,10
-#' # --normalise
-#' # --verbose
-
-
-simulatePhenotypes <- function() {
-    args <- get_options()
+    
     if (args$verbose) {
         message("Phenotype directory:", args$directoryPheno)
         message("Genotype directory:", args$directoryGeno)

@@ -117,8 +117,8 @@ standardiseGenotypes <- function(geno) {
 #' @param chr_string [string] alternative to chr, a string with chromosomes 
 #' separated by comma; 
 #' most often used when run as a command line application
-#' @param genoFilePrefix path/to/chromosome-wise-genotype-file-ending-before-
-#' "chrChromosomeNumber" [string]
+#' @param genoFilePrefix full path/to/chromosome-wise-genotype-file-ending-
+#' before-"chrChromosomeNumber" (no '~' expansion!) [string]
 #' @param genoFileSuffix [string] following chromosome number including 
 #' .fileformat (e.g. ".csv")
 #' @param genoFileDelimiter field separator [string] of genotype file
@@ -164,6 +164,11 @@ getCausalSNPs <- function(NrCausalSNPs=20,  genotypes=NULL, chr=NULL,
         N <- nrow(genotypes)
 		causalSNPs <- genotypes[, sample(1:ncol(genotypes), NrCausalSNPs)]
 	} else {
+	    if (grepl("~", genoFilePrefix)) {
+	        stop("genoFilePrefix contains ~: path expansion not guaranteed on 
+                every platform (see path.expand{base}), please provide full file
+	            path to genotype files")
+	    }
 		if (! is.null(chr_string)) {
 			ChrCausal <- commaList2vector(chr_string)
 		} else if (! is.null(chr)) {
