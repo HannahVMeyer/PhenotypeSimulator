@@ -1,5 +1,4 @@
 #' @useDynLib PhenotypeSimulator
-#' @importFrom Rcpp sourceCpp
 NULL
 
 .onUnload <- function (libpath) {
