@@ -354,7 +354,7 @@ createPheno <- function(P, N, sampleID="ID_", phenoID="trait_",
     }
     if (modelNoise == "noNoise") {
         if (!is.null(noiseVar) && modelNoise == "noNoise") {
-            stop("noiseModel is noNoise but noiseVar is unequal to zero")
+            stop("modelNoise is noNoise but noiseVar is unequal to zero")
         } else {
             noiseVar <- 0
         }
@@ -376,7 +376,7 @@ createPheno <- function(P, N, sampleID="ID_", phenoID="trait_",
                 phi <- 0
                 delta <- 0
             } else {
-                stop(paste("noiseModel is ", modelNoise, "but neither delta nor 
+                stop(paste("modelNoise is ", modelNoise, "but neither delta nor 
                            rho or phi are provided, at least one is required"))
             }
         } else if (all(c(!is.null(delta), !is.null(rho), !is.null(phi)))) {
@@ -557,7 +557,7 @@ createPheno <- function(P, N, sampleID="ID_", phenoID="trait_",
                  is explained by correlated bg effects, but noiseVar != rho")
         }
         if (modelNoise == "noiseCorrelatedAndBg" && rho + phi != 1) {
-            stop(paste("Noise model is", noiseModel, "and sum of noise variance 
+            stop(paste("Noise model is", modelNoise, "and sum of noise variance 
                        effects is greater > 0"))
         }
         var_noiseCorrelated <- rho *  noiseVar
