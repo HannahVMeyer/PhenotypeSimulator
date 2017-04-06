@@ -1,0 +1,20 @@
+Package: PhenotypeSimulator
+Title: Flexible phenotype simulation from different genetic and noise
+        models
+Version: 0.0.0.9000
+Authors@R: c(
+  person("Hannah", "Meyer", email = "hannah@ebi.ac.uk", role = c("aut", "cre")),
+  person("Konrad", "Rudolph", email = "konrad.rudolph@gmail.com", role = "ctb")
+  )
+Description: Phenotype simulator allows for the flexible simulation of 
+    phenotypes under different models, including fixed and background genetic 
+    effects as well as correlated, fixed and background noise effects. Different 
+    phenotypic effects can be combined into a final phenotype while controling 
+    for the proportion of variance explained by each of the components. For each 
+    component, the number of variables, their distribution and the design of 
+    their effect across traits can be customised. 
+Depends: R (>= 3.3.2)
+License: MIT + file LICENCE
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 6.0.1
