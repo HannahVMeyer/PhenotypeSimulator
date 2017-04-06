@@ -798,8 +798,7 @@ createPheno <- function(P, N, sampleID="ID_", phenoID="trait_",
 #' @export
 #' @examples
 #' # simulate phenotype of 100 samples, 10 traits from genetic and noise 
-#' background effects, with variance explained of 0.2 and 
-#' # 0.8 respectively
+#' # background effects, with variance explained of 0.2 and 0.8 respectively
 #' genVar = 0.2
 #' simulatedPhenotype <- runSimulation(N=100, P=10, genVar=genVar, h2bg=genVar, 
 #' phi=1)
