@@ -19,7 +19,10 @@ LinkingTo:
     Rcpp
 Imports:
     methods,
-    optparse
+    optparse,
+    R.utils,
+    plyr,
+    Rcpp (>= 0.12.10)
 Suggests:
     testthat,
     knitr,

@@ -69,7 +69,8 @@ specified directories. Requires a simulatedData list which is the output of
 either \link{runSimulation} or \link{createPheno}
 }
 \examples{
-simulatedPhenotype <- runSimulation(N=100, P=10, verbose=FALSE)
+simulatedPhenotype <- runSimulation(N=100, P=10, genVar=0.4, h2bg=1, 
+phi=1, verbose=FALSE)
 #not run
 #savePheno(simulatedPhenotype, directoryGeno="/path/to/dir/",  
 #directoryPheno="/path/to/dir/", outstring="Date_simulation")
