@@ -13,7 +13,17 @@ Description: Phenotype simulator allows for the flexible simulation of
     for the proportion of variance explained by each of the components. For each 
     component, the number of variables, their distribution and the design of 
     their effect across traits can be customised. 
-Depends: R (>= 3.3.2)
+Depends:
+    R (>= 3.3.2)
+LinkingTo:
+    Rcpp
+Imports:
+    methods,
+    optparse
+Suggests:
+    testthat,
+    knitr,
+    mvtnorm
 License: MIT + file LICENCE
 Encoding: UTF-8
 LazyData: true
