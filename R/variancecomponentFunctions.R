@@ -179,7 +179,7 @@ geneticFixedEffects <- function(X_causal, N, P, pSpecificGenetic=0.4,
 #' sdBeta=2)
 #' 
 #'  # 4 fixed noise effect with 2 binomial confounders and 2 normally 
-#'  distributed confounders 
+#'  # distributed confounders 
 #'  noiseFE_binomialandNormalConfounders <- noiseFixedEffects(P=10, N=20, 
 #'  NrFixedEffects=2, NrConfounders=c(2,2), distConfounders=c("bin", "norm"), 
 #'  probConfounders=0.2)
