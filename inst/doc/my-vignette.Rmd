@@ -13,7 +13,9 @@ devtools::load_all()
 knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
 ```
 
-Phenotype simulator allows for the flexible simulation of phenotypes under different models: fixed and background genetic effects, correlated, fixed and background noise effects. The user can specify how much of the final phenotypic variance should be explained by each of these components and the design of the effect across traits. The *work-flow* outlined below summarizes the strategy for the phenotype simulation. In section *Examples*, phenotype simulation for phenotypes with different levels of complexity are demonstrated in both a step-by-step manner or by using the recommended `runSimulation` function. Finally, section *Phenotype component functions* explains the use and simulation strategy of the individual phenotype component-generating functions. 
+PhenotypeSimulator allows for the flexible simulation of phenotypes from genetic and noise components. In quantitative genetics, genotype to phenotype mapping is commonly realised by fitting a linear model to the genotype as the explanatory variable and the phenotype as the response variable. Other explanatory variable such as additional sample measures (e.g. age, height, weight) or batch effects can also be included. For linear mixed models, in addition to the fixed effects of the genotype and the covariates, different random effect components can be included, accounting for population structure in the study cohort or environmental effects. The application of linear and linear mixed models in quantitive genetics ranges from genetic studies in model organism such as yeast and arabidopsis thaliana to human molecular, morphological or imaging derived traits. Developing new methods to efficienlty model increasing sample sizes or to apply multi-variate models to sets of phenotypic measurements often requires simulated datasets with a specific underlying phenotype structure.. These include for instance genetic fixed effects and correlated noise effects, genetic fixed effects and noise background (bg) effects, genetic fixed + bg effects and noise bg effects or genetic fixed + bg effects abd noise bg effects. 
+
+PhenotypeSimulator allows for the simulation of such phenotypes under different models, including fixed and background genetic effects as well as correlated, fixed and background noise effects. Different phenotypic effects can be combined into a final phenotype while controling for the proportion of variance explained by each of the components. For each component, the number of variables, their distribution and the design of their effect across traits can be customised.  The *work-flow* outlined below summarizes the strategy for the phenotype simulation. In section *Examples*, phenotype simulation for phenotypes with different levels of complexity are demonstrated in both a step-by-step manner or by using the recommended `runSimulation` function. Finally, section *Phenotype component functions* explains the use and simulation strategy of the individual phenotype component-generating functions. 
 
 # Work-flow
 1. Simulate phenotype components of interest:
@@ -126,6 +128,19 @@ phenotype <- runSimulation(N = 100, P = 15,  tNrSNP = 10000,  cNrSNP=30,
                            pcorr = 0.8,
                            verbose = TRUE )
 
+
+phenotype <- runSimulation(N = 100, P = 15,  tNrSNP = 10000,  cNrSNP=30, 
+                           SNPfrequencies = c(0.05, 0.1,0.3,0.4), 
+                           normalise = TRUE, genVar = 0.4, 
+                           h2s = 0.025, phi = 0.6, delta = 0.3, gamma = 1,
+                           NrFixedEffects = 4, NrConfoundersString = "1,2,1,2",
+                           pSpecificConfoundersString = "0,1,1,0.5",  
+                           distConfoundersString = "bin,cat_norm,cat_unif,norm", 
+                           probConfoundersString = "0.2", 
+                           catConfoundersString="0,3,4,0",
+                           pcorr = 0.8,
+                           verbose = TRUE )
+
 ```
 
 
@@ -180,24 +195,25 @@ savePheno(phenotype, directoryGeno="~/tmp/genotypes",  directoryPheno="~/tmp/phe
 PhenotypeSimulator can also be run from the command line via `Rscript -e 'simulatePhenotypes()' --vanilla --default-packages=R.utils,PhenotypeSimulator,optparse --...` with `--...` being the user supplied simulation paramaters. `Rscript -e 'simulatePhenotypes()'` takes the same arguments as `runSimulation` and `savePheno`: first, it simulates the specified phenotype components and then saves them into to specified directories. To generate the same phenotypes as described above via the command line-interface, run the following code from your command line:
 
 ```{bash, eval = FALSE}
-Rscript -e 'simulatePhenotypes()' --vanilla 
-                                --default-packages=R.utils,PhenotypeSimulator,optparse 
-                                --N=100 --P=15 --tNrSNP=10000 --cNrSNP=30 
-                                --SNPfrequencies=0.05,0.1,0.3,0.4
-                                --genVar=0.4 --h2s=0.025 --phi=0.6 --delta=0.3 --gamma=1
-                                --pcorr=0.8
-                                --NrFixedEffects=4 --NrConfoundersString=1,2,1,2
-                                --pSpecificConfoundersString=0,1,1,0.5  
-                                --distConfoundersString=bin,cat_norm,cat_unif,norm 
-                                --probConfounders=0.2 
-                                --catConfounders=0,3,4,0
-                                --directoryGeno=~/tmp/genotypes
-                                --directoryPheno=~/tmp/phenotypes 
-                                --outstring=2017_04_04_simulation
-                                --sample_subset_vec=50,70
-                                --pheno_subset_vec=5,10
-                                --normalise
-                                --verbose
+Rscript --vanilla --default-packages=R.utils,PhenotypeSimulator,optparse \
+        -e 'simulatePhenotypes()' 
+        --NrSamples=100 --NrPhenotypes=15 \
+        --tNrSNP=10000 --cNrSNP=30 \
+        --SNPfrequencies=0.05,0.1,0.3,0.4 \
+        --genVar=0.4 --h2s=0.025 --phi=0.6 --delta=0.3 --gamma=1 \
+        --pcorr=0.8 \
+        --NrFixedEffects=4 --NrConfounders=1,2,1,2 \
+        --pSpecificConfounders=0,1,1,0.5 \
+        --distConfounders=bin,cat_norm,cat_unif,norm \
+        --probConfounders=0.2 \
+        --catConfounders=0,3,4,0 \
+        --directoryGeno=~/tmp/genotypes \
+        --directoryPheno=~/tmp/phenotypes \
+        --subdirectory=2017_04_04_simulation \
+        --sampleSubset=50,70 \
+        --phenoSubset=5,10 \
+        --normalise \
+        --verbose 
 ```
 
 # Phenotype component functions
@@ -297,13 +313,16 @@ mtext(side = 2, text = "Traits", line = 1)
 ## 4. correlated noise effects: 
 `correlatedBgEffects` can be used to simulate phenotypes with a defined level of correlation between traits. For instance, such affects can reflect correlation strcuture decreasing in phenotypes with a spatial component. The level of correlation depends on the distance of the traits. Traits of distance $d=1$ (adjacent columns) will have correlation $cor=pcorr^1$, traits with $d=2$ have $cor=pcorr^2$ up to traits with $d=(P-1)$ $cor=pcorr^{(P-1)}$. The correlated background effect $correlated$ is simulated as multivariate normal distributed with the described correlation structure $C$ as the covariance between the phenotypic traits: $correlated ~ N_{NP}(0,C)$.
 
-```{r, fig.height=4, fig.width=4}
+```{r, fig.show='hold', fig.height=3.4, fig.width=3.4}
 # simulate correlated noise effect for 10 traits with top-level correlation of 0.8
 correlatedNoise <- correlatedBgEffects(N = 100, P = 10, pcorr = 0.8 )
 
 # correlation structure of the traits: strong the closer to the diagonal, little correlation at the furthest distance to the diagonal 
 furthestDistCorr <- 0.4^(10-1)
 pairs(correlatedNoise, pch = ".", main=paste("Correlation at furthest distance to diagonal:",furthestDistCorr), cex.main=0.8)
+image(correlatedNoise, main="Correlated noise effects",  axes=FALSE, cex.main=0.8)
+mtext(side = 1, text = "Samples", line = 1)
+mtext(side = 2, text = "Traits", line = 1)
 ```
 
 ## 5. background noise effects: 
@@ -322,4 +341,5 @@ image(noiseBg$specific, main="Specific background noise effects", axes=FALSE, ce
 mtext(side = 1, text = "Samples", line = 1)
 mtext(side = 2, text = "Traits", line = 1)
 ```
+
 

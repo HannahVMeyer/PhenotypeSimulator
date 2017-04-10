@@ -87,6 +87,19 @@ phenotype <- runSimulation(N = 100, P = 15,  tNrSNP = 10000,  cNrSNP=30,
                            verbose = TRUE )
 
 
+phenotype <- runSimulation(N = 100, P = 15,  tNrSNP = 10000,  cNrSNP=30, 
+                           SNPfrequencies = c(0.05, 0.1,0.3,0.4), 
+                           normalise = TRUE, genVar = 0.4, 
+                           h2s = 0.025, phi = 0.6, delta = 0.3, gamma = 1,
+                           NrFixedEffects = 4, NrConfoundersString = "1,2,1,2",
+                           pSpecificConfoundersString = "0,1,1,0.5",  
+                           distConfoundersString = "bin,cat_norm,cat_unif,norm", 
+                           probConfoundersString = "0.2", 
+                           catConfoundersString="0,3,4,0",
+                           pcorr = 0.8,
+                           verbose = TRUE )
+
+
 ## ---- echo=FALSE---------------------------------------------------------
 # show proportion of variance of the different phenotype components in the 
 # final phenotype
@@ -200,13 +213,16 @@ image(fixedNoiseBinomial$common, main="Specific fixed noise effects\n(binomial c
 mtext(side = 1, text = "Samples", line = 1)
 mtext(side = 2, text = "Traits", line = 1)
 
-## ---- fig.height=4, fig.width=4------------------------------------------
+## ---- fig.show='hold', fig.height=3.4, fig.width=3.4---------------------
 # simulate correlated noise effect for 10 traits with top-level correlation of 0.8
 correlatedNoise <- correlatedBgEffects(N = 100, P = 10, pcorr = 0.8 )
 
 # correlation structure of the traits: strong the closer to the diagonal, little correlation at the furthest distance to the diagonal 
 furthestDistCorr <- 0.4^(10-1)
 pairs(correlatedNoise, pch = ".", main=paste("Correlation at furthest distance to diagonal:",furthestDistCorr), cex.main=0.8)
+image(correlatedNoise, main="Correlated noise effects",  axes=FALSE, cex.main=0.8)
+mtext(side = 1, text = "Samples", line = 1)
+mtext(side = 2, text = "Traits", line = 1)
 
 ## ----fig.show='hold'-----------------------------------------------------
 # simulate a noise background effect for 10 traits
