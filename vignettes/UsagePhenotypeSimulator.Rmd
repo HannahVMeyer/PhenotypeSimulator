@@ -179,28 +179,27 @@ savePheno(phenotype, directoryGeno="~/tmp/genotypes",  directoryPheno="~/tmp/phe
 
 
 # Command line use
-PhenotypeSimulator can also be run from the command line via `Rscript -e 'simulatePhenotypes()' --vanilla --default-packages=R.utils,PhenotypeSimulator,optparse --...` with `--...` being the user supplied simulation paramaters. `Rscript -e 'simulatePhenotypes()'` takes the same arguments as `runSimulation` and `savePheno`: first, it simulates the specified phenotype components and then saves them into to specified directories. To generate the same phenotypes as described above via the command line-interface, run the following code from your command line:
+PhenotypeSimulator can also be run from the command line via `Rscript -e 'simulatePhenotypes()' --vanilla --default-packages=R.utils,PhenotypeSimulator,optparse --...` with `--...` being the user supplied simulation paramaters. `Rscript -e 'simulatePhenotypes()'` takes the same arguments as `runSimulation` and `savePheno`: first, it simulates the specified phenotype components and then saves them into to specified directories. The user will need to have writing permissions to the parent directory, in this case ~. If directoryGeno and directoryPheno do not exist yet, they will be created. To generate the same phenotypes as described above via the command line-interface, run the following code from your command line:
 
 ```{bash, eval = FALSE}
-Rscript --vanilla --default-packages=R.utils,PhenotypeSimulator,optparse \
-        -e 'simulatePhenotypes()'\ 
-        --NrSamples=100 --NrPhenotypes=15 \
-        --tNrSNP=10000 --cNrSNP=30 \
-        --SNPfrequencies=0.05,0.1,0.3,0.4 \
-        --genVar=0.4 --h2s=0.025 --phi=0.6 --delta=0.3 --gamma=1 \
-        --pcorr=0.8 \
-        --NrFixedEffects=4 --NrConfounders=1,2,1,2 \
-        --pSpecificConfounders=0,1,1,0.5 \
-        --distConfounders=bin,cat_norm,cat_unif,norm \
-        --probConfounders=0.2 \
-        --catConfounders=0,3,4,0 \
-        --directoryGeno=~/tmp/genotypes \
-        --directoryPheno=~/tmp/phenotypes \
-        --subdirectory=2017_04_04_simulation \
-        --sampleSubset=50,70 \
-        --phenoSubset=5,10 \
-        --normalise \
-        --verbose 
+Rscript <(echo 'PhenotypeSimulator::simulatePhenotypes()') \
+--NrSamples=100 --NrPhenotypes=15 \
+--tNrSNP=10000 --cNrSNP=30 \
+--SNPfrequencies=0.05,0.1,0.3,0.4 \
+--genVar=0.4 --h2s=0.025 --phi=0.6 --delta=0.3 --gamma=1 \
+--pcorr=0.8 \
+--NrFixedEffects=4 --NrConfounders=1,2,1,2 \
+--pSpecificConfounders=0,1,1,0.5 \
+--distConfounders=bin,cat_norm,cat_unif,norm \
+--probConfounders=0.2 \
+--catConfounders=0,3,4,0 \
+--directoryGeno=~/tmp/genotypes \
+--directoryPheno=~/tmp/phenotypes \
+--subdirectory=2017_04_04_simulation \
+--sampleSubset=50,70 \
+--phenoSubset=5,10 \
+--normalise \
+--verbose 
 ```
 
 # Phenotype component functions

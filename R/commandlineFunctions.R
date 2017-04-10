@@ -12,8 +12,7 @@
 #' # (not run)
 #' # Simulate simple phenotype of genetic and noise background effects only:
 #' # (not run)
-#' # Rscript --vanilla --default-packages=R.utils,PhenotypeSimulator,optparse \
-#' #-e 'simulatePhenotypes()'\ 
+#' # Rscript <(echo 'PhenotypeSimulator::simulatePhenotypes()') \ 
 #' #--NrSamples=100 --NrPhenotypes=15 \
 #' #--tNrSNP=10000 --cNrSNP=30 \
 #' #--SNPfrequencies=0.05,0.1,0.3,0.4 \
