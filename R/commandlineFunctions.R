@@ -12,24 +12,25 @@
 #' # (not run)
 #' # Simulate simple phenotype of genetic and noise background effects only:
 #' # (not run)
-#' # Rscript  --vanilla 
-#' # --default-packages=R.utils,PhenotypeSimulator,optparse,stats 
-#' # --N=100 --P=15 --tNrSNP=10000 --cNrSNP=30 
-#' # --SNPfrequencies=0.05,0.1,0.3,0.4
-#' # --genVar=0.4 --h2s=0.025 --phi=0.6 --delta=0.3 --gamma=1
-#' # --pcorr=0.8
-#' # --NrFixedEffects=4 --NrConfounders=1,2,1,2
-#' # --pSpecificConfounders=0,1,1,0.5  
-#' # --distConfounders=bin,cat_norm,cat_unif,norm 
-#' # --probConfounders=0.2 
-#' # --catConfounders=0,3,4,0
-#' # --directoryGeno=~/tmp/genotypes
-#' # --directoryPheno=~/tmp/phenotypes 
-#' # --subdirectory=2017_04_04_simulation
-#' # --sampleSubset=50,70
-#' # --phenoSubset=5,10
-#' # --normalise
-#' # --verbose
+#' # Rscript --vanilla --default-packages=R.utils,PhenotypeSimulator,optparse \
+#' #-e 'simulatePhenotypes()'\ 
+#' #--NrSamples=100 --NrPhenotypes=15 \
+#' #--tNrSNP=10000 --cNrSNP=30 \
+#' #--SNPfrequencies=0.05,0.1,0.3,0.4 \
+#' #--genVar=0.4 --h2s=0.025 --phi=0.6 --delta=0.3 --gamma=1 \
+#' #--pcorr=0.8 \
+#' #--NrFixedEffects=4 --NrConfounders=1,2,1,2 \
+#' #--pSpecificConfounders=0,1,1,0.5 \
+#' #--distConfounders=bin,cat_norm,cat_unif,norm \
+#' #--probConfounders=0.2 \
+#' #--catConfounders=0,3,4,0 \
+#' #--directoryGeno=~/tmp/genotypes \
+#' #--directoryPheno=~/tmp/phenotypes \
+#' #--subdirectory=2017_04_04_simulation \
+#' #--sampleSubset=50,70 \
+#' #--phenoSubset=5,10 \
+#' #--normalise \
+#' #--verbose 
 
 
 simulatePhenotypes <- function() {

@@ -183,7 +183,7 @@ PhenotypeSimulator can also be run from the command line via `Rscript -e 'simula
 
 ```{bash, eval = FALSE}
 Rscript --vanilla --default-packages=R.utils,PhenotypeSimulator,optparse \
-        -e 'simulatePhenotypes()' 
+        -e 'simulatePhenotypes()'\ 
         --NrSamples=100 --NrPhenotypes=15 \
         --tNrSNP=10000 --cNrSNP=30 \
         --SNPfrequencies=0.05,0.1,0.3,0.4 \
