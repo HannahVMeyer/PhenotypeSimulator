@@ -181,6 +181,11 @@ simulatePhenotypes <- function() {
                     dest="chr_string", default="22", type="character", 
                     help="Comma-separated list of chromosomes to draw causal 
                     SNPs from [default %default]"),
+        make_option(c("--NrCausalChrom"), action="store", 
+                    dest="NrChrCausal", default=1, type="integer", 
+                    help="Number of chromosomes to draw causal 
+                    SNPs from (as opposed to a specific list of chromosomes to 
+                    draw from via --chrom) [default %default]"),
         
         make_option(c("-dg", "--directoryGeno"), action="store", 
                     dest="directoryGeno", default=NULL, type="character", help=
