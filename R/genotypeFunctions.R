@@ -112,11 +112,14 @@ standardiseGenotypes <- function(geno) {
 #' @param NrCausalSNPs number [integer] of SNPs to chose at random
 #' @param genotypes [NrSamples x totalNrSNPs] matrix of genotypes
 #' @param chr numeric vector of chromosomes to chose NrCausalSNPs from; only 
-#' used when external genotype
-#' data is provided i.e. is.null(genoFilePrefix) == FALSE
+#' used when external genotype data is provided i.e. is.null(genoFilePrefix) 
+#' == FALSE
 #' @param chr_string [string] alternative to chr, a string with chromosomes 
-#' separated by comma; 
-#' most often used when run as a command line application
+#' separated by comma; most often used when run as a command line application
+#' @param NrChrCausal Number [integer] of causal chromosomes to  chose 
+#' NrCausalSNPs from (as opposed to the actual chromosomes to chose from via chr
+#' 'chr_string);  only used when external genotype data is provided i.e. 
+#' is.null(genoFilePrefix) == FALSE. 
 #' @param genoFilePrefix full path/to/chromosome-wise-genotype-file-ending-
 #' before-"chrChromosomeNumber" (no '~' expansion!) [string]
 #' @param genoFileSuffix [string] following chromosome number including 
@@ -140,9 +143,9 @@ standardiseGenotypes <- function(geno) {
 #' . For each of the chromosomes, it counts the number of SNPs in the chromosome
 #'  file and creates vectors of random numbers ranging from 1:NrSNPSinFile. Only 
 #'  the lines corresponding to these numbers are then read into R. The example 
-#'  data provided for chromosome 22 contains genotypes of the first 1000 SNPs on 
-#'  chromosome 22 with a minor allele frequency of greater than 2% from the 
-#'  European populations of the the 1000 Genomes project.
+#'  data provided for chromosome 22 contains genotypes (50 samples) of the first 
+#'  500 SNPs on chromosome 22 with a minor allele frequency of greater than 2% 
+#'  from the European populations of the the 1000 Genomes project.
 #'  
 #' @seealso \code{\link{standardiseGenotypes}} 
 #' @export
@@ -159,8 +162,9 @@ standardiseGenotypes <- function(geno) {
 #' causalSNPsFromFile <- getCausalSNPs(chr=22, genoFilePrefix=genoFilePrefix, 
 #' genoFileSuffix=genoFileSuffix)
 getCausalSNPs <- function(NrCausalSNPs=20,  genotypes=NULL, chr=NULL, 
-                          chr_string=NULL, genoFilePrefix=NULL,
-                          genoFileSuffix=NULL, genoFileDelimiter=",", 
+                          chr_string=NULL, NrChrCausal=NULL,
+                          genoFilePrefix=NULL, genoFileSuffix=NULL, 
+                          genoFileDelimiter=",", 
                           sampleID="ID_", standardise=FALSE, verbose=TRUE) {
 	if (! is.null(genotypes)) {
         if (standardise) genotypes <- genotypes$X_sd
@@ -172,6 +176,16 @@ getCausalSNPs <- function(NrCausalSNPs=20,  genotypes=NULL, chr=NULL,
 	        stop("genoFilePrefix contains ~: path expansion not guaranteed on 
                 every platform (see path.expand{base}), please provide full file
 	            path to genotype files")
+	    }
+	    if (all(c( is.null(chr_string), is.null(chr), is.null(NrChrCausal)))) {
+	        stop("No information about chromosomes to sample from provided;
+	             please specify either chr_string, chr or NrChrCausal")
+	    }
+	    if (all(c( !is.null(chr_string), !is.null(chr))) ||
+	        all(c( !is.null(chr_string), !is.null(NrChrCausal))) ||
+	        all(c( !is.null(NrChrCausal), !is.null(chr)))) {
+	        stop("Too much information for sampling chromosomes provided, please
+	             specifiy only either chr_string, chr or NrChrCausal")
 	    }
 		if (! is.null(chr_string)) {
 			ChrCausal <- commaList2vector(chr_string)
@@ -196,6 +210,11 @@ getCausalSNPs <- function(NrCausalSNPs=20,  genotypes=NULL, chr=NULL,
 			chromosomefile <- paste(genoFilePrefix, "chr", ChrCausal[chrom], 
 			                        genoFileSuffix, sep="")
 			SNPsOnChromosome <- countLines(chromosomefile)
+			if (SNPsOnChromosome <  NrCausalSNPsChr[chrom]) {
+			    stop("Number of causal SNPs to be chosen from chromosome", chr, 
+			         "is larger than actual number of SNPs provided in 
+                    chromosome file")
+			}
 			randomSNPindex <- sample(1:SNPsOnChromosome, NrCausalSNPsChr[chrom])
             randomSNPindex <- randomSNPindex[order(randomSNPindex, 
                                                    decreasing=FALSE)]
@@ -243,7 +262,8 @@ getCausalSNPs <- function(NrCausalSNPs=20,  genotypes=NULL, chr=NULL,
 #' elements and 1e-4 added to the diagonal for numerical stability via norm=TRUE.
 #' If a kinship file is provided, normalising can optionally be chosen. For the 
 #' provided kinship file, normalisation has already been done a priori and norm 
-#' should be set to FALSE 
+#' should be set to FALSE. The provided kinship contains estimates for 50 
+#' samples across the entire genome. 
 #' @export
 #' @examples
 #' geno <- simulateGenotypes(N=500)

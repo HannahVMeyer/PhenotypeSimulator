@@ -6,15 +6,15 @@
 \usage{
 runSimulation(N = 1000, P = 10, tNrSNP = 5000, cNrSNP = 20,
   NrConfounders = 10, seed = 219453, chr_string = NULL, chr = 20,
-  genVar = NULL, h2s = NULL, theta = 0.8, h2bg = NULL, eta = 0.8,
-  noiseVar = NULL, rho = NULL, delta = NULL, gamma = 0.8, phi = NULL,
-  alpha = 0.8, sampleID = "ID_", phenoID = "Trait_",
-  genoFilePrefix = NULL, genoFileSuffix = NULL, genoFileDelimiter = ",",
-  kinshipfile = NULL, kinshipHeader = TRUE, kinshipDelimiter = ",",
-  normalise = TRUE, standardise = TRUE, NrFixedEffects = 1,
-  distConfounders = "norm", mConfounders = 0, sdConfounders = 1,
-  catConfounders = NULL, probConfounders = NULL, distBeta = "norm",
-  mBeta = 0, sdBeta = 1, pSpecificConfounders = 0.4,
+  NrChrCausal = NULL, genVar = NULL, h2s = NULL, theta = 0.8,
+  h2bg = NULL, eta = 0.8, noiseVar = NULL, rho = NULL, delta = NULL,
+  gamma = 0.8, phi = NULL, alpha = 0.8, sampleID = "ID_",
+  phenoID = "Trait_", genoFilePrefix = NULL, genoFileSuffix = NULL,
+  genoFileDelimiter = ",", kinshipfile = NULL, kinshipHeader = TRUE,
+  kinshipDelimiter = ",", normalise = TRUE, standardise = TRUE,
+  NrFixedEffects = 1, distConfounders = "norm", mConfounders = 0,
+  sdConfounders = 1, catConfounders = NULL, probConfounders = NULL,
+  distBeta = "norm", mBeta = 0, sdBeta = 1, pSpecificConfounders = 0.4,
   pTraitSpecificConfounders = 0.2, pcorr = 0.8, meanNoiseBg = 0,
   sdNoiseBg = 1, SNPfrequencies = c(0.1, 0.2, 0.4),
   SNPfrequencyString = NULL, pSpecificGenetic = 0.4,
@@ -41,12 +41,16 @@ effects}
 \item{seed}{seed [integer] to initiate random number generation}
 
 \item{chr_string}{alternative to chr, a [string] with chromosomes separated 
-by comma; 
-most often used when run as a command line application}
+by comma; most often used when run as a command line application.}
 
 \item{chr}{numeric vector of chromosomes to chose NrCausalSNPs from; only 
 used when external genotype data is provided i.e. is.null(genoFilePrefix) == 
 FALSE}
+
+\item{NrChrCausal}{Number [integer] of causal chromosomes to  chose 
+NrCausalSNPs from (as opposed to the actual chromosomes to chose from via chr
+'chr_string);  only used when external genotype data is provided i.e. 
+is.null(genoFilePrefix) == FALSE.}
 
 \item{genVar}{Proportion [double] of total genetic variance}
 

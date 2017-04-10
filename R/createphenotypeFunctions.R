@@ -674,8 +674,11 @@ createPheno <- function(P, N, sampleID="ID_", phenoID="trait_",
 #' used when external genotype data is provided i.e. is.null(genoFilePrefix) == 
 #' FALSE
 #' @param chr_string alternative to chr, a [string] with chromosomes separated 
-#' by comma; 
-#' most often used when run as a command line application
+#' by comma; most often used when run as a command line application.
+#' @param NrChrCausal Number [integer] of causal chromosomes to  chose 
+#' NrCausalSNPs from (as opposed to the actual chromosomes to chose from via chr
+#' 'chr_string);  only used when external genotype data is provided i.e. 
+#' is.null(genoFilePrefix) == FALSE. 
 #' @param SNPfrequencies vector of allele frequencies [double] from which to 
 #' sample
 #' @param SNPfrequencyString alternative to a frequencies vector, a [string] 
@@ -801,7 +804,8 @@ createPheno <- function(P, N, sampleID="ID_", phenoID="trait_",
 #' simulatedPhenotype <- runSimulation(N=100, P=10, genVar=genVar, h2bg=genVar, 
 #' phi=1)
 runSimulation <- function(N=1000, P=10, tNrSNP=5000, cNrSNP=20, 
-                          NrConfounders=10,seed=219453, chr_string=NULL, chr=20, 
+                          NrConfounders=10, seed=219453, chr_string=NULL, 
+                          chr=20, NrChrCausal=NULL,
                           genVar=NULL, h2s=NULL, theta=0.8, h2bg=NULL, eta=0.8, 
                           noiseVar=NULL, rho=NULL, delta=NULL, gamma=0.8, 
                           phi=NULL, alpha=0.8, sampleID="ID_", phenoID="Trait_", 

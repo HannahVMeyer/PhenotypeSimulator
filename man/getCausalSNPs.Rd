@@ -5,9 +5,9 @@
 \title{Draw random SNPs from genotypes.}
 \usage{
 getCausalSNPs(NrCausalSNPs = 20, genotypes = NULL, chr = NULL,
-  chr_string = NULL, genoFilePrefix = NULL, genoFileSuffix = NULL,
-  genoFileDelimiter = ",", sampleID = "ID_", standardise = FALSE,
-  verbose = TRUE)
+  chr_string = NULL, NrChrCausal = NULL, genoFilePrefix = NULL,
+  genoFileSuffix = NULL, genoFileDelimiter = ",", sampleID = "ID_",
+  standardise = FALSE, verbose = TRUE)
 }
 \arguments{
 \item{NrCausalSNPs}{number [integer] of SNPs to chose at random}
@@ -15,12 +15,16 @@ getCausalSNPs(NrCausalSNPs = 20, genotypes = NULL, chr = NULL,
 \item{genotypes}{[NrSamples x totalNrSNPs] matrix of genotypes}
 
 \item{chr}{numeric vector of chromosomes to chose NrCausalSNPs from; only 
-used when external genotype
-data is provided i.e. is.null(genoFilePrefix) == FALSE}
+used when external genotype data is provided i.e. is.null(genoFilePrefix) 
+== FALSE}
 
 \item{chr_string}{[string] alternative to chr, a string with chromosomes 
-separated by comma; 
-most often used when run as a command line application}
+separated by comma; most often used when run as a command line application}
+
+\item{NrChrCausal}{Number [integer] of causal chromosomes to  chose 
+NrCausalSNPs from (as opposed to the actual chromosomes to chose from via chr
+'chr_string);  only used when external genotype data is provided i.e. 
+is.null(genoFilePrefix) == FALSE.}
 
 \item{genoFilePrefix}{full path/to/chromosome-wise-genotype-file-ending-
 before-"chrChromosomeNumber" (no '~' expansion!) [string]}
@@ -56,7 +60,10 @@ each file needs to be the SNP_ID and files cannot contain a header.
 getCausalSNPs generates a vector of chromosomes from which to sample the SNPs
 . For each of the chromosomes, it counts the number of SNPs in the chromosome
  file and creates vectors of random numbers ranging from 1:NrSNPSinFile. Only 
- the lines corresponding to these numbers are then read into R.
+ the lines corresponding to these numbers are then read into R. The example 
+ data provided for chromosome 22 contains genotypes (50 samples) of the first 
+ 500 SNPs on chromosome 22 with a minor allele frequency of greater than 2% 
+ from the European populations of the the 1000 Genomes project.
 }
 \examples{
 geno <- simulateGenotypes(N=500)
@@ -64,7 +71,7 @@ causalSNPsFromSimulatedGenoStandardised <- getCausalSNPs(genotypes=geno,
 standardise=TRUE)
 
 genotypeFile <- system.file("extdata/genotypes/",
-"related_nopopstructure_chr22.csv",
+"genotypes_chr22.csv",
 package = "PhenotypeSimulator")
 genoFilePrefix <- gsub("chr.*", "", genotypeFile) 
 genoFileSuffix <- ".csv" 
