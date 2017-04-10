@@ -9,8 +9,8 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 ```{r, echo = FALSE, message=FALSE}
-devtools::load_all()
 knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library("PhenotypeSimulator")
 ```
 
 PhenotypeSimulator allows for the flexible simulation of phenotypes from genetic and noise components. In quantitative genetics, genotype to phenotype mapping is commonly realised by fitting a linear model to the genotype as the explanatory variable and the phenotype as the response variable. Other explanatory variable such as additional sample measures (e.g. age, height, weight) or batch effects can also be included. For linear mixed models, in addition to the fixed effects of the genotype and the covariates, different random effect components can be included, accounting for population structure in the study cohort or environmental effects. The application of linear and linear mixed models in quantitive genetics ranges from genetic studies in model organism such as yeast and arabidopsis thaliana to human molecular, morphological or imaging derived traits. Developing new methods to efficienlty model increasing sample sizes or to apply multi-variate models to sets of phenotypic measurements often requires simulated datasets with a specific underlying phenotype structure.. These include for instance genetic fixed effects and correlated noise effects, genetic fixed effects and noise background (bg) effects, genetic fixed + bg effects and noise bg effects or genetic fixed + bg effects abd noise bg effects. 
@@ -218,7 +218,7 @@ Rscript --vanilla --default-packages=R.utils,PhenotypeSimulator,optparse \
 
 # Phenotype component functions
 ## 1. fixed genetic effects: 
-Fixed genetic effects are simulated as the matrix product of an [N x NrCausalSNPs] genotype matrix and [NrSNP x P] effect size matrix. The genotype matrix can either be drawn from i) a simulated genotype matrix or ii) causal SNPs can be randomly drawn and read from existing genotype files. In the latter case, genotypes are expected to be stored in a [SNPs x N] format, with separate files for each chromosome. The user can either specify which chromosomes to sample the SNPs from or simply provide the total number of chromosomes to sample from. For the simulation of genotypes, the user can specify the `NrSNP`s to simulate and a vectore of allele frequencies `frequencies`. These allele frequencies are uniformly sampled and bi-allelic SNPs are simulated, with the sampled allele frequency acting as the probability in a binomial distribution with 2 trials.
+Fixed genetic effects are simulated as the matrix product of an [N x NrCausalSNPs] genotype matrix and [NrSNP x P] effect size matrix. The genotype matrix can either be drawn from i) a simulated genotype matrix or ii) causal SNPs can be randomly drawn and read from existing genotype files. In the latter case, genotypes are expected to be stored in a [SNPs x N] format, with separate files for each chromosome. The user can either specify which chromosomes to sample the SNPs from or simply provide the total number of chromosomes to sample from. For the simulation of genotypes, the user can specify the `NrSNP`s to simulate and a vectore of allele frequencies `frequencies`. These allele frequencies are uniformly sampled and bi-allelic SNPs are simulated, with the sampled allele frequency acting as the probability in a binomial distribution with 2 trials. The example data provided  contains the first 1000 SNPs on chromosome 22 with a minor allele frequency of less than 2% from the European populations of the the 1000 Genomes project.
 
 ```{r}
 ## a) Draw cuasal SNPs from a simulated genotype matrix
@@ -233,7 +233,7 @@ causalSNPs <- getCausalSNPs(NrCausalSNPs = 10, genotypes = genotypes, standardis
 ```{r}
 ## b) draw 10 causal SNPs from external genotype files: sample 10 SNPs from chromsome 22
 # use one of the sample genotype files provided in the extdata/genotypes folder
-genotypeFile <- system.file("extdata/genotypes/", "related_nopopstructure_chr22.csv", package = "PhenotypeSimulator")
+genotypeFile <- system.file("extdata/genotypes/", "genotypes_chr22.csv", package = "PhenotypeSimulator")
 genoFilePrefix <- gsub("chr.*", "", genotypeFile) 
 genoFileSuffix <- ".csv" 
 
@@ -257,14 +257,14 @@ mtext(side = 2, text = "Traits", line = 1)
 ```
 
 ## 2. background genetic effects: 
-Background genetic effects are simulated via `geneticBgEffects` as two random genetic effects (common and specific) based on the kinship estimates of the (simulated) samples. The common effect is the same across all traits whereas the specific one affects each trait independently. This structure is achieved by combining three matrix components for each of the effects: : i) the kinship matrix $K$ [N x N] which is treated as the sample-design matrix (the genetic profile of the samples), ii) an effect-size matrix $B$ [N x P] with $vec(B)$ drawn from a normal distribution and iii) the trait design matrix $A$ [P x P]. For the specific effect, $A$ is a diagonal matrix with normally distributed values. $A$ of the common effect is a matrix of row rank one, with normally distributed entries in row 1 and zeros elsewhere. The three matrices are multiplied to obtain the desired final effect matrix $E$: $E = KBA$. As for the genetic fixed effects, the kinship can either be estimated from simulated genotypes or read in from file.
+Background genetic effects are simulated via `geneticBgEffects` as two random genetic effects (common and specific) based on the kinship estimates of the (simulated) samples. The common effect is the same across all traits whereas the specific one affects each trait independently. This structure is achieved by combining three matrix components for each of the effects: : i) the kinship matrix $K$ [N x N] which is treated as the sample-design matrix (the genetic profile of the samples), ii) an effect-size matrix $B$ [N x P] with $vec(B)$ drawn from a normal distribution and iii) the trait design matrix $A$ [P x P]. For the specific effect, $A$ is a diagonal matrix with normally distributed values. $A$ of the common effect is a matrix of row rank one, with normally distributed entries in row 1 and zeros elsewhere. The three matrices are multiplied to obtain the desired final effect matrix $E$: $E = KBA$. As for the genetic fixed effects, the kinship can either be estimated from simulated genotypes or read in from file. The kinship is estimated as \eqn{K = XX_T}, with X the standardised genotypes of the samples. When estimating the kinship from the provided genotypes, the kinship should be normalised by the mean of its diagonal elements and 1e-4 added to the diagonal for numerical stability via norm=TRUE. If a kinship file is provided, normalising can optionally be chosen. For the provided kinship file, normalisation has already been done a priori and norm should be set to FALSE 
 
 ```{r, fig.show='hold'}
 ## a) Estimate kinship from simulated genotypes
 kinship <- getKinship(genotypes$X_sd, norm=TRUE, verbose = FALSE)
 
 ## b) Read kinship from external kinship file
-kinshipFile <- system.file("extdata/kinship/", "kinship_related_nopopstructure.csv", package = "PhenotypeSimulator")
+kinshipFile <- system.file("extdata/kinship/", "kinship.csv", package = "PhenotypeSimulator")
 kinshipFromFile <- getKinship(kinshipfile = kinshipFile, norm=FALSE, verbose = FALSE)
 
 genBg <- geneticBgEffects(kinship = kinship, N = 100, P = 15)

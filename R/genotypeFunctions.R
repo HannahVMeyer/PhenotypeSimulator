@@ -139,7 +139,11 @@ standardiseGenotypes <- function(geno) {
 #' getCausalSNPs generates a vector of chromosomes from which to sample the SNPs
 #' . For each of the chromosomes, it counts the number of SNPs in the chromosome
 #'  file and creates vectors of random numbers ranging from 1:NrSNPSinFile. Only 
-#'  the lines corresponding to these numbers are then read into R. 
+#'  the lines corresponding to these numbers are then read into R. The example 
+#'  data provided for chromosome 22 contains genotypes of the first 1000 SNPs on 
+#'  chromosome 22 with a minor allele frequency of greater than 2% from the 
+#'  European populations of the the 1000 Genomes project.
+#'  
 #' @seealso \code{\link{standardiseGenotypes}} 
 #' @export
 #' @examples
@@ -148,7 +152,7 @@ standardiseGenotypes <- function(geno) {
 #' standardise=TRUE)
 #'
 #' genotypeFile <- system.file("extdata/genotypes/",
-#' "related_nopopstructure_chr22.csv",
+#' "genotypes_chr22.csv",
 #' package = "PhenotypeSimulator")
 #' genoFilePrefix <- gsub("chr.*", "", genotypeFile) 
 #' genoFileSuffix <- ".csv" 
@@ -225,24 +229,31 @@ getCausalSNPs <- function(NrCausalSNPs=20,  genotypes=NULL, chr=NULL,
 #' @param sampleID prefix [string] for naming samples (followed by sample number 
 #' from 1 to NrSamples)
 #' @param norm [boolean], if TRUE kinship matrix will be normalised by the mean 
-#' of its diagonal elements
-#' and 1e-4 added to the diagonal for numerical stability
+#' of its diagonal elements and 1e-4 added to the diagonal for numerical 
+#' stability
 #' @param kinshipfile path/to/kinshipfile [string] to be read; either X or 
 #' kinshipfile must be provided
 #' @param sep field separator [string] of kinship file 
 #' @param header [boolean], if TRUE kinship file has header information 
 #' @param verbose [boolean]; if TRUE, progress info is printed to standard out
 #' @return [NrSamples x NrSamples] matrix of kinship estimate 
+#' @details The kinship is estimated as \eqn{K = XX_T}, with X the standardised
+#' genotypes of the samples. When estimating the kinship from the provided 
+#' genotypes, the kinship should be normalised by the mean of its diagonal 
+#' elements and 1e-4 added to the diagonal for numerical stability via norm=TRUE.
+#' If a kinship file is provided, normalising can optionally be chosen. For the 
+#' provided kinship file, normalisation has already been done a priori and norm 
+#' should be set to FALSE 
 #' @export
 #' @examples
 #' geno <- simulateGenotypes(N=500)
 #' K_fromGenotypesNormalised <- getKinship(geno$X_sd, norm=TRUE)
 #'
 #' kinshipfile <- system.file("extdata/kinship", 
-#' "kinship_unrelated_nopopstructure.csv",
+#' "kinship.csv",
 #' package = "PhenotypeSimulator")
-#' K_fromFile <- getKinship(kinshipfile=kinshipfile)
-getKinship <- function(X=NULL, kinshipfile=NULL, sampleID="ID_", norm=FALSE, 
+#' K_fromFile <- getKinship(kinshipfile=kinshipfile, norm=FALSE)
+getKinship <- function(X=NULL, kinshipfile=NULL, sampleID="ID_", norm=TRUE, 
                        sep=",", header=TRUE, verbose=TRUE) {
     if (!is.null(X)) {
         if (abs(mean(X)) > 0.2 && (sd(X) > 1.2 || sd(X) < 0.8 )) {

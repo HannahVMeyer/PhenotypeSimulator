@@ -11,7 +11,8 @@ simulatePhenotypes runs without arguments. Upon call, it reads command-line
 parameters and supplies these to \code{\link{runSimulation}} and 
 \code{\link{savePheno}}. For details on input to \code{\link{runSimulation}} 
 and \code{\link{savePheno}}, please refer to their help pages. For help on 
-the command line arguments that can be passed, see first examples below.}
+the command line arguments that can be passed, see first examples below.
+}
 \examples{
 # (not run)
 # Simulate simple phenotype of genetic and noise background effects only:
