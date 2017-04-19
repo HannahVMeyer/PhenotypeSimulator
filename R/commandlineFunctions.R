@@ -4,7 +4,7 @@
 #' parameters and supplies these to \code{\link{runSimulation}} and 
 #' \code{\link{savePheno}}. For details on input to \code{\link{runSimulation}} 
 #' and \code{\link{savePheno}}, please refer to their help pages. For help on 
-#' the command line arguments that can be passed, see first examples below.
+#' the command line arguments that can be passed, see examples below.
 #' 
 #' @export
 #' 
@@ -19,7 +19,7 @@
 #' #--genVar=0.4 --h2s=0.025 --phi=0.6 --delta=0.3 --gamma=1 \
 #' #--pcorr=0.8 \
 #' #--NrFixedEffects=4 --NrConfounders=1,2,1,2 \
-#' #--pSpecificConfounders=0,1,1,0.5 \
+#' #--pIndependentConfounders=0,1,1,0.5 \
 #' #--distConfounders=bin,cat_norm,cat_unif,norm \
 #' #--probConfounders=0.2 \
 #' #--catConfounders=0,3,4,0 \
@@ -63,22 +63,24 @@ simulatePhenotypes <- function() {
                     type="character", help="Comma-separated list of allele 
                     frequencies from which to sample to simulate genotypes 
                     [default %default]"),
-        make_option(c("-psg", "--pSpecificGenetic"), action="store", 
-                    dest="pSpecificGenetic", default=0.4, type="double", 
+        make_option(c("-psg", "--pIndependentGenetic"), action="store", 
+                    dest="pIndependentGenetic", default=0.4, type="double", 
                     help="Proportion of variance of fixed genetic effects to 
-                    have a trait-specific effect [default %default]"),
-        make_option(c("-ptsg", "--pTraitSpecificGenetic"), action="store", 
-                    dest="pTraitSpecificGenetic", default=0.2, type="double", 
-                    help="Proportion of traits influenced by specific fixed 
+                    have a trait-independent effect [default %default]"),
+        make_option(c("-ptsg", "--pTraitIndependentGenetic"), action="store", 
+                    dest="pTraitIndependentGenetic", default=0.2, type="double", 
+                    help="Proportion of traits influenced by independent fixed 
                     genetic effects [default %default]"),
-        make_option(c("-psn", "--pSpecificConfounders"), action="store", 
-                    dest="pSpecificConfounders", default=0.4, type="character", 
+        make_option(c("-psn", "--pIndependentConfounders"), action="store", 
+                    dest="pIndependentConfounders", default=0.4, 
+                    type="character", 
                     help="Proportion of variance of fixed noise effects to have 
-                    a trait-specific effect [default %default]"),
-        make_option(c("-ptsn", "--pTraitSpecificConfounders"), action="store", 
-                    dest="pTraitSpecificConfounders", default=0.2, 
+                    a trait-independent effect [default %default]"),
+        make_option(c("-ptsn", "--pTraitIndependentConfounders"),
+                    action="store", 
+                    dest="pTraitIndependentConfounders", default=0.2, 
                     type="character", help="Proportion of traits influenced by 
-                    specific fixed noise effects [default %default]"),
+                    independent fixed noise effects [default %default]"),
         
         make_option(c("-genVar", "--genVar"), action="store", dest="genVar", 
                     default=NULL, type="double", help="Total genetic variance 
@@ -94,21 +96,21 @@ simulatePhenotypes <- function() {
                     variance of background genetic effects [default %default]"),
         make_option(c("-theta", "--theta"), action="store", dest="theta", 
                     default=0.8, type="double", help="Proportion of genetic 
-                    variance of common fixed genetic effects [default %default]"
+                    variance of shared fixed genetic effects [default %default]"
         ),
         make_option(c("-eta", "--eta"), action="store", dest="eta", default=0.8, 
                     type="double", help="Proportion of genetic variance of 
-                    common genetic background effects  [default %default]"),
+                    shared genetic background effects  [default %default]"),
         
         make_option(c("-delta", "--delta"), action="store", dest="delta", 
                     default=NULL, type="double", help="Proportion of variance of 
                     fixed noise effects [default %default]"),
         make_option(c("-gamma", "--gamma"), action="store", dest="gamma", 
                     default=0.8, type="double", help="Proportion of noise 
-                    variance of common fixed noise effects [default %default]"),
+                    variance of shared fixed noise effects [default %default]"),
         make_option(c("-alpha", "--alpha"), action="store", dest="alpha", 
                     default=0.8, type="double", help="Proportion of noise 
-                    variance of common background noise effect 
+                    variance of shared background noise effect 
                     [default %default]"),
         make_option(c("-rho", "--rho"), action="store", dest="rho", default=NULL
                     , type="double", help="Proportion of noise variance of 
@@ -117,17 +119,17 @@ simulatePhenotypes <- function() {
                     , type="double", help="Proportion of noise variance of 
                     background noise effects [default %default]"),
         make_option(c("-pcorr", "--pcorr"), action="store", dest="pcorr", 
-                    default=0.6, type="double", help="Correlation strength of c
-                    orrelated noise effects [default %default]"),
+                    default=0.6, type="double", help="Correlation strength of
+                    correlated noise effects [default %default]"),
         make_option(c("--distConfounders"), action="store", 
                     dest="distConfoundersString", default="norm", 
                     type="character", help="[distribution to simulate 
                     confounders; one of 'unif', 'norm', 'bin', 'cat_norm', 
                     'cat_unif', default %default]"),
-        make_option(c("--mConfounders"), action="store", dest="mConfounderString"
-                    ,default="0", type="character", help="Mean/midpoint(s) of 
-                    normal/uniform distribution for confounders 
-                    [default %default]"),
+        make_option(c("--mConfounders"), action="store", 
+                    dest="mConfounderString", default="0", type="character", 
+                    help="Mean/midpoint(s) of normal/uniform distribution for 
+                    confounders [default %default]"),
         make_option(c("--sdConfounders"), action="store", 
                     dest="sdConfounderString", default="1", type="character", 
                     help="standard deviation(s)/distance from midpoint(s) of 
@@ -184,7 +186,7 @@ simulatePhenotypes <- function() {
         make_option(c("--NrCausalChrom"), action="store", 
                     dest="NrChrCausal", default=1, type="integer", 
                     help="Number of chromosomes to draw causal 
-                    SNPs from (as opposed to a specific list of chromosomes to 
+                    SNPs from (as opposed to a independent list of chromosomes to 
                     draw from via --chrom) [default %default]"),
         
         make_option(c("-dg", "--directoryGeno"), action="store", 
@@ -255,7 +257,8 @@ simulatePhenotypes <- function() {
         message("Number of causal SNPs:", args$cNrSNP)
         message("Number of confounders:", args$NrConfoundersString)
         message("Number of fixed effects:", args$NrFixedEffects)
-        message("Proportion of specific confounders:", args$pSpecificConfounders)
+        message("Proportion of independent confounders:", 
+                args$pIndependentConfounders)
         
         message("Total genetic variance:", args$genVar)
         message("Total noise variance:", 1 - args$genVar)
@@ -287,13 +290,14 @@ simulatePhenotypes <- function() {
                                      alpha=args$alpha,
                                      gamma=args$gamma, 
                                      pcorr=args$pcorr,
-                                     pSpecificConfoundersString=
-                                         args$pSpecificConfoundersString, 
-                                     pTraitSpecificConfoundersString=
-                                         args$pTraitSpecificConfoundersString, 
-                                     pSpecificGenetic=args$pSpecificGenetic, 
-                                     pTraitSpecificGenetic=
-                                         args$pTraitSpecificGenetic, 
+                                     pIndependentConfoundersString=
+                                         args$pIndependentConfoundersString, 
+                                     pTraitIndependentConfoundersString=
+                                        args$pTraitIndependentConfoundersString, 
+                                     pIndependentGenetic=
+                                         args$pIndependentGenetic, 
+                                     pTraitIndependentGenetic=
+                                         args$pTraitIndependentGenetic, 
                                      distConfoundersString=
                                          args$distConfoundersString, 
                                      mConfoundersString=args$mConfoundersString, 

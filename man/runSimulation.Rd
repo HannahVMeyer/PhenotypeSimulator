@@ -14,16 +14,17 @@ runSimulation(N = 1000, P = 10, tNrSNP = 5000, cNrSNP = 20,
   kinshipDelimiter = ",", normalise = TRUE, standardise = TRUE,
   NrFixedEffects = 1, distConfounders = "norm", mConfounders = 0,
   sdConfounders = 1, catConfounders = NULL, probConfounders = NULL,
-  distBeta = "norm", mBeta = 0, sdBeta = 1, pSpecificConfounders = 0.4,
-  pTraitSpecificConfounders = 0.2, pcorr = 0.8, meanNoiseBg = 0,
-  sdNoiseBg = 1, SNPfrequencies = c(0.1, 0.2, 0.4),
-  SNPfrequencyString = NULL, pSpecificGenetic = 0.4,
-  pTraitSpecificGenetic = 0.2, NrConfoundersString = NULL,
-  pSpecificConfoundersString = NULL, pTraitSpecificConfoundersString = NULL,
-  distConfoundersString = NULL, mConfoundersString = NULL,
-  sdConfoundersString = NULL, catConfoundersString = NULL,
-  probConfoundersString = NULL, distBetaString = NULL, mBetaString = NULL,
-  sdBetaString = NULL, verbose = TRUE)
+  distBeta = "norm", mBeta = 0, sdBeta = 1,
+  pIndependentConfounders = 0.4, pTraitIndependentConfounders = 0.2,
+  pcorr = 0.8, meanNoiseBg = 0, sdNoiseBg = 1, SNPfrequencies = c(0.1,
+  0.2, 0.4), SNPfrequencyString = NULL, pIndependentGenetic = 0.4,
+  pTraitIndependentGenetic = 0.2, NrConfoundersString = NULL,
+  pIndependentConfoundersString = NULL,
+  pTraitIndependentConfoundersString = NULL, distConfoundersString = NULL,
+  mConfoundersString = NULL, sdConfoundersString = NULL,
+  catConfoundersString = NULL, probConfoundersString = NULL,
+  distBetaString = NULL, mBetaString = NULL, sdBetaString = NULL,
+  verbose = TRUE)
 }
 \arguments{
 \item{N}{number [integer] of samples to simulate}
@@ -56,14 +57,14 @@ is.null(genoFilePrefix) == FALSE.}
 
 \item{h2s}{Proportion [double] of gentic variance of fixed effects}
 
-\item{theta}{Proportion [double] of variance of common fixed genetic effects}
+\item{theta}{Proportion [double] of variance of shared fixed genetic effects}
 
 \item{h2bg}{Proportion [double] of genetic variance of background effects; 
 either h2s or h2bg have to be specified and 
 h2s + h2bg = 1}
 
 \item{eta}{Proportion [doubl:w
-e] of variance of common bg genetic effects}
+e] of variance of shared bg genetic effects}
 
 \item{noiseVar}{Proportion [double] of total noise variance}
 
@@ -73,12 +74,12 @@ of rho, delta and phi cannot be greater than 1}
 \item{delta}{Proportion [double] of noise variance of fixed effects; sum of 
 rho, delta and phi cannot be greater than 1}
 
-\item{gamma}{Proportion [double] of variance of common fixed noise effects}
+\item{gamma}{Proportion [double] of variance of shared fixed noise effects}
 
 \item{phi}{Proportion [double] of noise variance of background effects; sum 
 of rho, delta and phi cannot be greater than 1}
 
-\item{alpha}{Variance [double] of common bg noise effect}
+\item{alpha}{Variance [double] of shared bg noise effect}
 
 \item{sampleID}{prefix [string] for naming samples (followed by sample number
 from 1 to N)}
@@ -102,13 +103,13 @@ kinshipfile must be provided}
 \item{kinshipDelimiter}{field separator [string] of kinship file}
 
 \item{normalise}{[boolean], if TRUE kinship matrix will be normalised by the 
-mean of its diagonal elements
-and 1e-4 added to the diagonal for numerical stability}
+mean of its diagonal elements and 1e-4 added to the diagonal for numerical 
+stability}
 
 \item{standardise}{[boolean], if TRUE standardised genotypes will be returned}
 
-\item{NrFixedEffects}{number [integer] of different fixed effects to simulate;
-allows to simulate fixed effects from different distributions or with 
+\item{NrFixedEffects}{number [integer] of different fixed effects to simulate
+; allows to simulate fixed effects from different distributions or with 
  different parameters}
 
 \item{distConfounders}{name [string] of distribution to use to simulate 
@@ -135,11 +136,11 @@ sizes of confounders}
 \item{sdBeta}{standard deviation/extension from midpoint [double] of normal/
 uniform distribution for effect sizes of confounders}
 
-\item{pSpecificConfounders}{Proportion [double] of noise effects 
-(confounders) to have a trait-specific effect}
+\item{pIndependentConfounders}{Proportion [double] of noise effects 
+(confounders) to have a trait-independent effect}
 
-\item{pTraitSpecificConfounders}{Proportion [double] of traits influenced by 
-specific fixed noise effects}
+\item{pTraitIndependentConfounders}{Proportion [double] of traits influenced 
+by independent fixed noise effects}
 
 \item{pcorr}{Correlation [double] between phenotypes}
 
@@ -155,25 +156,25 @@ sample}
 \item{SNPfrequencyString}{alternative to a frequencies vector, a [string] 
 with frequencies separated by comma}
 
-\item{pSpecificGenetic}{Proportion [double] of genetic effects (SNPs) to have
-a trait-specific fixed effect}
+\item{pIndependentGenetic}{Proportion [double] of genetic effects (SNPs) to 
+have a trait-independent fixed effect}
 
-\item{pTraitSpecificGenetic}{Proportion [double] of traits influenced by 
-specific fixed genetic effects}
+\item{pTraitIndependentGenetic}{Proportion [double] of traits influenced by 
+independent fixed genetic effects}
 
 \item{NrConfoundersString}{alternative to NrConfounder, a comma-separated
 [string] with number(s) [integer] of confounders to simulate; typically used 
 when run as command line application}
 
-\item{pSpecificConfoundersString}{alternative to pSpecificConfounders, a 
-comma-separated [string] with proportion(s) [double] of noise effects 
-(confounders) to have a trait-specific effect; typically used when run as 
+\item{pIndependentConfoundersString}{alternative to pIndependentConfounders, 
+a comma-separated [string] with proportion(s) [double] of noise effects 
+(confounders) to have a trait-independent effect; typically used when run as 
 command line application}
 
-\item{pTraitSpecificConfoundersString}{alternative to 
-pTraitSpecificConfounders,  a comma-separated [string] with proportion(s) 
-[double] of traits influenced by specific fixed noise effects; typically used
- when run as command line application}
+\item{pTraitIndependentConfoundersString}{alternative to 
+pTraitIndependentConfounders,  a comma-separated [string] with proportion(s) 
+[double] of traits influenced by independent fixed noise effects; typically 
+used when run as command line application}
 
 \item{distConfoundersString}{alternative to distConfounders, a comma-
 separated [string] with name(s) [string] of distributions to use to 

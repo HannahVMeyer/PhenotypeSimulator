@@ -33,12 +33,12 @@ provided, simulated SNPs will be saved to file}
 \item{causalSNPs}{[N x NrCausalSNPs] matrix of causal SNPs; optional: if 
 provided, causalSNPs will be saved to file}
 
-\item{sample_subset_vec}{optional vector of sample subset sizes [integer] e.g.
+\item{sample_subset_vec}{optional vector of sample subset sizes [integer];
 if provided, draws subsets of samples out of the total simulated dataset and 
 saves them separately}
 
 \item{pheno_subset_vec}{optional vector of phenotype subset sizes [integer] 
-e.g.if provided, draws subsets of traits out of the total simulated dataset 
+if provided, draws subsets of traits out of the total simulated dataset 
 and saves them separately}
 
 \item{sample_subset_string}{optional [string] of comma-separated numbers e.g.
@@ -51,7 +51,7 @@ run as command line application}
 
 \item{outstring}{optional name [string] of subdirectory (in relation to 
 directoryPheno/directoryGeno) to save set-up
-specific simulation results}
+independent simulation results}
 
 \item{saveAsTable}{[boolean] if TRUE, data will be saved as .csv}
 

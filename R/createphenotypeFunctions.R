@@ -7,23 +7,23 @@
 #' @param genVar Total genetic variance [double] 
 #' @param h2s Proportion [double] of variance of fixed genetic effects
 #' @param h2bg Proportion [double] of variance of random genetic effects
-#' @param theta Proportion [double] of variance of common fixed genetic effects
-#' @param eta Proportion [double] of variance of common bg genetic effects
+#' @param theta Proportion [double] of variance of shared fixed genetic effects
+#' @param eta Proportion [double] of variance of shared bg genetic effects
 #' @param noiseVar Total genetic variance [double] 
 #' @param rho Proportion [double] of variance of correlated noise effects
 #' @param pcorr Correlation [double] between phenotypes
 #' @param delta Proportion [double] of fixed noise variance
-#' @param gamma Proportion [double] of variance of common fixed noise effects
+#' @param gamma Proportion [double] of variance of shared fixed noise effects
 #' @param phi Proportion [double] of variance of background noise effects
-#' @param alpha Proportion [double] of Variance of common bg noise effect
-#' @param pSpecificConfounders Proportion [double] of noise effects 
-#' (confounders) to have a trait-specific effect
-#' @param pTraitSpecificConfounders Proportion [double] of traits influenced by 
-#' specific fixed noise effects
-#' @param pSpecificGenetic Proportion [double] of genetic effects (SNPs) to have
-#'  a trait-specific fixed effect
-#' @param pTraitSpecificGenetic Proportion [double] of traits influenced by 
-#' specific fixed genetic effects
+#' @param alpha Proportion [double] of Variance of shared bg noise effect
+#' @param pIndependentConfounders Proportion [double] of noise effects 
+#' (confounders) to have a trait-independent effect
+#' @param pTraitIndependentConfounders Proportion [double] of traits influenced  
+#' by independent fixed noise effects
+#' @param pIndependentGenetic Proportion [double] of genetic effects (SNPs) to 
+#' have a trait-independent fixed effect
+#' @param pTraitIndependentGenetic Proportion [double] of traits influenced by 
+#' independent fixed genetic effects
 #' @param v [boolean]; if TRUE, progress info is printed to standard out
 #' @return named list containing the genetic model (modelGenetic) and the noise 
 #' model (modelNoise). Options are:
@@ -44,9 +44,9 @@
 #' model <- setModel(genVar=0.4, h2s=1, delta=1)
 setModel <- function(genVar=NULL, h2s=NULL, theta=0.8, h2bg=NULL, eta=0.8, 
                      noiseVar=NULL, delta=NULL, gamma=0.8, rho=NULL, phi=NULL, 
-                     alpha=0.8, pcorr=0.6, pSpecificConfounders=0.4,  
-                     pTraitSpecificConfounders=0.2,  pSpecificGenetic=0.4, 
-                     pTraitSpecificGenetic=0.2, v=TRUE)  {
+                     alpha=0.8, pcorr=0.6, pIndependentConfounders=0.4,  
+                     pTraitIndependentConfounders=0.2,  pIndependentGenetic=0.4, 
+                     pTraitIndependentGenetic=0.2, v=TRUE)  {
     if (is.null(c(genVar, noiseVar, h2bg, h2s, delta, rho, phi))) {
         stop("No variance components specified")
     }
@@ -98,17 +98,19 @@ setModel <- function(genVar=NULL, h2s=NULL, theta=0.8, h2bg=NULL, eta=0.8,
         if (phi == 1) {
             modelNoise="noiseBgOnly"
             vmessage(c("The noise model is:", modelNoise), verbose=v)
-            vmessage(c("Variance of common bg noise effect:", alpha), verbose=v)
+            vmessage(c("Variance of shared bg noise effect:", alpha), verbose=v)
         } else if (delta == 1) {
             modelNoise="noiseFixedOnly"
             vmessage(c("The noise model is:", modelNoise), verbose=v)
             vmessage(c("Proportion of fixed noise variance:", delta), verbose=v)
-            vmessage(c("Proportion of variance of common fixed noise effects:",
+            vmessage(c("Proportion of variance of shared fixed noise effects:",
                        gamma), verbose=v)
             vmessage(c("Proportion of noise effects (confounders) to have a 
-                     trait-specific effect :", pSpecificConfounders), verbose=v)
-            vmessage(c("Proportion of traits influenced by specific fixed noise 
-                       effects:", pTraitSpecificConfounders), verbose=v)
+                     trait-independent effect :", pIndependentConfounders), 
+                     verbose=v)
+            vmessage(c("Proportion of traits influenced by independent fixed  
+                       noise effects:", pTraitIndependentConfounders), 
+                     verbose=v)
         } else if (rho == 1) {
             modelNoise="noiseCorrelatedOnly"
             vmessage(c("The noise model is:", modelNoise), verbose=v)
@@ -119,25 +121,27 @@ setModel <- function(genVar=NULL, h2s=NULL, theta=0.8, h2bg=NULL, eta=0.8,
             modelNoise="noiseFixedAndBg"
             vmessage(c("The noise model is:", modelNoise), verbose=v)
             vmessage(c("Proportion of fixed noise variance:", delta), verbose=v)
-            vmessage(c("Proportion of variance of common fixed noise effects:", 
+            vmessage(c("Proportion of variance of shared fixed noise effects:", 
                        gamma), verbose=v)
             vmessage(c("Proportion of noise effects (confounders) to have a 
-                       trait-specific effect :", pSpecificConfounders), 
+                       trait-independent effect :", pIndependentConfounders), 
                      verbose=v)
-            vmessage(c("Proportion of traits influenced by specific fixed noise 
-                       effects:", pTraitSpecificConfounders), verbose=v)
-            vmessage(c("Variance of common bg noise effect:", alpha), verbose=v)
+            vmessage(c("Proportion of traits influenced by independent fixed 
+                       noise effects:", pTraitIndependentConfounders), 
+                     verbose=v)
+            vmessage(c("Variance of shared bg noise effect:", alpha), verbose=v)
         } else if (1 - phi == 1) {
             modelNoise="noiseFixedAndCorrelated"
             vmessage(c("The noise model is:", modelNoise), verbose=v)
             vmessage(c("Proportion of fixed noise variance:", delta), verbose=v)
-            vmessage(c("Proportion of variance of common fixed noise effects:", 
+            vmessage(c("Proportion of variance of shared fixed noise effects:", 
                        gamma), verbose=v)
             vmessage(c("Proportion of noise effects (confounders) to have a 
-                       trait-specific effect :", pSpecificConfounders), 
+                       trait-independent effect :", pIndependentConfounders), 
                      verbose=v)
-            vmessage(c("Proportion of traits influenced by specific fixed noise 
-                       effects:", pTraitSpecificConfounders), verbose=v)
+            vmessage(c("Proportion of traits influenced by independent fixed 
+                       noise effects:", pTraitIndependentConfounders), 
+                     verbose=v)
             vmessage(c("Correlation between phenotypes:", pcorr), verbose=v)
             vmessage(c("Proportion of variance of correlated bg noise effects:", 
                        rho), verbose=v)
@@ -147,22 +151,23 @@ setModel <- function(genVar=NULL, h2s=NULL, theta=0.8, h2bg=NULL, eta=0.8,
             vmessage(c("Correlation between phenotypes:", pcorr), verbose=v)
             vmessage(c("Proportion of variance of correlated bg noise effects:",
                        rho), verbose=v)
-            vmessage(c("Variance of common bg noise effect:", alpha), verbose=v)
+            vmessage(c("Variance of shared bg noise effect:", alpha), verbose=v)
         } else {
             modelNoise="noiseFixedAndBgAndCorrelated"
             vmessage(c("The noise model is:", modelNoise), verbose=v)
             vmessage(c("Proportion of fixed noise variance:", delta), verbose=v)
-            vmessage(c("Proportion of variance of common fixed noise effects:",
+            vmessage(c("Proportion of variance of shared fixed noise effects:",
                        gamma), verbose=v)
             vmessage(c("Proportion of noise effects (confounders) to have a 
-                       trait-specific effect :", pSpecificConfounders), 
+                       trait-independent effect :", pIndependentConfounders), 
                      verbose=v)
-            vmessage(c("Proportion of traits influenced by specific fixed noise 
-                       effects:", pTraitSpecificConfounders), verbose=v)
+            vmessage(c("Proportion of traits influenced by independent fixed 
+                       noise effects:", pTraitIndependentConfounders), 
+                     verbose=v)
             vmessage(c("Correlation between phenotypes:", pcorr), verbose=v)
             vmessage(c("Proportion of variance of correlated bg noise effects:", 
                        rho), verbose=v)
-            vmessage(c("Variance of common bg noise effect:", alpha), verbose=v)
+            vmessage(c("Variance of shared bg noise effect:", alpha), verbose=v)
         }
     }
 
@@ -186,32 +191,32 @@ setModel <- function(genVar=NULL, h2s=NULL, theta=0.8, h2bg=NULL, eta=0.8,
         if ( h2s == 0) {
             modelGenetic="geneticBgOnly"
             vmessage(c("The genetic model is:", modelGenetic), verbose=v)
-            vmessage(c("Proportion of variance of common bg genetic effects:", 
+            vmessage(c("Proportion of variance of shared bg genetic effects:", 
                        eta), verbose=v)
         } else if ( h2s == 1) {
             modelGenetic="geneticFixedOnly"
             vmessage(c("The genetic model is:", modelGenetic), verbose=v)
             vmessage(c("Proportion of variance of fixed genetic effects:", h2s), 
                      verbose=v)
-            vmessage(c("Proportion of variance of common fixed genetic effects:"
+            vmessage(c("Proportion of variance of shared fixed genetic effects:"
                        , theta), verbose=v)
             vmessage(c("Proportion of genetic effects (SNPs) to have a 
-                       trait-specific fixed effect:", pSpecificGenetic), 
+                       trait-independent fixed effect:", pIndependentGenetic), 
                      verbose=v)
-            vmessage(c("Proportion of traits influenced by specific fixed 
-                        genetic effects:", pTraitSpecificGenetic), verbose=v)
+            vmessage(c("Proportion of traits influenced by independent fixed 
+                        genetic effects:", pTraitIndependentGenetic), verbose=v)
         } else {
             modelGenetic="geneticFixedAndBg"
             vmessage(c("The genetic model is:", modelGenetic), verbose=v)
             vmessage(c("Proportion of variance of fixed genetic effects:", h2s), 
                      verbose=v)
-            vmessage(c("Proportion of variance of common fixed genetic effects:"
+            vmessage(c("Proportion of variance of shared fixed genetic effects:"
                        , theta), verbose=v)
             vmessage(c("Proportion of genetic effects (SNPs) to have a 
-                       trait-specific fixed effect:", pSpecificGenetic), 
+                       trait-independent fixed effect:", pIndependentGenetic), 
                      verbose=v)
-            vmessage(c("Proportion of traits influenced by specific fixed 
-                        genetic effects:", pTraitSpecificGenetic), verbose=v)
+            vmessage(c("Proportion of traits influenced by independent fixed 
+                        genetic effects:", pTraitIndependentGenetic), verbose=v)
         }
     }
     return(list(modelGenetic=modelGenetic, modelNoise=modelNoise))
@@ -231,38 +236,38 @@ setModel <- function(genVar=NULL, h2s=NULL, theta=0.8, h2bg=NULL, eta=0.8,
 #'  from 1 to N)
 #' @param phenoID prefix [string] for naming traits (followed by trait number 
 #' from 1 to P)
-#' @param genBg list of specific and common genetic background effects as 
+#' @param genBg list of independent and shared genetic background effects as 
 #' obtained by \code{\link{geneticBgEffects}}
-#' @param genFixed list of specific and common genetic fixed effects as 
+#' @param genFixed list of independent and shared genetic fixed effects as 
 #' obtained by \code{\link{geneticFixedEffects}}
-#' @param noiseBg list of specific and common noise background effects as 
+#' @param noiseBg list of independent and shared noise background effects as 
 #' obtained by \code{\link{noiseBgEffects}}
-#' @param noiseFixed list of specific and common noise fixed effects as 
+#' @param noiseFixed list of independent and shared noise fixed effects as 
 #' obtained by \code{\link{noiseFixedEffects}}
 #' @param correlatedBg list of correlated background effects as obtained 
 #' by \code{\link{correlatedBgEffects}}
 #' @param genVar Proportion [double] of total genetic variance
 #' @param h2s Proportion [double] of variance of fixed genetic effects
-#' @param theta Proportion [double] of variance of common fixed genetic effects
+#' @param theta Proportion [double] of variance of shared fixed genetic effects
 #' @param h2bg Proportion [double] of variance of background genetic effects; 
 #' either h2s or h2b have to be specified and 
 #' h2s + h2b = genVar
-#' @param eta Proportion [double] of variance of common bg genetic effects
+#' @param eta Proportion [double] of variance of shared bg genetic effects
 #' @param noiseVar Proportion [double] of total noise variance
 #' @param rho Proportion [double] of variance of correlated noise effects
 #' @param pcorr Correlation [double] between phenotypes
 #' @param delta Proportion [double] of fixed noise variance
-#' @param gamma Proportion [double] of variance of common fixed noise effects
+#' @param gamma Proportion [double] of variance of shared fixed noise effects
 #' @param phi Proportion [double] of variance of background noise effects
-#' @param alpha Proportion [double] of variance of common bg noise effect
+#' @param alpha Proportion [double] of variance of shared bg noise effect
 #' @param modelNoise name [string] of noise model for the phenotype simulation; 
-#' based on model specification, phenotype components will be added to the final 
-#' phenotype. Possible models: "noNoise", "noiseFixedOnly", "noiseBgOnly", 
+#' based on model independentation, phenotype components will be added to the  
+#' final phenotype. Possible models: "noNoise", "noiseFixedOnly", "noiseBgOnly", 
 #' "noiseCorrelatedOnly", "noiseFixedAndBg","noiseCorrelatedAndBg", 
 #' "noiseFixedAndCorrelated", "noiseFixedAndBgAndCorrelated"
 #' @param modelGenetic name [string] of genetic model for the phenotype 
-#' simulation; based on model specification, phenotype components will be added 
-#' to the final phenotype. Possible models: "noGenetic","geneticBgOnly", 
+#' simulation; based on model independentation, phenotype components will be 
+#' added to the final phenotype. Possible models: "noGenetic","geneticBgOnly", 
 #' "geneticFixedOnly","geneticFixedAndBg"
 #' @param verbose [boolean]; if TRUE, progress info is printed to standard out
 #' @return named list of absolute levels of variance explained by each phenotype 
@@ -410,8 +415,8 @@ createPheno <- function(P, N, sampleID="ID_", phenoID="trait_",
     if (grepl("Fixed", modelGenetic)) {
         if (is.null(genFixed)) stop("Genetic model includes fixed effects, but
                                     genFixed was not provided")
-        if (! all(dim(genFixed$common) == c(N, P))) {
-            dim_genFixed <- paste(dim(genFixed$common), collapse=",")
+        if (! all(dim(genFixed$shared) == c(N, P))) {
+            dim_genFixed <- paste(dim(genFixed$shared), collapse=",")
             stop("Dimensions of the genetic fixed effect (", dim_genFixed,") are
                 different from the specified dimensions: number of columns P: ",
                  P, ", number of rows N: ", N) 
@@ -421,40 +426,40 @@ createPheno <- function(P, N, sampleID="ID_", phenoID="trait_",
                                genetic variance is explained by the fixed effect
                                , however h2s != 1")
         }
-        if (is.null(genFixed$common) && theta != 0) {
-            warning("No common fixed specific effect chosen, setting theta to 
+        if (is.null(genFixed$shared) && theta != 0) {
+            warning("No shared fixed independent effect chosen, setting theta to 
                     0")
             theta <- 0
         }
-        if (is.null(genFixed$specific && theta != 1)) {
-            warning("No specific fixed genetic effect chosen, setting theta to 
-                    1")
+        if (is.null(genFixed$independent && theta != 1)) {
+            warning("No independent fixed genetic effect chosen, setting theta 
+                    to 1")
             theta <- 1
         }
-        var_genFixed_comm <- theta * h2s * genVar
-        var_genFixed_spec <- (1 - theta) * h2s * genVar
+        var_genFixed_shared <- theta * h2s * genVar
+        var_genFixed_independent <- (1 - theta) * h2s * genVar
 
-        genFixed_comm_rescaled <- rescaleVariance(genFixed$common, 
-                                                  var_genFixed_comm)
-        genFixed_spec_rescaled <- rescaleVariance(genFixed$specific, 
-                                                  var_genFixed_spec)
+        genFixed_shared_rescaled <- rescaleVariance(genFixed$shared, 
+                                                  var_genFixed_shared)
+        genFixed_independent_rescaled <- rescaleVariance(genFixed$independent, 
+                                                  var_genFixed_independent)
     
-        Y_genFixed <- addNonNulls(list(genFixed_comm_rescaled, 
-                                       genFixed_spec_rescaled))
+        Y_genFixed <- addNonNulls(list(genFixed_shared_rescaled, 
+                                       genFixed_independent_rescaled))
         colnames(Y_genFixed) <- paste(phenoID, seq(1, P, 1), sep="")
         rownames(Y_genFixed) <- paste(sampleID, seq(1, N, 1), sep="")
     } else {
         h2s <- 0
-        var_genFixed_comm <- 0
-        var_genFixed_spec <- 0
+        var_genFixed_shared <- 0
+        var_genFixed_independent <- 0
         Y_genFixed <- NULL
     }
     # genetic bg
     if (grepl("Bg", modelGenetic)) {
         if (is.null(genBg)) stop("Genetic model includes bg effects, but genBg 
                                  was not provided")
-        if (! all(dim(genBg$common) == c(N, P))) {
-            dim_genBg <- paste(dim(genBg$common), collapse=",")
+        if (! all(dim(genBg$shared) == c(N, P))) {
+            dim_genBg <- paste(dim(genBg$shared), collapse=",")
             stop("Dimensions of the genetic bg effect (", dim_genBg,") are 
                  different from the specified dimensions: number of columns P: "
                  , P, ", number of rows N: ", N) 
@@ -463,23 +468,25 @@ createPheno <- function(P, N, sampleID="ID_", phenoID="trait_",
             stop("Genetic model 'geneticBgOnly' implies all genetic variance is 
                  explained by the bg effect, however genVar != h2bg")
         }
-        if (is.null(genBg$common) && eta != 0) {
-            warning("No common background genetic effect chosen, setting eta to 
+        if (is.null(genBg$shared) && eta != 0) {
+            warning("No shared background genetic effect chosen, setting eta to 
                     0")
             eta <- 0
         }
-        if (is.null(genBg$specific) && eta != 1) {
-            warning("No specific background genetic effect chosen, setting eta 
-                    to 1")
+        if (is.null(genBg$independent) && eta != 1) {
+            warning("No independent background genetic effect chosen, setting  
+                    eta to 1")
             eta <- 1
         }
-        var_genBg_comm <- eta * h2bg * genVar
-        var_genBg_spec <- (1 - eta) * h2bg * genVar
+        var_genBg_shared <- eta * h2bg * genVar
+        var_genBg_independent <- (1 - eta) * h2bg * genVar
         
-        genBg_comm_rescaled <- rescaleVariance(genBg$common, var_genBg_comm)
-        genBg_spec_rescaled <- rescaleVariance(genBg$specific, var_genBg_spec)
+        genBg_shared_rescaled <- rescaleVariance(genBg$shared, var_genBg_shared)
+        genBg_independent_rescaled <- rescaleVariance(genBg$independent,
+                                                      var_genBg_independent)
         
-        Y_genBg <- addNonNulls(list(genBg_comm_rescaled, genBg_spec_rescaled))
+        Y_genBg <- addNonNulls(list(genBg_shared_rescaled, 
+                                    genBg_independent_rescaled))
         colnames(Y_genBg) <- paste(phenoID, seq(1, P, 1), sep="")
         rownames(Y_genBg) <- paste(sampleID, seq(1, N, 1), sep="")
 
@@ -488,8 +495,8 @@ createPheno <- function(P, N, sampleID="ID_", phenoID="trait_",
         diag(cov_Y_genBg) <- diag(cov_Y_genBg) + 1e-4
     } else {
         h2bg <- 0
-        var_genBg_comm <- 0
-        var_genBg_spec <- 0
+        var_genBg_shared <- 0
+        var_genBg_independent <- 0
         Y_genBg <- NULL
         cov_Y_genBg <- NULL
     }
@@ -499,8 +506,8 @@ createPheno <- function(P, N, sampleID="ID_", phenoID="trait_",
     if (grepl("Fixed", modelNoise)) {
         if (is.null(noiseFixed)) stop("Noise model includes fixed effects, 
                                       but noiseFixed was not provided")
-        if (! all(dim(noiseFixed$common) == c(N, P))) {
-            dim_noiseFixed <- paste(dim(noiseFixed$common), collapse=",")
+        if (! all(dim(noiseFixed$shared) == c(N, P))) {
+            dim_noiseFixed <- paste(dim(noiseFixed$shared), collapse=",")
             stop("Dimensions of the noise fixed effect (", dim_noiseFixed,") are
                  different from the specified dimensions: number of columns P: "
                  , P, ", number of rows N: ", N) 
@@ -514,30 +521,32 @@ createPheno <- function(P, N, sampleID="ID_", phenoID="trait_",
             stop(paste("Noise model is", modelNoise, "and sum of noise variance 
                        effects is greater > 0"))
         }
-        if (is.null(noiseFixed$common) && gamma != 0) {
-            warning("No common fixed noise effect chosen, setting gamma to 0")
+        if (is.null(noiseFixed$shared) && gamma != 0) {
+            warning("No shared fixed noise effect chosen, setting gamma to 0")
             gamma <- 0
         }
-        if (is.null(noiseFixed$specific) && gamma != 1) {
-            warning("No specific fixed noise effect chosen, setting gamma to 1")
+        if (is.null(noiseFixed$independent) && gamma != 1) {
+            warning("No independent fixed noise effect chosen, setting gamma to 
+                    1")
             gamma <- 1
         }
-        var_noiseFixed_comm <- gamma * delta * noiseVar
-        var_noiseFixed_spec <- (1 - gamma) * delta * noiseVar
+        var_noiseFixed_shared <- gamma * delta * noiseVar
+        var_noiseFixed_independent <- (1 - gamma) * delta * noiseVar
         
-        noiseFixed_comm_rescaled <- rescaleVariance(noiseFixed$common, 
-                                                    var_noiseFixed_comm)
-        noiseFixed_spec_rescaled <- rescaleVariance(noiseFixed$specific, 
-                                                    var_noiseFixed_spec)
+        noiseFixed_shared_rescaled <- rescaleVariance(noiseFixed$shared, 
+                                                    var_noiseFixed_shared)
+        noiseFixed_independent_rescaled <- rescaleVariance(
+                                                    noiseFixed$independent, 
+                                                    var_noiseFixed_independent)
         
-        Y_noiseFixed <- addNonNulls(list(noiseFixed_comm_rescaled, 
-                                         noiseFixed_spec_rescaled))
+        Y_noiseFixed <- addNonNulls(list(noiseFixed_shared_rescaled, 
+                                         noiseFixed_independent_rescaled))
         colnames(Y_noiseFixed) <- paste(phenoID, seq(1, P, 1), sep="")
         rownames(Y_noiseFixed) <- paste(sampleID, seq(1, N, 1), sep="")
     } else {
         delta <- 0
-        var_noiseFixed_comm <- 0
-        var_noiseFixed_spec <- 0
+        var_noiseFixed_shared <- 0
+        var_noiseFixed_independent <- 0
         Y_noiseFixed <- NULL
     }
 
@@ -548,7 +557,7 @@ createPheno <- function(P, N, sampleID="ID_", phenoID="trait_",
                  was not provided")
         }
         if (! all(dim(correlatedBg) == c(N, P))) {
-            dim_correlatedBg <- paste(dim(correlatedBg$common), collapse=",")
+            dim_correlatedBg <- paste(dim(correlatedBg$shared), collapse=",")
             stop("Dimensions of the correlated bg effect (", dim_correlatedBg,")
                  are different from the specified dimensions: number of columns 
                  P: ", P, ", number of rows N: ", N) 
@@ -579,8 +588,8 @@ createPheno <- function(P, N, sampleID="ID_", phenoID="trait_",
         if (is.null(noiseBg)) {
             stop("Noise model includes bg effects, but noiseBg not provided")
         }
-        if (! all(dim(noiseBg$common) == c(N, P))) {
-            dim_noiseBg <- paste(dim(noiseBg$common), collapse=",")
+        if (! all(dim(noiseBg$shared) == c(N, P))) {
+            dim_noiseBg <- paste(dim(noiseBg$shared), collapse=",")
             stop("Dimensions of the noise bg effect (", dim_noiseBg,") are 
                  different from the specified dimensions: number of columns P: "
                  , P, ", number of rows N: ", N) 
@@ -589,34 +598,34 @@ createPheno <- function(P, N, sampleID="ID_", phenoID="trait_",
             stop("Noise model 'noiseBgOnly' implies all noise variance is 
                  explained by the bg effect, however noiseVar != phi")
         }
-        if (is.null(noiseBg$common) && alpha != 0) {
-            warning("No common background noise effect chosen, setting alpha to 
+        if (is.null(noiseBg$shared) && alpha != 0) {
+            warning("No shared background noise effect chosen, setting alpha to 
                     0")
             alpha <- 0
         }
-        if (is.null(noiseBg$specific) && alpha != 1) {
-            warning("No specific background noise effect chosen, setting alpha 
-                    to 1")
+        if (is.null(noiseBg$independent) && alpha != 1) {
+            warning("No independent background noise effect chosen, setting 
+                    alpha to 1")
             alpha <- 1
         }
-        var_noiseBg_comm <- alpha * phi * noiseVar
-        var_noiseBg_spec <- (1 - alpha) * phi * noiseVar
+        var_noiseBg_shared <- alpha * phi * noiseVar
+        var_noiseBg_independent <- (1 - alpha) * phi * noiseVar
         
-        noiseBg_comm_rescaled <- rescaleVariance(noiseBg$common, 
-                                                 var_noiseBg_comm)
-        noiseBg_spec_rescaled <- rescaleVariance(noiseBg$specific, 
-                                                 var_noiseBg_spec)
+        noiseBg_shared_rescaled <- rescaleVariance(noiseBg$shared, 
+                                                 var_noiseBg_shared)
+        noiseBg_independent_rescaled <- rescaleVariance(noiseBg$independent, 
+                                                 var_noiseBg_independent)
         
-        Y_noiseBg <- addNonNulls(list(noiseBg_comm_rescaled, 
-                                      noiseBg_spec_rescaled))
+        Y_noiseBg <- addNonNulls(list(noiseBg_shared_rescaled, 
+                                      noiseBg_independent_rescaled))
         colnames(Y_noiseBg) <- paste(phenoID, seq(1, P, 1), sep="")
         rownames(Y_noiseBg) <- paste(sampleID, seq(1, N, 1), sep="")
         cov_Y_noiseBg <- t(Y_noiseBg) %*% Y_noiseBg
         cov_Y_noiseBg <-  cov_Y_noiseBg/mean(diag(cov_Y_noiseBg))
         diag(cov_Y_noiseBg) <- diag(cov_Y_noiseBg) + 1e-4
     } else {
-        var_noiseBg_comm <- 0
-        var_noiseBg_spec <- 0
+        var_noiseBg_shared <- 0
+        var_noiseBg_independent <- 0
         Y_noiseBg <- NULL
         cov_Y_noiseBg <- NULL
     }
@@ -631,15 +640,17 @@ createPheno <- function(P, N, sampleID="ID_", phenoID="trait_",
     rownames(Y) <- paste(sampleID, seq(1, N, 1), sep="")
 
     varComponents <- data.frame(genVar=genVar, h2s=h2s, h2bg=h2bg, 
-                                var_genFixed_comm=var_genFixed_comm, 
-                                var_genFixed_spec=var_genFixed_spec, 
-                                var_genBg_comm=var_genBg_comm, 
-                                var_genBg_spec=var_genBg_spec, 
+                                var_genFixed_shared=var_genFixed_shared, 
+                                var_genFixed_independent=
+                                    var_genFixed_independent, 
+                                var_genBg_shared=var_genBg_shared, 
+                                var_genBg_independent=var_genBg_independent, 
                                 noiseVar=noiseVar, 
-                                var_noiseFixed_comm=var_noiseFixed_comm, 
-                                var_noiseFixed_spec=var_noiseFixed_spec, 
-                                var_noiseBg_comm=var_noiseBg_comm, 
-                                var_noiseBg_spec=var_noiseBg_spec, 
+                                var_noiseFixed_shared=var_noiseFixed_shared, 
+                                var_noiseFixed_independent=
+                                    var_noiseFixed_independent, 
+                                var_noiseBg_shared=var_noiseBg_shared, 
+                                var_noiseBg_independent=var_noiseBg_independent, 
                                 var_noiseCorrelated=var_noiseCorrelated)
     phenoComponents <- list(Y=Y, Y_genFixed=Y_genFixed, Y_genBg=Y_genBg, 
                             Y_noiseFixed=Y_noiseFixed, Y_noiseBg=Y_noiseBg, 
@@ -667,8 +678,8 @@ createPheno <- function(P, N, sampleID="ID_", phenoID="trait_",
 #' @param cNrSNP number [integer] of causal SNPs; used as genetic fixed effects
 #' @param NrConfounders number [integer] of confounders; used as noise fixed 
 #' effects
-#' @param NrFixedEffects number [integer] of different fixed effects to simulate;
-#' allows to simulate fixed effects from different distributions or with 
+#' @param NrFixedEffects number [integer] of different fixed effects to simulate
+#' ; allows to simulate fixed effects from different distributions or with 
 #'  different parameters
 #' @param chr numeric vector of chromosomes to chose NrCausalSNPs from; only 
 #' used when external genotype data is provided i.e. is.null(genoFilePrefix) == 
@@ -693,8 +704,8 @@ createPheno <- function(P, N, sampleID="ID_", phenoID="trait_",
 #' @param kinshipDelimiter field separator [string] of kinship file 
 #' @param kinshipHeader [boolean], if TRUE kinship file has header information 
 #' @param normalise [boolean], if TRUE kinship matrix will be normalised by the 
-#' mean of its diagonal elements
-#' and 1e-4 added to the diagonal for numerical stability
+#' mean of its diagonal elements and 1e-4 added to the diagonal for numerical 
+#' stability
 #' @param standardise [boolean], if TRUE standardised genotypes will be returned
 #' @param distConfounders name [string] of distribution to use to simulate 
 #' confounders; one of "unif", "norm", "bin", "cat_norm", "cat_unif"
@@ -712,25 +723,25 @@ createPheno <- function(P, N, sampleID="ID_", phenoID="trait_",
 #'  sizes of confounders
 #' @param sdBeta standard deviation/extension from midpoint [double] of normal/
 #' uniform distribution for effect sizes of confounders
-#' @param pSpecificConfounders Proportion [double] of noise effects 
-#' (confounders) to have a trait-specific effect
-#' @param pTraitSpecificConfounders Proportion [double] of traits influenced by 
-#' specific fixed noise effects
-#' @param pSpecificGenetic Proportion [double] of genetic effects (SNPs) to have
-#'  a trait-specific fixed effect
-#' @param pTraitSpecificGenetic Proportion [double] of traits influenced by 
-#' specific fixed genetic effects
+#' @param pIndependentConfounders Proportion [double] of noise effects 
+#' (confounders) to have a trait-independent effect
+#' @param pTraitIndependentConfounders Proportion [double] of traits influenced 
+#' by independent fixed noise effects
+#' @param pIndependentGenetic Proportion [double] of genetic effects (SNPs) to 
+#' have a trait-independent fixed effect
+#' @param pTraitIndependentGenetic Proportion [double] of traits influenced by 
+#' independent fixed genetic effects
 #' @param NrConfoundersString alternative to NrConfounder, a comma-separated
 #' [string] with number(s) [integer] of confounders to simulate; typically used 
 #' when run as command line application
-#' @param pSpecificConfoundersString alternative to pSpecificConfounders, a 
-#' comma-separated [string] with proportion(s) [double] of noise effects 
-#' (confounders) to have a trait-specific effect; typically used when run as 
+#' @param pIndependentConfoundersString alternative to pIndependentConfounders, 
+#' a comma-separated [string] with proportion(s) [double] of noise effects 
+#' (confounders) to have a trait-independent effect; typically used when run as 
 #' command line application
-#' @param pTraitSpecificConfoundersString alternative to 
-#' pTraitSpecificConfounders,  a comma-separated [string] with proportion(s) 
-#' [double] of traits influenced by specific fixed noise effects; typically used
-#'  when run as command line application
+#' @param pTraitIndependentConfoundersString alternative to 
+#' pTraitIndependentConfounders,  a comma-separated [string] with proportion(s) 
+#' [double] of traits influenced by independent fixed noise effects; typically 
+#' used when run as command line application
 #' @param distConfoundersString alternative to distConfounders, a comma-
 #' separated [string] with name(s) [string] of distributions to use to 
 #' simulate confounders; one of "unif", "norm", "bin", "cat_norm", "cat_unif";
@@ -762,7 +773,6 @@ createPheno <- function(P, N, sampleID="ID_", phenoID="trait_",
 #' standard deviation/distance from midpoint [double] of normal/uniform 
 #' distribution for effect sizes of confounders; typically used when run as 
 #' command line application
-
 #' @param meanNoiseBg mean [double] of the normal distribution for noise bg 
 #' effects
 #' @param sdNoiseBg standard deviation [double] of the normal distribution for 
@@ -776,19 +786,19 @@ createPheno <- function(P, N, sampleID="ID_", phenoID="trait_",
 #' @param h2bg Proportion [double] of genetic variance of background effects; 
 #' either h2s or h2bg have to be specified and 
 #' h2s + h2bg = 1
-#' @param theta Proportion [double] of variance of common fixed genetic effects
+#' @param theta Proportion [double] of variance of shared fixed genetic effects
 #' @param eta Proportion [doubl:w
-#' e] of variance of common bg genetic effects
+#' e] of variance of shared bg genetic effects
 #' @param noiseVar Proportion [double] of total noise variance
 #' @param rho Proportion [double] of noise variance of correlated effects; sum 
 #' of rho, delta and phi cannot be greater than 1
 #' @param pcorr Correlation [double] between phenotypes
 #' @param delta Proportion [double] of noise variance of fixed effects; sum of 
 #' rho, delta and phi cannot be greater than 1
-#' @param gamma Proportion [double] of variance of common fixed noise effects
+#' @param gamma Proportion [double] of variance of shared fixed noise effects
 #' @param phi Proportion [double] of noise variance of background effects; sum 
 #' of rho, delta and phi cannot be greater than 1
-#' @param alpha Variance [double] of common bg noise effect
+#' @param alpha Variance [double] of shared bg noise effect
 #' @param seed seed [integer] to initiate random number generation
 #' @param verbose [boolean]; if TRUE, progress info is printed to standard out
 #' @return named list of absolute levels of variance explained by each phenotype 
@@ -817,15 +827,15 @@ runSimulation <- function(N=1000, P=10, tNrSNP=5000, cNrSNP=20,
                           mConfounders=0, sdConfounders=1,
                           catConfounders=NULL, probConfounders=NULL,
                           distBeta="norm", mBeta=0, sdBeta=1,
-                          pSpecificConfounders=0.4, 
-                          pTraitSpecificConfounders=0.2, 
+                          pIndependentConfounders=0.4, 
+                          pTraitIndependentConfounders=0.2, 
                           pcorr=0.8, meanNoiseBg=0, sdNoiseBg=1, 
                           SNPfrequencies=c(0.1, 0.2, 0.4), 
                           SNPfrequencyString=NULL,
-                          pSpecificGenetic=0.4, pTraitSpecificGenetic=0.2,
+                          pIndependentGenetic=0.4, pTraitIndependentGenetic=0.2,
                           NrConfoundersString=NULL, 
-                          pSpecificConfoundersString=NULL, 
-                          pTraitSpecificConfoundersString=NULL, 
+                          pIndependentConfoundersString=NULL, 
+                          pTraitIndependentConfoundersString=NULL, 
                           distConfoundersString=NULL, 
                           mConfoundersString=NULL, 
                           sdConfoundersString=NULL, 
@@ -842,10 +852,11 @@ runSimulation <- function(N=1000, P=10, tNrSNP=5000, cNrSNP=20,
     model <- setModel(genVar=genVar, h2s=h2s, h2bg=h2bg, theta=theta, eta=eta, 
                       noiseVar=noiseVar, rho=rho, delta=delta, gamma=gamma, 
                       phi=phi, alpha=alpha, pcorr=pcorr, 
-                      pSpecificConfounders=pSpecificConfounders,  
-                      pTraitSpecificConfounders=pTraitSpecificConfounders, 
-                      pSpecificGenetic=pSpecificGenetic, 
-                      pTraitSpecificGenetic=pTraitSpecificGenetic, v=verbose)
+                      pIndependentConfounders=pIndependentConfounders,  
+                      pTraitIndependentConfounders=pTraitIndependentConfounders, 
+                      pIndependentGenetic=pIndependentGenetic, 
+                      pTraitIndependentGenetic=pTraitIndependentGenetic, 
+                      v=verbose)
     modelNoise <- model$modelNoise
     modelGenetic <- model$modelGenetic
 
@@ -872,10 +883,10 @@ runSimulation <- function(N=1000, P=10, tNrSNP=5000, cNrSNP=20,
             noiseFixed <- noiseFixedEffects(P=P, N=N, 
                                             NrFixedEffects = NrFixedEffects,
                                             NrConfounders=NrConfounders,
-                                            pSpecificConfounders=
-                                                pSpecificConfounders,
-                                            pTraitSpecificConfounders=
-                                                pTraitSpecificConfounders,
+                                            pIndependentConfounders=
+                                                pIndependentConfounders,
+                                            pTraitIndependentConfounders=
+                                                pTraitIndependentConfounders,
                                             distConfounders=distConfounders, 
                                             mConfounders=mConfounders, 
                                             sdConfounders=sdConfounders, 
@@ -885,10 +896,10 @@ runSimulation <- function(N=1000, P=10, tNrSNP=5000, cNrSNP=20,
                                             sdBeta=sdBeta,
                                             NrConfoundersString=
                                                 NrConfoundersString,
-                                            pSpecificConfoundersString=
-                                                pSpecificConfoundersString,
-                                            pTraitSpecificConfoundersString=
-                                                pTraitSpecificConfoundersString,
+                                            pIndependentConfoundersString=
+                                                pIndependentConfoundersString,
+                                            pTraitIndependentConfoundersString=
+                                            pTraitIndependentConfoundersString,
                                             distConfoundersString=
                                                 distConfoundersString, 
                                             mConfoundersString=
@@ -919,7 +930,8 @@ runSimulation <- function(N=1000, P=10, tNrSNP=5000, cNrSNP=20,
                                            verbose=verbose)
             kinship <- getKinship(X=genotypes$X_sd, sampleID=sampleID, 
                                   norm=normalise, verbose=verbose)
-            causalSNPs <- getCausalSNPs(NrCausalSNPs=cNrSNP, genotypes=genotypes,
+            causalSNPs <- getCausalSNPs(NrCausalSNPs=cNrSNP, 
+                                        genotypes=genotypes,
                                         sampleID=sampleID, 
                                         standardise=standardise, 
                                         verbose=verbose)
@@ -940,9 +952,10 @@ runSimulation <- function(N=1000, P=10, tNrSNP=5000, cNrSNP=20,
         if (grepl('Fixed', modelGenetic)) {
             vmessage("Simulate genetic fixed effects", verbose=verbose)
             genFixed <- geneticFixedEffects(X_causal=causalSNPs, N=N, P=P, 
-                                            pSpecificGenetic=pSpecificGenetic, 
-                                            pTraitSpecificGenetic=
-                                                pTraitSpecificGenetic)
+                                            pIndependentGenetic=
+                                                pIndependentGenetic, 
+                                            pTraitIndependentGenetic=
+                                                pTraitIndependentGenetic)
         } else {
             genFixed <- NULL
         }
@@ -991,18 +1004,18 @@ runSimulation <- function(N=1000, P=10, tNrSNP=5000, cNrSNP=20,
 #' permission]
 #' @param outstring optional name [string] of subdirectory (in relation to 
 #' directoryPheno/directoryGeno) to save set-up
-#' specific simulation results
+#' independent simulation results
 #' @param kinship [N x N] matrix of kinship estimate; optional: if provided, 
 #' kinship estimate will be saved to file
 #' @param genotypes [N x totalNrSNPs] matrix of all simulated SNPs; optional: if
 #'  provided, simulated SNPs will be saved to file 
 #' @param causalSNPs [N x NrCausalSNPs] matrix of causal SNPs; optional: if 
 #' provided, causalSNPs will be saved to file
-#' @param sample_subset_vec optional vector of sample subset sizes [integer] e.g.
+#' @param sample_subset_vec optional vector of sample subset sizes [integer];
 #' if provided, draws subsets of samples out of the total simulated dataset and 
 #' saves them separately 
 #' @param pheno_subset_vec optional vector of phenotype subset sizes [integer] 
-#' e.g.if provided, draws subsets of traits out of the total simulated dataset 
+#' if provided, draws subsets of traits out of the total simulated dataset 
 #' and saves them separately 
 #' @param sample_subset_string optional [string] of comma-separated numbers e.g.
 #'  "50,100,500"; alternative to \code{sample_subset_vec}, typically used when
@@ -1284,8 +1297,8 @@ savePheno <- function(simulatedData, directoryGeno, directoryPheno,
                                         outstring, ".rds", sep=""))
                 }
                 if (saveAsRDS) {
-                    saveRDS(simulatedData$phenoComponents$noiseFixed$cov_effects,
-                            paste(directoryPheno, "/Covs_effect_", outstring,
+                    saveRDS(simulatedData$phenoComponents$noiseFixed$cov_effects
+                            , paste(directoryPheno, "/Covs_effect_", outstring,
                                   ".rds", sep=""))
                 }
                 if (saveAsTable) {

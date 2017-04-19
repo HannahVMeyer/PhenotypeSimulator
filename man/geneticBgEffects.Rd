@@ -14,12 +14,13 @@ geneticBgEffects(N, P, kinship)
 \item{kinship}{[N x N] matrix of kinship estimates [double]}
 }
 \value{
-named list of common background genetic effects (common: [N x P] 
-matrix) and specific background genetic effects (specific: [N x P] matrix)
+named list of shared background genetic effects (shared: [N x P] 
+matrix) and independent background genetic effects (independent: [N x P] 
+matrix)
 }
 \description{
-geneticBgEffects simulates two random genetic effects (common and specific) 
-based on the kinship estimates of the (simulated) samples.
+geneticBgEffects simulates two random genetic effects (shared and 
+independent) based on the kinship estimates of the (simulated) samples.
 }
 \details{
 For the simulation of the genetic background effects, three matrix 
@@ -28,8 +29,8 @@ sample-design matrix
 (the genetic profile of the samples), ii) an effect-size matrix B [N x P] 
 with vec(B) drawn from a normal distribution and iii) the trait design matrix
  A [P x P]. For the
-specific effect, A is a diagonal matrix with normally distributed values. A 
-for the common effect is a matrix of rowrank one, with normally distributed 
+independent effect, A is a diagonal matrix with normally distributed values.  
+A for the shared effect is a matrix of rowrank one, with normally distributed 
 entries in row 1 and
 zeros elsewhere. The final effect E, the three matrices are multiplied as: 
 E = KBA

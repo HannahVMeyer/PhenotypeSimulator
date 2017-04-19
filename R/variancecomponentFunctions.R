@@ -3,24 +3,23 @@
 #' Simulate genetic fixed effects.
 #'
 #' geneticFixedEffects takes a matrix of SNPs which should be added as fixed 
-#' effect to the phenotype. SNPs can have effects across all traits (common) 
-#' or to a number of traits only (specific); the proportion of specific SNPs 
-#' from the total input SNPs can be chosen via pSpecificGenetic. The number of 
-#' traits 
-#' that are associated with specific genetic effects can be chosen via 
-#' pTraitSpecificGenetic. 
+#' effect to the phenotype. SNPs can have effects across all traits (shared) 
+#' or to a number of traits only (independent); the proportion of independent 
+#' SNPs from the total input SNPs can be chosen via pIndependentGenetic. The 
+#' number of traits that are associated with independent genetic effects can be 
+#' chosen via pTraitIndependentGenetic. 
 #'
 #' @param X_causal [N x NrCausalSNPs] matrix of standardised (depending on 
 #' standardise option) SNPs 
 #' @param N number [integer] of samples to simulate
 #' @param P number [integer] of phenotypes to simulate 
-#' @param pSpecificGenetic Proportion [double] of genetic effects (SNPs) to have
-#'  a trait-specific fixed effect
-#' @param pTraitSpecificGenetic Proportion [double] of traits influenced by 
-#' specific fixed genetic effects
-#' @return named list of common fixed genetic effects (common: [N x P] matrix), 
-#' specific fixed genetic effects (specific: [N x P] matrix), 
-#' the causal SNPs named by having a common or specific effect 
+#' @param pIndependentGenetic Proportion [double] of genetic effects (SNPs) to
+#'  have an independent fixed effect
+#' @param pTraitIndependentGenetic Proportion [double] of traits influenced by 
+#' independent fixed genetic effects
+#' @return named list of shared fixed genetic effects (shared: [N x P] matrix), 
+#' independent fixed genetic effects (independent: [N x P] matrix), 
+#' the causal SNPs named by having a shared or independent effect 
 #' (cov: [NrCausalSNPs x N] matrix) and the simulated effect sizes of the causal 
 #' SNPs (cov_effect: [P x NrCausalSNPs] dataframe)
 #' @export
@@ -28,70 +27,74 @@
 #' genotypes <- simulateGenotypes(N=100, NrSNP=20, verbose=FALSE)
 #' causalSNPs <- getCausalSNPs(genotypes=genotypes)
 #' geneticFixed <- geneticFixedEffects(X_causal=causalSNPs, P=10, N=100)
-geneticFixedEffects <- function(X_causal, N, P, pSpecificGenetic=0.4, 
-                                pTraitSpecificGenetic=0.2) {
+geneticFixedEffects <- function(X_causal, N, P, pIndependentGenetic=0.4, 
+                                pTraitIndependentGenetic=0.2) {
     NrCausalSNPs <- ncol(X_causal)
-    NrSpecificSNPs <- round(pSpecificGenetic * NrCausalSNPs)
-    NrCommonSNPs <- NrCausalSNPs - NrSpecificSNPs
+    NrIndependentSNPs <- round(pIndependentGenetic * NrCausalSNPs)
+    NrSharedSNPs <- NrCausalSNPs - NrIndependentSNPs
     
-    ### i) common
-    comm <- sample(c(rep(TRUE, NrCommonSNPs), rep(FALSE, NrSpecificSNPs)), 
+    # shared
+    shared <- sample(c(rep(TRUE, NrSharedSNPs), rep(FALSE, NrIndependentSNPs)), 
                    replace=FALSE)
-    X_comm <-  X_causal[,comm]
-    betaX_comm <- simulateDist(NrCommonSNPs, dist="norm") %*% 
+    X_shared <-  X_causal[,shared]
+    betaX_shared <- simulateDist(NrSharedSNPs, dist="norm") %*% 
         t(simulateDist(P, dist="norm"))
    
-    ### ii) specific
-    spec <- !comm
-    X_specific <- X_causal[,spec]
-    betaX_specific <- matrix(simulateDist(P * NrSpecificSNPs, dist="norm"), 
-                             ncol=P)
-    p_nongenetic <- sample(c(rep(TRUE, pTraitSpecificGenetic * P), 
-                             rep(FALSE, (1 - pTraitSpecificGenetic) * P)), 
+    # independent
+    independent <- !shared
+    X_independent <- X_causal[,independent]
+    betaX_independent <- matrix(simulateDist(P * NrIndependentSNPs, dist="norm")
+                             , ncol=P)
+    p_nongenetic <- sample(c(rep(TRUE, pTraitIndependentGenetic * P), 
+                             rep(FALSE, (1 - pTraitIndependentGenetic) * P)), 
                            replace=FALSE)
-    betaX_specific[,p_nongenetic] <- matrix(rep(0, length(which(p_nongenetic)) 
-                                                * NrSpecificSNPs), 
-                                            nrow=NrSpecificSNPs)
+    betaX_independent[,p_nongenetic] <- matrix(rep(0, 
+                                                   length(which(p_nongenetic)) 
+                                                   * NrIndependentSNPs), 
+                                            nrow=NrIndependentSNPs)
 
-    cov = rbind(t(X_comm), t(X_specific))
-    cov_effect = data.frame(betaX_comm=t(betaX_comm), 
-                            betaX_spec=t(betaX_specific))
+    cov = rbind(t(X_shared), t(X_independent))
+    cov_effect = data.frame(betaX_shared=t(betaX_shared), 
+                            betaX_independent=t(betaX_independent))
     colnames(cov_effect) <- paste(colnames(cov_effect),"_", 
                                   rownames(cov), sep="")
 
-    Gcomm = X_comm %*% betaX_comm
-    Gspec = X_specific %*% betaX_specific
+    Gshared = X_shared %*% betaX_shared
+    Gindependent = X_independent %*% betaX_independent
     
-    return(list(common=Gcomm, specific=Gspec, cov=cov, cov_effect=cov_effect))
+    return(list(shared=Gshared, 
+                independent=Gindependent, 
+                cov=cov, 
+                cov_effect=cov_effect))
 }
 
 #' Simulate noise fixed effects.
 #'
-#' noiseFixedEffects simulates a specific number of fixed noise effects 
-#' (confounders). Confounders can have effects across all traits (common) 
-#' or to a number of traits only (specific); the proportion of specific 
+#' noiseFixedEffects simulates a independent number of fixed noise effects 
+#' (confounders). Confounders can have effects across all traits (shared) 
+#' or to a number of traits only (independent); the proportion of independent 
 #' confounders from the total of simulated confounders can be chosen via 
-#' pSpecificConfounders. The number of traits that are associated with specific 
-#' noise effects can be chosen via  pTraitSpecificConfounders. Confounders can 
-#' be simulated as categorical variables or following a binomial, uniform or 
-#' normal distribution. Effect sizes for the noise effects can be simulated from
-#' a uniform or normal distribution. Multiple confounder sets drawn from 
-#' different distributions/different parameters of the same distribution can be 
-#' simulated by specifying NrFixedEffects and supplying the respective
-#' distribution parameters (*Confounders and *Beta) explained below. If a model
-#' parameter and its "String' version are provided, i.e. NrConfounders and 
-#' NrConfoundersStrings, the "String' specification will be used!
+#' pIndependentConfounders. The number of traits that are associated with 
+#' independent noise effects can be chosen via  pTraitIndependentConfounders. 
+#' Confounders can be simulated as categorical variables or following a binomial 
+#' , uniform or normal distribution. Effect sizes for the noise effects can be 
+#' simulated from a uniform or normal distribution. Multiple confounder sets 
+#' drawn from different distributions/different parameters of the same 
+#' distribution can be simulated by specifying NrFixedEffects and supplying the 
+#' respective distribution parameters (*Confounders and *Beta) explained below. 
+#' If a modelparameter and its "String' version are provided, i.e. NrConfounders 
+#' and NrConfoundersStrings, the "String' specification will be used!
 #'
 #' @param N number [integer] of samples to simulate
 #' @param P number [integer] of phenotypes to simulate
-#' @param NrFixedEffects number [integer] of different fixed effects to simulate;
-#' allows to simulate fixed effects from different distributions or with 
+#' @param NrFixedEffects number [integer] of different fixed effects to simulate
+#' ; allows to simulate fixed effects from different distributions or with 
 #'  differen parameters
 #' @param NrConfounders vector of number(s) [integer] of confounders to simulate
-#' @param pSpecificConfounders vector of proportion(s) [double] of noise effects 
-#' (confounders) to have a trait-specific effect
-#' @param pTraitSpecificConfounders vector of proportion(s) [double] of traits 
-#' influenced by specific fixed noise effects
+#' @param pIndependentConfounders vector of proportion(s) [double] of noise 
+#' effects (confounders) to have a trait-independent effect
+#' @param pTraitIndependentConfounders vector of proportion(s) [double] of 
+#' traits influenced by independent fixed noise effects
 #' @param distConfounders vector of name(s) [string] of distribution to use to 
 #' simulate confounders; one of "unif", "norm", "bin", "cat_norm", "cat_unif"
 #' @param distBeta vector of name(s) [string] of distribution to use to simulate 
@@ -111,14 +114,14 @@ geneticFixedEffects <- function(X_causal, N, P, pSpecificGenetic=0.4,
 #' @param NrConfoundersString alternative to NrConfounder, a comma-separated
 #' [string] with number(s) [integer] of confounders to simulate; typically used 
 #' when run as command line application
-#' @param pSpecificConfoundersString alternative to pSpecificConfounders, a 
-#' comma-separated [string] with proportion(s) [double] of noise effects 
-#' (confounders) to have a trait-specific effect; typically used when run as 
+#' @param pIndependentConfoundersString alternative to pIndependentConfounders,  
+#' a comma-separated [string] with proportion(s) [double] of noise effects 
+#' (confounders) to have a trait-independent effect; typically used when run as 
 #' command line application
-#' @param pTraitSpecificConfoundersString alternative to 
-#' pTraitSpecificConfounders,  a comma-separated [string] with proportion(s) 
-#' [double] of traits influenced by specific fixed noise effects; typically used
-#'  when run as command line application
+#' @param pTraitIndependentConfoundersString alternative to 
+#' pTraitIndependentConfounders,  a comma-separated [string] with proportion(s) 
+#' [double] of traits influenced by independent fixed noise effects; typically 
+#' used when run as command line application
 #' @param distConfoundersString alternative to distConfounders, a comma-
 #' separated [string] with name(s) [string] of distributions to use to 
 #' simulate confounders; one of "unif", "norm", "bin", "cat_norm", "cat_unif";
@@ -150,9 +153,9 @@ geneticFixedEffects <- function(X_causal, N, P, pSpecificGenetic=0.4,
 #' standard deviation/distance from midpoint [double] of normal/uniform 
 #' distribution for effect sizes of confounders; typically used when run as 
 #' command line application
-#' @return named list of common fixed noise effects (common: [N x P] matrix), 
-#' specific fixed noise effects (specific: [N x P] matrix), 
-#' the causal SNPs named by having a common or specific effect 
+#' @return named list of shared fixed noise effects (shared: [N x P] matrix), 
+#' independent fixed noise effects (independent: [N x P] matrix), 
+#' the causal SNPs named by having a shared or independent effect 
 #' (cov: [NrConfounders x N] matrix) and the simulated effect sizes of the 
 #' confounders
 #' (cov_effect: [P x NrConfounders] dataframe)
@@ -184,15 +187,15 @@ geneticFixedEffects <- function(X_causal, N, P, pSpecificGenetic=0.4,
 #'  NrFixedEffects=2, NrConfounders=c(2,2), distConfounders=c("bin", "norm"), 
 #'  probConfounders=0.2)
 noiseFixedEffects <- function(N, P, NrFixedEffects=1, NrConfounders=10, 
-                              pSpecificConfounders=0.4, 
-                              pTraitSpecificConfounders=0.2, 
+                              pIndependentConfounders=0.4, 
+                              pTraitIndependentConfounders=0.2, 
                               distConfounders="norm", mConfounders=0, 
                               sdConfounders=1, catConfounders=NULL, 
                               probConfounders=NULL, distBeta="norm", mBeta=0, 
                               sdBeta=1, 
                               NrConfoundersString=NULL, 
-                              pSpecificConfoundersString=NULL, 
-                              pTraitSpecificConfoundersString=NULL, 
+                              pIndependentConfoundersString=NULL, 
+                              pTraitIndependentConfoundersString=NULL, 
                               distConfoundersString=NULL, 
                               mConfoundersString=NULL, 
                               sdConfoundersString=NULL, 
@@ -203,90 +206,99 @@ noiseFixedEffects <- function(N, P, NrFixedEffects=1, NrConfounders=10,
                               sdBetaString=NULL) {
     
     oneFixedEffectComponent <- function(N, P, NrConfounders, 
-                                        pSpecificConfounders, 
-                                        pTraitSpecificConfounders, 
+                                        pIndependentConfounders, 
+                                        pTraitIndependentConfounders, 
                                         distConfounders, mConfounders, 
                                         sdConfounders, catConfounders, 
                                         probConfounders, distBeta, mBeta, 
                                         sdBeta) {
-        Ccomm <- NULL
-        Cspec <- NULL
+        Cshared <- NULL
+        Cindependent <- NULL
         
-        NrSpecificConfounders <- round(pSpecificConfounders * NrConfounders)
-        NrCommonConfounders <- NrConfounders - NrSpecificConfounders
+        NrIndependentConfounders <- round(pIndependentConfounders * 
+                                              NrConfounders)
+        NrSharedConfounders <- NrConfounders - NrIndependentConfounders
     
-        if (NrCommonConfounders != 0) {
-            comm <- matrix(simulateDist(N * NrCommonConfounders, 
+        if (NrSharedConfounders != 0) {
+            shared <- matrix(simulateDist(N * NrSharedConfounders, 
                                         dist=distConfounders, m=mConfounders, 
                                         std=sdConfounders, 
                                         categories=catConfounders, 
                                         prob=probConfounders), 
-                           ncol=NrCommonConfounders)
-            colnames(comm) <- paste("commonConfounder_", distConfounders, 
-                                    seq(1, NrCommonConfounders, 1), sep="")
+                           ncol=NrSharedConfounders)
+            colnames(shared) <- paste("sharedConfounder_", distConfounders, 
+                                    seq(1, NrSharedConfounders, 1), sep="")
         
-            beta_comm <- simulateDist(NrCommonConfounders,  dist=distBeta, 
+            beta_shared <- simulateDist(NrSharedConfounders,  dist=distBeta, 
                                       m=mBeta, std=sdBeta) %*% 
                         t(simulateDist(P, dist=distBeta, m=mBeta, std=sdBeta))
-            rownames(beta_comm) <- paste("commonConfounder_", distConfounders,
+            rownames(beta_shared) <- paste("sharedConfounder_", distConfounders,
                                         "_Beta_", distBeta, 
-                                         seq(1, NrCommonConfounders, 1), sep="")
+                                         seq(1, NrSharedConfounders, 1), sep="")
             
-            Ccomm <- comm %*% beta_comm
-            cov <- t(data.frame(comm))
-            cov_effect <- data.frame(t(beta_comm))
+            Cshared <- shared %*% beta_shared
+            cov <- t(data.frame(shared))
+            cov_effect <- data.frame(t(beta_shared))
         } 
-        if (NrSpecificConfounders != 0) {
-            spec <- matrix(simulateDist(N * NrSpecificConfounders, 
+        if (NrIndependentConfounders != 0) {
+            independent <- matrix(simulateDist(N * NrIndependentConfounders, 
                                         dist=distConfounders, m=mConfounders, 
                                         std=sdConfounders, 
                                         categories=catConfounders, 
                                         prob=probConfounders), 
-                           ncol=NrSpecificConfounders)
-            colnames(spec) <- paste("specificConfounder_", distConfounders, 
-                                    seq(1, NrSpecificConfounders, 1), sep="")
-            beta_spec <- matrix(simulateDist(P * NrSpecificConfounders, 
+                           ncol=NrIndependentConfounders)
+            colnames(independent) <- paste("independentConfounder_", 
+                                           distConfounders, 
+                                           seq(1, NrIndependentConfounders, 1), 
+                                           sep="")
+            beta_independent <- matrix(simulateDist(P * NrIndependentConfounders, 
                                              dist=distBeta, m=mBeta, 
                                              std=sdBeta), ncol=P)
-            rownames(beta_spec) <- paste("specificConfounder_", distConfounders,
-                                        "_Beta_", distBeta, 
-                                         seq(1, NrSpecificConfounders, 1), 
-                                         sep="")
+            rownames(beta_independent) <- paste("independentConfounder_", 
+                                                distConfounders,
+                                                "_Beta_", distBeta, 
+                                                seq(1, NrIndependentConfounders, 
+                                                    1), 
+                                                sep="")
             p_nonconfounders <- sample(
-                c(rep(TRUE, pTraitSpecificConfounders * P), 
-                rep(FALSE, (1 - pTraitSpecificConfounders) * P)), replace=FALSE)
-            beta_spec[,p_nonconfounders] <- matrix(
-                rep(0, length(which(p_nonconfounders)) * NrSpecificConfounders),
-                nrow=NrSpecificConfounders)
+                c(rep(TRUE, pTraitIndependentConfounders * P), 
+                rep(FALSE, (1 - pTraitIndependentConfounders) * P)), 
+                replace=FALSE)
+            beta_independent[,p_nonconfounders] <- matrix(
+                rep(0, 
+                    length(which(p_nonconfounders)) * NrIndependentConfounders),
+                nrow=NrIndependentConfounders)
         
-            Cspec <- spec %*% beta_spec
-            cov <- t(data.frame(spec))
-            cov_effect <- data.frame(t(beta_spec))
+            Cindependent <- independent %*% beta_independent
+            cov <- t(data.frame(independent))
+            cov_effect <- data.frame(t(beta_independent))
         }
-        if (NrCommonConfounders != 0 && NrSpecificConfounders != 0) {
-            cov <- t(data.frame(comm, spec))
-            cov_effect <- data.frame(t(beta_comm), t(beta_spec))
+        if (NrSharedConfounders != 0 && NrIndependentConfounders != 0) {
+            cov <- t(data.frame(shared, independent))
+            cov_effect <- data.frame(t(beta_shared), t(beta_independent))
         }
-        return(list(common=Ccomm, specific=Cspec, cov=cov, 
+        return(list(shared=Cshared, independent=Cindependent, cov=cov, 
                     cov_effect=cov_effect))
     }
-    if (!is.null(pSpecificConfoundersString)) {
-        pSpecificConfounders <- commaList2vector(pSpecificConfoundersString)
+    
+    if (!is.null(pIndependentConfoundersString)) {
+        pIndependentConfounders <- commaList2vector(
+            pIndependentConfoundersString)
     }
-    if (length(pSpecificConfounders) != 1 && 
-        length(pSpecificConfounders) != NrFixedEffects ) {
-        stop(paste("Length of pSpecificConfounders (", 
-                    length(pSpecificConfounders), ")
+    if (length(pIndependentConfounders) != 1 && 
+        length(pIndependentConfounders) != NrFixedEffects ) {
+        stop(paste("Length of pIndependentConfounders (", 
+                    length(pIndependentConfounders), ")
                     doesn't match NrFixedEffects (", NrFixedEffects, ")"))
     }
-    if (!is.null(pTraitSpecificConfoundersString)) {
-        pTraitSpecificConfounders <- 
-            commaList2vector(pTraitSpecificConfoundersString)
+    if (!is.null(pTraitIndependentConfoundersString)) {
+        pTraitIndependentConfounders <- 
+            commaList2vector(pTraitIndependentConfoundersString)
     }
-    if (length(pTraitSpecificConfounders) != 1 && 
-        length(pTraitSpecificConfounders) != NrFixedEffects ) {
-            stop(paste("Length of pTraitSpecificConfounders (", 
-                       length(pTraitSpecificConfounders), ") doesn't match 
+    if (length(pTraitIndependentConfounders) != 1 && 
+        length(pTraitIndependentConfounders) != NrFixedEffects ) {
+            stop(paste("Length of pTraitIndependentConfounders (", 
+                       length(pTraitIndependentConfounders), ") doesn't match 
                        NrFixedEffects (", NrFixedEffects, ")"))
     }        
     if (!is.null(NrConfoundersString)) {
@@ -354,11 +366,12 @@ noiseFixedEffects <- function(N, P, NrFixedEffects=1, NrConfounders=10,
                    doesn't match NrFixedEffects (", NrFixedEffects, ")"))
     }
     if (NrFixedEffects != 1)  { 
-        if (length(pSpecificConfounders) == 1) {
-            pSpecificConfounders <- rep(pSpecificConfounders, NrFixedEffects)
+        if (length(pIndependentConfounders) == 1) {
+            pIndependentConfounders <- rep(pIndependentConfounders, 
+                                           NrFixedEffects)
         }
-        if (length(pTraitSpecificConfounders) == 1) {
-            pTraitSpecificConfounders <- rep(pTraitSpecificConfounders, 
+        if (length(pTraitIndependentConfounders) == 1) {
+            pTraitIndependentConfounders <- rep(pTraitIndependentConfounders, 
                                              NrFixedEffects)
         }
         if (length(NrConfounders) == 1) {
@@ -391,22 +404,22 @@ noiseFixedEffects <- function(N, P, NrFixedEffects=1, NrConfounders=10,
         
         tmp <- lapply(1:NrFixedEffects, function(x) {
             oneFixedEffectComponent(N, P, NrConfounders[x], 
-                                    pSpecificConfounders[x], 
-                                    pTraitSpecificConfounders[x], 
+                                    pIndependentConfounders[x], 
+                                    pTraitIndependentConfounders[x], 
                                     distConfounders[x], 
                                     mConfounders[x], sdConfounders[x], 
                                     catConfounders[x], probConfounders[x], 
                                     distBeta[x], mBeta[x], sdBeta[x])
         })
-        common <- addNonNulls(lapply(tmp, function(x) x$common))
-        specific <- addNonNulls(lapply(tmp, function(x) x$specific))
+        shared <- addNonNulls(lapply(tmp, function(x) x$shared))
+        independent <- addNonNulls(lapply(tmp, function(x) x$independent))
         cov <- do.call(rbind, lapply(tmp, function(x) x$cov))
         cov_effect <- do.call(cbind, lapply(tmp, function(x) x$cov_effect))
-        return(list(common=common, specific=specific, cov=cov, 
+        return(list(shared=shared, independent=independent, cov=cov, 
                     cov_effect=cov_effect))
     } else {
-        oneFixedEffectComponent(N, P, NrConfounders, pSpecificConfounders, 
-                            pTraitSpecificConfounders, distConfounders, 
+        oneFixedEffectComponent(N, P, NrConfounders, pIndependentConfounders, 
+                            pTraitIndependentConfounders, distConfounders, 
                             mConfounders, sdConfounders, catConfounders, 
                             probConfounders, distBeta, mBeta, sdBeta) 
     } 
@@ -417,22 +430,23 @@ noiseFixedEffects <- function(N, P, NrFixedEffects=1, NrConfounders=10,
 
 #' Simulate genetic background effects.
 #'
-#' geneticBgEffects simulates two random genetic effects (common and specific) 
-#' based on the kinship estimates of the (simulated) samples.
+#' geneticBgEffects simulates two random genetic effects (shared and 
+#' independent) based on the kinship estimates of the (simulated) samples.
 #'
 #' @param N number [integer] of samples to simulate
 #' @param P number [integer] of phenotypes to simulate 
 #' @param kinship [N x N] matrix of kinship estimates [double]
-#' @return named list of common background genetic effects (common: [N x P] 
-#' matrix) and specific background genetic effects (specific: [N x P] matrix) 
+#' @return named list of shared background genetic effects (shared: [N x P] 
+#' matrix) and independent background genetic effects (independent: [N x P] 
+#' matrix) 
 #' @details For the simulation of the genetic background effects, three matrix 
 #' components are used: i) the kinship matrix K [N x N] which is treated as the 
 #' sample-design matrix
 #' (the genetic profile of the samples), ii) an effect-size matrix B [N x P] 
 #' with vec(B) drawn from a normal distribution and iii) the trait design matrix
 #'  A [P x P]. For the
-#' specific effect, A is a diagonal matrix with normally distributed values. A 
-#' for the common effect is a matrix of rowrank one, with normally distributed 
+#' independent effect, A is a diagonal matrix with normally distributed values.  
+#' A for the shared effect is a matrix of rowrank one, with normally distributed 
 #' entries in row 1 and
 #' zeros elsewhere. The final effect E, the three matrices are multiplied as: 
 #' E = KBA
@@ -443,48 +457,50 @@ noiseFixedEffects <- function(N, P, NrFixedEffects=1, NrConfounders=10,
 #' geneticBg <- geneticBgEffects(N=100, P=10, kinship=kinship)
 geneticBgEffects <- function(N, P, kinship) {
     kinship_chol <- t(chol(kinship))
-    
-    # specific effect
-    B <- matrix(simulateDist(x=N * P, dist="norm"), ncol=P)
-    A <- matrix(rep(0, P * P), ncol=P)
-    diag(A) <- simulateDist(x=P, dist="norm")
-    genBgSpecific <- kinship_chol %*% (B %*% A)
-    
-    # common effect
+   
+    # shared effect
     B <- matrix(simulateDist(x=N * P, dist="norm"), ncol=P)
     A <- matrix(rep(0, P * P), ncol=P)
     A[,1] <- simulateDist(x=P, dist="norm")
-    genBgCommon <- kinship_chol %*% (B %*% t(A))
+    genBgShared <- kinship_chol %*% (B %*% t(A))
     
-    return(list(common=genBgCommon, specific=genBgSpecific))
+    # independent effect
+    B <- matrix(simulateDist(x=N * P, dist="norm"), ncol=P)
+    A <- matrix(rep(0, P * P), ncol=P)
+    diag(A) <- simulateDist(x=P, dist="norm")
+    genBgIndependent <- kinship_chol %*% (B %*% A)
+
+    return(list(shared=genBgShared, independent=genBgIndependent))
 }
 
 #' Simulate noise background effects.
 #'
-#' noiseBgEffects simulates two random noise effects (common and specific).
+#' noiseBgEffects simulates two random noise effects (shared and independent).
 #'
 #' @param P number [integer] of phenotypes to simulate 
 #' @param N number [integer] of samples to simulate
 #' @param mean mean [double] of the normal distribution
 #' @param sd standard deviation [double] of the normal distribution
-#' @return named list of common background noise effects (common: [N x P] 
-#' matrix) and specific background noise effects (specific: [N x P] matrix) 
-#' @details The common background effect common as simulated as vec(common) ~ 
-#' N(mean,sd). The specific background effect sepcific is simulated as the 
+#' @return named list of shared background noise effects (shared: [N x P] 
+#' matrix) and independent background noise effects (independent: [N x P] 
+#' matrix) 
+#' @details The shared background effect is simulated as vec(shared) ~ 
+#' N(mean,sd). The independent background effect is simulated as the 
 #' matrix product of two normal
-#' distributions A [N x 1] and B [P x 1]: specific At(B)
+#' distributions A [N x 1] and B [P x 1]: At(B)
 #' @export
 #' @examples
 #' noiseBG <- noiseBgEffects(N=100, P=20, mean=2)
 noiseBgEffects <- function(N, P, mean=0, sd=1) {
-    # common effect
-    noiseBgCommon <- matrix(simulateDist(x= N * P, dist="norm", m=mean, std=sd), 
-                            ncol=P) 
-    
-    # specific effect
-    noiseBgSpecific <- simulateDist(x=N, dist="norm", m=mean, std=sd) %*%  
+    # shared effect
+    noiseBgIndependent <- simulateDist(x=N, dist="norm", m=mean, std=sd) %*%  
         t(simulateDist(x=P, dist="norm", m=mean, std=sd))
-    return(list(common=noiseBgCommon, specific=noiseBgSpecific))
+    
+    # independent effect
+    noiseBgShared <- matrix(simulateDist(x= N * P, dist="norm", m=mean, std=sd), 
+    ncol=P) 
+   
+    return(list(shared=noiseBgShared, independent=noiseBgIndependent))
 }
 
 #' Simulate correlated background effects.

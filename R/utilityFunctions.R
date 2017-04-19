@@ -12,8 +12,7 @@
 #' @seealso \code{\link{message}} which this function wraps
 vmessage <- function(userinfo, verbose=TRUE, sep=" ") {
     if (verbose) {
-        if (length(userinfo) == 1) message(userinfo)
-        if (length(userinfo) != 1) message(paste(userinfo, collapse=sep))
+        message(paste(userinfo, collapse=sep))
     }
 }
 

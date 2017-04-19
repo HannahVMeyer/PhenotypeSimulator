@@ -25,16 +25,16 @@ from 1 to P)}
 \item{correlatedBg}{list of correlated background effects as obtained 
 by \code{\link{correlatedBgEffects}}}
 
-\item{genFixed}{list of specific and common genetic fixed effects as 
+\item{genFixed}{list of independent and shared genetic fixed effects as 
 obtained by \code{\link{geneticFixedEffects}}}
 
-\item{genBg}{list of specific and common genetic background effects as 
+\item{genBg}{list of independent and shared genetic background effects as 
 obtained by \code{\link{geneticBgEffects}}}
 
-\item{noiseFixed}{list of specific and common noise fixed effects as 
+\item{noiseFixed}{list of independent and shared noise fixed effects as 
 obtained by \code{\link{noiseFixedEffects}}}
 
-\item{noiseBg}{list of specific and common noise background effects as 
+\item{noiseBg}{list of independent and shared noise background effects as 
 obtained by \code{\link{noiseBgEffects}}}
 
 \item{genVar}{Proportion [double] of total genetic variance}
@@ -53,25 +53,25 @@ h2s + h2b = genVar}
 
 \item{phi}{Proportion [double] of variance of background noise effects}
 
-\item{gamma}{Proportion [double] of variance of common fixed noise effects}
+\item{gamma}{Proportion [double] of variance of shared fixed noise effects}
 
-\item{theta}{Proportion [double] of variance of common fixed genetic effects}
+\item{theta}{Proportion [double] of variance of shared fixed genetic effects}
 
-\item{eta}{Proportion [double] of variance of common bg genetic effects}
+\item{eta}{Proportion [double] of variance of shared bg genetic effects}
 
-\item{alpha}{Proportion [double] of variance of common bg noise effect}
+\item{alpha}{Proportion [double] of variance of shared bg noise effect}
 
 \item{pcorr}{Correlation [double] between phenotypes}
 
 \item{modelNoise}{name [string] of noise model for the phenotype simulation; 
-based on model specification, phenotype components will be added to the final 
-phenotype. Possible models: "noNoise", "noiseFixedOnly", "noiseBgOnly", 
+based on model independentation, phenotype components will be added to the  
+final phenotype. Possible models: "noNoise", "noiseFixedOnly", "noiseBgOnly", 
 "noiseCorrelatedOnly", "noiseFixedAndBg","noiseCorrelatedAndBg", 
 "noiseFixedAndCorrelated", "noiseFixedAndBgAndCorrelated"}
 
 \item{modelGenetic}{name [string] of genetic model for the phenotype 
-simulation; based on model specification, phenotype components will be added 
-to the final phenotype. Possible models: "noGenetic","geneticBgOnly", 
+simulation; based on model independentation, phenotype components will be 
+added to the final phenotype. Possible models: "noGenetic","geneticBgOnly", 
 "geneticFixedOnly","geneticFixedAndBg"}
 
 \item{verbose}{[boolean]; if TRUE, progress info is printed to standard out}

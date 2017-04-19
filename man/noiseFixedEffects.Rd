@@ -5,32 +5,32 @@
 \title{Simulate noise fixed effects.}
 \usage{
 noiseFixedEffects(N, P, NrFixedEffects = 1, NrConfounders = 10,
-  pSpecificConfounders = 0.4, pTraitSpecificConfounders = 0.2,
+  pIndependentConfounders = 0.4, pTraitIndependentConfounders = 0.2,
   distConfounders = "norm", mConfounders = 0, sdConfounders = 1,
   catConfounders = NULL, probConfounders = NULL, distBeta = "norm",
   mBeta = 0, sdBeta = 1, NrConfoundersString = NULL,
-  pSpecificConfoundersString = NULL, pTraitSpecificConfoundersString = NULL,
-  distConfoundersString = NULL, mConfoundersString = NULL,
-  sdConfoundersString = NULL, catConfoundersString = NULL,
-  probConfoundersString = NULL, distBetaString = NULL, mBetaString = NULL,
-  sdBetaString = NULL)
+  pIndependentConfoundersString = NULL,
+  pTraitIndependentConfoundersString = NULL, distConfoundersString = NULL,
+  mConfoundersString = NULL, sdConfoundersString = NULL,
+  catConfoundersString = NULL, probConfoundersString = NULL,
+  distBetaString = NULL, mBetaString = NULL, sdBetaString = NULL)
 }
 \arguments{
 \item{N}{number [integer] of samples to simulate}
 
 \item{P}{number [integer] of phenotypes to simulate}
 
-\item{NrFixedEffects}{number [integer] of different fixed effects to simulate;
-allows to simulate fixed effects from different distributions or with 
+\item{NrFixedEffects}{number [integer] of different fixed effects to simulate
+; allows to simulate fixed effects from different distributions or with 
  differen parameters}
 
 \item{NrConfounders}{vector of number(s) [integer] of confounders to simulate}
 
-\item{pSpecificConfounders}{vector of proportion(s) [double] of noise effects 
-(confounders) to have a trait-specific effect}
+\item{pIndependentConfounders}{vector of proportion(s) [double] of noise 
+effects (confounders) to have a trait-independent effect}
 
-\item{pTraitSpecificConfounders}{vector of proportion(s) [double] of traits 
-influenced by specific fixed noise effects}
+\item{pTraitIndependentConfounders}{vector of proportion(s) [double] of 
+traits influenced by independent fixed noise effects}
 
 \item{distConfounders}{vector of name(s) [string] of distribution to use to 
 simulate confounders; one of "unif", "norm", "bin", "cat_norm", "cat_unif"}
@@ -60,15 +60,15 @@ of normal/uniform distribution for effect sizes of confounders}
 [string] with number(s) [integer] of confounders to simulate; typically used 
 when run as command line application}
 
-\item{pSpecificConfoundersString}{alternative to pSpecificConfounders, a 
-comma-separated [string] with proportion(s) [double] of noise effects 
-(confounders) to have a trait-specific effect; typically used when run as 
+\item{pIndependentConfoundersString}{alternative to pIndependentConfounders,
+a comma-separated [string] with proportion(s) [double] of noise effects 
+(confounders) to have a trait-independent effect; typically used when run as 
 command line application}
 
-\item{pTraitSpecificConfoundersString}{alternative to 
-pTraitSpecificConfounders,  a comma-separated [string] with proportion(s) 
-[double] of traits influenced by specific fixed noise effects; typically used
- when run as command line application}
+\item{pTraitIndependentConfoundersString}{alternative to 
+pTraitIndependentConfounders,  a comma-separated [string] with proportion(s) 
+[double] of traits influenced by independent fixed noise effects; typically 
+used when run as command line application}
 
 \item{distConfoundersString}{alternative to distConfounders, a comma-
 separated [string] with name(s) [string] of distributions to use to 
@@ -110,28 +110,28 @@ distribution for effect sizes of confounders; typically used when run as
 command line application}
 }
 \value{
-named list of common fixed noise effects (common: [N x P] matrix), 
-specific fixed noise effects (specific: [N x P] matrix), 
-the causal SNPs named by having a common or specific effect 
+named list of shared fixed noise effects (shared: [N x P] matrix), 
+independent fixed noise effects (independent: [N x P] matrix), 
+the causal SNPs named by having a shared or independent effect 
 (cov: [NrConfounders x N] matrix) and the simulated effect sizes of the 
 confounders
 (cov_effect: [P x NrConfounders] dataframe)
 }
 \description{
-noiseFixedEffects simulates a specific number of fixed noise effects 
-(confounders). Confounders can have effects across all traits (common) 
-or to a number of traits only (specific); the proportion of specific 
+noiseFixedEffects simulates a independent number of fixed noise effects 
+(confounders). Confounders can have effects across all traits (shared) 
+or to a number of traits only (independent); the proportion of independent 
 confounders from the total of simulated confounders can be chosen via 
-pSpecificConfounders. The number of traits that are associated with specific 
-noise effects can be chosen via  pTraitSpecificConfounders. Confounders can 
-be simulated as categorical variables or following a binomial, uniform or 
-normal distribution. Effect sizes for the noise effects can be simulated from
-a uniform or normal distribution. Multiple confounder sets drawn from 
-different distributions/different parameters of the same distribution can be 
-simulated by specifying NrFixedEffects and supplying the respective
-distribution parameters (*Confounders and *Beta) explained below. If a model
-parameter and its "String' version are provided, i.e. NrConfounders and 
-NrConfoundersStrings, the "String' specification will be used!
+pIndependentConfounders. The number of traits that are associated with 
+independent noise effects can be chosen via  pTraitIndependentConfounders. 
+Confounders can be simulated as categorical variables or following a binomial 
+, uniform or normal distribution. Effect sizes for the noise effects can be 
+simulated from a uniform or normal distribution. Multiple confounder sets 
+drawn from different distributions/different parameters of the same 
+distribution can be simulated by specifying NrFixedEffects and supplying the 
+respective distribution parameters (*Confounders and *Beta) explained below. 
+If a modelparameter and its "String' version are provided, i.e. NrConfounders 
+and NrConfoundersStrings, the "String' specification will be used!
 }
 \examples{
 # fixed noise effect with default setting

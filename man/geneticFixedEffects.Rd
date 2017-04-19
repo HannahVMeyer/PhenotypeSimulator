@@ -4,8 +4,8 @@
 \alias{geneticFixedEffects}
 \title{Simulate genetic fixed effects.}
 \usage{
-geneticFixedEffects(X_causal, N, P, pSpecificGenetic = 0.4,
-  pTraitSpecificGenetic = 0.2)
+geneticFixedEffects(X_causal, N, P, pIndependentGenetic = 0.4,
+  pTraitIndependentGenetic = 0.2)
 }
 \arguments{
 \item{X_causal}{[N x NrCausalSNPs] matrix of standardised (depending on 
@@ -15,27 +15,26 @@ standardise option) SNPs}
 
 \item{P}{number [integer] of phenotypes to simulate}
 
-\item{pSpecificGenetic}{Proportion [double] of genetic effects (SNPs) to have
-a trait-specific fixed effect}
+\item{pIndependentGenetic}{Proportion [double] of genetic effects (SNPs) to
+have an independent fixed effect}
 
-\item{pTraitSpecificGenetic}{Proportion [double] of traits influenced by 
-specific fixed genetic effects}
+\item{pTraitIndependentGenetic}{Proportion [double] of traits influenced by 
+independent fixed genetic effects}
 }
 \value{
-named list of common fixed genetic effects (common: [N x P] matrix), 
-specific fixed genetic effects (specific: [N x P] matrix), 
-the causal SNPs named by having a common or specific effect 
+named list of shared fixed genetic effects (shared: [N x P] matrix), 
+independent fixed genetic effects (independent: [N x P] matrix), 
+the causal SNPs named by having a shared or independent effect 
 (cov: [NrCausalSNPs x N] matrix) and the simulated effect sizes of the causal 
 SNPs (cov_effect: [P x NrCausalSNPs] dataframe)
 }
 \description{
 geneticFixedEffects takes a matrix of SNPs which should be added as fixed 
-effect to the phenotype. SNPs can have effects across all traits (common) 
-or to a number of traits only (specific); the proportion of specific SNPs 
-from the total input SNPs can be chosen via pSpecificGenetic. The number of 
-traits 
-that are associated with specific genetic effects can be chosen via 
-pTraitSpecificGenetic.
+effect to the phenotype. SNPs can have effects across all traits (shared) 
+or to a number of traits only (independent); the proportion of independent 
+SNPs from the total input SNPs can be chosen via pIndependentGenetic. The 
+number of traits that are associated with independent genetic effects can be 
+chosen via pTraitIndependentGenetic.
 }
 \examples{
 genotypes <- simulateGenotypes(N=100, NrSNP=20, verbose=FALSE)

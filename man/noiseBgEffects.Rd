@@ -16,17 +16,18 @@ noiseBgEffects(N, P, mean = 0, sd = 1)
 \item{sd}{standard deviation [double] of the normal distribution}
 }
 \value{
-named list of common background noise effects (common: [N x P] 
-matrix) and specific background noise effects (specific: [N x P] matrix)
+named list of shared background noise effects (shared: [N x P] 
+matrix) and independent background noise effects (independent: [N x P] 
+matrix)
 }
 \description{
-noiseBgEffects simulates two random noise effects (common and specific).
+noiseBgEffects simulates two random noise effects (shared and independent).
 }
 \details{
-The common background effect common as simulated as vec(common) ~ 
-N(mean,sd). The specific background effect sepcific is simulated as the 
+The shared background effect is simulated as vec(shared) ~ 
+N(mean,sd). The independent background effect is simulated as the 
 matrix product of two normal
-distributions A [N x 1] and B [P x 1]: specific At(B)
+distributions A [N x 1] and B [P x 1]: At(B)
 }
 \examples{
 noiseBG <- noiseBgEffects(N=100, P=20, mean=2)

@@ -1,10 +1,6 @@
 #' PhenotypeSimulator: A package for simulating phenotypes from different
 #' genetic and noise components
 #'
-#' 
-#' @section functions:
-#' explain functions here
-#'
 #' @docType package
 #' @name PhenotypeSimulator
 #' @importFrom methods getPackageName
