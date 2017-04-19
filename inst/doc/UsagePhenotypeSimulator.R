@@ -49,11 +49,11 @@ genFixed <- geneticFixedEffects(N = 100, P = 15, X_causal = causalSNPs)
 genBg <- geneticBgEffects(kinship = kinship, N = 100, P = 15)
 
 # simulate 4 fixed noise effects:
-# * 1 binomial fixed noise effect across all traits
-# * 2 categorical (3 categories) trait-specific fixed noise traits
-# * 1 categorical (4 categories) trait-specific fixed noise traits
-# * 2 normally distributed trait-specific and common (across all traits) fixed noise traits
-noiseFixed <- noiseFixedEffects(N = 100, P = 15, NrFixedEffects = 4, NrConfounders = c(1, 2, 1, 2), pSpecificConfounders = c(0, 1, 1, 0.5),  distConfounders = c("bin", "cat_norm", "cat_unif", "norm"), probConfounders = 0.2, catConfounders = c(0, 3, 4, 0))
+# * 1 binomial fixed noise effect shared across all traits
+# * 2 categorical (3 categories) independent fixed noise traits
+# * 1 categorical (4 categories) independent fixed noise traits
+# * 2 normally distributed independent and shared (across all traits) fixed noise traits
+noiseFixed <- noiseFixedEffects(N = 100, P = 15, NrFixedEffects = 4, NrConfounders = c(1, 2, 1, 2), pIndependentConfounders = c(0, 1, 1, 0.5),  distConfounders = c("bin", "cat_norm", "cat_unif", "norm"), probConfounders = 0.2, catConfounders = c(0, 3, 4, 0))
 
 # simulate correlated background effects with max correlation of 0.8
 correlatedBg <- correlatedBgEffects(N = 100, P = 15, pcorr = 0.8)
@@ -79,7 +79,7 @@ phenotype <- runSimulation(N = 100, P = 15,  tNrSNP = 10000,  cNrSNP=30,
                            normalise = TRUE, genVar = totalGeneticVar, 
                            h2s = h2s, phi = 0.6, delta = 0.3, gamma = 1,
                            NrFixedEffects = 4, NrConfounders = c(1, 2, 1, 2),
-                           pSpecificConfounders = c(0, 1, 1, 0.5),  
+                           pIndependentConfounders = c(0, 1, 1, 0.5),  
                            distConfounders = c("bin", "cat_norm", "cat_unif", "norm"), 
                            probConfounders = 0.2, 
                            catConfounders = c(0, 3, 4, 0),
@@ -108,7 +108,7 @@ totalPropVariance <- as.matrix(t(data.frame(varGenFixed, varGenBg, varNoiseFixed
 totalPropVariance <- cbind(totalPropVariance, rowSums(totalPropVariance))
 totalPropVariance <- rbind(totalPropVariance, sumProportion=colSums(totalPropVariance))
 
-colnames(totalPropVariance) <- c("common effect", "specific effect", 
+colnames(totalPropVariance) <- c("shared effect", "independent effect", 
                                  "total effect")
 
 knitr::kable(totalPropVariance, caption="Proportion of variance explained by the different phenotype components")
@@ -145,13 +145,13 @@ causalSNPsFromFile <- getCausalSNPs(NrCausalSNPs = 10, chr = 22, genoFilePrefix 
 
 ## ---- fig.show='hold'----------------------------------------------------
 # create genetic fixed effects with 20% of SNPs having a specific effect, affecting 40% of all simulated traits
-fixedGenetic <- geneticFixedEffects(X_causal = causalSNPs, N = 100, P = 20, pSpecificGenetic = 0.2, pTraitSpecificGenetic = 0.4)
+fixedGenetic <- geneticFixedEffects(X_causal = causalSNPs, N = 100, P = 20, pIndependentGenetic = 0.2, pTraitIndependentGenetic = 0.4)
 
 ## ---- fig.show='hold', echo=FALSE, fig.height=3.4, fig.width=3.4---------
-image(fixedGenetic$common, main="Common fixed genetic effects", axes=FALSE, cex.main=0.8)
+image(fixedGenetic$shared, main="Shared fixed genetic effects", axes=FALSE, cex.main=0.8)
 mtext(side = 1, text = "Samples", line = 1)
 mtext(side = 2, text = "Traits", line = 1)
-image(fixedGenetic$specific, main="Specific fixed genetic effects", axes=FALSE, cex.main=0.8)
+image(fixedGenetic$independent, main="Independent fixed genetic effects", axes=FALSE, cex.main=0.8)
 mtext(side = 1, text = "Samples", line = 1)
 mtext(side = 2, text = "Traits", line = 1)
 
@@ -167,36 +167,36 @@ kinshipFromFile <- getKinship(kinshipfile = kinshipFile, norm=FALSE, verbose = F
 genBg <- geneticBgEffects(kinship = kinship, N = 100, P = 15)
 
 ## ---- fig.show='hold', echo=FALSE, fig.height=3.4, fig.width=3.4---------
-image(genBg$common, main="Common background genetic effects", axes=FALSE, cex.main=0.8)
+image(genBg$shared, main="Shared background genetic effects", axes=FALSE, cex.main=0.8)
 mtext(side = 1, text = "Samples", line = 1)
 mtext(side = 2, text = "Traits", line = 1)
-image(genBg$specific, main="Specific background genetic effects",  axes=FALSE, cex.main=0.8)
+image(genBg$independent, main="Independent background genetic effects",  axes=FALSE, cex.main=0.8)
 mtext(side = 1, text = "Samples", line = 1)
 mtext(side = 2, text = "Traits", line = 1)
 
 ## ---- fig.show='hold'----------------------------------------------------
 # create 1 noise fixed effects affecting 30% of all simulated traits. The effect follows a uniform distribution between 30 and 40  (resembling for instance age in a study cohort).
-fixedNoiseUniform <- noiseFixedEffects(N = 100, P = 10, NrConfounders = 1, pSpecificConfounders = 1, pTraitSpecificConfounders = 0.3, distConfounders = "unif", mConfounders = 35, sdConfounders = 5)
+fixedNoiseUniform <- noiseFixedEffects(N = 100, P = 10, NrConfounders = 1, pIndependentConfounders = 1, pTraitIndependentConfounders = 0.3, distConfounders = "unif", mConfounders = 35, sdConfounders = 5)
 
 # create 2 noise fixed effects with 1 specific confounder affecting 20% of all simulated traits. The effects follow a normal distribution
-fixedNoiseNormal <- noiseFixedEffects(N = 100, P = 10, NrConfounders = 2, pSpecificConfounders = 0.5, pTraitSpecificConfounders = 0.2, distConfounders = "norm", mConfounders = 0, sdConfounders = 1)
+fixedNoiseNormal <- noiseFixedEffects(N = 100, P = 10, NrConfounders = 2, pIndependentConfounders = 0.5, pTraitIndependentConfounders = 0.2, distConfounders = "norm", mConfounders = 0, sdConfounders = 1)
 
-# create 1 noise fixed effects affecting  all simulated traits. The effect follows a binomial distribution with probability 0.5(resembling for instance sex in a study cohort).
-fixedNoiseBinomial <- noiseFixedEffects(N = 100, P = 10, NrConfounders = 1, pSpecificConfounders = 0, distConfounders = "bin", probConfounders = 0.5)
+# create 1 noise fixed effects affecting  all simulated traits. The effect follows a binomial distribution with probability 0.5 (resembling for instance sex in a study cohort).
+fixedNoiseBinomial <- noiseFixedEffects(N = 100, P = 10, NrConfounders = 1, pIndependentConfounders = 0, distConfounders = "bin", probConfounders = 0.5)
 
 ## ---- fig.show='hold', echo=FALSE, fig.height=3.4, fig.width=3.4---------
-image(fixedNoiseUniform$specific, main="Specific fixed noise effects\n(uniform confounder dist)", axes=FALSE,  cex.main=0.8)
+image(fixedNoiseUniform$independent, main="Independent fixed noise effects\n(uniform confounder dist)", axes=FALSE,  cex.main=0.8)
 mtext(side = 1, text = "Samples", line = 1)
 mtext(side = 2, text = "Traits", line = 1)
 
-image(fixedNoiseNormal$common, main="Common fixed noise effects\n(normal confounder dist)", axes=FALSE, cex.main=0.8)
+image(fixedNoiseNormal$shared, main="Shared fixed noise effects\n(normal confounder dist)", axes=FALSE, cex.main=0.8)
 mtext(side = 1, text = "Samples", line = 1)
 mtext(side = 2, text = "Traits", line = 1)
-image(fixedNoiseNormal$specific, main="Specific fixed noise effects\n(normal confounder dist)", axes=FALSE, cex.main=0.8)
+image(fixedNoiseNormal$independent, main="Independent fixed noise effects\n(normal confounder dist)", axes=FALSE, cex.main=0.8)
 mtext(side = 1, text = "Samples", line = 1)
 mtext(side = 2, text = "Traits", line = 1)
 
-image(fixedNoiseBinomial$common, main="Specific fixed noise effects\n(binomial confounder dist)",  axes=FALSE, cex.main=0.8)
+image(fixedNoiseBinomial$shared, main="Shared fixed noise effects\n(binomial confounder dist)",  axes=FALSE, cex.main=0.8)
 mtext(side = 1, text = "Samples", line = 1)
 mtext(side = 2, text = "Traits", line = 1)
 
@@ -216,10 +216,10 @@ mtext(side = 2, text = "Traits", line = 1)
 noiseBg <- noiseBgEffects(N = 100, P = 10, mean = 0, sd = 1)
 
 ## ---- fig.show='hold', echo=FALSE, fig.height=3.4, fig.width=3.4---------
-image(noiseBg$common, main="Common background noise effects", axes=FALSE, cex.main=0.8)
+image(noiseBg$shared, main="Shared background noise effects", axes=FALSE, cex.main=0.8)
 mtext(side = 1, text = "Samples", line = 1)
 mtext(side = 2, text = "Traits", line = 1)
-image(noiseBg$specific, main="Specific background noise effects", axes=FALSE, cex.main=0.8)
+image(noiseBg$independent, main="Independent background noise effects", axes=FALSE, cex.main=0.8)
 mtext(side = 1, text = "Samples", line = 1)
 mtext(side = 2, text = "Traits", line = 1)
 
