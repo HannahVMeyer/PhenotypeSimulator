@@ -1,3 +1,32 @@
+#' Scale phenotype component.
+#'
+#' The function scales the specified phenotype component such that the average 
+#' column variance is equal
+#' to the user-specified proportion of variance. 
+#'
+#' @param component numeric [N x P] phenotype matrix where N are the number of 
+#' observations and P numer of phenotypes
+#' @param propvar numeric specifying the proportion of variance that should be 
+#' explained by this phenotype component
+#' @return component_scaled numeric [N x P] phenotype matrix if propvar != 0 or 
+#' NULL
+#' @export
+#' @examples
+#' x <- matrix(rnorm(100), nc=10)
+#' x_scaled <- rescaleVariance(x, propvar=0.4)
+rescaleVariance <- function(component, propvar) {
+    if (propvar != 0) {
+        var_component <- var(component)
+        mean_var <- mean(diag(var_component))
+        scale_factor <- mean_var/propvar
+        component_scaled <- component/sqrt(scale_factor)
+        return(component_scaled)
+    } else {
+        return(NULL)
+    }
+}
+
+
 #' Set simulation model.
 #'
 #' Based on parameters provided, this function sets the name for the phenotype 
@@ -52,8 +81,9 @@ setModel <- function(genVar=NULL, h2s=NULL, theta=0.8, h2bg=NULL, eta=0.8,
     }
     if (is.null(genVar)) {
         if (is.null(noiseVar)) {
-            stop("Neither genVar nor noiseVar are provided, thus proportion of 
-                 variance from genetics cannot be deduced")
+            stop(paste("Neither genVar nor noiseVar are provided, thus",
+                      "proportion of variance from genetics cannot be deduced")
+                 )
         } else {
             genVar <- 1 - noiseVar
         } 
@@ -64,27 +94,51 @@ setModel <- function(genVar=NULL, h2s=NULL, theta=0.8, h2bg=NULL, eta=0.8,
     if (noiseVar + genVar > 1) {
         stop("Sum of genetic variance and noise variance is greater than 1")
     }
+    if ((noiseVar) == 0 && any(!is.null(phi), !is.null(rho), !is.null(delta))) {
+        stop(paste("The noise variance is set to 0 but noise variance",
+                   "components are supplied")
+        )
+    }
+    vmessage(c("The total noise variance (noiseVar) is:", noiseVar), verbose=v)
     if ((noiseVar) == 0 ) {
         modelNoise="noNoise"
         vmessage(c("The noise model is:", modelNoise), verbose=v)
     } else {
         if (all(c(is.null(delta), is.null(rho), is.null(phi)))) {
-            stop("Neither delta nor rho or phi are provided, at least one is 
-                 required")
-        } else if (all(c(!is.null(delta), !is.null(rho), !is.null(phi)))) {
-            if(delta + rho + phi != 1) {
-                stop("Sum of the proportion of the variance of noise effects is 
-                     greater than 1; change noiseVar, delta (fixed effect 
-                     variance), rho (correlated background variance) or phi 
-                     (random effect variance)\n delta + rho + phi = 1")
+            stop(paste("Neither delta (fixed noise effect variance) nor rho",
+                       "(correlated noise effect variance) or phi (random",
+                       "noise effect variance) are provided, at least", 
+                       "one is required")
+            )
+        } 
+        if (length(c(delta, rho, phi)) >=2) {
+            if (sum(c(delta, rho, phi)) > 1 ) {
+                stop(paste("Sum of the proportion of the variance of noise",
+                           "effects is greater than 1; change noiseVar, delta",
+                           "(fixed noise effect variance), rho (correlated",
+                           " noise effect variance) or phi (random noise effect"
+                           , "variance) such that delta + rho + phi = 1")
+                )
             }
-            } else if (all(c(!is.null(delta), !is.null(rho)))) { 
-                phi <- 1 - delta - rho
-            } else if (all(c(!is.null(delta), !is.null(phi)))) { 
-                rho <- 1 - delta - phi
-            } else if (all(c(!is.null(rho), !is.null(phi)))) { 
-                delta <- 1 - rho - phi
-            } 
+            if (length(c(delta, rho, phi)) == 3 && 
+                sum(c(delta, rho, phi)) < 1) {
+                stop(paste("Sum of the proportion of the variance of noise",
+                           "effects is less than 1; change noiseVar, delta",
+                           "(fixed noise effect variance), rho (correlated",
+                           " noise effect variance) or phi (random noise effect"
+                           , "variance) such that delta + rho + phi = 1")
+                )
+            }
+        } 
+        if (is.null(phi) && all(c(!is.null(delta), !is.null(rho)))) { 
+            phi <- 1 - delta - rho
+        } 
+        if (is.null(rho) && all(c(!is.null(delta), !is.null(phi)))) { 
+            rho <- 1 - delta - phi
+        } 
+        if (is.null(delta) && all(c(!is.null(rho), !is.null(phi)))) { 
+            delta <- 1 - rho - phi
+        } 
         if (is.null(delta)) { 
             delta <- 0
         } 
@@ -94,130 +148,186 @@ setModel <- function(genVar=NULL, h2s=NULL, theta=0.8, h2bg=NULL, eta=0.8,
         if (is.null(rho)) { 
             rho  <- 0
         }
-        
+        if(delta + rho + phi != 1) {
+            stop(paste("Not enough components provided to set proportions of",
+                       "noise variance correctly; if noise variance is only", 
+                       "explained by one component, its proportion of variance",
+                       "needs to be set to 1; otherwise, the proportion of",
+                       "variance of at least 2 components need to be specified")
+            )
+        }
         if (phi == 1) {
             modelNoise="noiseBgOnly"
             vmessage(c("The noise model is:", modelNoise), verbose=v)
-            vmessage(c("Variance of shared bg noise effect:", alpha), verbose=v)
+            vmessage(c("Proportion of random noise variance (phi):", phi), 
+                     verbose=v)
+            vmessage(c("Variance of shared random noise effect (alpha):", 
+                       alpha), verbose=v)
         } else if (delta == 1) {
             modelNoise="noiseFixedOnly"
             vmessage(c("The noise model is:", modelNoise), verbose=v)
-            vmessage(c("Proportion of fixed noise variance:", delta), verbose=v)
-            vmessage(c("Proportion of variance of shared fixed noise effects:",
-                       gamma), verbose=v)
-            vmessage(c("Proportion of noise effects (confounders) to have a 
-                     trait-independent effect :", pIndependentConfounders), 
+            vmessage(c("Proportion of fixed noise variance (delta):", 
+                       delta), verbose=v)
+            vmessage(paste("Proportion of variance of shared fixed noise",
+                           "effects (gamma):", gamma), verbose=v)
+            vmessage(paste("Proportion of noise effects (confounders) to have",
+                           "a trait-independent effect (pIndependentConfounders"
+                            , ") :", pIndependentConfounders), 
                      verbose=v)
-            vmessage(c("Proportion of traits influenced by independent fixed  
-                       noise effects:", pTraitIndependentConfounders), 
+            vmessage(paste("Proportion of traits influenced by independent",
+                           "fixed noise effects (pTraitIndependentConfounders):"
+                           , pTraitIndependentConfounders), 
                      verbose=v)
         } else if (rho == 1) {
             modelNoise="noiseCorrelatedOnly"
             vmessage(c("The noise model is:", modelNoise), verbose=v)
-            vmessage(c("Correlation between phenotypes:", pcorr), verbose=v)
-            vmessage(c("Proportion of variance of correlated bg noise effects:", 
-                       rho), verbose=v)
+            vmessage(paste("Proportion of variance of correlated noise effects",
+                           "(rho):", rho), verbose=v)
+            vmessage(c("Correlation between phenotypes (pcorr):", pcorr), 
+                     verbose=v)
         } else if (1 - rho == 1) {
             modelNoise="noiseFixedAndBg"
             vmessage(c("The noise model is:", modelNoise), verbose=v)
-            vmessage(c("Proportion of fixed noise variance:", delta), verbose=v)
-            vmessage(c("Proportion of variance of shared fixed noise effects:", 
-                       gamma), verbose=v)
-            vmessage(c("Proportion of noise effects (confounders) to have a 
-                       trait-independent effect :", pIndependentConfounders), 
+            vmessage(c("Proportion of fixed noise variance (delta):", 
+                       delta), verbose=v)
+            vmessage(paste("Proportion of variance of shared fixed noise",
+                           "effects (gamma):", gamma), verbose=v)
+            vmessage(paste("Proportion of fixed noise effects to have",
+                           "a trait-independent effect (pIndependentConfounders"
+                           , ") :", pIndependentConfounders), 
                      verbose=v)
-            vmessage(c("Proportion of traits influenced by independent fixed 
-                       noise effects:", pTraitIndependentConfounders), 
+            vmessage(paste("Proportion of traits influenced by independent",
+                           "fixed noise effects (pTraitIndependentConfounders):"
+                           , pTraitIndependentConfounders), 
+                     verbose=v)            
+            vmessage(c("Proportion of random noise variance (phi):", phi), 
                      verbose=v)
-            vmessage(c("Variance of shared bg noise effect:", alpha), verbose=v)
+            vmessage(c("Variance of shared random noise effect (alpha):", 
+                       alpha), verbose=v)
         } else if (1 - phi == 1) {
             modelNoise="noiseFixedAndCorrelated"
             vmessage(c("The noise model is:", modelNoise), verbose=v)
-            vmessage(c("Proportion of fixed noise variance:", delta), verbose=v)
-            vmessage(c("Proportion of variance of shared fixed noise effects:", 
-                       gamma), verbose=v)
-            vmessage(c("Proportion of noise effects (confounders) to have a 
-                       trait-independent effect :", pIndependentConfounders), 
+            vmessage(c("Proportion of fixed noise variance (delta):", 
+                       delta), verbose=v)
+            vmessage(paste("Proportion of variance of shared fixed noise",
+                           "effects (gamma):", gamma), verbose=v)
+            vmessage(paste("Proportion of fixed  noise effects to have",
+                           "a trait-independent effect (pIndependentConfounders"
+                           , ") :", pIndependentConfounders), 
                      verbose=v)
-            vmessage(c("Proportion of traits influenced by independent fixed 
-                       noise effects:", pTraitIndependentConfounders), 
+            vmessage(paste("Proportion of traits influenced by independent",
+                           "fixed noise effects (pTraitIndependentConfounders):"
+                           , pTraitIndependentConfounders), 
                      verbose=v)
-            vmessage(c("Correlation between phenotypes:", pcorr), verbose=v)
-            vmessage(c("Proportion of variance of correlated bg noise effects:", 
-                       rho), verbose=v)
+            vmessage(paste("Proportion of variance of correlated noise effects",
+                           "(rho):", rho), verbose=v)
+            vmessage(c("Correlation between phenotypes (pcorr):", pcorr), 
+                     verbose=v)
         } else if (1 - delta == 1 ) {
             modelNoise="noiseCorrelatedAndBg"
             vmessage(c("The noise model is:", modelNoise), verbose=v)
-            vmessage(c("Correlation between phenotypes:", pcorr), verbose=v)
-            vmessage(c("Proportion of variance of correlated bg noise effects:",
-                       rho), verbose=v)
-            vmessage(c("Variance of shared bg noise effect:", alpha), verbose=v)
+            vmessage(paste("Proportion of variance of correlated noise effects",
+                           "(rho):", rho), verbose=v)
+            vmessage(c("Correlation between phenotypes (pcorr):", pcorr), 
+                     verbose=v)
+            vmessage(c("Proportion of random noise variance (phi):", phi), 
+                     verbose=v)
+            vmessage(c("Variance of shared random noise effect (alpha):", 
+                       alpha), verbose=v)
         } else {
             modelNoise="noiseFixedAndBgAndCorrelated"
             vmessage(c("The noise model is:", modelNoise), verbose=v)
-            vmessage(c("Proportion of fixed noise variance:", delta), verbose=v)
-            vmessage(c("Proportion of variance of shared fixed noise effects:",
-                       gamma), verbose=v)
-            vmessage(c("Proportion of noise effects (confounders) to have a 
-                       trait-independent effect :", pIndependentConfounders), 
+            vmessage(c("Proportion of fixed noise variance (delta):", 
+                       delta), verbose=v)
+            vmessage(paste("Proportion of variance of shared fixed noise",
+                           "effects (gamma):", gamma), verbose=v)
+            vmessage(paste("Proportion of fixed noise effects to have",
+                           "a trait-independent effect (pIndependentConfounders"
+                           , ") :", pIndependentConfounders), 
                      verbose=v)
-            vmessage(c("Proportion of traits influenced by independent fixed 
-                       noise effects:", pTraitIndependentConfounders), 
+            vmessage(paste("Proportion of traits influenced by independent",
+                           "fixed noise effects (pTraitIndependentConfounders):"
+                           , pTraitIndependentConfounders), 
                      verbose=v)
-            vmessage(c("Correlation between phenotypes:", pcorr), verbose=v)
-            vmessage(c("Proportion of variance of correlated bg noise effects:", 
-                       rho), verbose=v)
-            vmessage(c("Variance of shared bg noise effect:", alpha), verbose=v)
+            vmessage(paste("Proportion of variance of correlated noise effects",
+                           "(rho):", rho), verbose=v)
+            vmessage(c("Correlation between phenotypes (pcorr):", pcorr), 
+                     verbose=v)
+            vmessage(c("Proportion of random noise variance (phi):", phi), 
+                     verbose=v)
+            vmessage(c("Variance of shared random noise effect (alpha):", 
+                       alpha), verbose=v)
         }
+        vmessage("\n", verbose=v)
     }
 
+    vmessage(c("The total genetic variance (genVar) is:", genVar), verbose=v)
     if ( genVar == 0 ) {
         modelGenetic="noGenetic"
         vmessage(c("The genetic model is:", modelGenetic), verbose=v)
     } else {   
         if (all(c(is.null(h2bg), is.null(h2s)))) {
-            stop("Neither h2bg nor h2s provided, at least one is required")
-        }
+            stop(paste("Neither fixed genetic effect variance (h2s) nor random"
+                    , "genetic effect variance (h2bg) provided, at least one is"
+                    , "required")
+            )
+        }        
+        if (length(c(h2bg, h2s)) == 2 && sum(c(h2bg, h2s)) != 1) {
+            stop(paste("Sum of the proportion of the variance of genetic",
+                       "effects is not equal to 1; change h2s (fixed effect",
+                       "variance) or h2bg (random effect variance) such that",
+                       "h2s + h2bg = 1")
+            )
+        } 
         if (is.null(h2s)) {
             h2s <- 1 - h2bg
         } else {
             h2bg <- 1 - h2s
         }
-        if (h2bg + h2s != 1) {
-            stop("Sum of the proportion of the variance of genetic effects is 
-                 greater than 1; change h2s (fixed effect variance) or h2bg 
-                 (random effect variance)\n h2s + h2bg = 1")
-        } 
+
         if ( h2s == 0) {
             modelGenetic="geneticBgOnly"
             vmessage(c("The genetic model is:", modelGenetic), verbose=v)
-            vmessage(c("Proportion of variance of shared bg genetic effects:", 
-                       eta), verbose=v)
+            vmessage(paste("Proportion of variance of random genetic effects",
+                           "(h2bg):", h2bg), verbose=v)
+            vmessage(paste("Proportion of variance of shared random genetic",
+                           "effects (eta):", eta), verbose=v)
         } else if ( h2s == 1) {
             modelGenetic="geneticFixedOnly"
             vmessage(c("The genetic model is:", modelGenetic), verbose=v)
-            vmessage(c("Proportion of variance of fixed genetic effects:", h2s), 
+            vmessage(paste("Proportion of variance of fixed genetic effects",
+                           "(h2s):", h2s), verbose=v)
+            vmessage(paste("Proportion of variance of shared fixed genetic",
+                           "effects (theta):", theta), verbose=v)
+            vmessage(paste("Proportion of fixed genetic effects to have a", 
+                           "trait-independent fixed effect", 
+                           "(pIndependentGenetic):", pIndependentGenetic), 
                      verbose=v)
-            vmessage(c("Proportion of variance of shared fixed genetic effects:"
-                       , theta), verbose=v)
-            vmessage(c("Proportion of genetic effects (SNPs) to have a 
-                       trait-independent fixed effect:", pIndependentGenetic), 
+            vmessage(paste("Proportion of traits influenced by independent",
+                           "fixed genetic effects (pTraitIndependentGenetic):",
+                           pTraitIndependentGenetic), 
                      verbose=v)
-            vmessage(c("Proportion of traits influenced by independent fixed 
-                        genetic effects:", pTraitIndependentGenetic), verbose=v)
         } else {
             modelGenetic="geneticFixedAndBg"
             vmessage(c("The genetic model is:", modelGenetic), verbose=v)
-            vmessage(c("Proportion of variance of fixed genetic effects:", h2s), 
+            vmessage(paste("Proportion of variance of fixed genetic effects",
+                           "(h2s):", h2s), verbose=v)
+            vmessage(paste("Proportion of variance of shared fixed genetic",
+                           "effects (theta):", theta), verbose=v)
+            vmessage(paste("Proportion of fixed genetic effects to have a", 
+                           "trait-independent fixed effect", 
+                           "(pIndependentGenetic):", pIndependentGenetic), 
                      verbose=v)
-            vmessage(c("Proportion of variance of shared fixed genetic effects:"
-                       , theta), verbose=v)
-            vmessage(c("Proportion of genetic effects (SNPs) to have a 
-                       trait-independent fixed effect:", pIndependentGenetic), 
+            vmessage(paste("Proportion of traits influenced by independent",
+                           "fixed genetic effects (pTraitIndependentGenetic):",
+                           pTraitIndependentGenetic), 
                      verbose=v)
-            vmessage(c("Proportion of traits influenced by independent fixed 
-                        genetic effects:", pTraitIndependentGenetic), verbose=v)
+            vmessage(paste("Proportion of variance of random genetic effects",
+                           "(h2bg):", h2bg), verbose=v)
+            vmessage(paste("Proportion of variance of shared random genetic",
+                           "effects (eta):", eta), verbose=v)
         }
+        vmessage("\n", verbose=v)
     }
     return(list(modelGenetic=modelGenetic, modelNoise=modelNoise))
 }
@@ -329,9 +439,9 @@ createPheno <- function(P, N, sampleID="ID_", phenoID="trait_",
     } else {
         if (is.null(genVar)) {
             if (is.null(noiseVar)) {
-                stop(paste("geneticModel is ", modelGenetic, "but neither genVar
-                nor noiseVar are provided, thus proportion of variance from
-                genetics cannot be deduced"))
+                stop(paste("geneticModel is ", modelGenetic, "but neither",
+                           "genVar nor noiseVar are provided, thus proportion",
+                           "of variance from genetics cannot be deduced"))
             } else {
                 genVar <- 1 - noiseVar
             } 
@@ -344,18 +454,22 @@ createPheno <- function(P, N, sampleID="ID_", phenoID="trait_",
                 h2bg <- 1
                 h2s <- 0
             } else {
-                stop("Genetic variance is unequal to zero, but no genetic 
-                phenotype components are provided")
+                stop(paste("Genetic variance is unequal to zero, but no",
+                           "genetic phenotype components are provided")
+                )
             }
-        } else if (is.null(h2s)) {
+        }
+        if (length(c(h2bg, h2s)) == 2 && sum(c(h2bg, h2s)) != 1) {
+            stop(paste("Sum of the proportion of the variance of genetic",
+                       "effects is not equal to 1; change h2s (fixed effect",
+                       "variance) or h2bg (random effect variance) such that",
+                       "h2s + h2bg = 1")
+            )
+        } 
+        if (is.null(h2s)) {
             h2s <- 1 - h2bg
         } else {
             h2bg <- 1 - h2s
-        }
-        if (h2bg + h2s != 1) {
-            stop("Sum of the proportion of the variance of genetic effects is 
-                 greater than 1; change h2s (fixed effect variance) or h2bg 
-                 (random effect variance)\n h2s + h2bg = 1")
         }
     }
     if (modelNoise == "noNoise") {
@@ -368,6 +482,7 @@ createPheno <- function(P, N, sampleID="ID_", phenoID="trait_",
         if (is.null(noiseVar)) {
             noiseVar <- 1 - genVar
         }
+        
         if (all(c(is.null(delta), is.null(rho), is.null(phi)))) {
             if (modelNoise == "noiseFixedOnly") {
                 delta <- 1
@@ -382,23 +497,39 @@ createPheno <- function(P, N, sampleID="ID_", phenoID="trait_",
                 phi <- 0
                 delta <- 0
             } else {
-                stop(paste("modelNoise is ", modelNoise, "but neither delta nor 
-                           rho or phi are provided, at least one is required"))
+                stop(paste("modelNoise is ", modelNoise, "but neither delta", 
+                           "nor rho or phi are provided, at least one is",
+                           "required"))
             }
-        } else if (all(c(!is.null(delta), !is.null(rho), !is.null(phi)))) {
-            if(delta + rho + phi != 1) {
-                stop("Sum of the proportion of the variance of noise effects is 
-                     greater than 1; change delta (fixed effect variance), rho 
-                     (correlated background variance) or phi (random effect 
-                     variance)\n delta + rho + phi = 1")
-            }
-        } else if (all(c(!is.null(delta), !is.null(rho)))) { 
-            phi <- 1 - delta - rho
-        } else if (all(c(!is.null(delta), !is.null(phi)))) { 
-            rho <- 1 - delta - phi
-        } else if (all(c(!is.null(rho), !is.null(phi)))) { 
-            delta <- 1 - rho - phi
         }
+        if (length(c(delta, rho, phi)) >=2) {
+            if (sum(c(delta, rho, phi)) > 1 ) {
+                stop(paste("Sum of the proportion of the variance of noise",
+                           "effects is greater than 1; change noiseVar, delta",
+                           "(fixed effect variance), rho (correlated",
+                           "background variance) or phi (random effect", 
+                           "variance) such that delta + rho + phi = 1")
+                )
+            }
+            if (length(c(delta, rho, phi)) == 3 && 
+                sum(c(delta, rho, phi)) < 1) {
+                stop(paste("Sum of the proportion of the variance of noise",
+                           "effects is less than 1; change noiseVar, delta",
+                           "(fixed effect variance), rho (correlated",
+                           "background variance) or phi (random effect", 
+                           "variance) such that delta + rho + phi = 1")
+                )
+            }
+        } 
+        if (is.null(phi) && all(c(!is.null(delta), !is.null(rho)))) { 
+            phi <- 1 - delta - rho
+        } 
+        if (is.null(rho) && all(c(!is.null(delta), !is.null(phi)))) { 
+            rho <- 1 - delta - phi
+        } 
+        if (is.null(delta) && all(c(!is.null(rho), !is.null(phi)))) { 
+            delta <- 1 - rho - phi
+        } 
         if (is.null(delta)) { 
             delta <- 0
         } 
@@ -408,32 +539,42 @@ createPheno <- function(P, N, sampleID="ID_", phenoID="trait_",
         if (is.null(rho)) { 
             rho  <- 0
         }
+        if(delta + rho + phi != 1) {
+            stop(paste("Not enough components provided to set proportions of",
+                       "noise variance correctly; if noise variance only", 
+                       "explained by one component, its proportion of variance",
+                       "needs to be set to 1; otherwise, the proportion of",
+                       "variance of at least 2 components need to be specified")
+            )
+        }
     }
     # proportions of genetic var: snp variance h2s and background variance h2bg
     # h2s + h2b = 1
     # genetic fixed
     if (grepl("Fixed", modelGenetic)) {
-        if (is.null(genFixed)) stop("Genetic model includes fixed effects, but
-                                    genFixed was not provided")
+        if (is.null(genFixed)) stop(paste("Genetic model includes fixed",
+                                          "effects, but genFixed was not",
+                                           "provided"))
         if (! all(dim(genFixed$shared) == c(N, P))) {
             dim_genFixed <- paste(dim(genFixed$shared), collapse=",")
-            stop("Dimensions of the genetic fixed effect (", dim_genFixed,") are
-                different from the specified dimensions: number of columns P: ",
-                 P, ", number of rows N: ", N) 
+            stop(paste("Dimensions of the genetic fixed effect (", dim_genFixed,
+                ") are different from the specified dimensions: number of",
+                "columns P: ", P, ", number of rows N: ", N) 
+            )
         }
         if (modelGenetic == "geneticFixedOnly") {
-            if (h2s != 1) stop("Genetic model 'geneticFixedOnly' implies all 
-                               genetic variance is explained by the fixed effect
-                               , however h2s != 1")
+            if (h2s != 1) stop(paste("Genetic model 'geneticFixedOnly' implies",
+                                     "all genetic variance is explained by the",
+                                     "fixed effect, however h2s != 1"))
         }
         if (is.null(genFixed$shared) && theta != 0) {
-            warning("No shared fixed independent effect chosen, setting theta to 
-                    0")
+            warning(paste("No shared fixed effect chosen, setting",
+                          "theta to 0"))
             theta <- 0
         }
-        if (is.null(genFixed$independent && theta != 1)) {
-            warning("No independent fixed genetic effect chosen, setting theta 
-                    to 1")
+        if (is.null(genFixed$independent) && theta != 1) {
+            warning(paste("No independent fixed genetic effect chosen, setting",
+                          "theta to 1"))
             theta <- 1
         }
         var_genFixed_shared <- theta * h2s * genVar
@@ -456,26 +597,31 @@ createPheno <- function(P, N, sampleID="ID_", phenoID="trait_",
     }
     # genetic bg
     if (grepl("Bg", modelGenetic)) {
-        if (is.null(genBg)) stop("Genetic model includes bg effects, but genBg 
-                                 was not provided")
+        if (is.null(genBg)) stop(paste("Genetic model includes bg effects, but",
+                                       "genBg was not provided"))
         if (! all(dim(genBg$shared) == c(N, P))) {
             dim_genBg <- paste(dim(genBg$shared), collapse=",")
-            stop("Dimensions of the genetic bg effect (", dim_genBg,") are 
-                 different from the specified dimensions: number of columns P: "
-                 , P, ", number of rows N: ", N) 
+            stop(paste("Dimensions of the genetic bg effect (", dim_genBg,
+                       ") are different from the specified dimensions: number",
+                       "of columns P: ", P, ", number of rows N: ", N)
+            )
         }
         if (modelGenetic == "geneticBgOnly" && h2bg != 1) {
-            stop("Genetic model 'geneticBgOnly' implies all genetic variance is 
-                 explained by the bg effect, however genVar != h2bg")
+            stop(paste("Genetic model 'geneticBgOnly' implies all genetic",
+                       "variance is explained by the bg effect, however genVar",
+                       "!= h2bg")
+            )
         }
         if (is.null(genBg$shared) && eta != 0) {
-            warning("No shared background genetic effect chosen, setting eta to 
-                    0")
+            warning(paste("No shared background genetic effect chosen, setting",
+                          "eta to 0")
+            )
             eta <- 0
         }
         if (is.null(genBg$independent) && eta != 1) {
-            warning("No independent background genetic effect chosen, setting  
-                    eta to 1")
+            warning(paste("No independent background genetic effect chosen,",
+                          "setting eta to 1")
+            )
             eta <- 1
         }
         var_genBg_shared <- eta * h2bg * genVar
@@ -504,30 +650,39 @@ createPheno <- function(P, N, sampleID="ID_", phenoID="trait_",
     # noiseVar = rho + delta + rest
     # noise fixed 
     if (grepl("Fixed", modelNoise)) {
-        if (is.null(noiseFixed)) stop("Noise model includes fixed effects, 
-                                      but noiseFixed was not provided")
+        if (is.null(noiseFixed)) stop(paste("Noise model includes fixed",
+                                            "effects, but noiseFixed was not",
+                                            "provided"))
         if (! all(dim(noiseFixed$shared) == c(N, P))) {
             dim_noiseFixed <- paste(dim(noiseFixed$shared), collapse=",")
-            stop("Dimensions of the noise fixed effect (", dim_noiseFixed,") are
-                 different from the specified dimensions: number of columns P: "
-                 , P, ", number of rows N: ", N) 
+            stop(paste("Dimensions of the noise fixed effect (", 
+                       dim_noiseFixed,") are different from the specified",
+                       "dimensions: number of columns P: ", P, ", number of",
+                       "rows N: ", N)
+            )
         }
         if (modelNoise == "noiseFixedOnly" && delta != 1) {
-             stop("Noise model 'noiseFixedOnly' implies all noise variance is 
-                  explained by the fixed effect, however noiseVar != delta")
+             stop(paste("Noise model 'noiseFixedOnly' implies all noise",
+                        "variance is explained by the fixed effect, however",
+                        "noiseVar != delta")
+             )
         }
         if ((modelNoise == "noiseFixedAndBg" && delta + phi != 1) || 
             (modelNoise == "noiseFixedAndCorrelated" && delta + rho != 1)) {
-            stop(paste("Noise model is", modelNoise, "and sum of noise variance 
-                       effects is greater > 0"))
+            stop(paste("Noise model is", modelNoise, "and sum of noise",
+                       "variance effects is greater > 0")
+                 )
         }
         if (is.null(noiseFixed$shared) && gamma != 0) {
-            warning("No shared fixed noise effect chosen, setting gamma to 0")
+            warning(paste("No shared fixed noise effect chosen, setting gamma",
+                          "to 0")
+            )
             gamma <- 0
         }
         if (is.null(noiseFixed$independent) && gamma != 1) {
-            warning("No independent fixed noise effect chosen, setting gamma to 
-                    1")
+            warning(paste("No independent fixed noise effect chosen, setting",
+                          "gamma to 1")
+            )
             gamma <- 1
         }
         var_noiseFixed_shared <- gamma * delta * noiseVar
@@ -553,22 +708,28 @@ createPheno <- function(P, N, sampleID="ID_", phenoID="trait_",
     # correlated bg
     if (grepl("Correlated", modelNoise)) {
         if (is.null(correlatedBg)) {
-            stop("Noise model includes correlated bg effects, but correlatedBg 
-                 was not provided")
+            stop(paste("Noise model includes correlated bg effects, but",
+                       "correlatedBg was not provided")
+            )
         }
         if (! all(dim(correlatedBg) == c(N, P))) {
             dim_correlatedBg <- paste(dim(correlatedBg$shared), collapse=",")
-            stop("Dimensions of the correlated bg effect (", dim_correlatedBg,")
-                 are different from the specified dimensions: number of columns 
-                 P: ", P, ", number of rows N: ", N) 
+            stop(paste("Dimensions of the correlated bg effect (", 
+                        dim_correlatedBg,") are different from the specified",
+                       "dimensions: number of columns P: ", P, ", 
+                       number of rows N: ", N)
+            )
         }
         if (modelNoise == "noiseCorrelatedOnly" && rho != 1) {
-            stop("Noise model 'noiseCorrelatedOnly' implies all noise variance 
-                 is explained by correlated bg effects, but noiseVar != rho")
+            stop(paste("Noise model 'noiseCorrelatedOnly' implies all noise",
+                       "variance is explained by correlated bg effects, but",
+                       "noiseVar != rho")
+            )
         }
         if (modelNoise == "noiseCorrelatedAndBg" && rho + phi != 1) {
-            stop(paste("Noise model is", modelNoise, "and sum of noise variance 
-                       effects is greater > 0"))
+            stop(paste("Noise model is", modelNoise, "and sum of noise",
+                       "variance effects is greater > 0")
+            )
         }
         var_noiseCorrelated <- rho *  noiseVar
         correlatedBg_rescaled <- rescaleVariance(correlatedBg, 
@@ -590,22 +751,26 @@ createPheno <- function(P, N, sampleID="ID_", phenoID="trait_",
         }
         if (! all(dim(noiseBg$shared) == c(N, P))) {
             dim_noiseBg <- paste(dim(noiseBg$shared), collapse=",")
-            stop("Dimensions of the noise bg effect (", dim_noiseBg,") are 
-                 different from the specified dimensions: number of columns P: "
-                 , P, ", number of rows N: ", N) 
+            stop(paste("Dimensions of the noise bg effect (", dim_noiseBg,
+                       ") are different from the specified dimensions: number",
+                       "of columns P: ", P, ", number of rows N: ", N) 
+            )
         }
         if (modelNoise == "noiseBgOnly" && phi != 1) {
-            stop("Noise model 'noiseBgOnly' implies all noise variance is 
-                 explained by the bg effect, however noiseVar != phi")
+            stop(paste("Noise model 'noiseBgOnly' implies all noise variance",
+                       "is explained by the bg effect, however noiseVar != phi")
+            )
         }
         if (is.null(noiseBg$shared) && alpha != 0) {
-            warning("No shared background noise effect chosen, setting alpha to 
-                    0")
+            warning(paste("No shared background noise effect chosen, setting",
+                          "alpha to 0")
+            )
             alpha <- 0
         }
         if (is.null(noiseBg$independent) && alpha != 1) {
-            warning("No independent background noise effect chosen, setting 
-                    alpha to 1")
+            warning(paste("No independent background noise effect chosen,",
+                          "setting alpha to 1")
+            )
             alpha <- 1
         }
         var_noiseBg_shared <- alpha * phi * noiseVar
@@ -815,7 +980,7 @@ createPheno <- function(P, N, sampleID="ID_", phenoID="trait_",
 #' phi=1)
 runSimulation <- function(N=1000, P=10, tNrSNP=5000, cNrSNP=20, 
                           NrConfounders=10, seed=219453, chr_string=NULL, 
-                          chr=20, NrChrCausal=NULL,
+                          chr=NULL, NrChrCausal=NULL,
                           genVar=NULL, h2s=NULL, theta=0.8, h2bg=NULL, eta=0.8, 
                           noiseVar=NULL, rho=NULL, delta=NULL, gamma=0.8, 
                           phi=NULL, alpha=0.8, sampleID="ID_", phenoID="Trait_", 
@@ -922,34 +1087,30 @@ runSimulation <- function(N=1000, P=10, tNrSNP=5000, cNrSNP=20,
     if ( modelGenetic != 'noGenetic') {
         vmessage(c("Simulate genetic effects (genetic model:", modelGenetic,")")
                  , verbose=verbose)
-        if (is.null(genoFilePrefix)) {
-            genotypes <- simulateGenotypes(N=N, NrSNP=tNrSNP, 
-                                           frequencies=SNPfrequencies, 
-                                           sampleID=sampleID, 
-                                           frequencyString=SNPfrequencyString, 
-                                           verbose=verbose)
-            kinship <- getKinship(X=genotypes$X_sd, sampleID=sampleID, 
-                                  norm=normalise, verbose=verbose)
-            causalSNPs <- getCausalSNPs(NrCausalSNPs=cNrSNP, 
-                                        genotypes=genotypes,
-                                        sampleID=sampleID, 
-                                        standardise=standardise, 
-                                        verbose=verbose)
-        } else {
-            kinship <- getKinship(kinshipfile=kinshipfile, sampleID=sampleID, 
-                                  norm=normalise, sep=kinshipDelimiter, 
-                                  header=kinshipHeader, verbose=verbose)
-            causalSNPs <- getCausalSNPs(NrCausalSNPs=cNrSNP, chr=chr, 
-                                        chr_string=chr_string, 
-                                        genoFilePrefix=genoFilePrefix, 
-                                        genoFileSuffix=genoFileSuffix, 
-                                        genoFileDelimiter=genoFileDelimiter, 
-                                        sampleID=sampleID, 
-                                        standardise=standardise, 
-                                        verbose=verbose)
-        }   
-
         if (grepl('Fixed', modelGenetic)) {
+            if (is.null(genoFilePrefix)) {
+                genotypes <- simulateGenotypes(N=N, NrSNP=tNrSNP, 
+                                               frequencies=SNPfrequencies, 
+                                               sampleID=sampleID, 
+                                               frequencyString=SNPfrequencyString, 
+                                               verbose=verbose)
+                
+                causalSNPs <- getCausalSNPs(NrCausalSNPs=cNrSNP, 
+                                            genotypes=genotypes,
+                                            sampleID=sampleID, 
+                                            standardise=standardise, 
+                                            verbose=verbose)
+            } else {
+                causalSNPs <- getCausalSNPs(NrCausalSNPs=cNrSNP, chr=chr, 
+                                            chr_string=chr_string, 
+                                            genoFilePrefix=genoFilePrefix, 
+                                            genoFileSuffix=genoFileSuffix, 
+                                            genoFileDelimiter=genoFileDelimiter, 
+                                            sampleID=sampleID, 
+                                            standardise=standardise, 
+                                            verbose=verbose)
+                genotypes <- NULL
+            } 
             vmessage("Simulate genetic fixed effects", verbose=verbose)
             genFixed <- geneticFixedEffects(X_causal=causalSNPs, N=N, P=P, 
                                             pIndependentGenetic=
@@ -958,19 +1119,36 @@ runSimulation <- function(N=1000, P=10, tNrSNP=5000, cNrSNP=20,
                                                 pTraitIndependentGenetic)
         } else {
             genFixed <- NULL
+            genotypes <- NULL
         }
 
         if (grepl('Bg', modelGenetic)) {
-            vmessage("Simulate genetic background effects (kinship-based)"
+            if (is.null(kinshipfile)) {
+                if (is.null(genotypes)){
+                    genotypes <- simulateGenotypes(N=N, NrSNP=tNrSNP, 
+                                                   frequencies=SNPfrequencies, 
+                                                   sampleID=sampleID, 
+                                                   frequencyString=SNPfrequencyString, 
+                                                   verbose=verbose)
+                }    
+                kinship <- getKinship(X=genotypes$X_sd, sampleID=sampleID, 
+                                      norm=normalise, verbose=verbose)
+            } else {
+                kinship <- getKinship(kinshipfile=kinshipfile, sampleID=sampleID, 
+                                      norm=normalise, sep=kinshipDelimiter, 
+                                      header=kinshipHeader, verbose=verbose)
+            }
+            
+            vmessage("Simulate genetic background effects"
                      , verbose=verbose)
-            genBg <- geneticBgEffects(N=N, P=P, kinship=kinship)
+            genBg <- geneticBgEffects(P=P, kinship=kinship)
         } else {
             genBg <- NULL
         }
     } else {
         genotypes <- NULL
         kinship <- NULL
-        causalSNPs <- NULL
+        cNrSNP <- 0
     }
     
     # 3. Construct final simulated phenotype 
@@ -983,7 +1161,11 @@ runSimulation <- function(N=1000, P=10, tNrSNP=5000, cNrSNP=20,
                             eta=eta, noiseVar=noiseVar, delta=delta, 
                             gamma=gamma, phi=phi, alpha=alpha, rho=rho,  
                             modelNoise=modelNoise, modelGenetic=modelGenetic, 
-                            verbose=verbose ) 
+                            verbose=verbose )
+    finalPheno$rawComponents$kinship <- kinship
+    finalPheno$rawComponents$genotypes <- genotypes
+    finalPheno$setup$NrCausalSNPs <- cNrSNP
+    return(finalPheno)
 }
 
 #' Save final phenotype and phenotype components.
@@ -1005,12 +1187,6 @@ runSimulation <- function(N=1000, P=10, tNrSNP=5000, cNrSNP=20,
 #' @param outstring optional name [string] of subdirectory (in relation to 
 #' directoryPheno/directoryGeno) to save set-up
 #' independent simulation results
-#' @param kinship [N x N] matrix of kinship estimate; optional: if provided, 
-#' kinship estimate will be saved to file
-#' @param genotypes [N x totalNrSNPs] matrix of all simulated SNPs; optional: if
-#'  provided, simulated SNPs will be saved to file 
-#' @param causalSNPs [N x NrCausalSNPs] matrix of causal SNPs; optional: if 
-#' provided, causalSNPs will be saved to file
 #' @param sample_subset_vec optional vector of sample subset sizes [integer];
 #' if provided, draws subsets of samples out of the total simulated dataset and 
 #' saves them separately 
@@ -1027,16 +1203,18 @@ runSimulation <- function(N=1000, P=10, tNrSNP=5000, cNrSNP=20,
 #' @param saveAsRDS [boolean] if TRUE, data will be saved as .RDS; at least one 
 #' of 'saveAsTable' or 'saveAsRDS' has to be TRUE, both can be TRUE
 #' @param verbose [boolean]; if TRUE, progress info is printed to standard out
-#' @return no return value, sole purpose of function is writing output files
+#' @return list of paths [strings] to final output phenotype (directoryPheno) 
+#' and genotype (directoryGeno) directories. If outstring or subset settings not
+#' NULL, these directories will be subdirectories of the input phenotype and 
+#' genotype directories.
 #' @export
 #' @examples
 #' simulatedPhenotype <- runSimulation(N=100, P=10, genVar=0.4, h2bg=1, 
 #' phi=1, verbose=FALSE)
 #' #not run
-#' #savePheno(simulatedPhenotype, directoryGeno="/path/to/dir/",  
+#' #outputdir <- savePheno(simulatedPhenotype, directoryGeno="/path/to/dir/",  
 #' #directoryPheno="/path/to/dir/", outstring="Date_simulation")
 savePheno <- function(simulatedData, directoryGeno, directoryPheno, 
-                      kinship=NULL, genotypes=NULL, causalSNPs=NULL,
                       sample_subset_vec=NULL, pheno_subset_vec=NULL, 
                       sample_subset_string=NULL, pheno_subset_string=NULL, 
                       outstring=NULL, saveAsTable=TRUE, saveAsRDS=FALSE, 
@@ -1051,7 +1229,7 @@ savePheno <- function(simulatedData, directoryGeno, directoryPheno,
     P <- simulatedData$setup$P
     sampleID <-  simulatedData$setup$sampleID
     phenoID <-  simulatedData$setup$phenoID
-    NrSNP <- ncol(simulatedData$phenoComponents$causalSNPs)
+    NrSNP <-simulatedData$setup$NrCausalSNPs
     genVar <- simulatedData$varComponents$genVar
 
     if (! is.null(sample_subset_string) || ! is.null(sample_subset_vec)) {
@@ -1109,16 +1287,18 @@ savePheno <- function(simulatedData, directoryGeno, directoryPheno,
             nrsamples <- length(ss)
             nrpheno <- length(sp)
 
-            outstring=paste("samples", nrsamples, "_traits", nrpheno, "_NrSNP",
-                            NrSNP, "_Cg", genVar, "_model", modelNoise, 
-                            modelGenetic, sep="")
-            directoryPheno = paste(directoryPheno,"/", "samples", nrsamples, 
+            if (nrsamples != dim(simulatedData$phenoComponents$Y)[1] ||
+                nrpheno != dim(simulatedData$phenoComponents$Y)[2] ) {
+                outstring=paste("samples", nrsamples, "_traits", 
+                                nrpheno, "_NrSNP", NrSNP, "_Cg", genVar, 
+                                "_model", modelNoise, modelGenetic, sep="")
+                directoryPheno = paste(directoryPheno,"/", "samples", nrsamples, 
                                    "_NrSNP",NrSNP, "_Cg", genVar, "_model", 
                                    modelNoise, modelGenetic, sep="")
             
-            ifelse(!dir.exists(directoryPheno), 
+                ifelse(!dir.exists(directoryPheno), 
                    dir.create(directoryPheno, recursive=TRUE), FALSE)
-
+            }
             vmessage(c("Save phenotype to ", directoryPheno, "/Y..."), 
                      verbose=verbose, sep="")
             subset_Y <- simulatedData$phenoComponents$Y[ss,sp]
@@ -1153,11 +1333,12 @@ savePheno <- function(simulatedData, directoryGeno, directoryPheno,
                                        outstring, ".csv", sep=""), sep=",",
                                  quote=FALSE, col.names=FALSE, row.names=FALSE)
 
-                if(!is.null(kinship)) {
+                if(!is.null(simulatedData$rawComponents$kinship)) {
                     vmessage(c("Save kinship to", directoryGeno), 
                              verbose=verbose)
-                    write.table(kinship, paste(directoryGeno, "/samples", N, 
-                              "_NrSNP", NrSNP, "_kinship.csv", sep=""), sep=",",
+                    write.table(simulatedData$rawComponents$kinship[ss,ss], 
+                                paste(directoryPheno, "/kinship_", outstring,
+                                      ".csv", sep=""), sep=",",
                               col.names=TRUE, row.names=FALSE)
                 }
             }
@@ -1181,7 +1362,6 @@ savePheno <- function(simulatedData, directoryGeno, directoryPheno,
                 vmessage(c("Save SNPs and effect sizes to ", directoryGeno, 
                            "/SNP..."), verbose=verbose, sep="")
                 SNP <- simulatedData$phenoComponents$genFixed$cov[,ss]
-                colnames(SNP) <- rownames(subset_Y)
                 SNP_effect <- 
                     simulatedData$phenoComponents$genFixed$cov_effect[sp,]
                 colnames(SNP_effect) <- colnames(subset_Y)
@@ -1199,36 +1379,34 @@ savePheno <- function(simulatedData, directoryGeno, directoryPheno,
                     write.table(SNP,
                                 paste(directoryGeno, "/SNP_NrSNP", NrSNP, "_",  
                                         outstring, ".csv",sep=""), sep=",", 
-                                        col.names=TRUE, row.names=FALSE, 
+                                        col.names=NA, row.names=TRUE, 
                                         quote=FALSE)
                 }
                 if (saveAsTable) {
                     write.table(SNP_effect,  
                                 paste(directoryGeno, "/SNP_effects_NrSNP", 
                                       NrSNP, "_", outstring, ".csv",sep=""), 
-                                sep=",", col.names=TRUE, row.names=FALSE, 
+                                sep=",", col.names=NA, row.names=TRUE, 
                                 quote=FALSE)
                 }
 
-                if (!is.null(genotypes)) {
+                if (!is.null(simulatedData$rawComponents$genotypes)) {
                     vmessage(c("Save genotypes to", directoryGeno), 
                              verbose=verbose)
-                    samples <-paste(sampleID, seq(1,N,1), sep="")
-                    X_id <- data.frame(FID=samples, IID=samples, PAT=rep(0,N), 
-                                       MAT=rep(0,N), SEX=rep(0,N), 
-                                       PHENOTYPE=rep(-9, N))
-                    write.table(cbind(X_id, X_id), paste(directoryGeno, 
-                                "/samples", N, "_NrSNP", NrSNP, 
-                                "_genotypes_ID.txt", sep=""), sep="\t", 
-                                col.names=TRUE, row.names=FALSE)
-                    write.table(genotypes, paste(directoryGeno, "/samples", N, 
-                              "_NrSNP", NrSNP, "_genotypes.txt", sep=""), 
-                              sep="\t", col.names=TRUE, row.names=FALSE)
-                }
-                if (!is.null(causalSNPs)) {
-                    write.table(causalSNPs, paste(directoryGeno, "/NrTraits", P,
-                                "_causalSNPs.csv", sep=""), sep=",", 
-                                col.names=NA, row.names=TRUE, quote=FALSE)
+                    N = ncol(simulatedData$rawComponents$genotypes$X)
+                    samples <-paste(sampleID, seq(1, N, 1), sep="")
+                    X_id <- data.frame(FID=samples, IID=samples, PAT=rep(0, N), 
+                                       MAT=rep(0, N), SEX=rep(0, N), 
+                                       PHENOTYPE=rep(-9, N))[ss,]
+                    write.table(cbind(X_id), paste(directoryGeno, 
+                                "/genotypes_ID_", outstring, ".txt", sep=""), 
+                                sep="\t", 
+                                col.names=TRUE, row.names=FALSE, quote=FALSE)
+                    write.table(t(simulatedData$rawComponents$genotypes$X[ss,]), 
+                                paste(directoryGeno, "/genotypes_", outstring,
+                                      ".csv", sep=""), 
+                              sep=",", col.names=NA, row.names=TRUE, 
+                              quote=FALSE)
                 }
             }
 
@@ -1288,8 +1466,8 @@ savePheno <- function(simulatedData, directoryGeno, directoryPheno,
                 }
                 vmessage(c("Save covariates and effect sizes to ", 
                            directoryPheno, "/Covs..."), verbose=verbose, sep="")
-                cov <- simulatedData$phenoComponents$noiseFixed$cov[,ss]
-                colnames(cov) <- rownames(subset_Y)
+                cov <- t(simulatedData$phenoComponents$noiseFixed$cov[,ss])
+                rownames(cov) <- rownames(subset_Y)
                 cov_effect <- 
                     simulatedData$phenoComponents$noiseFixed$cov_effect[sp,]
                 if (saveAsRDS) {
@@ -1329,6 +1507,7 @@ savePheno <- function(simulatedData, directoryGeno, directoryPheno,
             }
         }, ss =ss)
     })
+    return(list(directoryPheno=directoryPheno, directoryGeno=directoryGeno))
 }
 
 
