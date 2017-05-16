@@ -1,31 +1,3 @@
-#' Scale phenotype component.
-#'
-#' The function scales the specified phenotype component such that the average 
-#' column variance is equal
-#' to the user-specified proportion of variance. 
-#'
-#' @param component numeric [N x P] phenotype matrix where N are the number of 
-#' observations and P numer of phenotypes
-#' @param propvar numeric specifying the proportion of variance that should be 
-#' explained by this phenotype component
-#' @return component_scaled numeric [N x P] phenotype matrix if propvar != 0 or 
-#' NULL
-#' @export
-#' @examples
-#' x <- matrix(rnorm(100), nc=10)
-#' x_scaled <- rescaleVariance(x, propvar=0.4)
-rescaleVariance <- function(component, propvar) {
-    if (propvar != 0) {
-        var_component <- var(component)
-        mean_var <- mean(diag(var_component))
-        scale_factor <- mean_var/propvar
-        component_scaled <- component/sqrt(scale_factor)
-        return(component_scaled)
-    } else {
-        return(NULL)
-    }
-}
-
 #' Compute allele frequencies from genotype data.
 #'
 #' @param snp vector of length N samples with genotypes encoded as 0,1 and 2
@@ -36,10 +8,10 @@ rescaleVariance <- function(component, propvar) {
 #' snp <- rbinom(200, 2, 0.3)
 #' allelefreq <- getAlleleFrequencies(snp)
 getAlleleFrequencies <- function(snp) {
-    counts = as.data.frame(table(snp))[,2]
-    frequencies = counts/length(snp)
-    major_a = sqrt(max(frequencies))
-    minor_a = 1 - major_a
+    counts <- as.data.frame(table(snp))[,2]
+    frequencies <- counts/length(snp)
+    major_a <- sqrt(max(frequencies))
+    minor_a <- 1 - major_a
     return(c(minor_a, major_a))
 }
 
@@ -61,17 +33,21 @@ getAlleleFrequencies <- function(snp) {
 #' @export
 #' @examples
 #' N500NrSNP5000 <- simulateGenotypes(N=500)
-#' N100NrSNP100 <- simulateGenotypes(N=100, frequencyString="0.2,0.3,0.4")
+#' N100NrSNP5000 <- simulateGenotypes(N=100, frequencyString="0.2,0.3,0.4")
 simulateGenotypes <- function(N, NrSNP=5000, frequencies=c(0.1, 0.2, 0.4), 
                               sampleID="ID_", verbose=TRUE, 
                               frequencyString=NULL) {
 	if (! is.null(frequencyString)) {
 		frequencies=commaList2vector(frequencyString)
 	}
+    if (any(frequencies < 0) || any(frequencies > 1)) {
+        stop ("Allele frequencies must be between 0 and 1")
+    }
     samples <-paste(sampleID, seq(1, N, 1), sep="")
 	vmessage(c("Simulate", NrSNP, "SNPs..."), verbose=verbose)
     X <- sapply(1:NrSNP, function(x) rbinom(N, 2, sample(frequencies, 1)))
-    colnames(X) <- paste("SNP", seq(1, NrSNP, 1), sep="")
+    colnames(X) <- paste(rep(1, ncol(X)), "-", 1:ncol(X), "-SNPID", 1:ncol(X), 
+                         sep="")
     rownames(X) <- samples
     X_sd <- standardiseGenotypes(X)
 	return(list(X=X, X_sd=X_sd, samples=samples))
@@ -94,10 +70,10 @@ simulateGenotypes <- function(N, NrSNP=5000, frequencies=c(0.1, 0.2, 0.4),
 #' geno_sd <- standardiseGenotypes(geno)
 standardiseGenotypes <- function(geno) {
     apply(geno, 2, function(snp) {
-        allele_freq = getAlleleFrequencies(snp)
-        var_snp = sqrt(2*allele_freq[1]*allele_freq[2])
+        allele_freq <- getAlleleFrequencies(snp)
+        var_snp <- sqrt(2*allele_freq[1]*allele_freq[2])
         if (var_snp == 0) {
-            snp_sd = snp
+            snp_sd <- snp
         } else {
             snp_sd <- sapply(snp, function(s) (s - 2*allele_freq[1])/var_snp)
         }
@@ -209,7 +185,7 @@ getCausalSNPs <- function(NrCausalSNPs=20,  genotypes=NULL, chr=NULL,
 		causalSNPs <- lapply(seq_along(ChrCausal), function(chrom) {
 			chromosomefile <- paste(genoFilePrefix, "chr", ChrCausal[chrom], 
 			                        genoFileSuffix, sep="")
-			SNPsOnChromosome <- countLines(chromosomefile)
+			SNPsOnChromosome <- R.utils::countLines(chromosomefile)
 			if (SNPsOnChromosome <  NrCausalSNPsChr[chrom]) {
 			    stop("Number of causal SNPs to be chosen from chromosome", chr, 
 			         "is larger than actual number of SNPs provided in 
@@ -250,6 +226,8 @@ getCausalSNPs <- function(NrCausalSNPs=20,  genotypes=NULL, chr=NULL,
 #' @param norm [boolean], if TRUE kinship matrix will be normalised by the mean 
 #' of its diagonal elements and 1e-4 added to the diagonal for numerical 
 #' stability
+#' @param standardise [boolean], if TRUE genotypes will be standardised before
+#' kinship estimation 
 #' @param kinshipfile path/to/kinshipfile [string] to be read; either X or 
 #' kinshipfile must be provided
 #' @param sep field separator [string] of kinship file 
@@ -274,12 +252,16 @@ getCausalSNPs <- function(NrCausalSNPs=20,  genotypes=NULL, chr=NULL,
 #' package = "PhenotypeSimulator")
 #' K_fromFile <- getKinship(kinshipfile=kinshipfile, norm=FALSE)
 getKinship <- function(X=NULL, kinshipfile=NULL, sampleID="ID_", norm=TRUE, 
-                       sep=",", header=TRUE, verbose=TRUE) {
+                       standardise=TRUE, sep=",", header=TRUE, verbose=TRUE) {
     if (!is.null(X)) {
-        if (abs(mean(X)) > 0.2 && (sd(X) > 1.2 || sd(X) < 0.8 )) {
+        if (abs(mean(X)) > 0.2 && (sd(X) > 1.2 || sd(X) < 0.8 ) 
+            && ! standardise) {
             warning("It seems like genotypes are not standardised, set 
                     standardise=TRUE to estimate kinship
                     from standardised genotypes (recommended)")
+        }
+        if (standardise) {
+            X <- standardiseGenotypes(X)
         }
         N <- nrow(X)
         NrSNP <- ncol(X)
