@@ -35,6 +35,7 @@ commaList2vector <- function(commastring) {
 #' \code{is.null} is FALSE
 addNonNulls <- function(compList) {
             nonNulls <- compList[!sapply(compList, is.null)]
+            if (length(nonNulls) == 0) return(NULL)
             if (length(unique(sapply(nonNulls, ncol))) != 1) {
                 stop("Column dimensions of list elements are different")
             }
