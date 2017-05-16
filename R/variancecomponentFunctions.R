@@ -11,12 +11,16 @@
 #'
 #' @param X_causal [N x NrCausalSNPs] matrix of standardised (depending on 
 #' standardise option) SNPs 
-#' @param N number [integer] of samples to simulate
+#' @param N number [integer] of samples to simulate; has to be less than or 
+#' equal to the number of samples in X_causal (rows); if less than  number of 
+#' samples in X_causal, N random rows of X_causal will be drawn; if not 
+#' specified, N assumed to be equal to samples in X_causal
 #' @param P number [integer] of phenotypes to simulate 
 #' @param pIndependentGenetic Proportion [double] of genetic effects (SNPs) to
 #'  have an independent fixed effect
 #' @param pTraitIndependentGenetic Proportion [double] of traits influenced by 
 #' independent fixed genetic effects
+#' @param verbose [boolean]; if TRUE, progress info is printed to standard out
 #' @return named list of shared fixed genetic effects (shared: [N x P] matrix), 
 #' independent fixed genetic effects (independent: [N x P] matrix), 
 #' the causal SNPs named by having a shared or independent effect 
@@ -27,40 +31,71 @@
 #' genotypes <- simulateGenotypes(N=100, NrSNP=20, verbose=FALSE)
 #' causalSNPs <- getCausalSNPs(genotypes=genotypes)
 #' geneticFixed <- geneticFixedEffects(X_causal=causalSNPs, P=10, N=100)
-geneticFixedEffects <- function(X_causal, N, P, pIndependentGenetic=0.4, 
-                                pTraitIndependentGenetic=0.2) {
+geneticFixedEffects <- function(X_causal, P, N=NULL, pIndependentGenetic=0.4, 
+                                pTraitIndependentGenetic=0.2, verbose=TRUE) {
+    NrGenotypeSamples <- nrow(X_causal) 
+    if (!is.null(N)) {
+        if (N > NrGenotypeSamples) {
+            stop("Sample number specified exceeds number of genotypes provided")
+        }
+        if (N < NrGenotypeSamples) {
+            vmessage(c("Sampling", N, "samples from", NrGenotypeSamples,
+                       "genotypes provided"))
+            X_causal <- X_causal[sample(NrGenotypeSamples, N),]
+        }
+    }
     NrCausalSNPs <- ncol(X_causal)
-    NrIndependentSNPs <- round(pIndependentGenetic * NrCausalSNPs)
+    if (P == 1) {
+        NrIndependentSNPs <- 0
+    } else {
+        NrIndependentSNPs <- round(pIndependentGenetic * NrCausalSNPs)
+    }
     NrSharedSNPs <- NrCausalSNPs - NrIndependentSNPs
     
-    # shared
-    shared <- sample(c(rep(TRUE, NrSharedSNPs), rep(FALSE, NrIndependentSNPs)), 
-                   replace=FALSE)
-    X_shared <-  X_causal[,shared]
-    betaX_shared <- simulateDist(NrSharedSNPs, dist="norm") %*% 
-        t(simulateDist(P, dist="norm"))
+    Gshared <- NULL
+    Gindependent <- NULL
    
-    # independent
-    independent <- !shared
-    X_independent <- X_causal[,independent]
-    betaX_independent <- matrix(simulateDist(P * NrIndependentSNPs, dist="norm")
-                             , ncol=P)
-    p_nongenetic <- sample(c(rep(TRUE, pTraitIndependentGenetic * P), 
-                             rep(FALSE, (1 - pTraitIndependentGenetic) * P)), 
-                           replace=FALSE)
-    betaX_independent[,p_nongenetic] <- matrix(rep(0, 
-                                                   length(which(p_nongenetic)) 
-                                                   * NrIndependentSNPs), 
-                                            nrow=NrIndependentSNPs)
-
-    cov = rbind(t(X_shared), t(X_independent))
-    cov_effect = data.frame(betaX_shared=t(betaX_shared), 
-                            betaX_independent=t(betaX_independent))
-    colnames(cov_effect) <- paste(colnames(cov_effect),"_", 
-                                  rownames(cov), sep="")
-
-    Gshared = X_shared %*% betaX_shared
-    Gindependent = X_independent %*% betaX_independent
+    if (NrSharedSNPs != 0) {
+        # shared
+        shared <- sample(c(rep(TRUE, NrSharedSNPs), 
+                           rep(FALSE, NrIndependentSNPs)), 
+                   replace=FALSE)
+        X_shared <-  X_causal[,shared]
+        betaX_shared <- rnorm(NrSharedSNPs) %*% t(rnorm(P))
+        cov <- t(data.frame(X_shared))
+        cov_effect <- data.frame(t(betaX_shared))
+        colnames(cov_effect) <- paste(colnames(cov_effect), "_", 
+                                      rownames(cov), sep="")
+        Gshared = X_shared %*% betaX_shared
+    }
+   
+    if (NrIndependentSNPs != 0) {
+        # independent
+        independent <- !shared
+        X_independent <- X_causal[,independent]
+        betaX_independent <- matrix(rnorm(P * NrIndependentSNPs), ncol=P)
+        TraitIndependentGenetic <- ceiling(pTraitIndependentGenetic * P)
+        p_nongenetic <- sample(c(rep(TRUE, TraitIndependentGenetic), 
+                                 rep(FALSE, 
+                                     (P - TraitIndependentGenetic))), 
+                               replace=FALSE)
+        betaX_independent[,p_nongenetic] <- 
+            matrix(rep(0,  TraitIndependentGenetic * NrIndependentSNPs), 
+                                                nrow=NrIndependentSNPs)
+        cov <- t(data.frame(independent))
+        cov_effect <- data.frame(t(betaX_independent))
+        colnames(cov_effect) <- paste(colnames(cov_effect), "_", 
+                                      rownames(cov), sep="")
+    }
+    if (NrSharedSNPs != 0 && NrIndependentSNPs != 0) {
+        cov = rbind(t(X_shared), t(X_independent))
+        cov_effect = data.frame(betaX_shared=t(betaX_shared), 
+                                betaX_independent=t(betaX_independent))
+        colnames(cov_effect) <- paste(colnames(cov_effect), "_", 
+                                      rownames(cov), sep="")
+        
+        Gindependent = X_independent %*% betaX_independent
+    }
     
     return(list(shared=Gshared, 
                 independent=Gindependent, 
@@ -214,9 +249,12 @@ noiseFixedEffects <- function(N, P, NrFixedEffects=1, NrConfounders=10,
                                         sdBeta) {
         Cshared <- NULL
         Cindependent <- NULL
-        
-        NrIndependentConfounders <- round(pIndependentConfounders * 
-                                              NrConfounders)
+        if (P == 1) {
+            NrIndependentConfounders <- 0
+        } else {
+            NrIndependentConfounders <- round(pIndependentConfounders * 
+                                                  NrConfounders)
+        }
         NrSharedConfounders <- NrConfounders - NrIndependentConfounders
     
         if (NrSharedConfounders != 0) {
@@ -433,7 +471,6 @@ noiseFixedEffects <- function(N, P, NrFixedEffects=1, NrConfounders=10,
 #' geneticBgEffects simulates two random genetic effects (shared and 
 #' independent) based on the kinship estimates of the (simulated) samples.
 #'
-#' @param N number [integer] of samples to simulate
 #' @param P number [integer] of phenotypes to simulate 
 #' @param kinship [N x N] matrix of kinship estimates [double]
 #' @return named list of shared background genetic effects (shared: [N x P] 
@@ -454,20 +491,21 @@ noiseFixedEffects <- function(N, P, NrFixedEffects=1, NrConfounders=10,
 #' @examples
 #' genotypes <- simulateGenotypes(N=100, NrSNP=400, verbose=FALSE)
 #' kinship <- getKinship(genotypes$X_sd, norm=TRUE, verbose=FALSE)
-#' geneticBg <- geneticBgEffects(N=100, P=10, kinship=kinship)
-geneticBgEffects <- function(N, P, kinship) {
+#' geneticBg <- geneticBgEffects(P=10, kinship=kinship)
+geneticBgEffects <- function(P, kinship) {
+    N <- ncol(kinship)
     kinship_chol <- t(chol(kinship))
    
     # shared effect
-    B <- matrix(simulateDist(x=N * P, dist="norm"), ncol=P)
+    B <- matrix(rnorm(N * P), ncol=P)
     A <- matrix(rep(0, P * P), ncol=P)
-    A[,1] <- simulateDist(x=P, dist="norm")
+    A[,1] <- rnorm(P)
     genBgShared <- kinship_chol %*% (B %*% t(A))
     
     # independent effect
-    B <- matrix(simulateDist(x=N * P, dist="norm"), ncol=P)
+    B <- matrix(rnorm(N * P), ncol=P)
     A <- matrix(rep(0, P * P), ncol=P)
-    diag(A) <- simulateDist(x=P, dist="norm")
+    diag(A) <- rnorm(P)
     genBgIndependent <- kinship_chol %*% (B %*% A)
 
     return(list(shared=genBgShared, independent=genBgIndependent))
@@ -493,12 +531,12 @@ geneticBgEffects <- function(N, P, kinship) {
 #' noiseBG <- noiseBgEffects(N=100, P=20, mean=2)
 noiseBgEffects <- function(N, P, mean=0, sd=1) {
     # shared effect
-    noiseBgIndependent <- simulateDist(x=N, dist="norm", m=mean, std=sd) %*%  
-        t(simulateDist(x=P, dist="norm", m=mean, std=sd))
+    noiseBgIndependent <- rnorm(n=N, mean=mean, sd=sd) %*% t(rnorm(n=P, 
+                                                                   mean=mean, 
+                                                                   sd=sd))
     
     # independent effect
-    noiseBgShared <- matrix(simulateDist(x= N * P, dist="norm", m=mean, std=sd), 
-    ncol=P) 
+    noiseBgShared <- matrix(rnorm(n= N * P, mean=mean, sd=sd), ncol=P) 
    
     return(list(shared=noiseBgShared, independent=noiseBgIndependent))
 }
