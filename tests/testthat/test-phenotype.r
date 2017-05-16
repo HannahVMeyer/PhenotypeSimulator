@@ -7,7 +7,7 @@ genotypes <- simulateGenotypes(N=100, NrSNP=20, verbose=FALSE)
 kinship <- getKinship(genotypes$X_sd, norm=TRUE, verbose=FALSE)
 causalSNPs <- getCausalSNPs(genotypes=genotypes)
 geneticFixed <- geneticFixedEffects(X_causal=causalSNPs, P=10, N=100)
-geneticBg <- geneticBgEffects(N=100, P=10, kinship=kinship)
+geneticBg <- geneticBgEffects(P=10, kinship=kinship)
 
 test_that('getAlleleFrequencies returns a vector of allele frequencies equal to 
           the simulated frequencies', {
