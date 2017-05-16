@@ -1,4 +1,4 @@
-#' @useDynLib PhenotypeSimulator
+#' @useDynLib PhenotypeSimulator, .registration = TRUE
 #' @importFrom Rcpp sourceCpp
 NULL
 
