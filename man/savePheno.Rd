@@ -4,11 +4,11 @@
 \alias{savePheno}
 \title{Save final phenotype and phenotype components.}
 \usage{
-savePheno(simulatedData, directoryGeno, directoryPheno, kinship = NULL,
-  genotypes = NULL, causalSNPs = NULL, sample_subset_vec = NULL,
-  pheno_subset_vec = NULL, sample_subset_string = NULL,
-  pheno_subset_string = NULL, outstring = NULL, saveAsTable = TRUE,
-  saveAsRDS = FALSE, verbose = TRUE)
+savePheno(simulatedData, directoryGeno, directoryPheno,
+  sample_subset_vec = NULL, pheno_subset_vec = NULL,
+  sample_subset_string = NULL, pheno_subset_string = NULL,
+  outstring = NULL, saveAsTable = TRUE, saveAsRDS = FALSE,
+  verbose = TRUE)
 }
 \arguments{
 \item{simulatedData}{named list of i) dataframe of proportion of variance 
@@ -23,15 +23,6 @@ simulations should be saved [needs user writing permission]}
 \item{directoryPheno}{name of parent directory [string] where final phenotype 
 and phenotype components from simulations should be saved [needs user writing 
 permission]}
-
-\item{kinship}{[N x N] matrix of kinship estimate; optional: if provided, 
-kinship estimate will be saved to file}
-
-\item{genotypes}{[N x totalNrSNPs] matrix of all simulated SNPs; optional: if
-provided, simulated SNPs will be saved to file}
-
-\item{causalSNPs}{[N x NrCausalSNPs] matrix of causal SNPs; optional: if 
-provided, causalSNPs will be saved to file}
 
 \item{sample_subset_vec}{optional vector of sample subset sizes [integer];
 if provided, draws subsets of samples out of the total simulated dataset and 
@@ -61,7 +52,10 @@ of 'saveAsTable' or 'saveAsRDS' has to be TRUE, both can be TRUE}
 \item{verbose}{[boolean]; if TRUE, progress info is printed to standard out}
 }
 \value{
-no return value, sole purpose of function is writing output files
+list of paths [strings] to final output phenotype (directoryPheno) 
+and genotype (directoryGeno) directories. If outstring or subset settings not
+NULL, these directories will be subdirectories of the input phenotype and 
+genotype directories.
 }
 \description{
 savePheno saves model setup parameters and simulated genotypes to the 
@@ -72,6 +66,6 @@ either \link{runSimulation} or \link{createPheno}
 simulatedPhenotype <- runSimulation(N=100, P=10, genVar=0.4, h2bg=1, 
 phi=1, verbose=FALSE)
 #not run
-#savePheno(simulatedPhenotype, directoryGeno="/path/to/dir/",  
+#outputdir <- savePheno(simulatedPhenotype, directoryGeno="/path/to/dir/",  
 #directoryPheno="/path/to/dir/", outstring="Date_simulation")
 }

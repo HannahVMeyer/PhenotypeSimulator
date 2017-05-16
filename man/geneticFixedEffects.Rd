@@ -4,22 +4,27 @@
 \alias{geneticFixedEffects}
 \title{Simulate genetic fixed effects.}
 \usage{
-geneticFixedEffects(X_causal, N, P, pIndependentGenetic = 0.4,
-  pTraitIndependentGenetic = 0.2)
+geneticFixedEffects(X_causal, P, N = NULL, pIndependentGenetic = 0.4,
+  pTraitIndependentGenetic = 0.2, verbose = TRUE)
 }
 \arguments{
 \item{X_causal}{[N x NrCausalSNPs] matrix of standardised (depending on 
 standardise option) SNPs}
 
-\item{N}{number [integer] of samples to simulate}
-
 \item{P}{number [integer] of phenotypes to simulate}
+
+\item{N}{number [integer] of samples to simulate; has to be less than or 
+equal to the number of samples in X_causal (rows); if less than  number of 
+samples in X_causal, N random rows of X_causal will be drawn; if not 
+specified, N assumed to be equal to samples in X_causal}
 
 \item{pIndependentGenetic}{Proportion [double] of genetic effects (SNPs) to
 have an independent fixed effect}
 
 \item{pTraitIndependentGenetic}{Proportion [double] of traits influenced by 
 independent fixed genetic effects}
+
+\item{verbose}{[boolean]; if TRUE, progress info is printed to standard out}
 }
 \value{
 named list of shared fixed genetic effects (shared: [N x P] matrix), 

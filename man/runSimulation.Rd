@@ -5,7 +5,7 @@
 \title{Run phenotype simulation.}
 \usage{
 runSimulation(N = 1000, P = 10, tNrSNP = 5000, cNrSNP = 20,
-  NrConfounders = 10, seed = 219453, chr_string = NULL, chr = 20,
+  NrConfounders = 10, seed = 219453, chr_string = NULL, chr = NULL,
   NrChrCausal = NULL, genVar = NULL, h2s = NULL, theta = 0.8,
   h2bg = NULL, eta = 0.8, noiseVar = NULL, rho = NULL, delta = NULL,
   gamma = 0.8, phi = NULL, alpha = 0.8, sampleID = "ID_",

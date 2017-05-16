@@ -4,11 +4,9 @@
 \alias{geneticBgEffects}
 \title{Simulate genetic background effects.}
 \usage{
-geneticBgEffects(N, P, kinship)
+geneticBgEffects(P, kinship)
 }
 \arguments{
-\item{N}{number [integer] of samples to simulate}
-
 \item{P}{number [integer] of phenotypes to simulate}
 
 \item{kinship}{[N x N] matrix of kinship estimates [double]}
@@ -38,5 +36,5 @@ E = KBA
 \examples{
 genotypes <- simulateGenotypes(N=100, NrSNP=400, verbose=FALSE)
 kinship <- getKinship(genotypes$X_sd, norm=TRUE, verbose=FALSE)
-geneticBg <- geneticBgEffects(N=100, P=10, kinship=kinship)
+geneticBg <- geneticBgEffects(P=10, kinship=kinship)
 }

@@ -32,7 +32,7 @@ Simulate bi-allelic genotypes.
 }
 \examples{
 N500NrSNP5000 <- simulateGenotypes(N=500)
-N100NrSNP100 <- simulateGenotypes(N=100, frequencyString="0.2,0.3,0.4")
+N100NrSNP5000 <- simulateGenotypes(N=100, frequencyString="0.2,0.3,0.4")
 }
 \seealso{
 \code{\link{standardiseGenotypes}}

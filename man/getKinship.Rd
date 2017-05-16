@@ -5,7 +5,7 @@
 \title{Get genetic kinship.}
 \usage{
 getKinship(X = NULL, kinshipfile = NULL, sampleID = "ID_", norm = TRUE,
-  sep = ",", header = TRUE, verbose = TRUE)
+  standardise = TRUE, sep = ",", header = TRUE, verbose = TRUE)
 }
 \arguments{
 \item{X}{[NrSamples x totalNrSNPs] matrix of standardised genotypes}
@@ -19,6 +19,9 @@ from 1 to NrSamples)}
 \item{norm}{[boolean], if TRUE kinship matrix will be normalised by the mean 
 of its diagonal elements and 1e-4 added to the diagonal for numerical 
 stability}
+
+\item{standardise}{[boolean], if TRUE genotypes will be standardised before
+kinship estimation}
 
 \item{sep}{field separator [string] of kinship file}
 
