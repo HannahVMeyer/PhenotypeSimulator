@@ -32,8 +32,9 @@ getAlleleFrequencies <- function(snp) {
 #' @seealso \code{\link{standardiseGenotypes}}
 #' @export
 #' @examples
-#' N500NrSNP5000 <- simulateGenotypes(N=500)
-#' N100NrSNP5000 <- simulateGenotypes(N=100, frequencyString="0.2,0.3,0.4")
+#' N10NrSNP10 <- simulateGenotypes(N=10, NrSNP=10)
+#' N10NrSNP10 <- simulateGenotypes(N=10, NrSNP=10,
+#' frequencyString="0.2,0.3,0.4")
 simulateGenotypes <- function(N, NrSNP=5000, frequencies=c(0.1, 0.2, 0.4), 
                               sampleID="ID_", verbose=TRUE, 
                               frequencyString=NULL) {
@@ -99,7 +100,8 @@ standardiseGenotypes <- function(geno) {
 #' @param genoFilePrefix full path/to/chromosome-wise-genotype-file-ending-
 #' before-"chrChromosomeNumber" (no '~' expansion!) [string]
 #' @param genoFileSuffix [string] following chromosome number including 
-#' .fileformat (e.g. ".csv")
+#' .fileformat (e.g. ".csv"); has to be a text format i.e. comma/tab/space
+#' separated
 #' @param genoFileDelimiter field separator [string] of genotype file
 #' @param sampleID prefix [string] for naming samples (followed by sample number
 #'  from 1 to NrSamples)
@@ -126,8 +128,9 @@ standardiseGenotypes <- function(geno) {
 #' @seealso \code{\link{standardiseGenotypes}} 
 #' @export
 #' @examples
-#' geno <- simulateGenotypes(N=500)
-#' causalSNPsFromSimulatedGenoStandardised <- getCausalSNPs(genotypes=geno, 
+#' geno <- simulateGenotypes(N=10, NrSNP=10)
+#' causalSNPsFromSimulatedGenoStandardised <- getCausalSNPs(NrCausalSNPs=10,
+#' genotypes=geno, 
 #' standardise=TRUE)
 #'
 #' genotypeFile <- system.file("extdata/genotypes/",
@@ -135,7 +138,8 @@ standardiseGenotypes <- function(geno) {
 #' package = "PhenotypeSimulator")
 #' genoFilePrefix <- gsub("chr.*", "", genotypeFile) 
 #' genoFileSuffix <- ".csv" 
-#' causalSNPsFromFile <- getCausalSNPs(chr=22, genoFilePrefix=genoFilePrefix, 
+#' causalSNPsFromFile <- getCausalSNPs(NrCausalSNPs=10, chr=22, 
+#' genoFilePrefix=genoFilePrefix, 
 #' genoFileSuffix=genoFileSuffix)
 getCausalSNPs <- function(NrCausalSNPs=20,  genotypes=NULL, chr=NULL, 
                           chr_string=NULL, NrChrCausal=NULL,
@@ -178,7 +182,7 @@ getCausalSNPs <- function(NrCausalSNPs=20,  genotypes=NULL, chr=NULL,
 			addSNP <- sample(NrChrCausal, NrCausalSNPs %% NrChrCausal)
 			NrCausalSNPsChr[addSNP] <- NrCausalSNPsChr[addSNP] + 1
 		}
-		vmessage(c("Causal chromosomes:", ChrCausal))
+		vmessage(c("Causal chromosomes:", ChrCausal), verbose=verbose)
 		vmessage(c("Get causal SNPs from chromsome-wide SNP files (", 
 		           genoFilePrefix, "...)", sep=""), verbose=verbose)
 		
@@ -244,7 +248,7 @@ getCausalSNPs <- function(NrCausalSNPs=20,  genotypes=NULL, chr=NULL,
 #' samples across the entire genome. 
 #' @export
 #' @examples
-#' geno <- simulateGenotypes(N=500)
+#' geno <- simulateGenotypes(N=10, NrSNP=50)
 #' K_fromGenotypesNormalised <- getKinship(geno$X_sd, norm=TRUE)
 #'
 #' kinshipfile <- system.file("extdata/kinship", 
@@ -273,6 +277,18 @@ getKinship <- function(X=NULL, kinshipfile=NULL, sampleID="ID_", norm=TRUE,
         vmessage(c("Reading kinship file from", kinshipfile), verbose=verbose)
         kinship <- as.matrix(read.table(kinshipfile, sep=sep, header=header, 
                                         stringsAsFactors=FALSE))
+        if (diff(dim(kinship)) !=0) {
+            if (abs(diff(dim(kinship))) == 1) {
+                stop (paste("Kinship matrix needs to be a square matrix,",
+                "however it has", nrow(kinship), "rows and", ncol(kinship), 
+                "columns, did you specify the kinship header information",
+                "correctly?"))
+            } else {
+                stop (paste("Kinship matrix needs to be a square matrix,",
+                "however it has", nrow(kinship), "rows and", ncol(kinship), 
+                "columns"))
+            }
+        }
     } else {
         stop ("Either X or kinshipfile must be provided")
     }

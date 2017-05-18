@@ -172,7 +172,7 @@ setModel <- function(genVar=NULL, h2s=NULL, theta=0.8, h2bg=NULL, eta=0.8,
                            "effects (gamma):", gamma), verbose=v)
             vmessage(paste("Proportion of noise effects (confounders) to have",
                            "a trait-independent effect (pIndependentConfounders"
-                            , ") :", pIndependentConfounders), 
+                            , "):", pIndependentConfounders), 
                      verbose=v)
             vmessage(paste("Proportion of traits influenced by independent",
                            "fixed noise effects (pTraitIndependentConfounders):"
@@ -194,7 +194,7 @@ setModel <- function(genVar=NULL, h2s=NULL, theta=0.8, h2bg=NULL, eta=0.8,
                            "effects (gamma):", gamma), verbose=v)
             vmessage(paste("Proportion of fixed noise effects to have",
                            "a trait-independent effect (pIndependentConfounders"
-                           , ") :", pIndependentConfounders), 
+                           , "):", pIndependentConfounders), 
                      verbose=v)
             vmessage(paste("Proportion of traits influenced by independent",
                            "fixed noise effects (pTraitIndependentConfounders):"
@@ -213,7 +213,7 @@ setModel <- function(genVar=NULL, h2s=NULL, theta=0.8, h2bg=NULL, eta=0.8,
                            "effects (gamma):", gamma), verbose=v)
             vmessage(paste("Proportion of fixed  noise effects to have",
                            "a trait-independent effect (pIndependentConfounders"
-                           , ") :", pIndependentConfounders), 
+                           , "):", pIndependentConfounders), 
                      verbose=v)
             vmessage(paste("Proportion of traits influenced by independent",
                            "fixed noise effects (pTraitIndependentConfounders):"
@@ -243,7 +243,7 @@ setModel <- function(genVar=NULL, h2s=NULL, theta=0.8, h2bg=NULL, eta=0.8,
                            "effects (gamma):", gamma), verbose=v)
             vmessage(paste("Proportion of fixed noise effects to have",
                            "a trait-independent effect (pIndependentConfounders"
-                           , ") :", pIndependentConfounders), 
+                           , "):", pIndependentConfounders), 
                      verbose=v)
             vmessage(paste("Proportion of traits influenced by independent",
                            "fixed noise effects (pTraitIndependentConfounders):"
@@ -976,8 +976,8 @@ createPheno <- function(P, N, sampleID="ID_", phenoID="trait_",
 #' # simulate phenotype of 100 samples, 10 traits from genetic and noise 
 #' # background effects, with variance explained of 0.2 and 0.8 respectively
 #' genVar = 0.2
-#' simulatedPhenotype <- runSimulation(N=100, P=10, genVar=genVar, h2bg=genVar, 
-#' phi=1)
+#' simulatedPhenotype <- runSimulation(N=100, P=5, cNrSNP=10,
+#' genVar=genVar, h2s=1, phi=1)
 runSimulation <- function(N=1000, P=10, tNrSNP=5000, cNrSNP=20, 
                           NrConfounders=10, seed=219453, chr_string=NULL, 
                           chr=NULL, NrChrCausal=NULL,
@@ -1011,7 +1011,7 @@ runSimulation <- function(N=1000, P=10, tNrSNP=5000, cNrSNP=20,
                           sdBetaString=NULL,
                           verbose=TRUE) {
 
-    vmessage(c("Set seed:", seed))
+    vmessage(c("Set seed:", seed), verbose=verbose)
     set.seed(seed)
        # find model
     model <- setModel(genVar=genVar, h2s=h2s, h2bg=h2bg, theta=theta, eta=eta, 
@@ -1089,6 +1089,9 @@ runSimulation <- function(N=1000, P=10, tNrSNP=5000, cNrSNP=20,
                  , verbose=verbose)
         if (grepl('Fixed', modelGenetic)) {
             if (is.null(genoFilePrefix)) {
+                if (!grepl('Bg', modelGenetic)) {
+                    tNrSNP=cNrSNP
+                }
                 genotypes <- simulateGenotypes(N=N, NrSNP=tNrSNP, 
                                                frequencies=SNPfrequencies, 
                                                sampleID=sampleID, 
@@ -1102,7 +1105,8 @@ runSimulation <- function(N=1000, P=10, tNrSNP=5000, cNrSNP=20,
                                             verbose=verbose)
             } else {
                 causalSNPs <- getCausalSNPs(NrCausalSNPs=cNrSNP, chr=chr, 
-                                            chr_string=chr_string, 
+                                            chr_string=chr_string,
+                                            NrChrCausal=NrChrCausal,
                                             genoFilePrefix=genoFilePrefix, 
                                             genoFileSuffix=genoFileSuffix, 
                                             genoFileDelimiter=genoFileDelimiter, 
@@ -1144,6 +1148,7 @@ runSimulation <- function(N=1000, P=10, tNrSNP=5000, cNrSNP=20,
             genBg <- geneticBgEffects(P=P, kinship=kinship)
         } else {
             genBg <- NULL
+            kinship <- NULL
         }
     } else {
         genotypes <- NULL
@@ -1209,8 +1214,8 @@ runSimulation <- function(N=1000, P=10, tNrSNP=5000, cNrSNP=20,
 #' genotype directories.
 #' @export
 #' @examples
-#' simulatedPhenotype <- runSimulation(N=100, P=10, genVar=0.4, h2bg=1, 
-#' phi=1, verbose=FALSE)
+#' simulatedPhenotype <- runSimulation(N=100, P=5, cNrSNP=10,
+#' genVar=0.2, h2s=1, phi=1)
 #' #not run
 #' #outputdir <- savePheno(simulatedPhenotype, directoryGeno="/path/to/dir/",  
 #' #directoryPheno="/path/to/dir/", outstring="Date_simulation")
@@ -1308,7 +1313,7 @@ savePheno <- function(simulatedData, directoryGeno, directoryPheno,
                               sep=""))
             }
             if (saveAsTable) {
-                write.table(subset_Y, paste(directoryPheno, "/Ysim_",outstring,
+                write.table(subset_Y, paste(directoryPheno, "/Ysim_", outstring,
                             ".csv", sep=""), sep=",", quote=FALSE,
                             col.names=NA, row.names=TRUE)
             }
@@ -1364,7 +1369,7 @@ savePheno <- function(simulatedData, directoryGeno, directoryPheno,
                 SNP <- simulatedData$phenoComponents$genFixed$cov[,ss]
                 SNP_effect <- 
                     simulatedData$phenoComponents$genFixed$cov_effect[sp,]
-                colnames(SNP_effect) <- colnames(subset_Y)
+                rownames(SNP_effect) <- colnames(subset_Y)
                 if (saveAsRDS) {
                     saveRDS(SNP,  
                             paste(directoryGeno,"/SNP_NrSNP", NrSNP, "_",  
