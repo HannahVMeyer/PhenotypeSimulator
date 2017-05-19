@@ -105,7 +105,7 @@ geneticFixedEffects <- function(X_causal, P, N=NULL, pIndependentGenetic=0.4,
 
 #' Simulate noise fixed effects.
 #'
-#' noiseFixedEffects simulates a independent number of fixed noise effects 
+#' noiseFixedEffects simulates a number of fixed noise effects 
 #' (confounders). Confounders can have effects across all traits (shared) 
 #' or to a number of traits only (independent); the proportion of independent 
 #' confounders from the total of simulated confounders can be chosen via 
@@ -117,8 +117,9 @@ geneticFixedEffects <- function(X_causal, P, N=NULL, pIndependentGenetic=0.4,
 #' drawn from different distributions/different parameters of the same 
 #' distribution can be simulated by specifying NrFixedEffects and supplying the 
 #' respective distribution parameters (*Confounders and *Beta) explained below. 
-#' If a modelparameter and its "String' version are provided, i.e. NrConfounders 
-#' and NrConfoundersStrings, the "String' specification will be used!
+#' If a model parameter and its "String' version are provided, i.e. 
+#' NrConfounders and NrConfoundersStrings, the "String' specification will be 
+#' used!
 #'
 #' @param N number [integer] of samples to simulate
 #' @param P number [integer] of phenotypes to simulate
@@ -247,6 +248,14 @@ noiseFixedEffects <- function(N, P, NrFixedEffects=1, NrConfounders=10,
                                         sdConfounders, catConfounders, 
                                         probConfounders, distBeta, mBeta, 
                                         sdBeta) {
+        if (is.null(catConfounders) && grepl("cat", distConfounders)) {
+            stop(paste("Confounder distribution set to", distConfounders, "but",
+                       "no categories provided"))
+        }
+        if (is.null(probConfounders) && grepl("bin", distConfounders)) {
+            stop(paste("Confounder distribution set to", distConfounders, "but",
+                       "no probabilities provided"))
+        }
         Cshared <- NULL
         Cindependent <- NULL
         if (P == 1) {
@@ -256,7 +265,7 @@ noiseFixedEffects <- function(N, P, NrFixedEffects=1, NrConfounders=10,
                                                   NrConfounders)
         }
         NrSharedConfounders <- NrConfounders - NrIndependentConfounders
-    
+        
         if (NrSharedConfounders != 0) {
             shared <- matrix(simulateDist(N * NrSharedConfounders, 
                                         dist=distConfounders, m=mConfounders, 
@@ -522,21 +531,21 @@ geneticBgEffects <- function(P, kinship) {
 #' @return named list of shared background noise effects (shared: [N x P] 
 #' matrix) and independent background noise effects (independent: [N x P] 
 #' matrix) 
-#' @details The shared background effect is simulated as vec(shared) ~ 
-#' N(mean,sd). The independent background effect is simulated as the 
+#' @details The independent background effect is simulated as vec(shared) ~ 
+#' N(mean,sd). The shared background effect is simulated as the 
 #' matrix product of two normal
-#' distributions A [N x 1] and B [P x 1]: At(B)
+#' distributions A [N x 1] and B [P x 1]: AB^t
 #' @export
 #' @examples
 #' noiseBG <- noiseBgEffects(N=100, P=20, mean=2)
 noiseBgEffects <- function(N, P, mean=0, sd=1) {
     # shared effect
-    noiseBgIndependent <- rnorm(n=N, mean=mean, sd=sd) %*% t(rnorm(n=P, 
+    noiseBgShared <- rnorm(n=N, mean=mean, sd=sd) %*% t(rnorm(n=P, 
                                                                    mean=mean, 
                                                                    sd=sd))
     
     # independent effect
-    noiseBgShared <- matrix(rnorm(n= N * P, mean=mean, sd=sd), ncol=P) 
+    noiseBgIndependent <- matrix(rnorm(n= N * P, mean=mean, sd=sd), ncol=P) 
    
     return(list(shared=noiseBgShared, independent=noiseBgIndependent))
 }
