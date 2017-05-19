@@ -89,6 +89,10 @@ simulateDist <- function(x,
         d <- rnorm(n=x, mean=m, sd=std)
     }
     else if (dist == "bin") {
+        if (prob < 0) {
+            stop(paste("Simulating binomial distribution: Probability has to",
+                "be between 0 and 1"))
+        }
         d <- rbinom(n=x, size=1, prob=prob)
     }
     else if (grepl("cat", dist)) {
