@@ -94,9 +94,14 @@ setModel <- function(genVar=NULL, h2s=NULL, theta=0.8, h2bg=NULL, eta=0.8,
     if (noiseVar + genVar > 1) {
         stop("Sum of genetic variance and noise variance is greater than 1")
     }
-    if ((noiseVar) == 0 && any(!is.null(phi), !is.null(rho), !is.null(delta))) {
-        stop(paste("The noise variance is set to 0 but noise variance",
-                   "components are supplied")
+    if (noiseVar == 0 && any(!is.null(phi), !is.null(rho), !is.null(delta))) {
+        stop(paste("The noise variance is set to 0 (or genetic variance set to",
+                    " 1) but noise variance components are supplied")
+        )
+    }
+    if (genVar == 0 && any(!is.null(h2s), !is.null(h2bg))) {
+        stop(paste("The genetic variance is set to 0 (or noise variance set to",
+                   " 1) but genetic variance components are supplied")
         )
     }
     vmessage(c("The total noise variance (noiseVar) is:", noiseVar), verbose=v)
@@ -1184,11 +1189,12 @@ runSimulation <- function(N=1000, P=10, tNrSNP=5000, cNrSNP=20,
 #' ii) a named list with the simulated phenotype components (phenoComponents) 
 #' and iii) a named list of parameters describing the model setup (setup);
 #' obtained from either \link{runSimulation} or \link{createPheno} 
-#' @param directoryGeno name of parent directory [string] where genotypes from 
-#' simulations should be saved [needs user writing permission]
-#' @param directoryPheno name of parent directory [string] where final phenotype 
-#' and phenotype components from simulations should be saved [needs user writing 
+#' @param directoryGeno absolute path (no tilde expansion) to parent directory 
+#' [string] where genotypes from simulations should be saved [needs user writing 
 #' permission]
+#' @param directoryPheno absolute path (no tilde expansion) to parent directory 
+#' [string] where final phenotype and phenotype components from simulations 
+#' should be saved [needs user writing permission]
 #' @param outstring optional name [string] of subdirectory (in relation to 
 #' directoryPheno/directoryGeno) to save set-up
 #' independent simulation results
@@ -1207,6 +1213,8 @@ runSimulation <- function(N=1000, P=10, tNrSNP=5000, cNrSNP=20,
 #' @param saveAsTable [boolean] if TRUE, data will be saved as .csv 
 #' @param saveAsRDS [boolean] if TRUE, data will be saved as .RDS; at least one 
 #' of 'saveAsTable' or 'saveAsRDS' has to be TRUE, both can be TRUE
+#' @param saveAsPlink [boolean] if TRUE, simulated genotype data will be 
+#' additionally be saved in binary PLINK format: .bed, .bim and .fam 
 #' @param verbose [boolean]; if TRUE, progress info is printed to standard out
 #' @return list of paths [strings] to final output phenotype (directoryPheno) 
 #' and genotype (directoryGeno) directories. If outstring or subset settings not
@@ -1218,15 +1226,26 @@ runSimulation <- function(N=1000, P=10, tNrSNP=5000, cNrSNP=20,
 #' genVar=0.2, h2s=1, phi=1)
 #' #not run
 #' #outputdir <- savePheno(simulatedPhenotype, directoryGeno="/path/to/dir/",  
-#' #directoryPheno="/path/to/dir/", outstring="Date_simulation")
+#' #directoryPheno="/path/to/dir/", outstring="Date_simulation", 
+#' #saveAsPlink=TRUE)
 savePheno <- function(simulatedData, directoryGeno, directoryPheno, 
                       sample_subset_vec=NULL, pheno_subset_vec=NULL, 
                       sample_subset_string=NULL, pheno_subset_string=NULL, 
                       outstring=NULL, saveAsTable=TRUE, saveAsRDS=FALSE, 
-                      verbose=TRUE) {
+                      saveAsPlink=FALSE, verbose=TRUE) {
     if (!saveAsTable && !saveAsRDS) {
         stop("Either one of saveAsTable or saveAsRDS must be true in order to 
              save output")
+    }
+    if (grepl("~", directoryGeno)) {
+        stop("directoryGeno contains ~: path expansion not guaranteed on 
+             every platform (see path.expand{base}), please provide full file
+             path to the genotype directory")
+    }
+    if (grepl("~", directoryPheno)) {
+        stop("directoryPheno contains ~: path expansion not guaranteed on 
+             every platform (see path.expand{base}), please provide full file
+             path to the phenotype directory")
     }
     modelGenetic <- simulatedData$setup$modelGenetic
     modelNoise <- simulatedData$setup$modelNoise
@@ -1245,6 +1264,10 @@ savePheno <- function(simulatedData, directoryGeno, directoryPheno,
         } else {
             ssample <- sample_subset_vec
         }
+        if (any(ssample > N)) {
+            stop(paste("Sample subset value chosen that is larger than",
+                       "number of simulated samples"))
+        }
         sample_subset <- sapply(ssample, function(s) {
             tmp <- sample(1:N, s, replace=FALSE)
             names(tmp) <- paste(sampleID, tmp, sep="")
@@ -1261,6 +1284,10 @@ savePheno <- function(simulatedData, directoryGeno, directoryPheno,
             psample <- commaList2vector(pheno_subset_string)
         } else {
             psample <- pheno_subset_vec
+        }
+        if (any(psample > P)) {
+            stop(paste("Phenotype subset value chosen that is larger than",
+                       "number of simulated traits"))
         }
         pheno_subset <- sapply(psample, function(s) {
             tmp <- sample(1:P, s, replace=FALSE)
@@ -1398,20 +1425,38 @@ savePheno <- function(simulatedData, directoryGeno, directoryPheno,
                 if (!is.null(simulatedData$rawComponents$genotypes)) {
                     vmessage(c("Save genotypes to", directoryGeno), 
                              verbose=verbose)
-                    N = ncol(simulatedData$rawComponents$genotypes$X)
+                    N <- nrow(simulatedData$rawComponents$genotypes$X)
+                    geno <- simulatedData$rawComponents$genotypes$X[ss,]
                     samples <-paste(sampleID, seq(1, N, 1), sep="")
                     X_id <- data.frame(FID=samples, IID=samples, PAT=rep(0, N), 
                                        MAT=rep(0, N), SEX=rep(0, N), 
-                                       PHENOTYPE=rep(-9, N))[ss,]
-                    write.table(cbind(X_id), paste(directoryGeno, 
+                                       PHENOTYPE=rep(-9, N))
+                    rownames(X_id) <- samples
+                    if (saveAsTable) {
+                        write.table(X_id[ss,], paste(directoryGeno, 
                                 "/genotypes_ID_", outstring, ".txt", sep=""), 
                                 sep="\t", 
                                 col.names=TRUE, row.names=FALSE, quote=FALSE)
-                    write.table(t(simulatedData$rawComponents$genotypes$X[ss,]), 
+                        write.table(
+                            t(geno), 
                                 paste(directoryGeno, "/genotypes_", outstring,
-                                      ".csv", sep=""), 
-                              sep=",", col.names=NA, row.names=TRUE, 
-                              quote=FALSE)
+                                  ".csv", sep=""), 
+                                sep=",", col.names=NA, row.names=TRUE, 
+                                quote=FALSE)
+                    }
+                    if (saveAsPlink) {
+                        plink.out <- write.plink(file.base=paste(directoryGeno, 
+                                                                 "/genotypes_", 
+                                                                 outstring, 
+                                                                 sep=""), 
+                                                 snps=as(geno, "SnpMatrix"), 
+                                                 sex=X_id$SEX[ss], 
+                                                 father=X_id$PAT[ss], 
+                                                 mother=X_id$MAT[ss], 
+                                                 pedigree=X_id$FID[ss], 
+                                                 id=X_id$IID[ss], 
+                                                 phenotype=X_id$PHENOTYPE[ss])
+                    }
                 }
             }
 

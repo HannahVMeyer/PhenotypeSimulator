@@ -1,7 +1,6 @@
 Package: PhenotypeSimulator
-Title: Flexible phenotype simulation from different genetic and noise
-        models
-Version: 0.0.0.9000
+Title: Flexible Phenotype Simulation from Different Genetic and Noise Models
+Version: 0.1.0
 Authors@R: c(
   person("Hannah", "Meyer", email = "hannah@ebi.ac.uk", role = c("aut", "cre")),
   person("Konrad", "Rudolph", email = "konrad.rudolph@gmail.com", role = "ctb")
@@ -12,7 +11,9 @@ Description: Phenotype simulator allows for the flexible simulation of
     phenotypic effects can be combined into a final phenotype while controling 
     for the proportion of variance explained by each of the components. For each 
     component, the number of variables, their distribution and the design of 
-    their effect across traits can be customised. 
+    their effect across traits can be customised. The final simulated phenotypes
+    and its components can be automatically saved into .rds or .csv files. In
+    addition, for simulated genotypes, export into plink format is possible. 
 Depends:
     R (>= 3.3.2)
 LinkingTo:
@@ -23,6 +24,7 @@ Imports:
     R.utils,
     plyr,
     mvtnorm,
+    snpStats,
     Rcpp (>= 0.12.10)
 Suggests:
     testthat,
