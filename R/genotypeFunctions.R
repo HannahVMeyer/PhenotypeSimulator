@@ -149,23 +149,30 @@ getCausalSNPs <- function(NrCausalSNPs=20,  genotypes=NULL, chr=NULL,
 	if (! is.null(genotypes)) {
         if (standardise) genotypes <- genotypes$X_sd
         if (! standardise) genotypes <- genotypes$X
-        N <- nrow(genotypes)
+        N <- ncol(genotypes)
+        if ( N < NrCausalSNPs) {
+            stop(paste("Number of genotypes is less than number of causal SNPs." 
+                 , "Increase number of simulated genotypes in simulateGenotypes"
+                 , "or decrease number of causal SNPs"))
+        }
 		causalSNPs <- genotypes[, sample(1:ncol(genotypes), NrCausalSNPs)]
 	} else {
 	    if (grepl("~", genoFilePrefix)) {
-	        stop("genoFilePrefix contains ~: path expansion not guaranteed on 
-                every platform (see path.expand{base}), please provide full file
-	            path to genotype files")
+	        stop(paste("genoFilePrefix contains ~: path expansion not", 
+	                   "guaranteed on every platform (see path.expand{base}),",
+	                   "please provide full file path to genotype files"))
 	    }
 	    if (all(c( is.null(chr_string), is.null(chr), is.null(NrChrCausal)))) {
-	        stop("No information about chromosomes to sample from provided;
-	             please specify either chr_string, chr or NrChrCausal")
+	        stop(paste("No information about chromosomes to sample from", 
+	                   "provided; please specify either chr_string, chr or", 
+                       "NrChrCausal"))
 	    }
 	    if (all(c( !is.null(chr_string), !is.null(chr))) ||
 	        all(c( !is.null(chr_string), !is.null(NrChrCausal))) ||
 	        all(c( !is.null(NrChrCausal), !is.null(chr)))) {
-	        stop("Too much information for sampling chromosomes provided, please
-	             specifiy only either chr_string, chr or NrChrCausal")
+	        stop(pasye("Too much information for sampling chromosomes provided,"
+	                   , "please specifiy only either chr_string, chr or",
+                        "NrChrCausal"))
 	    }
 		if (! is.null(chr_string)) {
 			ChrCausal <- commaList2vector(chr_string)
@@ -191,9 +198,9 @@ getCausalSNPs <- function(NrCausalSNPs=20,  genotypes=NULL, chr=NULL,
 			                        genoFileSuffix, sep="")
 			SNPsOnChromosome <- R.utils::countLines(chromosomefile)
 			if (SNPsOnChromosome <  NrCausalSNPsChr[chrom]) {
-			    stop("Number of causal SNPs to be chosen from chromosome", chr, 
-			         "is larger than actual number of SNPs provided in 
-                    chromosome file")
+			    stop(paste("Number of causal SNPs to be chosen from chromosome", 
+			               chr, "is larger than actual number of SNPs provided",
+			               "in chromosome file"))
 			}
 			randomSNPindex <- sample(1:SNPsOnChromosome, NrCausalSNPsChr[chrom])
             randomSNPindex <- randomSNPindex[order(randomSNPindex, 
@@ -260,9 +267,9 @@ getKinship <- function(X=NULL, kinshipfile=NULL, sampleID="ID_", norm=TRUE,
     if (!is.null(X)) {
         if (abs(mean(X)) > 0.2 && (sd(X) > 1.2 || sd(X) < 0.8 ) 
             && ! standardise) {
-            warning("It seems like genotypes are not standardised, set 
-                    standardise=TRUE to estimate kinship
-                    from standardised genotypes (recommended)")
+            warning(paste("It seems like genotypes are not standardised, set", 
+                    "standardise=TRUE to estimate kinship from standardised",
+                    "genotypes (recommended)"))
         }
         if (standardise) {
             X <- standardiseGenotypes(X)
