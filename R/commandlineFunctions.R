@@ -4,15 +4,18 @@
 #' parameters and supplies these to \code{\link{runSimulation}} and 
 #' \code{\link{savePheno}}. For details on input to \code{\link{runSimulation}} 
 #' and \code{\link{savePheno}}, please refer to their help pages. For help on 
-#' the command line arguments that can be passed, see examples below.
-#' 
+#' the command line arguments that can be passed, see examples below. From the 
+#' command line, the help function can be called via 
+#' 'Rscript -e "PhenotypeSimulator::simulatePhenotypes()" --args --help 
+#'  
 #' @export
 #' 
 #' @examples
 #' # (not run)
 #' # Simulate simple phenotype of genetic and noise background effects only:
 #' # (not run)
-#' # Rscript <(echo 'PhenotypeSimulator::simulatePhenotypes()') \ 
+#' # Rscript -e "PhenotypeSimulator::simulatePhenotypes()" \
+#' #--args \ 
 #' #--NrSamples=100 --NrPhenotypes=15 \
 #' #--tNrSNP=10000 --cNrSNP=30 \
 #' #--SNPfrequencies=0.05,0.1,0.3,0.4 \
@@ -28,7 +31,9 @@
 #' #--sampleSubset=50,70 \
 #' #--phenoSubset=5,10 \
 #' #--normalise \
-#' #--verbose 
+#' #--showProgress \
+#' #--saveTable \
+#' #--savePlink
 
 
 simulatePhenotypes <- function() {
@@ -168,8 +173,6 @@ simulatePhenotypes <- function() {
                     random number generator [default: %default]"),
         make_option(c("--showProgress"), action="store_true", dest="verbose", 
                     default=FALSE, type="logical", help=" [default: %default]"),
-        make_option(c("-q", "--quiet"), action="store_false", dest="verbose", 
-                    default=FALSE,  type="logical", help=" [default: %default]"),
         make_option(c("-norm", "--normalise"), action="store_true", 
                     default=FALSE,
                     dest="normalise", type="logical", help="Should user-supplied 
@@ -191,10 +194,14 @@ simulatePhenotypes <- function() {
         
         make_option(c("-dg", "--directoryGeno"), action="store", 
                     dest="directoryGeno", default=NULL, type="character", help=
-                        "Parent directory for genotypes [default: %default]"),
+                    "Absolute path (no tilde expansion) to parent directory
+                    for genotypes; [needs user writing permission,
+                    [default: %default]"),
         make_option(c("-dp", "--directoryPheno"), action="store", 
                     dest="directoryPheno", default=NULL, type="character", 
-                    help="Parent directory for phenotypes [default: %default]"),
+                    help="Absolute path (no tilde expansion) to parent directory
+                    for phenotypes; needs user writing permission,
+                    [default: %default]"),
         make_option(c("-ds", "--subdirectory"), action="store", dest="outstring"
                     , default=NULL, type="character", help="Name of subdirectory
                     to be created within dg/dp [default: %default]"),
@@ -208,8 +215,8 @@ simulatePhenotypes <- function() {
                     IDs)? [default: %default]"),
         make_option(c("--kinshipfileDelimiter"), action="store", 
                     dest="kinshipDelimiter", default=",", type="character", 
-                    help="Field separator of kinship file (e. g. header=sample 
-                    IDs) [default: %default]"),
+                    help="Field separator of kinship file (e.g. `,`) 
+                    [default: %default]"),
         make_option(c("--genoFilePrefix"), action="store", 
                     dest="genoFilePrefix", default=NULL, type="character", 
                     help="Path to and prefix of per-chromosome comma-separated 
@@ -246,7 +253,12 @@ simulatePhenotypes <- function() {
                     dest="saveAsRDS", default=FALSE, type="logical", 
                     help="Output format of results: when flag set, output saved 
                     as .rds;  at least one of -saveTable or -saveRDS needs to be 
-                    set  [default: %default]")
+                    set  [default: %default]"),
+        make_option(c("-savePlink", "--savePlink"), action="store_true", 
+                    dest="saveAsPlink", default=FALSE, type="logical", 
+                    help="When flag is set, simulated genotypes can additionally
+                    be saved in the binary plink format, i.e. .bed, .bim and 
+                    .fam files. [default: %default]")
         )
     args <- parse_args(OptionParser(option_list=option_list))
     if(!args$saveAsRDS && !args$saveAsTable) {
@@ -264,8 +276,8 @@ simulatePhenotypes <- function() {
             message("SNP file prefix: ", args$genoFilePrefix)
             message("SNP file suffix: ", args$genoFileSuffix)
         } else {
-            message("Number of SNPs to simulate (for kinship estimation and 
-                    drawing of causal SNPs): ", args$tNrSNP)
+            message(paste("Number of SNPs to simulate (for kinship estimation",
+                          "and drawing of causal SNPs): "), args$tNrSNP)
         }
         message("Number of phenotypes: ", args$P)
         message("Number of samples: ", args$N)
@@ -335,5 +347,6 @@ simulatePhenotypes <- function() {
                             directoryPheno=args$directoryPheno,
                             verbose=args$verbose,
                             saveAsTable=args$saveAsTable,
-                            saveAsRDS=args$saveAsRDS)
+                            saveAsRDS=args$saveAsRDS,
+                            saveAsPlink=args$saveAsPlink)
 }
