@@ -118,7 +118,7 @@ confounders
 (cov_effect: [P x NrConfounders] dataframe)
 }
 \description{
-noiseFixedEffects simulates a independent number of fixed noise effects 
+noiseFixedEffects simulates a number of fixed noise effects 
 (confounders). Confounders can have effects across all traits (shared) 
 or to a number of traits only (independent); the proportion of independent 
 confounders from the total of simulated confounders can be chosen via 
@@ -130,8 +130,9 @@ simulated from a uniform or normal distribution. Multiple confounder sets
 drawn from different distributions/different parameters of the same 
 distribution can be simulated by specifying NrFixedEffects and supplying the 
 respective distribution parameters (*Confounders and *Beta) explained below. 
-If a modelparameter and its "String' version are provided, i.e. NrConfounders 
-and NrConfoundersStrings, the "String' specification will be used!
+If a model parameter and its "String' version are provided, i.e. 
+NrConfounders and NrConfoundersStrings, the "String' specification will be 
+used!
 }
 \examples{
 # fixed noise effect with default setting

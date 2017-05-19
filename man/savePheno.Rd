@@ -8,7 +8,7 @@ savePheno(simulatedData, directoryGeno, directoryPheno,
   sample_subset_vec = NULL, pheno_subset_vec = NULL,
   sample_subset_string = NULL, pheno_subset_string = NULL,
   outstring = NULL, saveAsTable = TRUE, saveAsRDS = FALSE,
-  verbose = TRUE)
+  saveAsPlink = FALSE, verbose = TRUE)
 }
 \arguments{
 \item{simulatedData}{named list of i) dataframe of proportion of variance 
@@ -17,12 +17,13 @@ ii) a named list with the simulated phenotype components (phenoComponents)
 and iii) a named list of parameters describing the model setup (setup);
 obtained from either \link{runSimulation} or \link{createPheno}}
 
-\item{directoryGeno}{name of parent directory [string] where genotypes from 
-simulations should be saved [needs user writing permission]}
-
-\item{directoryPheno}{name of parent directory [string] where final phenotype 
-and phenotype components from simulations should be saved [needs user writing 
+\item{directoryGeno}{absolute path (no tilde expansion) to parent directory 
+[string] where genotypes from simulations should be saved [needs user writing 
 permission]}
+
+\item{directoryPheno}{absolute path (no tilde expansion) to parent directory 
+[string] where final phenotype and phenotype components from simulations 
+should be saved [needs user writing permission]}
 
 \item{sample_subset_vec}{optional vector of sample subset sizes [integer];
 if provided, draws subsets of samples out of the total simulated dataset and 
@@ -49,6 +50,9 @@ independent simulation results}
 \item{saveAsRDS}{[boolean] if TRUE, data will be saved as .RDS; at least one 
 of 'saveAsTable' or 'saveAsRDS' has to be TRUE, both can be TRUE}
 
+\item{saveAsPlink}{[boolean] if TRUE, simulated genotype data will be 
+additionally be saved in binary PLINK format: .bed, .bim and .fam}
+
 \item{verbose}{[boolean]; if TRUE, progress info is printed to standard out}
 }
 \value{
@@ -63,9 +67,10 @@ specified directories. Requires a simulatedData list which is the output of
 either \link{runSimulation} or \link{createPheno}
 }
 \examples{
-simulatedPhenotype <- runSimulation(N=100, P=10, genVar=0.4, h2bg=1, 
-phi=1, verbose=FALSE)
+simulatedPhenotype <- runSimulation(N=100, P=5, cNrSNP=10,
+genVar=0.2, h2s=1, phi=1)
 #not run
 #outputdir <- savePheno(simulatedPhenotype, directoryGeno="/path/to/dir/",  
-#directoryPheno="/path/to/dir/", outstring="Date_simulation")
+#directoryPheno="/path/to/dir/", outstring="Date_simulation", 
+#saveAsPlink=TRUE)
 }

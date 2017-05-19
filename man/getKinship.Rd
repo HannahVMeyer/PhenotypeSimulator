@@ -50,7 +50,7 @@ should be set to FALSE. The provided kinship contains estimates for 50
 samples across the entire genome.
 }
 \examples{
-geno <- simulateGenotypes(N=500)
+geno <- simulateGenotypes(N=10, NrSNP=50)
 K_fromGenotypesNormalised <- getKinship(geno$X_sd, norm=TRUE)
 
 kinshipfile <- system.file("extdata/kinship", 

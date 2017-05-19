@@ -11,13 +11,16 @@ simulatePhenotypes runs without arguments. Upon call, it reads command-line
 parameters and supplies these to \code{\link{runSimulation}} and 
 \code{\link{savePheno}}. For details on input to \code{\link{runSimulation}} 
 and \code{\link{savePheno}}, please refer to their help pages. For help on 
-the command line arguments that can be passed, see examples below.
+the command line arguments that can be passed, see examples below. From the 
+command line, the help function can be called via 
+'Rscript -e "PhenotypeSimulator::simulatePhenotypes()" --args --help
 }
 \examples{
 # (not run)
 # Simulate simple phenotype of genetic and noise background effects only:
 # (not run)
-# Rscript <(echo 'PhenotypeSimulator::simulatePhenotypes()') \\ 
+# Rscript -e "PhenotypeSimulator::simulatePhenotypes()" \\
+#--args \\ 
 #--NrSamples=100 --NrPhenotypes=15 \\
 #--tNrSNP=10000 --cNrSNP=30 \\
 #--SNPfrequencies=0.05,0.1,0.3,0.4 \\
@@ -30,9 +33,10 @@ the command line arguments that can be passed, see examples below.
 #--catConfounders=0,3,4,0 \\
 #--directoryGeno=~/tmp/genotypes \\
 #--directoryPheno=~/tmp/phenotypes \\
-#--subdirectory=2017_04_04_simulation \\
 #--sampleSubset=50,70 \\
 #--phenoSubset=5,10 \\
 #--normalise \\
-#--verbose 
+#--showProgress \\
+#--saveTable \\
+#--savePlink
 }

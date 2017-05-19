@@ -24,10 +24,10 @@ matrix)
 noiseBgEffects simulates two random noise effects (shared and independent).
 }
 \details{
-The shared background effect is simulated as vec(shared) ~ 
-N(mean,sd). The independent background effect is simulated as the 
+The independent background effect is simulated as vec(shared) ~ 
+N(mean,sd). The shared background effect is simulated as the 
 matrix product of two normal
-distributions A [N x 1] and B [P x 1]: At(B)
+distributions A [N x 1] and B [P x 1]: AB^t
 }
 \examples{
 noiseBG <- noiseBgEffects(N=100, P=20, mean=2)

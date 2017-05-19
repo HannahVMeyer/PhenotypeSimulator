@@ -30,7 +30,8 @@ is.null(genoFilePrefix) == FALSE.}
 before-"chrChromosomeNumber" (no '~' expansion!) [string]}
 
 \item{genoFileSuffix}{[string] following chromosome number including 
-.fileformat (e.g. ".csv")}
+.fileformat (e.g. ".csv"); has to be a text format i.e. comma/tab/space
+separated}
 
 \item{genoFileDelimiter}{field separator [string] of genotype file}
 
@@ -66,8 +67,9 @@ getCausalSNPs generates a vector of chromosomes from which to sample the SNPs
  from the European populations of the the 1000 Genomes project.
 }
 \examples{
-geno <- simulateGenotypes(N=500)
-causalSNPsFromSimulatedGenoStandardised <- getCausalSNPs(genotypes=geno, 
+geno <- simulateGenotypes(N=10, NrSNP=10)
+causalSNPsFromSimulatedGenoStandardised <- getCausalSNPs(NrCausalSNPs=10,
+genotypes=geno, 
 standardise=TRUE)
 
 genotypeFile <- system.file("extdata/genotypes/",
@@ -75,7 +77,8 @@ genotypeFile <- system.file("extdata/genotypes/",
 package = "PhenotypeSimulator")
 genoFilePrefix <- gsub("chr.*", "", genotypeFile) 
 genoFileSuffix <- ".csv" 
-causalSNPsFromFile <- getCausalSNPs(chr=22, genoFilePrefix=genoFilePrefix, 
+causalSNPsFromFile <- getCausalSNPs(NrCausalSNPs=10, chr=22, 
+genoFilePrefix=genoFilePrefix, 
 genoFileSuffix=genoFileSuffix)
 }
 \seealso{

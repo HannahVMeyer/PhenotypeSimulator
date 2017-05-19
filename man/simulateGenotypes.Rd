@@ -31,8 +31,9 @@ matrix of standardised simulated genotypes and vector of sample IDs
 Simulate bi-allelic genotypes.
 }
 \examples{
-N500NrSNP5000 <- simulateGenotypes(N=500)
-N100NrSNP5000 <- simulateGenotypes(N=100, frequencyString="0.2,0.3,0.4")
+N10NrSNP10 <- simulateGenotypes(N=10, NrSNP=10)
+N10NrSNP10 <- simulateGenotypes(N=10, NrSNP=10,
+frequencyString="0.2,0.3,0.4")
 }
 \seealso{
 \code{\link{standardiseGenotypes}}
