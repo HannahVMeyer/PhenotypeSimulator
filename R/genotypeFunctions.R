@@ -170,7 +170,7 @@ getCausalSNPs <- function(NrCausalSNPs=20,  genotypes=NULL, chr=NULL,
 	    if (all(c( !is.null(chr_string), !is.null(chr))) ||
 	        all(c( !is.null(chr_string), !is.null(NrChrCausal))) ||
 	        all(c( !is.null(NrChrCausal), !is.null(chr)))) {
-	        stop(pasye("Too much information for sampling chromosomes provided,"
+	        stop(paste("Too much information for sampling chromosomes provided,"
 	                   , "please specifiy only either chr_string, chr or",
                         "NrChrCausal"))
 	    }
