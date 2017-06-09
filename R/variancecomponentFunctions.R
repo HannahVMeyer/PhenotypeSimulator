@@ -57,10 +57,15 @@ geneticFixedEffects <- function(X_causal, P, N=NULL, pIndependentGenetic=0.4,
    
     if (NrSharedSNPs != 0) {
         # shared
-        shared <- sample(c(rep(TRUE, NrSharedSNPs), 
-                           rep(FALSE, NrIndependentSNPs)), 
-                   replace=FALSE)
-        X_shared <-  X_causal[,shared]
+        if (NrIndependentSNPs != 0) {
+            shared <- sample(c(rep(TRUE, NrSharedSNPs), 
+                               rep(FALSE, NrIndependentSNPs)), 
+                             replace=FALSE)
+            X_shared <-  X_causal[,shared]
+        } else {
+            X_shared <- X_causal
+        }
+
         betaX_shared <- rnorm(NrSharedSNPs) %*% t(rnorm(P))
         cov <- t(data.frame(X_shared))
         cov_effect <- data.frame(t(betaX_shared))
@@ -71,21 +76,26 @@ geneticFixedEffects <- function(X_causal, P, N=NULL, pIndependentGenetic=0.4,
    
     if (NrIndependentSNPs != 0) {
         # independent
-        independent <- !shared
-        X_independent <- X_causal[,independent]
+        if (NrSharedSNPs != 0) {
+            independent <- !shared
+            X_independent <- X_causal[,independent]
+        } else {
+            X_independent <- X_causal
+        }
         betaX_independent <- matrix(rnorm(P * NrIndependentSNPs), ncol=P)
         TraitIndependentGenetic <- ceiling(pTraitIndependentGenetic * P)
-        p_nongenetic <- sample(c(rep(TRUE, TraitIndependentGenetic), 
-                                 rep(FALSE, 
+        p_nongenetic <- sample(c(rep(FALSE, TraitIndependentGenetic), 
+                                 rep(TRUE, 
                                      (P - TraitIndependentGenetic))), 
                                replace=FALSE)
         betaX_independent[,p_nongenetic] <- 
             matrix(rep(0,  TraitIndependentGenetic * NrIndependentSNPs), 
                                                 nrow=NrIndependentSNPs)
-        cov <- t(data.frame(independent))
+        cov <- t(data.frame(X_independent))
         cov_effect <- data.frame(t(betaX_independent))
         colnames(cov_effect) <- paste(colnames(cov_effect), "_", 
                                       rownames(cov), sep="")
+        Gindependent = X_independent %*% betaX_independent
     }
     if (NrSharedSNPs != 0 && NrIndependentSNPs != 0) {
         cov = rbind(t(X_shared), t(X_independent))
@@ -93,8 +103,6 @@ geneticFixedEffects <- function(X_causal, P, N=NULL, pIndependentGenetic=0.4,
                                 betaX_independent=t(betaX_independent))
         colnames(cov_effect) <- paste(colnames(cov_effect), "_", 
                                       rownames(cov), sep="")
-        
-        Gindependent = X_independent %*% betaX_independent
     }
     
     return(list(shared=Gshared, 
@@ -308,8 +316,8 @@ noiseFixedEffects <- function(N, P, NrFixedEffects=1, NrConfounders=10,
                                                     1), 
                                                 sep="")
             p_nonconfounders <- sample(
-                c(rep(TRUE, pTraitIndependentConfounders * P), 
-                rep(FALSE, (1 - pTraitIndependentConfounders) * P)), 
+                c(rep(FALSE, pTraitIndependentConfounders * P), 
+                rep(TRUE, (1 - pTraitIndependentConfounders) * P)), 
                 replace=FALSE)
             beta_independent[,p_nonconfounders] <- matrix(
                 rep(0, 
