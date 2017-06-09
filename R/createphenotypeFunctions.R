@@ -304,11 +304,11 @@ setModel <- function(genVar=NULL, h2s=NULL, theta=0.8, h2bg=NULL, eta=0.8,
                            "(h2s):", h2s), verbose=v)
             vmessage(paste("Proportion of variance of shared fixed genetic",
                            "effects (theta):", theta), verbose=v)
-            vmessage(paste("Proportion of fixed genetic effects to have a", 
+            vmessage(paste0("Proportion of fixed genetic effects to have a", 
                            "trait-independent fixed effect", 
                            "(pIndependentGenetic):", pIndependentGenetic), 
                      verbose=v)
-            vmessage(paste("Proportion of traits influenced by independent",
+            vmessage(paste0("Proportion of traits influenced by independent",
                            "fixed genetic effects (pTraitIndependentGenetic):",
                            pTraitIndependentGenetic), 
                      verbose=v)
@@ -317,13 +317,13 @@ setModel <- function(genVar=NULL, h2s=NULL, theta=0.8, h2bg=NULL, eta=0.8,
             vmessage(c("The genetic model is:", modelGenetic), verbose=v)
             vmessage(paste("Proportion of variance of fixed genetic effects",
                            "(h2s):", h2s), verbose=v)
-            vmessage(paste("Proportion of variance of shared fixed genetic",
+            vmessage(paste0("Proportion of variance of shared fixed genetic",
                            "effects (theta):", theta), verbose=v)
-            vmessage(paste("Proportion of fixed genetic effects to have a", 
+            vmessage(paste0("Proportion of fixed genetic effects to have a", 
                            "trait-independent fixed effect", 
                            "(pIndependentGenetic):", pIndependentGenetic), 
                      verbose=v)
-            vmessage(paste("Proportion of traits influenced by independent",
+            vmessage(paste0("Proportion of traits influenced by independent",
                            "fixed genetic effects (pTraitIndependentGenetic):",
                            pTraitIndependentGenetic), 
                      verbose=v)
