@@ -173,20 +173,20 @@ setModel <- function(genVar=NULL, h2s=NULL, theta=0.8, h2bg=NULL, eta=0.8,
             vmessage(c("The noise model is:", modelNoise), verbose=v)
             vmessage(c("Proportion of fixed noise variance (delta):", 
                        delta), verbose=v)
-            vmessage(paste("Proportion of variance of shared fixed noise",
+            vmessage(c("Proportion of variance of shared fixed noise",
                            "effects (gamma):", gamma), verbose=v)
-            vmessage(paste("Proportion of noise effects (confounders) to have",
+            vmessage(c("Proportion of noise effects (confounders) to have",
                            "a trait-independent effect (pIndependentConfounders"
                             , "):", pIndependentConfounders), 
                      verbose=v)
-            vmessage(paste("Proportion of traits influenced by independent",
+            vmessage(c("Proportion of traits influenced by independent",
                            "fixed noise effects (pTraitIndependentConfounders):"
                            , pTraitIndependentConfounders), 
                      verbose=v)
         } else if (rho == 1) {
             modelNoise="noiseCorrelatedOnly"
             vmessage(c("The noise model is:", modelNoise), verbose=v)
-            vmessage(paste("Proportion of variance of correlated noise effects",
+            vmessage(c("Proportion of variance of correlated noise effects",
                            "(rho):", rho), verbose=v)
             vmessage(c("Correlation between phenotypes (pcorr):", pcorr), 
                      verbose=v)
@@ -195,13 +195,13 @@ setModel <- function(genVar=NULL, h2s=NULL, theta=0.8, h2bg=NULL, eta=0.8,
             vmessage(c("The noise model is:", modelNoise), verbose=v)
             vmessage(c("Proportion of fixed noise variance (delta):", 
                        delta), verbose=v)
-            vmessage(paste("Proportion of variance of shared fixed noise",
+            vmessage(c("Proportion of variance of shared fixed noise",
                            "effects (gamma):", gamma), verbose=v)
-            vmessage(paste("Proportion of fixed noise effects to have",
+            vmessage(c("Proportion of fixed noise effects to have",
                            "a trait-independent effect (pIndependentConfounders"
                            , "):", pIndependentConfounders), 
                      verbose=v)
-            vmessage(paste("Proportion of traits influenced by independent",
+            vmessage(c("Proportion of traits influenced by independent",
                            "fixed noise effects (pTraitIndependentConfounders):"
                            , pTraitIndependentConfounders), 
                      verbose=v)            
@@ -214,17 +214,17 @@ setModel <- function(genVar=NULL, h2s=NULL, theta=0.8, h2bg=NULL, eta=0.8,
             vmessage(c("The noise model is:", modelNoise), verbose=v)
             vmessage(c("Proportion of fixed noise variance (delta):", 
                        delta), verbose=v)
-            vmessage(paste("Proportion of variance of shared fixed noise",
+            vmessage(c("Proportion of variance of shared fixed noise",
                            "effects (gamma):", gamma), verbose=v)
-            vmessage(paste("Proportion of fixed  noise effects to have",
+            vmessage(c("Proportion of fixed  noise effects to have",
                            "a trait-independent effect (pIndependentConfounders"
                            , "):", pIndependentConfounders), 
                      verbose=v)
-            vmessage(paste("Proportion of traits influenced by independent",
+            vmessage(c("Proportion of traits influenced by independent",
                            "fixed noise effects (pTraitIndependentConfounders):"
                            , pTraitIndependentConfounders), 
                      verbose=v)
-            vmessage(paste("Proportion of variance of correlated noise effects",
+            vmessage(c("Proportion of variance of correlated noise effects",
                            "(rho):", rho), verbose=v)
             vmessage(c("Correlation between phenotypes (pcorr):", pcorr), 
                      verbose=v)
@@ -244,17 +244,17 @@ setModel <- function(genVar=NULL, h2s=NULL, theta=0.8, h2bg=NULL, eta=0.8,
             vmessage(c("The noise model is:", modelNoise), verbose=v)
             vmessage(c("Proportion of fixed noise variance (delta):", 
                        delta), verbose=v)
-            vmessage(paste("Proportion of variance of shared fixed noise",
+            vmessage(c("Proportion of variance of shared fixed noise",
                            "effects (gamma):", gamma), verbose=v)
-            vmessage(paste("Proportion of fixed noise effects to have",
+            vmessage(c("Proportion of fixed noise effects to have",
                            "a trait-independent effect (pIndependentConfounders"
                            , "):", pIndependentConfounders), 
                      verbose=v)
-            vmessage(paste("Proportion of traits influenced by independent",
+            vmessage(c("Proportion of traits influenced by independent",
                            "fixed noise effects (pTraitIndependentConfounders):"
                            , pTraitIndependentConfounders), 
                      verbose=v)
-            vmessage(paste("Proportion of variance of correlated noise effects",
+            vmessage(c("Proportion of variance of correlated noise effects",
                            "(rho):", rho), verbose=v)
             vmessage(c("Correlation between phenotypes (pcorr):", pcorr), 
                      verbose=v)
@@ -293,43 +293,43 @@ setModel <- function(genVar=NULL, h2s=NULL, theta=0.8, h2bg=NULL, eta=0.8,
         if ( h2s == 0) {
             modelGenetic="geneticBgOnly"
             vmessage(c("The genetic model is:", modelGenetic), verbose=v)
-            vmessage(paste("Proportion of variance of random genetic effects",
+            vmessage(c("Proportion of variance of random genetic effects",
                            "(h2bg):", h2bg), verbose=v)
-            vmessage(paste("Proportion of variance of shared random genetic",
+            vmessage(c("Proportion of variance of shared random genetic",
                            "effects (eta):", eta), verbose=v)
         } else if ( h2s == 1) {
             modelGenetic="geneticFixedOnly"
             vmessage(c("The genetic model is:", modelGenetic), verbose=v)
-            vmessage(paste("Proportion of variance of fixed genetic effects",
+            vmessage(c("Proportion of variance of fixed genetic effects",
                            "(h2s):", h2s), verbose=v)
-            vmessage(paste("Proportion of variance of shared fixed genetic",
+            vmessage(c("Proportion of variance of shared fixed genetic",
                            "effects (theta):", theta), verbose=v)
-            vmessage(paste0("Proportion of fixed genetic effects to have a", 
+            vmessage(c("Proportion of fixed genetic effects to have a", 
                            "trait-independent fixed effect", 
                            "(pIndependentGenetic):", pIndependentGenetic), 
                      verbose=v)
-            vmessage(paste0("Proportion of traits influenced by independent",
+            vmessage(c("Proportion of traits influenced by independent",
                            "fixed genetic effects (pTraitIndependentGenetic):",
                            pTraitIndependentGenetic), 
                      verbose=v)
         } else {
             modelGenetic="geneticFixedAndBg"
             vmessage(c("The genetic model is:", modelGenetic), verbose=v)
-            vmessage(paste("Proportion of variance of fixed genetic effects",
+            vmessage(c("Proportion of variance of fixed genetic effects",
                            "(h2s):", h2s), verbose=v)
-            vmessage(paste0("Proportion of variance of shared fixed genetic",
+            vmessage(c("Proportion of variance of shared fixed genetic",
                            "effects (theta):", theta), verbose=v)
-            vmessage(paste0("Proportion of fixed genetic effects to have a", 
+            vmessage(c("Proportion of fixed genetic effects to have a", 
                            "trait-independent fixed effect", 
                            "(pIndependentGenetic):", pIndependentGenetic), 
                      verbose=v)
-            vmessage(paste0("Proportion of traits influenced by independent",
+            vmessage(c("Proportion of traits influenced by independent",
                            "fixed genetic effects (pTraitIndependentGenetic):",
                            pTraitIndependentGenetic), 
                      verbose=v)
-            vmessage(paste("Proportion of variance of random genetic effects",
+            vmessage(c("Proportion of variance of random genetic effects",
                            "(h2bg):", h2bg), verbose=v)
-            vmessage(paste("Proportion of variance of shared random genetic",
+            vmessage(c("Proportion of variance of shared random genetic",
                            "effects (eta):", eta), verbose=v)
         }
         vmessage("\n", verbose=v)
@@ -957,8 +957,7 @@ createPheno <- function(P, N, sampleID="ID_", phenoID="trait_",
 #' either h2s or h2bg have to be specified and 
 #' h2s + h2bg = 1
 #' @param theta Proportion [double] of variance of shared fixed genetic effects
-#' @param eta Proportion [doubl:w
-#' e] of variance of shared bg genetic effects
+#' @param eta Proportion [double] of variance of shared bg genetic effects
 #' @param noiseVar Proportion [double] of total noise variance
 #' @param rho Proportion [double] of noise variance of correlated effects; sum 
 #' of rho, delta and phi cannot be greater than 1
