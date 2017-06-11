@@ -63,8 +63,7 @@ is.null(genoFilePrefix) == FALSE.}
 either h2s or h2bg have to be specified and 
 h2s + h2bg = 1}
 
-\item{eta}{Proportion [doubl:w
-e] of variance of shared bg genetic effects}
+\item{eta}{Proportion [double] of variance of shared bg genetic effects}
 
 \item{noiseVar}{Proportion [double] of total noise variance}
 

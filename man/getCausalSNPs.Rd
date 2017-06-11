@@ -38,7 +38,7 @@ separated}
 \item{sampleID}{prefix [string] for naming samples (followed by sample number
 from 1 to NrSamples)}
 
-\item{standardise}{[boolean], if TRUE standardised genotypes will be returned}
+\item{standardise}{[boolean]; if TRUE standardised genotypes will be returned}
 
 \item{verbose}{[boolean]; if TRUE, progress info is printed to standard out}
 }
