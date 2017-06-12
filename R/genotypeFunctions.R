@@ -105,7 +105,7 @@ standardiseGenotypes <- function(geno) {
 #' @param genoFileDelimiter field separator [string] of genotype file
 #' @param sampleID prefix [string] for naming samples (followed by sample number
 #'  from 1 to NrSamples)
-#' @param standardise [boolean], if TRUE standardised genotypes will be returned
+#' @param standardise [boolean]; if TRUE standardised genotypes will be returned
 #' @return [N x NrCausalSNPs] matrix of randomly drawn, standardised (depending 
 #' on standardise option) SNPs 
 #' @param verbose [boolean]; if TRUE, progress info is printed to standard out
@@ -196,7 +196,7 @@ getCausalSNPs <- function(NrCausalSNPs=20,  genotypes=NULL, chr=NULL,
 		causalSNPs <- lapply(seq_along(ChrCausal), function(chrom) {
 			chromosomefile <- paste(genoFilePrefix, "chr", ChrCausal[chrom], 
 			                        genoFileSuffix, sep="")
-			SNPsOnChromosome <- R.utils::countLines(chromosomefile)
+			SNPsOnChromosome <- R.utils::countLines(chromosomefile) - 1
 			if (SNPsOnChromosome <  NrCausalSNPsChr[chrom]) {
 			    stop(paste("Number of causal SNPs to be chosen from chromosome", 
 			               chr, "is larger than actual number of SNPs provided",
