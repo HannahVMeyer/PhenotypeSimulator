@@ -5,7 +5,7 @@
 
 #include <Rcpp.h>
 
-//'Scan file for specific line numbers
+//' Scan file for specific line numbers
 //' 
 //' @param filename /path/to/chromosomefile [string]
 //' @param lines vector of line numbers [integer] to be read
