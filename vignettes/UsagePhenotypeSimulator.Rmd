@@ -2,7 +2,7 @@
 title: "Flexible phenotype simulation with PhenotypeSimulator"
 author: "Hannah Meyer"
 date: "`r Sys.Date()`"
-output: pdf_document
+output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Flexible phenotype simulation with PhenotypeSimulator}
   %\VignetteEngine{knitr::rmarkdown}
@@ -280,7 +280,7 @@ The effects attached to the causal SNPs can be classified into two categories: i
 ```{r, fig.show='hold'}
 # create genetic fixed effects with 20% of SNPs having a specific effect, 
 # affecting 40% of all simulated traits
-fixedGenetic <- geneticFixedEffects(X_causal = causalSNPs, N = 100, P = 20, 
+fixedGenetic <- geneticFixedEffects(X_causal = causalSNPs, N = 100, P = 10, 
                                     pIndependentGenetic = 0.2, 
                                     pTraitIndependentGenetic = 0.4)
 ```

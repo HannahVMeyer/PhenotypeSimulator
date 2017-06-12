@@ -11,15 +11,16 @@ modelNoise <- "noiseBgOnly"
 
 # simulate genotypes and estimate kinship
 genotypes <- simulateGenotypes(N = 100, NrSNP = 10000, 
-                               frequencies = c(0.05, 0.1,0.3,0.4), 
+                               frequencies = c(0.05, 0.1, 0.3, 0.4), 
                                verbose = FALSE)
 kinship <- getKinship(genotypes$X_sd, norm=TRUE, verbose = FALSE)
 
 # simulate phenotype components
-genBg <- geneticBgEffects(kinship = kinship, N = 100, P = 15)
+genBg <- geneticBgEffects(kinship = kinship, P = 15)
 noiseBg <- noiseBgEffects(N = 100, P = 15)
 
-# combine components into final phenotype with genetic variance component explaining 40% of total variance
+# combine components into final phenotype with genetic variance component 
+# explaining 40% of total variance
 phenotype <- createPheno(N = 100, P = 15, noiseBg = noiseBg, genBg = genBg, 
                          modelNoise = modelNoise, modelGenetic = modelGenetic, 
                          genVar = 0.4, verbose = FALSE)
@@ -27,13 +28,13 @@ phenotype <- createPheno(N = 100, P = 15, noiseBg = noiseBg, genBg = genBg,
 ## ------------------------------------------------------------------------
 ### via `runSimulation`
 
-# simulate phenotype with genetic and noise background effects only
+# simulate phenotype with genetic and noise random effects only
 # genetic variance
 genVar <- 0.4
-# background genetic variance: h2b 
+# random genetic variance: h2b 
 phenotype <- runSimulation(N = 100, P = 15,  tNrSNP = 10000, 
                            SNPfrequencies = c(0.05, 0.1,0.3,0.4), 
-                           normalise = TRUE, genVar = 0.4, h2b = 1, phi = 1, 
+                           normalise = TRUE, genVar = 0.4, h2bg = 1, phi = 1, 
                            verbose = FALSE)
 
 ## ------------------------------------------------------------------------
@@ -48,15 +49,15 @@ genotypes <- simulateGenotypes(N = 100, NrSNP = 10000,
                                frequencies = c(0.05, 0.1,0.3,0.4), 
                                verbose = FALSE)
 # kinship estimate based on standardised SNPs (as described in )
-kinship <- getKinship(genotypes$X_sd, norm=TRUE, verbose = FALSE)
+kinship <- getKinship(X=genotypes$X_sd, norm=TRUE, verbose = FALSE)
 
 # simulate 30 fixed genetic effects (from non-standardised SNP genotypes)
 causalSNPs <- getCausalSNPs(genotypes = genotypes, NrCausalSNPs = 30, 
                             standardise = FALSE, verbose = FALSE)
 genFixed <- geneticFixedEffects(N = 100, P = 15, X_causal = causalSNPs)  
 
-# simulate background genetic effects
-genBg <- geneticBgEffects(kinship = kinship, N = 100, P = 15)
+# simulate random genetic effects
+genBg <- geneticBgEffects(kinship = kinship, P = 15)
 
 # simulate 4 fixed noise effects:
 # * 1 binomial fixed noise effect shared across all traits
@@ -71,10 +72,10 @@ noiseFixed <- noiseFixedEffects(N = 100, P = 15, NrFixedEffects = 4,
                                 probConfounders = 0.2, 
                                 catConfounders = c(0, 3, 4, 0))
 
-# simulate correlated background effects with max correlation of 0.8
+# simulate correlated noise effects with max correlation of 0.8
 correlatedBg <- correlatedBgEffects(N = 100, P = 15, pcorr = 0.8)
 
-# simulate background noise effects
+# simulate random noise effects
 noiseBg <- noiseBgEffects(N = 100, P = 15)
 
 # total SNP effect on phenotype: 0.01
@@ -91,7 +92,7 @@ phenotype <- createPheno(N = 100, P = 15, noiseBg = noiseBg,
                          genVar = totalGeneticVar, h2s = h2s, phi = 0.6, 
                          rho = 0.1, delta = 0.3, gamma = 1,  verbose = FALSE)
 
-## ------------------------------------------------------------------------
+## ---- tidy=TRUE, tidy.opts = list(width.cutoff = 60)---------------------
 ### via `runSimulation`
 
 # simulate phenotype with the same five phenotype components and settings as 
@@ -152,10 +153,10 @@ mtext(side = 1, text = "Traits", line = 1)
 mtext(side = 2, text = "Traits", line = 1)
 
 ## ---- eval = FALSE-------------------------------------------------------
-#  savePheno(phenotype, directoryGeno="~/tmp/genotypes",
-#            directoryPheno="~/tmp/phenotypes", outstring="2017_04_04_simulation",
+#  out <- savePheno(phenotype, directoryGeno="/tmp/genotypes",
+#            directoryPheno="/tmp/phenotypes", outstring="test_simulation",
 #            sample_subset_vec = c(50, 70), pheno_subset_vec = c(5, 10),
-#            verbose=FALSE)
+#            saveAsTable=TRUE, saveAsPlink=TRUE, verbose=FALSE)
 
 ## ------------------------------------------------------------------------
 ## a) Draw cuasal SNPs from a simulated genotype matrix
@@ -188,7 +189,7 @@ causalSNPsFromFile <- getCausalSNPs(NrCausalSNPs = 10, chr = 22,
 ## ---- fig.show='hold'----------------------------------------------------
 # create genetic fixed effects with 20% of SNPs having a specific effect, 
 # affecting 40% of all simulated traits
-fixedGenetic <- geneticFixedEffects(X_causal = causalSNPs, N = 100, P = 20, 
+fixedGenetic <- geneticFixedEffects(X_causal = causalSNPs, N = 100, P = 10, 
                                     pIndependentGenetic = 0.2, 
                                     pTraitIndependentGenetic = 0.4)
 
@@ -213,14 +214,14 @@ kinshipFile <- system.file("extdata/kinship/", "kinship.csv",
 kinshipFromFile <- getKinship(kinshipfile = kinshipFile, norm=FALSE, 
                               verbose = FALSE)
 
-genBg <- geneticBgEffects(kinship = kinship, N = 100, P = 15)
+genBg <- geneticBgEffects(kinship = kinship, P = 15)
 
 ## ---- fig.show='hold', echo=FALSE, fig.height=3.4, fig.width=3.4---------
-image(genBg$shared, main="Shared background genetic effects", axes=FALSE, 
+image(genBg$shared, main="Shared random genetic effects", axes=FALSE, 
       cex.main=0.8)
 mtext(side = 1, text = "Samples", line = 1)
 mtext(side = 2, text = "Traits", line = 1)
-image(genBg$independent, main="Independent background genetic effects",  
+image(genBg$independent, main="Independent random genetic effects",  
       axes=FALSE, cex.main=0.8)
 mtext(side = 1, text = "Samples", line = 1)
 mtext(side = 2, text = "Traits", line = 1)
@@ -251,7 +252,7 @@ fixedNoiseBinomial <- noiseFixedEffects(N = 100, P = 10, NrConfounders = 1,
                                         distConfounders = "bin", 
                                         probConfounders = 0.5)
 
-## ---- fig.show='hold', echo=FALSE, fig.height=3.4, fig.width=3.4---------
+## ---- fig.show='hold', echo=FALSE, fig.height=3.5, fig.width=4-----------
 image(fixedNoiseUniform$independent, 
       main="Independent fixed noise effects\n(uniform confounder dist)", 
       axes=FALSE,  cex.main=0.8)
@@ -263,6 +264,7 @@ image(fixedNoiseNormal$shared,
       axes=FALSE, cex.main=0.8)
 mtext(side = 1, text = "Samples", line = 1)
 mtext(side = 2, text = "Traits", line = 1)
+
 image(fixedNoiseNormal$independent, 
       main="Independent fixed noise effects\n(normal confounder dist)", 
       axes=FALSE, cex.main=0.8)
@@ -284,7 +286,7 @@ correlatedNoise <- correlatedBgEffects(N = 100, P = 10, pcorr = 0.8 )
 # little correlation at the furthest distance to the diagonal 
 furthestDistCorr <- 0.4^(10-1)
 pairs(correlatedNoise, pch = ".", 
-      main=paste("Correlation at furthest distance to diagonal:",
+      main=paste("Correlation at furthest distance to diagonal:\n",
                  furthestDistCorr), cex.main=0.8)
 image(correlatedNoise, main="Correlated noise effects",  axes=FALSE, 
       cex.main=0.8)
@@ -292,15 +294,15 @@ mtext(side = 1, text = "Samples", line = 1)
 mtext(side = 2, text = "Traits", line = 1)
 
 ## ----fig.show='hold'-----------------------------------------------------
-# simulate a noise background effect for 10 traits
+# simulate a noise random effect for 10 traits
 noiseBg <- noiseBgEffects(N = 100, P = 10, mean = 0, sd = 1)
 
 ## ---- fig.show='hold', echo=FALSE, fig.height=3.4, fig.width=3.4---------
-image(noiseBg$shared, main="Shared background noise effects", axes=FALSE, 
+image(noiseBg$shared, main="Shared random noise effects", axes=FALSE, 
       cex.main=0.8)
 mtext(side = 1, text = "Samples", line = 1)
 mtext(side = 2, text = "Traits", line = 1)
-image(noiseBg$independent, main="Independent background noise effects", 
+image(noiseBg$independent, main="Independent random noise effects", 
       axes=FALSE, cex.main=0.8)
 mtext(side = 1, text = "Samples", line = 1)
 mtext(side = 2, text = "Traits", line = 1)

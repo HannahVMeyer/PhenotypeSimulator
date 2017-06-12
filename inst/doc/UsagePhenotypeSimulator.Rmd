@@ -13,9 +13,9 @@ knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
 library("PhenotypeSimulator")
 ```
 
-PhenotypeSimulator allows for the flexible simulation of phenotypes from genetic and noise components. In quantitative genetics, genotype to phenotype mapping is commonly realised by fitting a linear model to the genotype as the explanatory variable and the phenotype as the response variable. Other explanatory variable such as additional sample measures (e.g. age, height, weight) or batch effects can also be included. For linear mixed models, in addition to the fixed effects of the genotype and the covariates, different random effect components can be included, accounting for population structure in the study cohort or environmental effects. The application of linear and linear mixed models in quantitive genetics ranges from genetic studies in model organism such as yeast and arabidopsis thaliana to human molecular, morphological or imaging derived traits. Developing new methods to efficienlty model increasing sample sizes or to apply multi-variate models to sets of phenotypic measurements often requires simulated datasets with a specific underlying phenotype structure.. These include for instance genetic fixed effects and correlated noise effects, genetic fixed effects and noise background (bg) effects, genetic fixed + bg effects and noise bg effects or genetic fixed + bg effects abd noise bg effects. 
+PhenotypeSimulator allows for the flexible simulation of phenotypes from genetic and noise components. In quantitative genetics, genotype to phenotype mapping is commonly realised by fitting a linear model to the genotype as the explanatory variable and the phenotype as the response variable. Other explanatory variable such as additional sample measures (e.g. age, height, weight) or batch effects can also be included. For linear mixed models, in addition to the fixed effects of the genotype and the covariates, different random effect components can be included, accounting for population structure in the study cohort or environmental effects. The application of linear and linear mixed models in quantitive genetics ranges from genetic studies in model organism such as yeast and arabidopsis thaliana to human molecular, morphological or imaging derived traits. Developing new methods to efficienlty model increasing sample sizes or to apply multi-variate models to sets of phenotypic measurements often requires simulated datasets with a specific underlying phenotype structure.. These include for instance genetic fixed effects and correlated noise effects, genetic fixed effects and noise random (bg) effects, genetic fixed + bg effects and noise bg effects or genetic fixed + bg effects abd noise bg effects. 
 
-PhenotypeSimulator allows for the simulation of such phenotypes under different models, including fixed and background genetic effects as well as correlated, fixed and background noise effects. Different phenotypic effects can be combined into a final phenotype while controling for the proportion of variance explained by each of the components. For each component, the number of variables, their distribution and the design of their effect across traits can be customised.  The **work-flow** outlined below summarizes the strategy for the phenotype simulation. In section **Examples**, phenotype simulation for phenotypes with different levels of complexity are demonstrated in both a step-by-step manner or by using the recommended `runSimulation` function. Finally, section **Phenotype component functions** explains the use and simulation strategy of the individual phenotype component-generating functions. 
+PhenotypeSimulator allows for the simulation of such phenotypes under different models, including fixed and random genetic effects as well as correlated, fixed and random noise effects. Different phenotypic effects can be combined into a final phenotype while controling for the proportion of variance explained by each of the components. For each component, the number of variables, their distribution and the design of their effect across traits can be customised.  The **work-flow** outlined below summarizes the strategy for the phenotype simulation. In section **Examples**, phenotype simulation for phenotypes with different levels of complexity are demonstrated in both a step-by-step manner or by using the recommended `runSimulation` function. Finally, section **Phenotype component functions** explains the use and simulation strategy of the individual phenotype component-generating functions. 
 
 # Work-flow
 1. Simulate phenotype components of interest:
@@ -29,13 +29,13 @@ PhenotypeSimulator allows for the simulation of such phenotypes under different 
 1. combine phenotype components:
     Rescaled phenotype components are combined to obtain the final simulated phenotype via `createPheno`
 
-`runSimulation` combines the three steps outlined above and allows for the automatic simulation of a phenotype with $N$ number of samples, $P$ number of traits and up to five phenotype components. Alternatively, all components can be simulated independently and subsequently combined and with scaled with `createPheno`. `savePheno` accepts the output of either `createPheno` or `runSimulation` to save phenotypes and -optionally- simulated genotypes in the specified directories. Outlined below are two examples for phenotype simulations with background effects only and with a more complex set-up of the phenotypes from five phenotype components. The recommended use of PhenotypeSimulator is via `runSimulation` as this ensures all dependencies are automatically set correctly. 
+`runSimulation` combines the three steps outlined above and allows for the automatic simulation of a phenotype with $N$ number of samples, $P$ number of traits and up to five phenotype components. Alternatively, all components can be simulated independently and subsequently combined and with scaled with `createPheno`. `savePheno` accepts the output of either `createPheno` or `runSimulation` to save phenotypes and -optionally- simulated genotypes in the specified directories. The following section outline two examples for phenotype simulations with random effects only and with a more complex set-up of the phenotypes from five phenotype components. As demonstrated below, each phenotype component function has a number of parameters that allow for customisation of the simulation. As `runSimulation` wraps around all these functions, it accepts a multitude of parameters. Simple simulation of phenotypes, however, only requires the input of the desired phenotype size (number of samples and traits) and the proportion of variance each phenotype component should take. The recommended use of PhenotypeSimulator is via `runSimulation` as this ensures all dependencies are automatically set correctly.
 
 The functions used in these examples are explained in detail in *Phenotype component functions*.
 
 # Examples
 
-**Example 1**: Creating a phenotype composed of genetic and noise background effects only.
+**Example 1**: Creating a phenotype composed of genetic and noise random effects only.
 ```{r}
 ### step-by-step
 
@@ -45,15 +45,16 @@ modelNoise <- "noiseBgOnly"
 
 # simulate genotypes and estimate kinship
 genotypes <- simulateGenotypes(N = 100, NrSNP = 10000, 
-                               frequencies = c(0.05, 0.1,0.3,0.4), 
+                               frequencies = c(0.05, 0.1, 0.3, 0.4), 
                                verbose = FALSE)
 kinship <- getKinship(genotypes$X_sd, norm=TRUE, verbose = FALSE)
 
 # simulate phenotype components
-genBg <- geneticBgEffects(kinship = kinship, N = 100, P = 15)
+genBg <- geneticBgEffects(kinship = kinship, P = 15)
 noiseBg <- noiseBgEffects(N = 100, P = 15)
 
-# combine components into final phenotype with genetic variance component explaining 40% of total variance
+# combine components into final phenotype with genetic variance component 
+# explaining 40% of total variance
 phenotype <- createPheno(N = 100, P = 15, noiseBg = noiseBg, genBg = genBg, 
                          modelNoise = modelNoise, modelGenetic = modelGenetic, 
                          genVar = 0.4, verbose = FALSE)
@@ -64,13 +65,13 @@ phenotype <- createPheno(N = 100, P = 15, noiseBg = noiseBg, genBg = genBg,
 ```{r}
 ### via `runSimulation`
 
-# simulate phenotype with genetic and noise background effects only
+# simulate phenotype with genetic and noise random effects only
 # genetic variance
 genVar <- 0.4
-# background genetic variance: h2b 
+# random genetic variance: h2b 
 phenotype <- runSimulation(N = 100, P = 15,  tNrSNP = 10000, 
                            SNPfrequencies = c(0.05, 0.1,0.3,0.4), 
-                           normalise = TRUE, genVar = 0.4, h2b = 1, phi = 1, 
+                           normalise = TRUE, genVar = 0.4, h2bg = 1, phi = 1, 
                            verbose = FALSE)
 ```
 
@@ -88,15 +89,15 @@ genotypes <- simulateGenotypes(N = 100, NrSNP = 10000,
                                frequencies = c(0.05, 0.1,0.3,0.4), 
                                verbose = FALSE)
 # kinship estimate based on standardised SNPs (as described in )
-kinship <- getKinship(genotypes$X_sd, norm=TRUE, verbose = FALSE)
+kinship <- getKinship(X=genotypes$X_sd, norm=TRUE, verbose = FALSE)
 
 # simulate 30 fixed genetic effects (from non-standardised SNP genotypes)
 causalSNPs <- getCausalSNPs(genotypes = genotypes, NrCausalSNPs = 30, 
                             standardise = FALSE, verbose = FALSE)
 genFixed <- geneticFixedEffects(N = 100, P = 15, X_causal = causalSNPs)  
 
-# simulate background genetic effects
-genBg <- geneticBgEffects(kinship = kinship, N = 100, P = 15)
+# simulate random genetic effects
+genBg <- geneticBgEffects(kinship = kinship, P = 15)
 
 # simulate 4 fixed noise effects:
 # * 1 binomial fixed noise effect shared across all traits
@@ -111,10 +112,10 @@ noiseFixed <- noiseFixedEffects(N = 100, P = 15, NrFixedEffects = 4,
                                 probConfounders = 0.2, 
                                 catConfounders = c(0, 3, 4, 0))
 
-# simulate correlated background effects with max correlation of 0.8
+# simulate correlated noise effects with max correlation of 0.8
 correlatedBg <- correlatedBgEffects(N = 100, P = 15, pcorr = 0.8)
 
-# simulate background noise effects
+# simulate random noise effects
 noiseBg <- noiseBgEffects(N = 100, P = 15)
 
 # total SNP effect on phenotype: 0.01
@@ -133,7 +134,7 @@ phenotype <- createPheno(N = 100, P = 15, noiseBg = noiseBg,
 ```
 
 
-```{r}
+```{r, tidy=TRUE, tidy.opts = list(width.cutoff = 60)}
 ### via `runSimulation`
 
 # simulate phenotype with the same five phenotype components and settings as 
@@ -199,21 +200,26 @@ mtext(side = 1, text = "Traits", line = 1)
 mtext(side = 2, text = "Traits", line = 1)
 ```
 
-The final phenotype and all its components can be saved via `savePheno`. `savePheno` simply takes the output of `runSimulation` or `createPheno` and saves every component found in there; if genotypes were simulated and a kinhsip estimated thereof, they will also be saved. The user needs to have writing permission to the specified genotype and phenotype directories. Optionally, sample sizes for phenotype and sample subsets of the $P$ and $N$ can be provided to save not only the full dataset, but also randomly drawn subsets thereof (useful for simulations demonstrating effects of sample size in for instance power studies or reproducibility of phenotype transformations). The code below saves the genotypes/phenotypes into the subdirectory "2017_04_04_simulation" of the directories ~/tmp/genotypes and ~/tmp/phenotypes. If the user has writing permissions and the directories do not exist yet, they will be created. In addition to the full set, phenotype and genotype subsets for $N={50,70}$ and $P={5,10}$ are saved. 
+The final phenotype and all its components can be saved via `savePheno`. `savePheno` simply takes the output of `runSimulation` or `createPheno` and saves every component found in there; if genotypes were simulated and a kinhsip estimated thereof, they will also be saved. The user needs to have writing permission to the specified genotype and phenotype directories. Optionally, sample subset sizes for phenotypes and samples can be provided to save not only the full dataset, but also randomly drawn subsets thereof (useful for simulations demonstrating effects of sample size in for instance power studies or reproducibility of phenotype transformations). The code below saves the genotypes/phenotypes as .csv files into the subdirectory "test_simulation" of the directories /tmp/genotypes and /tmp/phenotypes. The genotypes are additionally saved in binary plink format, i.e. .bed, .bim and .fam. If the user has writing permissions and the directories do not exist yet, they will be created. In addition to the full set, phenotype and genotype subsets for N={50,70} and P={5,10} are saved. 
 
 ```{r, eval = FALSE}
-savePheno(phenotype, directoryGeno="~/tmp/genotypes",  
-          directoryPheno="~/tmp/phenotypes", outstring="2017_04_04_simulation",
+out <- savePheno(phenotype, directoryGeno="/tmp/genotypes",  
+          directoryPheno="/tmp/phenotypes", outstring="test_simulation",
           sample_subset_vec = c(50, 70), pheno_subset_vec = c(5, 10), 
-          verbose=FALSE)
+          saveAsTable=TRUE, saveAsPlink=TRUE, verbose=FALSE)
 ```
 
 
 # Command line use
-PhenotypeSimulator can also be run from the command line via `Rscript -e 'simulatePhenotypes()' --vanilla --default-packages=R.utils,PhenotypeSimulator,optparse --...` with `--...` being the user supplied simulation paramaters. `Rscript -e 'simulatePhenotypes()'` takes the same arguments as `runSimulation` and `savePheno`: first, it simulates the specified phenotype components and then saves them into to specified directories. The user will need to have writing permissions to the parent directory, in this case ~. If directoryGeno and directoryPheno do not exist yet, they will be created. To generate the same phenotypes as described above via the command line-interface, run the following code from your command line:
+PhenotypeSimulator can also be run from the command line via 
+
+`Rscript -e  "PhenotypeSimulator::simulatePhenotypes()" --args --...` with `--...` being the user supplied simulation paramaters. `Rscript -e  "PhenotypeSimulator::simulatePhenotypes()"` takes the same arguments as `runSimulation` and `savePheno`: first, it simulates the specified phenotype components and then saves them into to specified directories. The user will need to have writing permissions to these parent directores. If directoryGeno and directoryPheno do not exist yet, they will be created. 
+
+`Rscript -e  "PhenotypeSimulator::simulatePhenotypes()" --args --help` will print information about possible input parameters and values they can take on. To generate the same phenotypes as described above via the command line-interface, run the following code from your command line:
 
 ```{bash, eval = FALSE}
-Rscript <(echo 'PhenotypeSimulator::simulatePhenotypes()') \
+Rscript -e "PhenotypeSimulator::simulatePhenotypes()" \
+--args \
 --NrSamples=100 --NrPhenotypes=15 \
 --tNrSNP=10000 --cNrSNP=30 \
 --SNPfrequencies=0.05,0.1,0.3,0.4 \
@@ -224,17 +230,19 @@ Rscript <(echo 'PhenotypeSimulator::simulatePhenotypes()') \
 --distConfounders=bin,cat_norm,cat_unif,norm \
 --probConfounders=0.2 \
 --catConfounders=0,3,4,0 \
---directoryGeno=~/tmp/genotypes \
---directoryPheno=~/tmp/phenotypes \
---subdirectory=2017_04_04_simulation \
+--directoryGeno=/tmp/genotypes \
+--directoryPheno=/tmp/phenotypes \
+--subdirectory=test_simulation \
 --sampleSubset=50,70 \
 --phenoSubset=5,10 \
 --normalise \
---verbose 
+--showProgress \
+--saveTable \
+--savePlink
 ```
 
 # Phenotype component functions
-## 1. fixed genetic effects: 
+## 1. Fixed genetic effects: 
 Fixed genetic effects are simulated as the matrix product of an [N x NrCausalSNPs] genotype matrix and [NrSNP x P] effect size matrix. The genotype matrix can either be drawn from i) a simulated genotype matrix or ii) causal SNPs can be randomly drawn and read from existing genotype files. In the latter case, genotypes are expected to be stored in a [SNPs x N] format, with separate files for each chromosome. The user can either specify which chromosomes to sample the SNPs from or simply provide the total number of chromosomes to sample from. For the simulation of genotypes, the user can specify the `NrSNP`s to simulate and a vectore of allele frequencies `frequencies`. These allele frequencies are uniformly sampled and bi-allelic SNPs are simulated, with the sampled allele frequency acting as the probability in a binomial distribution with 2 trials. The example data provided  contains the first 500 SNPs (50 samples) on chromosome 22 with a minor allele frequency of less than 2% from the European populations of the the 1000 Genomes project.
 
 ```{r}
@@ -272,7 +280,7 @@ The effects attached to the causal SNPs can be classified into two categories: i
 ```{r, fig.show='hold'}
 # create genetic fixed effects with 20% of SNPs having a specific effect, 
 # affecting 40% of all simulated traits
-fixedGenetic <- geneticFixedEffects(X_causal = causalSNPs, N = 100, P = 20, 
+fixedGenetic <- geneticFixedEffects(X_causal = causalSNPs, N = 100, P = 10, 
                                     pIndependentGenetic = 0.2, 
                                     pTraitIndependentGenetic = 0.4)
 ```
@@ -289,8 +297,8 @@ mtext(side = 2, text = "Traits", line = 1)
 
 ```
 
-## 2. background genetic effects: 
-Background genetic effects are simulated via `geneticBgEffects` as two random genetic effects (shared and independent) based on the kinship estimates of the (simulated) samples. This structure is achieved by combining three matrix components for each of the effects: : i) the kinship matrix $K$ [N x N] which is treated as the sample-design matrix (the genetic profile of the samples), ii) an effect-size matrix $B$ [N x P] with $vec(B)$ drawn from a normal distribution and iii) the trait design matrix $A$ [P x P]. For the independent effect, $A$ is a diagonal matrix with normally distributed values. $A$ of the shared effect is a matrix of row rank one, with normally distributed entries in row 1 and zeros elsewhere. The three matrices are multiplied to obtain the desired final effect matrix $E$: $E = KBA$. As for the genetic fixed effects, the kinship can either be estimated from simulated genotypes or read in from file. The kinship is estimated as \eqn{K = XX_T}, with X the standardised genotypes of the samples. When estimating the kinship from the provided genotypes, the kinship should be normalised by the mean of its diagonal elements and 1e-4 added to the diagonal for numerical stability via norm=TRUE. If a kinship file is provided, normalising can optionally be chosen. For the provided kinship file, normalisation has already been done a priori and norm should be set to FALSE. The provided kinship contains estimates for 50 samples across the entire genome. 
+## 2. Random genetic effects: 
+Random genetic effects are simulated via `geneticBgEffects` as two random genetic effects (shared and independent) based on the kinship estimates of the (simulated) samples. This structure is achieved by combining three matrix components for each of the effects: : i) the kinship matrix $K$ [N x N] which is treated as the sample-design matrix (the genetic profile of the samples), ii) an effect-size matrix $B$ [N x P] with $vec(B)$ drawn from a normal distribution and iii) the trait design matrix $A$ [P x P]. For the independent effect, $A$ is a diagonal matrix with normally distributed values. $A$ of the shared effect is a matrix of row rank one, with normally distributed entries in row 1 and zeros elsewhere. The three matrices are multiplied to obtain the desired final effect matrix $E$: $E = KBA$. As for the genetic fixed effects, the kinship can either be estimated from simulated genotypes or read in from file. The kinship is estimated as $K = XX_T$, with X the standardised genotypes of the samples. When estimating the kinship from the provided genotypes, the kinship should be normalised by the mean of its diagonal elements and 1e-4 added to the diagonal for numerical stability via norm=TRUE. If a kinship file is provided, normalising can optionally be chosen. For the provided kinship file, normalisation has already been done a priori and norm should be set to FALSE. The provided kinship contains estimates for 50 samples across the entire genome. 
 
 ```{r, fig.show='hold'}
 ## a) Estimate kinship from simulated genotypes
@@ -302,22 +310,22 @@ kinshipFile <- system.file("extdata/kinship/", "kinship.csv",
 kinshipFromFile <- getKinship(kinshipfile = kinshipFile, norm=FALSE, 
                               verbose = FALSE)
 
-genBg <- geneticBgEffects(kinship = kinship, N = 100, P = 15)
+genBg <- geneticBgEffects(kinship = kinship, P = 15)
 ```
 
 ```{r, fig.show='hold', echo=FALSE, fig.height=3.4, fig.width=3.4}
-image(genBg$shared, main="Shared background genetic effects", axes=FALSE, 
+image(genBg$shared, main="Shared random genetic effects", axes=FALSE, 
       cex.main=0.8)
 mtext(side = 1, text = "Samples", line = 1)
 mtext(side = 2, text = "Traits", line = 1)
-image(genBg$independent, main="Independent background genetic effects",  
+image(genBg$independent, main="Independent random genetic effects",  
       axes=FALSE, cex.main=0.8)
 mtext(side = 1, text = "Samples", line = 1)
 mtext(side = 2, text = "Traits", line = 1)
 ```
 
-## 3. fixed noise effects: 
-Fixed noise effects can be understood as confounding variables/covariates in an analysis, such as sex (binomial), age (normal/uniform), weight (normal) or disease status (categorical). Confounders can have affects across all traits (shared) or to a number of traits only (independent); the proportion of independent confounders from the total of simulated confounders can be chosen via `pIndependentConfounders`. The number of traits that are associated with independent noise effects can be chosen via `pTraitIndependentConfounders`. Confounders can be simulated as categorical variables or following a binomial, uniform or normal distribution (as specified in `distConfounders`). Effect sizes for the noise effects can be simulated from a uniform or normal distribution, specified in `distBeta`.  Multiple confounder sets drawn from different distributions/different parameters of the same distribution can be simulated by specifying `NrFixedEffects` and supplying the respective distribution parameters: i) `mConfounders` and `sdConfounders`: for the normal and uniform distributions, `mConfounders` is the mean/midpoint and `sdConfounders` the standard deviation/distance from midpoint, respectively; ii) `catConfounders` is the number of categorical variables to simulate; iii) `probConfounders` is the probability of success in the binomial distribution (with one trial) iv) `mBeta` and `sdBeta` are the mean/midpoint and standard deviation/distance from midpoint of the normally/uniformly distributed effect sizes.
+## 3. Fixed noise effects: 
+Fixed noise effects can be understood as confounding variables/covariates in an analysis, such as sex (binomial), age (normal/uniform), weight (normal) or disease status (categorical). Confounders can have effects across all traits (shared) or to a number of traits only (independent); the proportion of independent confounders from the total of simulated confounders can be chosen via `pIndependentConfounders`. The number of traits that are associated with independent noise effects can be chosen via `pTraitIndependentConfounders`. Confounders can be simulated as categorical variables or following a binomial, uniform or normal distribution (as specified in `distConfounders`). Effect sizes for the noise effects can be simulated from a uniform or normal distribution, specified in `distBeta`.  Multiple confounder sets drawn from different distributions/different parameters of the same distribution can be simulated by specifying `NrFixedEffects` and supplying the respective distribution parameters: i) `mConfounders` and `sdConfounders`: for the normal and uniform distributions, `mConfounders` is the mean/midpoint and `sdConfounders` the standard deviation/distance from midpoint, respectively; ii) `catConfounders` is the number of categorical variables to simulate; iii) `probConfounders` is the probability of success in the binomial distribution (with one trial) iv) `mBeta` and `sdBeta` are the mean/midpoint and standard deviation/distance from midpoint of the normally/uniformly distributed effect sizes.
 
 ```{r, fig.show='hold'}
 # create 1 noise fixed effects affecting 30% of all simulated traits. The effect 
@@ -346,7 +354,7 @@ fixedNoiseBinomial <- noiseFixedEffects(N = 100, P = 10, NrConfounders = 1,
                                         probConfounders = 0.5)
 ```
 
-```{r, fig.show='hold', echo=FALSE, fig.height=3.4, fig.width=3.4}
+```{r, fig.show='hold', echo=FALSE, fig.height=3.5, fig.width=4}
 image(fixedNoiseUniform$independent, 
       main="Independent fixed noise effects\n(uniform confounder dist)", 
       axes=FALSE,  cex.main=0.8)
@@ -358,6 +366,7 @@ image(fixedNoiseNormal$shared,
       axes=FALSE, cex.main=0.8)
 mtext(side = 1, text = "Samples", line = 1)
 mtext(side = 2, text = "Traits", line = 1)
+
 image(fixedNoiseNormal$independent, 
       main="Independent fixed noise effects\n(normal confounder dist)", 
       axes=FALSE, cex.main=0.8)
@@ -371,8 +380,8 @@ mtext(side = 1, text = "Samples", line = 1)
 mtext(side = 2, text = "Traits", line = 1)
 ```
 
-## 4. correlated noise effects: 
-`correlatedBgEffects` can be used to simulate phenotypes with a defined level of correlation between traits. For instance, such affects can reflect correlation strcuture decreasing in phenotypes with a spatial component. The level of correlation depends on the distance of the traits. Traits of distance $d=1$ (adjacent columns) will have correlation $cor=pcorr^1$, traits with $d=2$ have $cor=pcorr^2$ up to traits with $d=(P-1)$ $cor=pcorr^{(P-1)}$. The correlated background effect $correlated$ is simulated as multivariate normal distributed with the described correlation structure $C$ as the covariance between the phenotypic traits: $correlated ~ N_{NP}(0,C)$.
+## 4. Correlated noise effects: 
+`correlatedBgEffects` can be used to simulate phenotypes with a defined level of correlation between traits. For instance, such effects can reflect correlation structure decreasing in phenotypes with a spatial component. The level of correlation depends on the distance of the traits. Traits of distance $d=1$ (adjacent columns) will have correlation $cor=pcorr^1$, traits with $d=2$ have $cor=pcorr^2$ up to traits with $d=(P-1)$ $cor=pcorr^{(P-1)}$. The correlated noise effect $correlated$ is simulated as multivariate normal distributed with the described correlation structure $C$ as the covariance between the phenotypic traits: $correlated ~ N_{NP}(0,C)$.
 
 ```{r, fig.show='hold', fig.height=3.4, fig.width=3.4}
 # simulate correlated noise effect for 10 traits with top-level 
@@ -383,7 +392,7 @@ correlatedNoise <- correlatedBgEffects(N = 100, P = 10, pcorr = 0.8 )
 # little correlation at the furthest distance to the diagonal 
 furthestDistCorr <- 0.4^(10-1)
 pairs(correlatedNoise, pch = ".", 
-      main=paste("Correlation at furthest distance to diagonal:",
+      main=paste("Correlation at furthest distance to diagonal:\n",
                  furthestDistCorr), cex.main=0.8)
 image(correlatedNoise, main="Correlated noise effects",  axes=FALSE, 
       cex.main=0.8)
@@ -391,20 +400,20 @@ mtext(side = 1, text = "Samples", line = 1)
 mtext(side = 2, text = "Traits", line = 1)
 ```
 
-## 5. background noise effects: 
-Background noise effects are simulated as two random noise effects (shared and independent). The shared background effect is simulated as $vec(common) ~ N(mean,sd)$. The independent background effect  is simulated as the matrix product of two normal distributions A [N x 1] and B [P x 1]: $specific=AB^T$
+## 5. Random noise effects: 
+Random noise effects are simulated as two random noise effects (shared and independent). The independent random effect is simulated as $vec(indpendent) ~ N(mean,sd)$. The shared random effect is simulated as the matrix product of two normal distributions A [N x 1] and B [P x 1]: $shared=AB^T$
 
 ```{r,fig.show='hold'}
-# simulate a noise background effect for 10 traits
+# simulate a noise random effect for 10 traits
 noiseBg <- noiseBgEffects(N = 100, P = 10, mean = 0, sd = 1)
 ```
 
 ```{r, fig.show='hold', echo=FALSE, fig.height=3.4, fig.width=3.4}
-image(noiseBg$shared, main="Shared background noise effects", axes=FALSE, 
+image(noiseBg$shared, main="Shared random noise effects", axes=FALSE, 
       cex.main=0.8)
 mtext(side = 1, text = "Samples", line = 1)
 mtext(side = 2, text = "Traits", line = 1)
-image(noiseBg$independent, main="Independent background noise effects", 
+image(noiseBg$independent, main="Independent random noise effects", 
       axes=FALSE, cex.main=0.8)
 mtext(side = 1, text = "Samples", line = 1)
 mtext(side = 2, text = "Traits", line = 1)
