@@ -89,7 +89,7 @@ geneticFixedEffects <- function(X_causal, P, N=NULL, pIndependentGenetic=0.4,
                                      (P - TraitIndependentGenetic))), 
                                replace=FALSE)
         betaX_independent[,p_nongenetic] <- 
-            matrix(rep(0,  TraitIndependentGenetic * NrIndependentSNPs), 
+            matrix(rep(0,  length(which(p_nongenetic)) * NrIndependentSNPs), 
                                                 nrow=NrIndependentSNPs)
         cov <- t(data.frame(X_independent))
         cov_effect <- data.frame(t(betaX_independent))
