@@ -148,18 +148,35 @@ simulatePhenotypes <- function() {
                     dest="probConfoundersString", default=0, type="character", 
                     help="probability(s) of binomial confounders (0/1); required 
                     if distConfounders 'bin' [default: %default]"),
-        make_option(c("--distBeta"), action="store", dest="distBetaString", 
-                    default="norm", type="character", help="Name(s) of 
-                    distribution to use to simulate effect sizes of confounders; 
-                    one of 'unif' or 'norm' [default: %default]"),
-        make_option(c("--mBeta"), action="store", dest="mBetaString", 
+        make_option(c("--distBetaConfounders"), action="store", 
+                    dest="distBetaConfoundersString", default="norm", 
+                    type="character", help="Name(s) of distribution to use to 
+                    simulate effect sizes of confounders; one of 'unif' or 
+                    'norm' [default: %default]"),
+        make_option(c("--mBetaConfounders"), action="store", 
+                    dest="mBetaConfoundersString", 
                     default=0, type="character", help="Mean/midpoint of normal
                     /uniform distribution for effect sizes of confounders 
                     [default: %default]"),
-        make_option(c("--sdBeta"), action="store", dest="sdBetaString", 
+        make_option(c("--sdBetaConfounders"), action="store", 
+                    dest="sdBetaConfoundersString", 
                     default=1, type="character", help="Standard deviation/
                     distance from midpoint of normal/uniform distribution for 
                     effect sizes of confounders [default: %default]"),
+        make_option(c("--distBetaGenetic"), action="store", 
+                    dest="distBetaGeneticString", default="norm", 
+                    type="character", help="Name(s) of distribution to use to 
+                    simulate effect sizes of SNPs; one of 'unif' or 'norm' 
+                    [default: %default]"),
+        make_option(c("--mBetaGenetic"), action="store", 
+                    dest="mBetaGeneticString", default=0, type="character", 
+                    help="Mean/midpoint of normal/uniform distribution for 
+                    effect sizes of SNPs [default: %default]"),
+        make_option(c("--sdBetaGenetic"), action="store", 
+                    dest="sdBetaGeneticString", default=1, type="character", 
+                    help="Standard deviation/distance from midpoint of 
+                    normal/uniform distribution for effect sizes of SNPs 
+                    [default: %default]"),
         
         make_option(c("--meanNoiseBg"), action="store", dest="meanNoiseBg", 
                     default=0, type="double", help="Mean of the normal 
@@ -323,6 +340,11 @@ simulatePhenotypes <- function() {
                                          args$pIndependentGenetic, 
                                      pTraitIndependentGenetic=
                                          args$pTraitIndependentGenetic, 
+                                     distBetaGeneticString=
+                                         args$distBetaGeneticString,
+                                     mBetaGeneticString=args$mBetaGeneticString, 
+                                     sdBetaGeneticString=
+                                         args$sdBetaGeneticString,
                                      distConfoundersString=
                                          args$distConfoundersString, 
                                      mConfoundersString=args$mConfoundersString, 
@@ -332,9 +354,12 @@ simulatePhenotypes <- function() {
                                          args$catConfoundersString,
                                      probConfoundersString=
                                          args$probConfoundersString,
-                                     distBetaString=args$distBetaString,
-                                     mBetaString=args$mBetaString, 
-                                     sdBetaString=args$sdBetaString,
+                                     distBetaConfoundersString=
+                                         args$distBetaConfoundersString,
+                                     mBetaConfoundersString=
+                                         args$mBetaConfoundersString, 
+                                     sdBetaConfoundersString=
+                                         args$sdBetaConfoundersString,
                                      meanNoiseBg=args$meanNoiseBg, 
                                      sdNoiseBg=args$sdNoiseBg,
                                      verbose=args$verbose)
