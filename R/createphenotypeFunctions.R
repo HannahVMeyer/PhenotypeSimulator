@@ -1123,7 +1123,7 @@ runSimulation <- function(N=1000, P=10, tNrSNP=5000, cNrSNP=20,
                  , verbose=verbose)
         if (grepl('Fixed', modelGenetic)) {
             if (is.null(genoFilePrefix)) {
-                if (!grepl('Bg', modelGenetic)) {
+                if (!grepl('Bg', modelGenetic) && tNrSNP != cNrSNP) {
                     warning(paste("The genetic model does not contain random",
                                 "effects but the total number of SNPs to",
                                 "simulate (tNrSNP:",
