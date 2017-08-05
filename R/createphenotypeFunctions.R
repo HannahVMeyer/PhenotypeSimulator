@@ -879,8 +879,6 @@ createPheno <- function(P, N, sampleID="ID_", phenoID="trait_",
 #' @param standardise [boolean], if TRUE standardised genotypes will be returned
 #' @param distConfounders name [string] of distribution to use to simulate 
 #' confounders; one of "unif", "norm", "bin", "cat_norm", "cat_unif"
-#' @param distBeta name [string] of distribution to use to simulate effect sizes
-#'  of confounders; one of "unif" or "norm"
 #' @param mConfounders mean/midpoint [double] of normal/uniform distribution for
 #'  confounders
 #' @param sdConfounders standard deviation/extension from midpoint [double] of 
@@ -889,14 +887,22 @@ createPheno <- function(P, N, sampleID="ID_", phenoID="trait_",
 #' distConfounders "cat_norm" or "cat_unif" 
 #' @param probConfounders probability [double] of binomial confounders (0/1); 
 #' required if distConfounders "bin" 
-#' @param mBeta mean/midpoint [double] of normal/uniform distribution for effect
-#'  sizes of confounders
-#' @param sdBeta standard deviation/extension from midpoint [double] of normal/
-#' uniform distribution for effect sizes of confounders
+#' @param distBetaConfounders name [string] of distribution to use to simulate 
+#' effect sizes of confounders; one of "unif" or "norm"
+#' @param mBetaConfounders mean/midpoint [double] of normal/uniform distribution 
+#' for effect sizes of confounders
+#' @param sdBetaConfounders standard deviation/extension from midpoint [double] 
+#' of normal/uniform distribution for effect sizes of confounders
 #' @param pIndependentConfounders Proportion [double] of noise effects 
 #' (confounders) to have a trait-independent effect
 #' @param pTraitIndependentConfounders Proportion [double] of traits influenced 
 #' by independent fixed noise effects
+#' @param distBetaGenetic name [string] of distribution to use to simulate 
+#' effect sizes of SNPs; one of "unif" or "norm"
+#' @param mBetaGenetic mean/midpoint [double] of normal/uniform distribution 
+#' for effect sizes of SNPs
+#' @param sdBetaGenetic standard deviation/extension from midpoint [double] 
+#' of normal/uniform distribution for effect sizes of SNPs
 #' @param pIndependentGenetic Proportion [double] of genetic effects (SNPs) to 
 #' have a trait-independent fixed effect
 #' @param pTraitIndependentGenetic Proportion [double] of traits influenced by 
@@ -916,10 +922,10 @@ createPheno <- function(P, N, sampleID="ID_", phenoID="trait_",
 #' separated [string] with name(s) [string] of distributions to use to 
 #' simulate confounders; one of "unif", "norm", "bin", "cat_norm", "cat_unif";
 #' typically used when run as command line application 
-#' @param distBetaString alternative to distBeta, a comma-separated [string] 
-#' with name(s) [string] of distribution to use to simulate effect sizes of 
-#' confounders; one of "unif" or "norm"; typically used when run as command line 
-#' application
+#' @param distBetaConfoundersString alternative to distBeta, a comma-separated 
+#' [string] with name(s) [string] of distribution to use to simulate effect 
+#' sizes of confounders; one of "unif" or "norm"; typically used when run as 
+#' command line application
 #' @param mConfoundersString alternative to mConfounders, a comma-
 #' separated [string] with of mean/midpoint(s) [double] of normal/uniform 
 #' distribution for confounders; typically used when run as command line 
@@ -936,13 +942,24 @@ createPheno <- function(P, N, sampleID="ID_", phenoID="trait_",
 #' separated [string] with probability(s) [double] of binomial 
 #' confounders (0/1); required if distConfounders "bin"; typically used
 #'  when run as command line application
-#' @param mBetaString  alternative to mBeta, a comma- separated [string] with 
-#' means/midpoints [double] of normal/uniform distribution for effect sizes of 
-#' confounders; typically used when run as command line application
-#' @param sdBetaString alternative to sdBeta, a comma- separated [string] with 
-#' standard deviation/distance from midpoint [double] of normal/uniform 
+#' @param mBetaConfoundersString  alternative to mBeta, a comma- separated 
+#' [string] with means/midpoints [double] of normal/uniform distribution for 
+#' effect sizes of confounders; typically used when run as command line 
+#' application
+#' @param sdBetaConfoundersString alternative to sdBeta, a comma- separated 
+#' [string] with standard deviation/distance from midpoint [double] of 
+#' normal/uniform 
 #' distribution for effect sizes of confounders; typically used when run as 
 #' command line application
+#' @param distBetaGeneticString name [string] of distribution to use to simulate 
+#' effect sizes of SNPs; one of "unif" or "norm"; typically used when run as 
+#' command line application
+#' @param mBetaGeneticString mean/midpoint [double] of normal/uniform 
+#' distribution for effect sizes of SNPs; typically used when run as command 
+#' line application
+#' @param sdBetaGeneticString standard deviation/extension from midpoint 
+#' [double] of normal/uniform distribution for effect sizes of SNPs; typically 
+#' used when run as command line application
 #' @param meanNoiseBg mean [double] of the normal distribution for noise bg 
 #' effects
 #' @param sdNoiseBg standard deviation [double] of the normal distribution for 
@@ -995,7 +1012,10 @@ runSimulation <- function(N=1000, P=10, tNrSNP=5000, cNrSNP=20,
                           NrFixedEffects=1, distConfounders="norm",
                           mConfounders=0, sdConfounders=1,
                           catConfounders=NULL, probConfounders=NULL,
-                          distBeta="norm", mBeta=0, sdBeta=1,
+                          distBetaConfounders="norm", mBetaConfounders=0, 
+                          sdBetaConfounders=1,
+                          distBetaGenetic="norm", mBetaGenetic=0, 
+                          sdBetaGenetic=1,
                           pIndependentConfounders=0.4, 
                           pTraitIndependentConfounders=0.2, 
                           pcorr=0.8, meanNoiseBg=0, sdNoiseBg=1, 
@@ -1010,9 +1030,12 @@ runSimulation <- function(N=1000, P=10, tNrSNP=5000, cNrSNP=20,
                           sdConfoundersString=NULL, 
                           catConfoundersString=NULL, 
                           probConfoundersString=NULL, 
-                          distBetaString=NULL, 
-                          mBetaString=NULL, 
-                          sdBetaString=NULL,
+                          distBetaConfoundersString=NULL, 
+                          mBetaConfoundersString=NULL, 
+                          sdBetaConfoundersString=NULL,
+                          distBetaGeneticString=NULL, 
+                          mBetaGeneticString=NULL, 
+                          sdBetaGeneticString=NULL,
                           verbose=TRUE) {
 
     vmessage(c("Set seed:", seed), verbose=verbose)
@@ -1061,8 +1084,9 @@ runSimulation <- function(N=1000, P=10, tNrSNP=5000, cNrSNP=20,
                                             sdConfounders=sdConfounders, 
                                             catConfounders=catConfounders, 
                                             probConfounders = probConfounders,
-                                            distBeta=distBeta, mBeta=mBeta, 
-                                            sdBeta=sdBeta,
+                                            distBeta=distBetaConfounders, 
+                                            mBeta=mBetaConfounders, 
+                                            sdBeta=sdBetaConfounders,
                                             NrConfoundersString=
                                                 NrConfoundersString,
                                             pIndependentConfoundersString=
@@ -1079,12 +1103,18 @@ runSimulation <- function(N=1000, P=10, tNrSNP=5000, cNrSNP=20,
                                                 catConfoundersString, 
                                             probConfoundersString=
                                                 probConfoundersString,
-                                            distBetaString=distBetaString, 
-                                            mBetaString=mBetaString, 
-                                            sdBetaString=sdBetaString)
+                                            distBetaString=
+                                                distBetaConfoundersString, 
+                                            mBetaString=mBetaConfoundersString, 
+                                            sdBetaString=
+                                                sdBetaConfoundersString)
         } else {
             noiseFixed <- NULL
         }
+    } else {
+        correlatedBg <- NULL
+        noiseFixed <- NULL
+        noiseBg <- NULL
     }
     
     # 2. Simulate genetic terms
@@ -1094,7 +1124,13 @@ runSimulation <- function(N=1000, P=10, tNrSNP=5000, cNrSNP=20,
         if (grepl('Fixed', modelGenetic)) {
             if (is.null(genoFilePrefix)) {
                 if (!grepl('Bg', modelGenetic)) {
-                    tNrSNP=cNrSNP
+                    warning(paste("The genetic model does not contain random",
+                                "effects but the total number of SNPs to"
+                                "simulate (tNrSNP:",
+                                tNrSNP, ") is larger than the causal number of",
+                                "SNPs (cNrSNP:", cNrSNP, "). If genotypes are",
+                                "not needed, consider setting tNrSNP=cNrSNP",
+                                "to speed up computation")
                 }
                 genotypes <- simulateGenotypes(N=N, NrSNP=tNrSNP, 
                                                frequencies=SNPfrequencies, 
@@ -1124,7 +1160,15 @@ runSimulation <- function(N=1000, P=10, tNrSNP=5000, cNrSNP=20,
                                             pIndependentGenetic=
                                                 pIndependentGenetic, 
                                             pTraitIndependentGenetic=
-                                                pTraitIndependentGenetic)
+                                                pTraitIndependentGenetic,
+                                            distBeta=distBetaGenetic, 
+                                            mBeta=mBetaGenetic, 
+                                            sdBeta=sdBetaGenetic,
+                                            distBetaString=
+                                                distBetaGeneticString, 
+                                            mBetaString=mBetaGeneticString, 
+                                            sdBetaString=
+                                                sdBetaGeneticString)
         } else {
             genFixed <- NULL
             genotypes <- NULL
@@ -1158,6 +1202,8 @@ runSimulation <- function(N=1000, P=10, tNrSNP=5000, cNrSNP=20,
         genotypes <- NULL
         kinship <- NULL
         cNrSNP <- 0
+        genBg <- NULL
+        genFixed <- NULL
     }
     
     # 3. Construct final simulated phenotype 
