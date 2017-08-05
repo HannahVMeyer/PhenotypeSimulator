@@ -5,7 +5,10 @@
 \title{Simulate genetic fixed effects.}
 \usage{
 geneticFixedEffects(X_causal, P, N = NULL, pIndependentGenetic = 0.4,
-  pTraitIndependentGenetic = 0.2, verbose = TRUE)
+  pTraitIndependentGenetic = 0.2, distBeta = "norm", mBeta = 0,
+  sdBeta = 1, pIndependentGeneticString = NULL,
+  pTraitIndependentGeneticString = NULL, distBetaString = NULL,
+  mBetaString = NULL, sdBetaString = NULL, verbose = TRUE)
 }
 \arguments{
 \item{X_causal}{[N x NrCausalSNPs] matrix of standardised (depending on 
@@ -23,6 +26,39 @@ have an independent fixed effect}
 
 \item{pTraitIndependentGenetic}{Proportion [double] of traits influenced by 
 independent fixed genetic effects}
+
+\item{distBeta}{vector of name(s) [string] of distribution to use to simulate 
+effect sizes of SNPs; one of "unif" or "norm"}
+
+\item{mBeta}{vector of mean/midpoint [double] of normal/uniform distribution 
+for effect sizes of SNPs}
+
+\item{sdBeta}{vector of standard deviation/distance from midpoint [double] 
+of normal/uniform distribution for effect sizes of SNPs}
+
+\item{pIndependentGeneticString}{alternative to pIndependentGenetic,
+a comma-separated [string] with proportion(s) [double] of genetic effects 
+to have a trait-independent effect; typically used when run as 
+command line application}
+
+\item{pTraitIndependentGeneticString}{alternative to 
+pTraitIndependentGenetic, a comma-separated [string] with proportion(s) 
+[double] of traits influenced by independent fixed genetic effects; typically 
+used when run as command line application}
+
+\item{distBetaString}{alternative to distBeta, a comma-separated [string] 
+with name(s) [string] of distribution to use to simulate effect sizes of 
+SNPs; one of "unif" or "norm"; typically used when run as command line 
+application}
+
+\item{mBetaString}{alternative to mBeta, a comma- separated [string] with 
+means/midpoints [double] of normal/uniform distribution for effect sizes of 
+SNPs; typically used when run as command line application}
+
+\item{sdBetaString}{alternative to sdBeta, a comma- separated [string] with 
+standard deviation/distance from midpoint [double] of normal/uniform 
+distribution for effect sizes of SNPs; typically used when run as 
+command line application}
 
 \item{verbose}{[boolean]; if TRUE, progress info is printed to standard out}
 }
