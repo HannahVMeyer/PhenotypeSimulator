@@ -14,17 +14,20 @@ runSimulation(N = 1000, P = 10, tNrSNP = 5000, cNrSNP = 20,
   kinshipDelimiter = ",", normalise = TRUE, standardise = TRUE,
   NrFixedEffects = 1, distConfounders = "norm", mConfounders = 0,
   sdConfounders = 1, catConfounders = NULL, probConfounders = NULL,
-  distBeta = "norm", mBeta = 0, sdBeta = 1,
-  pIndependentConfounders = 0.4, pTraitIndependentConfounders = 0.2,
-  pcorr = 0.8, meanNoiseBg = 0, sdNoiseBg = 1, SNPfrequencies = c(0.1,
-  0.2, 0.4), SNPfrequencyString = NULL, pIndependentGenetic = 0.4,
+  distBetaConfounders = "norm", mBetaConfounders = 0,
+  sdBetaConfounders = 1, distBetaGenetic = "norm", mBetaGenetic = 0,
+  sdBetaGenetic = 1, pIndependentConfounders = 0.4,
+  pTraitIndependentConfounders = 0.2, pcorr = 0.8, meanNoiseBg = 0,
+  sdNoiseBg = 1, SNPfrequencies = c(0.1, 0.2, 0.4),
+  SNPfrequencyString = NULL, pIndependentGenetic = 0.4,
   pTraitIndependentGenetic = 0.2, NrConfoundersString = NULL,
   pIndependentConfoundersString = NULL,
   pTraitIndependentConfoundersString = NULL, distConfoundersString = NULL,
   mConfoundersString = NULL, sdConfoundersString = NULL,
   catConfoundersString = NULL, probConfoundersString = NULL,
-  distBetaString = NULL, mBetaString = NULL, sdBetaString = NULL,
-  verbose = TRUE)
+  distBetaConfoundersString = NULL, mBetaConfoundersString = NULL,
+  sdBetaConfoundersString = NULL, distBetaGeneticString = NULL,
+  mBetaGeneticString = NULL, sdBetaGeneticString = NULL, verbose = TRUE)
 }
 \arguments{
 \item{N}{number [integer] of samples to simulate}
@@ -126,14 +129,23 @@ distConfounders "cat_norm" or "cat_unif"}
 \item{probConfounders}{probability [double] of binomial confounders (0/1); 
 required if distConfounders "bin"}
 
-\item{distBeta}{name [string] of distribution to use to simulate effect sizes
-of confounders; one of "unif" or "norm"}
+\item{distBetaConfounders}{name [string] of distribution to use to simulate 
+effect sizes of confounders; one of "unif" or "norm"}
 
-\item{mBeta}{mean/midpoint [double] of normal/uniform distribution for effect
-sizes of confounders}
+\item{mBetaConfounders}{mean/midpoint [double] of normal/uniform distribution 
+for effect sizes of confounders}
 
-\item{sdBeta}{standard deviation/extension from midpoint [double] of normal/
-uniform distribution for effect sizes of confounders}
+\item{sdBetaConfounders}{standard deviation/extension from midpoint [double] 
+of normal/uniform distribution for effect sizes of confounders}
+
+\item{distBetaGenetic}{name [string] of distribution to use to simulate 
+effect sizes of SNPs; one of "unif" or "norm"}
+
+\item{mBetaGenetic}{mean/midpoint [double] of normal/uniform distribution 
+for effect sizes of SNPs}
+
+\item{sdBetaGenetic}{standard deviation/extension from midpoint [double] 
+of normal/uniform distribution for effect sizes of SNPs}
 
 \item{pIndependentConfounders}{Proportion [double] of noise effects 
 (confounders) to have a trait-independent effect}
@@ -200,19 +212,33 @@ separated [string] with probability(s) [double] of binomial
 confounders (0/1); required if distConfounders "bin"; typically used
  when run as command line application}
 
-\item{distBetaString}{alternative to distBeta, a comma-separated [string] 
-with name(s) [string] of distribution to use to simulate effect sizes of 
-confounders; one of "unif" or "norm"; typically used when run as command line 
+\item{distBetaConfoundersString}{alternative to distBeta, a comma-separated 
+[string] with name(s) [string] of distribution to use to simulate effect 
+sizes of confounders; one of "unif" or "norm"; typically used when run as 
+command line application}
+
+\item{mBetaConfoundersString}{alternative to mBeta, a comma- separated 
+[string] with means/midpoints [double] of normal/uniform distribution for 
+effect sizes of confounders; typically used when run as command line 
 application}
 
-\item{mBetaString}{alternative to mBeta, a comma- separated [string] with 
-means/midpoints [double] of normal/uniform distribution for effect sizes of 
-confounders; typically used when run as command line application}
-
-\item{sdBetaString}{alternative to sdBeta, a comma- separated [string] with 
-standard deviation/distance from midpoint [double] of normal/uniform 
+\item{sdBetaConfoundersString}{alternative to sdBeta, a comma- separated 
+[string] with standard deviation/distance from midpoint [double] of 
+normal/uniform 
 distribution for effect sizes of confounders; typically used when run as 
 command line application}
+
+\item{distBetaGeneticString}{name [string] of distribution to use to simulate 
+effect sizes of SNPs; one of "unif" or "norm"; typically used when run as 
+command line application}
+
+\item{mBetaGeneticString}{mean/midpoint [double] of normal/uniform 
+distribution for effect sizes of SNPs; typically used when run as command 
+line application}
+
+\item{sdBetaGeneticString}{standard deviation/extension from midpoint 
+[double] of normal/uniform distribution for effect sizes of SNPs; typically 
+used when run as command line application}
 
 \item{verbose}{[boolean]; if TRUE, progress info is printed to standard out}
 }
