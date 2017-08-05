@@ -20,6 +20,32 @@
 #'  have an independent fixed effect
 #' @param pTraitIndependentGenetic Proportion [double] of traits influenced by 
 #' independent fixed genetic effects
+#' @param distBeta vector of name(s) [string] of distribution to use to simulate 
+#' effect sizes of SNPs; one of "unif" or "norm"
+#' @param mBeta vector of mean/midpoint [double] of normal/uniform distribution 
+#' for effect sizes of SNPs
+#' @param sdBeta vector of standard deviation/distance from midpoint [double] 
+#' of normal/uniform distribution for effect sizes of SNPs
+#' @param pIndependentGeneticString alternative to pIndependentGenetic,  
+#' a comma-separated [string] with proportion(s) [double] of genetic effects 
+#' to have a trait-independent effect; typically used when run as 
+#' command line application
+#' @param pTraitIndependentGeneticString alternative to 
+#' pTraitIndependentGenetic, a comma-separated [string] with proportion(s) 
+#' [double] of traits influenced by independent fixed genetic effects; typically 
+#' used when run as command line application
+#' @param distBetaString alternative to distBeta, a comma-separated [string] 
+#' with name(s) [string] of distribution to use to simulate effect sizes of 
+#' SNPs; one of "unif" or "norm"; typically used when run as command line 
+#' application
+#' @param mBetaString  alternative to mBeta, a comma- separated [string] with 
+#' means/midpoints [double] of normal/uniform distribution for effect sizes of 
+#' SNPs; typically used when run as command line application
+#' @param sdBetaString alternative to sdBeta, a comma- separated [string] with 
+#' standard deviation/distance from midpoint [double] of normal/uniform 
+#' distribution for effect sizes of SNPs; typically used when run as 
+#' command line application
+
 #' @param verbose [boolean]; if TRUE, progress info is printed to standard out
 #' @return named list of shared fixed genetic effects (shared: [N x P] matrix), 
 #' independent fixed genetic effects (independent: [N x P] matrix), 
@@ -32,7 +58,28 @@
 #' causalSNPs <- getCausalSNPs(genotypes=genotypes)
 #' geneticFixed <- geneticFixedEffects(X_causal=causalSNPs, P=10, N=100)
 geneticFixedEffects <- function(X_causal, P, N=NULL, pIndependentGenetic=0.4, 
-                                pTraitIndependentGenetic=0.2, verbose=TRUE) {
+                                pTraitIndependentGenetic=0.2, 
+                                distBeta="norm", mBeta=0, sdBeta=1, 
+                                pIndependentGeneticString=NULL, 
+                                pTraitIndependentGeneticString=NULL, 
+                                distBetaString=NULL, mBetaString=NULL, 
+                                sdBetaString=NULL, verbose=TRUE) {
+    if (!is.null(distBetaString)) {
+        distBeta <- commaList2vector(distBetaString)
+    }
+    if (!is.null(mBetaString)) {
+        mBeta <- commaList2vector(mBetaString)
+    }
+    if (!is.null(sdBetaString)) {
+        sdBeta <- commaList2vector(sdBetaString)
+    }
+    if (!is.null(pIndependentGeneticString)) {
+        pIndependentGenetic <- commaList2vector(pIndependentGeneticString)
+    }
+    if (!is.null(pTraitIndependentGeneticString)) {
+        pTraitIndependentGenetic <- 
+            commaList2vector(pTraitIndependentGeneticString)
+    }
     NrGenotypeSamples <- nrow(X_causal) 
     if (!is.null(N)) {
         if (N > NrGenotypeSamples) {
@@ -46,7 +93,7 @@ geneticFixedEffects <- function(X_causal, P, N=NULL, pIndependentGenetic=0.4,
     }
     NrCausalSNPs <- ncol(X_causal)
     if (P == 1) {
-        NrIndependentSNPs <- 0
+        NrIndependentSNPs <- NrCausalSNPs
     } else {
         NrIndependentSNPs <- round(pIndependentGenetic * NrCausalSNPs)
     }
@@ -62,12 +109,19 @@ geneticFixedEffects <- function(X_causal, P, N=NULL, pIndependentGenetic=0.4,
                                rep(FALSE, NrIndependentSNPs)), 
                              replace=FALSE)
             X_shared <-  X_causal[,shared]
+            snpIDshared <- colnames(X_causal)[shared]
         } else {
             X_shared <- X_causal
+            snpIDshared <- colnames(X_causal)
         }
 
-        betaX_shared <- rnorm(NrSharedSNPs) %*% t(rnorm(P))
+        #betaX_shared <- rnorm(NrSharedSNPs) %*% t(rnorm(P))
+        betaX_shared <- simulateDist(NrSharedSNPs, dist=distBeta, m=mBeta, 
+                                     std=sdBeta) %*% t(simulateDist(P, 
+                                                        dist=distBeta,
+                                                        m=mBeta, std=sdBeta))
         cov <- t(data.frame(X_shared))
+        rownames(cov) <- snpIDshared
         cov_effect <- data.frame(t(betaX_shared))
         colnames(cov_effect) <- paste(colnames(cov_effect), "_", 
                                       rownames(cov), sep="")
@@ -79,10 +133,16 @@ geneticFixedEffects <- function(X_causal, P, N=NULL, pIndependentGenetic=0.4,
         if (NrSharedSNPs != 0) {
             independent <- !shared
             X_independent <- X_causal[,independent]
+            snpIDindependent <- colnames(X_causal)[independent]
         } else {
             X_independent <- X_causal
+            snpIDindependent <- colnames(X_causal)
         }
-        betaX_independent <- matrix(rnorm(P * NrIndependentSNPs), ncol=P)
+
+        #betaX_independent <- matrix(rnorm(P * NrIndependentSNPs), ncol=P)
+        betaX_independent <- matrix(simulateDist(P * NrIndependentSNPs, 
+                                                 dist=distBeta,
+                                                 m=mBeta, std=sdBeta), ncol=P)
         TraitIndependentGenetic <- ceiling(pTraitIndependentGenetic * P)
         p_nongenetic <- sample(c(rep(FALSE, TraitIndependentGenetic), 
                                  rep(TRUE, 
@@ -92,6 +152,7 @@ geneticFixedEffects <- function(X_causal, P, N=NULL, pIndependentGenetic=0.4,
             matrix(rep(0,  length(which(p_nongenetic)) * NrIndependentSNPs), 
                                                 nrow=NrIndependentSNPs)
         cov <- t(data.frame(X_independent))
+        rownames(cov) <- snpIDindependent
         cov_effect <- data.frame(t(betaX_independent))
         colnames(cov_effect) <- paste(colnames(cov_effect), "_", 
                                       rownames(cov), sep="")
@@ -99,6 +160,7 @@ geneticFixedEffects <- function(X_causal, P, N=NULL, pIndependentGenetic=0.4,
     }
     if (NrSharedSNPs != 0 && NrIndependentSNPs != 0) {
         cov = rbind(t(X_shared), t(X_independent))
+        rownames(cov) <- c( snpIDshared, snpIDindependent)
         cov_effect = data.frame(betaX_shared=t(betaX_shared), 
                                 betaX_independent=t(betaX_independent))
         colnames(cov_effect) <- paste(colnames(cov_effect), "_", 
@@ -405,15 +467,24 @@ noiseFixedEffects <- function(N, P, NrFixedEffects=1, NrConfounders=10,
         stop(paste("Length of catConfounders (", length(catConfounders), ")
                    doesn't match NrFixedEffects (", NrFixedEffects, ")"))
     }
+    if (!is.null(distBetaString)) {
+        distBeta <- commaList2vector(distBetaString)
+    }
     if (length(distBeta) != 1 && 
         length(distBeta) != NrFixedEffects ) {
         stop(paste("Length of distBeta (", length(distBeta), ")
                    doesn't match NrFixedEffects (", NrFixedEffects, ")"))
     }
+    if (!is.null(mBetaString)) {
+        mBeta <- commaList2vector(mBetaString)
+    }
     if (length(mBeta) != 1 && 
         length(mBeta) != NrFixedEffects ) {
         stop(paste("Length of mBeta (", length(mBeta), ")
                    doesn't match NrFixedEffects (", NrFixedEffects, ")"))
+    }
+    if (!is.null(sdBetaString)) {
+        sdBeta <- commaList2vector(sdBetaString)
     }
     if (length(sdBeta) != 1 && 
         length(sdBeta) != NrFixedEffects ) {
