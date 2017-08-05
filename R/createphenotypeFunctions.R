@@ -1125,12 +1125,12 @@ runSimulation <- function(N=1000, P=10, tNrSNP=5000, cNrSNP=20,
             if (is.null(genoFilePrefix)) {
                 if (!grepl('Bg', modelGenetic)) {
                     warning(paste("The genetic model does not contain random",
-                                "effects but the total number of SNPs to"
+                                "effects but the total number of SNPs to",
                                 "simulate (tNrSNP:",
                                 tNrSNP, ") is larger than the causal number of",
                                 "SNPs (cNrSNP:", cNrSNP, "). If genotypes are",
                                 "not needed, consider setting tNrSNP=cNrSNP",
-                                "to speed up computation")
+                                "to speed up computation"))
                 }
                 genotypes <- simulateGenotypes(N=N, NrSNP=tNrSNP, 
                                                frequencies=SNPfrequencies, 
