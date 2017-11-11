@@ -873,9 +873,6 @@ createPheno <- function(P, N, sampleID="ID_", phenoID="trait_",
 #' kinshipfile must be provided
 #' @param kinshipDelimiter field separator [string] of kinship file 
 #' @param kinshipHeader [boolean], if TRUE kinship file has header information 
-#' @param normalise [boolean], if TRUE kinship matrix will be normalised by the 
-#' mean of its diagonal elements and 1e-4 added to the diagonal for numerical 
-#' stability
 #' @param standardise [boolean], if TRUE standardised genotypes will be returned
 #' @param distConfounders name [string] of distribution to use to simulate 
 #' confounders; one of "unif", "norm", "bin", "cat_norm", "cat_unif"
@@ -1008,7 +1005,7 @@ runSimulation <- function(N=1000, P=10, tNrSNP=5000, cNrSNP=20,
                           genoFilePrefix=NULL, genoFileSuffix=NULL, 
                           genoFileDelimiter=",", kinshipfile=NULL, 
                           kinshipHeader=TRUE, kinshipDelimiter=",", 
-                          normalise=TRUE, standardise=TRUE,
+                          standardise=TRUE,
                           NrFixedEffects=1, distConfounders="norm",
                           mConfounders=0, sdConfounders=1,
                           catConfounders=NULL, probConfounders=NULL,
@@ -1184,10 +1181,10 @@ runSimulation <- function(N=1000, P=10, tNrSNP=5000, cNrSNP=20,
                                                    verbose=verbose)
                 }    
                 kinship <- getKinship(X=genotypes$X_sd, sampleID=sampleID, 
-                                      norm=normalise, verbose=verbose)
+                                      verbose=verbose)
             } else {
                 kinship <- getKinship(kinshipfile=kinshipfile, sampleID=sampleID, 
-                                      norm=normalise, sep=kinshipDelimiter, 
+                                      sep=kinshipDelimiter, 
                                       header=kinshipHeader, verbose=verbose)
             }
             

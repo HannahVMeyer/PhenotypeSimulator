@@ -30,7 +30,6 @@
 #' #--directoryPheno=~/tmp/phenotypes \
 #' #--sampleSubset=50,70 \
 #' #--phenoSubset=5,10 \
-#' #--normalise \
 #' #--showProgress \
 #' #--saveTable \
 #' #--savePlink
@@ -190,10 +189,6 @@ simulatePhenotypes <- function() {
                     random number generator [default: %default]"),
         make_option(c("--showProgress"), action="store_true", dest="verbose", 
                     default=FALSE, type="logical", help=" [default: %default]"),
-        make_option(c("-norm", "--normalise"), action="store_true", 
-                    default=FALSE,
-                    dest="normalise", type="logical", help="Should user-supplied 
-                    kinship be normalised [default: %default]"),
         make_option(c("-stand", "--standardise"), action="store_true", 
                     dest="standardise", default=FALSE, type="logical", 
                     help="Should genotypes be standardised for simulation of 
@@ -321,7 +316,6 @@ simulatePhenotypes <- function() {
                                      kinshipfile=args$kinshipfile,
                                      kinshipHeader=args$kinshipHeader,
                                      kinshipDelimiter=args$kinshipDelimiter,
-                                     normalise=args$normalise, 
                                      standardise=args$standardise, 
                                      genVar=args$genVar, 
                                      h2s=args$h2s, h2bg=args$h2bg,

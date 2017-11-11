@@ -578,7 +578,7 @@ noiseFixedEffects <- function(N, P, NrFixedEffects=1, NrConfounders=10,
 #' @export
 #' @examples
 #' genotypes <- simulateGenotypes(N=100, NrSNP=400, verbose=FALSE)
-#' kinship <- getKinship(genotypes$X_sd, norm=TRUE, verbose=FALSE)
+#' kinship <- getKinship(genotypes$X_sd, verbose=FALSE)
 #' geneticBg <- geneticBgEffects(P=10, kinship=kinship)
 geneticBgEffects <- function(P, kinship) {
     N <- ncol(kinship)

@@ -47,7 +47,7 @@ modelNoise <- "noiseBgOnly"
 genotypes <- simulateGenotypes(N = 100, NrSNP = 10000, 
                                frequencies = c(0.05, 0.1, 0.3, 0.4), 
                                verbose = FALSE)
-kinship <- getKinship(genotypes$X_sd, norm=TRUE, verbose = FALSE)
+kinship <- getKinship(genotypes$X_sd, verbose = FALSE)
 
 # simulate phenotype components
 genBg <- geneticBgEffects(kinship = kinship, P = 15)
@@ -71,7 +71,7 @@ genVar <- 0.4
 # random genetic variance: h2b 
 phenotype <- runSimulation(N = 100, P = 15,  tNrSNP = 10000, 
                            SNPfrequencies = c(0.05, 0.1,0.3,0.4), 
-                           normalise = TRUE, genVar = 0.4, h2bg = 1, phi = 1, 
+                           genVar = 0.4, h2bg = 1, phi = 1, 
                            verbose = FALSE)
 ```
 
@@ -89,7 +89,7 @@ genotypes <- simulateGenotypes(N = 100, NrSNP = 10000,
                                frequencies = c(0.05, 0.1,0.3,0.4), 
                                verbose = FALSE)
 # kinship estimate based on standardised SNPs (as described in )
-kinship <- getKinship(X=genotypes$X_sd, norm=TRUE, verbose = FALSE)
+kinship <- getKinship(X=genotypes$X_sd, verbose = FALSE)
 
 # simulate 30 fixed genetic effects (from non-standardised SNP genotypes)
 causalSNPs <- getCausalSNPs(genotypes = genotypes, NrCausalSNPs = 30, 
@@ -141,7 +141,7 @@ phenotype <- createPheno(N = 100, P = 15, noiseBg = noiseBg,
 # above; display progress via verbose=TRUE
 phenotype <- runSimulation(N = 100, P = 15,  tNrSNP = 10000,  cNrSNP=30, 
                            SNPfrequencies = c(0.05, 0.1,0.3,0.4), 
-                           normalise = TRUE, genVar = totalGeneticVar, 
+                           genVar = totalGeneticVar, 
                            h2s = h2s, phi = 0.6, delta = 0.3, gamma = 1,
                            NrFixedEffects = 4, NrConfounders = c(1, 2, 1, 2),
                            pIndependentConfounders = c(0, 1, 1, 0.5),  
@@ -298,16 +298,16 @@ mtext(side = 2, text = "Traits", line = 1)
 ```
 
 ## 2. Random genetic effects: 
-Random genetic effects are simulated via `geneticBgEffects` as two random genetic effects (shared and independent) based on the kinship estimates of the (simulated) samples. This structure is achieved by combining three matrix components for each of the effects: : i) the kinship matrix $K$ [N x N] which is treated as the sample-design matrix (the genetic profile of the samples), ii) an effect-size matrix $B$ [N x P] with $vec(B)$ drawn from a normal distribution and iii) the trait design matrix $A$ [P x P]. For the independent effect, $A$ is a diagonal matrix with normally distributed values. $A$ of the shared effect is a matrix of row rank one, with normally distributed entries in row 1 and zeros elsewhere. The three matrices are multiplied to obtain the desired final effect matrix $E$: $E = KBA$. As for the genetic fixed effects, the kinship can either be estimated from simulated genotypes or read in from file. The kinship is estimated as $K = XX_T$, with X the standardised genotypes of the samples. When estimating the kinship from the provided genotypes, the kinship should be normalised by the mean of its diagonal elements and 1e-4 added to the diagonal for numerical stability via norm=TRUE. If a kinship file is provided, normalising can optionally be chosen. For the provided kinship file, normalisation has already been done a priori and norm should be set to FALSE. The provided kinship contains estimates for 50 samples across the entire genome. 
+Random genetic effects are simulated via `geneticBgEffects` as two random genetic effects (shared and independent) based on the kinship estimates of the (simulated) samples. This structure is achieved by combining three matrix components for each of the effects: : i) the kinship matrix $K$ [N x N] which is treated as the sample-design matrix (the genetic profile of the samples), ii) an effect-size matrix $B$ [N x P] with $vec(B)$ drawn from a normal distribution and iii) the trait design matrix $A$ [P x P]. For the independent effect, $A$ is a diagonal matrix with normally distributed values. $A$ of the shared effect is a matrix of row rank one, with normally distributed entries in row 1 and zeros elsewhere. The three matrices are multiplied to obtain the desired final effect matrix $E$: $E = KBA$. As for the genetic fixed effects, the kinship can either be estimated from simulated genotypes or read in from file. The kinship is estimated as $K = XX_T$, with X the standardised genotypes of the samples. When estimating the kinship from the provided genotypes, the kinship is normalised by the mean of its diagonal elements and 1e-4 added to the diagonal for numerical stability. The provided kinship contains estimates for 50 samples across the entire genome. 
 
 ```{r, fig.show='hold'}
 ## a) Estimate kinship from simulated genotypes
-kinship <- getKinship(genotypes$X_sd, norm=TRUE, verbose = FALSE)
+kinship <- getKinship(genotypes$X_sd, verbose = FALSE)
 
 ## b) Read kinship from external kinship file
 kinshipFile <- system.file("extdata/kinship/", "kinship.csv", 
                            package = "PhenotypeSimulator")
-kinshipFromFile <- getKinship(kinshipfile = kinshipFile, norm=FALSE, 
+kinshipFromFile <- getKinship(kinshipfile = kinshipFile, 
                               verbose = FALSE)
 
 genBg <- geneticBgEffects(kinship = kinship, P = 15)
