@@ -9,10 +9,21 @@
 #' allelefreq <- getAlleleFrequencies(snp)
 getAlleleFrequencies <- function(snp) {
     counts <- as.data.frame(table(snp))[,2]
-    frequencies <- counts/length(snp)
-    major_a <- sqrt(max(frequencies))
-    minor_a <- 1 - major_a
-    return(c(minor_a, major_a))
+    if (length(counts) == 1 ) {
+        return(1)
+    } else {
+        if (length(counts) == 3) {
+            counts <- counts[-2]
+        }
+        geno_frequencies <- counts/length(snp)
+    }
+    
+    allele_frequencies <- sqrt(geno_frequencies)
+    if (allele_frequencies[1] > allele_frequencies[2]) {
+        return(allele_frequencies)
+    } else {
+        return(rev(allele_frequencies))
+    }
 }
 
 
@@ -46,7 +57,8 @@ simulateGenotypes <- function(N, NrSNP=5000, frequencies=c(0.1, 0.2, 0.4),
     }
     samples <-paste(sampleID, seq(1, N, 1), sep="")
 	vmessage(c("Simulate", NrSNP, "SNPs..."), verbose=verbose)
-    X <- sapply(1:NrSNP, function(x) rbinom(N, 2, sample(frequencies, 1)))
+    freq <- sample(frequencies, NrSNP, replace=TRUE)
+	X <- sapply(1:NrSNP, function(x) rbinom(N, 2, freq[x]))
     colnames(X) <- paste(rep(1, ncol(X)), "-", 1:ncol(X), "-SNPID", 1:ncol(X), 
                          sep="")
     rownames(X) <- samples
@@ -67,7 +79,7 @@ simulateGenotypes <- function(N, NrSNP=5000, frequencies=c(0.1, 0.2, 0.4),
 #' @references Yang, J., Lee, S.H., Goddard, M.E., Visscher, P.M. (2011) GCTA: 
 #' a tool for genome-wide complex trait analysis, AJHG: 88
 #' @examples
-#' geno <- cbind(rbinom(100, 2, 0.3), rbinom(100, 2, 0.4))
+#' geno <- cbind(rbinom(2000, 2, 0.3), rbinom(2000, 2, 0.4))
 #' geno_sd <- standardiseGenotypes(geno)
 standardiseGenotypes <- function(geno) {
     apply(geno, 2, function(snp) {
@@ -76,7 +88,7 @@ standardiseGenotypes <- function(geno) {
         if (var_snp == 0) {
             snp_sd <- snp
         } else {
-            snp_sd <- sapply(snp, function(s) (s - 2*allele_freq[1])/var_snp)
+            snp_sd <- (snp - 2*allele_freq[1])/var_snp
         }
         return (snp_sd)
     })
