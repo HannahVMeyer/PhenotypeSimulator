@@ -8,23 +8,43 @@
 #' snp <- rbinom(200, 2, 0.3)
 #' allelefreq <- getAlleleFrequencies(snp)
 getAlleleFrequencies <- function(snp) {
-    counts <- as.data.frame(table(snp))[,2]
-    if (length(counts) == 1 ) {
-        return(1)
+    counts <- as.data.frame(table(factor(snp, levels=c(0,1,2))))[,2]
+    q <- (2*counts[3] +  counts[2])/(2*length(snp))
+    if ( q < 0.5) {
+        return(c(1-q, q))
     } else {
-        if (length(counts) == 3) {
-            counts <- counts[-2]
-        }
-        geno_frequencies <- counts/length(snp)
-    }
-    
-    allele_frequencies <- sqrt(geno_frequencies)
-    if (allele_frequencies[1] > allele_frequencies[2]) {
-        return(allele_frequencies)
-    } else {
-        return(rev(allele_frequencies))
+        return(c(q, 1-q))
     }
 }
+
+#' Standardise genotypes 
+#'
+#' Genotypes are standardised as described in Yang et al:
+#' snp_standardised = (snp - 2 * minor_allele_freq)/
+#' sqrt(2 * minor_allele_freq * major_allele_freq)
+#'
+#' @param geno [N x NrSNP] matrix/dataframe of genotypes
+#' @return [N x NrSNP] matrix of standardised genotypes
+#' @seealso \code{\link{getAlleleFrequencies}}
+#' @export
+#' @references Yang, J., Lee, S.H., Goddard, M.E., Visscher, P.M. (2011) GCTA: 
+#' a tool for genome-wide complex trait analysis, AJHG: 88
+#' @examples
+#' geno <- cbind(rbinom(2000, 2, 0.3), rbinom(2000, 2, 0.4))
+#' geno_sd <- standardiseGenotypes(geno)
+standardiseGenotypes <- function(geno) {
+    apply(geno, 2, function(snp) {
+        allele_freq <- getAlleleFrequencies(snp)
+        var_snp <- sqrt(2*allele_freq[1]*allele_freq[2])
+        if (var_snp == 0) {
+            snp_sd <- snp
+        } else {
+            snp_sd <- (snp - 2*allele_freq[1])/var_snp
+        }
+        return (snp_sd)
+    })
+}
+
 
 
 #' Simulate bi-allelic genotypes.
@@ -59,32 +79,37 @@ simulateGenotypes <- function(N, NrSNP=5000, frequencies=c(0.1, 0.2, 0.4),
 	return(list(X=X, X_sd=X_sd, samples=samples))
 }
 
-#' Standardise genotypes 
+
+#' Draw random SNPs from genotypes.  
 #'
-#' Genotypes are standardised as described in Yang et al:
-#' snp_standardised = (snp - 2 * minor_allele_freq)/
-#' sqrt(2 * minor_allele_freq * major_allele_freq)
+#' Draw random SNPs from either simulated genotypes or external genotype files.  
 #'
-#' @param geno [N x NrSNP] matrix/dataframe of genotypes
-#' @return [N x NrSNP] matrix of standardised genotypes
-#' @seealso \code{\link{getAlleleFrequencies}}
+#' @param filename path/to/genotypefile [string] in plink, hapgen or format (for 
+#' format information see details)
+#' @param format name [string] of genotype file format
+#' @param verbose boolean; if TRUE, progress info is printed to standard out
+#' @return 
+#' @param verbose boolean; if TRUE, progress info is printed to standard out
+#' @details PLINK format: https://www.cog-genomics.org/plink/1.9/
+#' 
+#' @seealso \code{\link{standardiseGenotypes}} 
 #' @export
-#' @references Yang, J., Lee, S.H., Goddard, M.E., Visscher, P.M. (2011) GCTA: 
-#' a tool for genome-wide complex trait analysis, AJHG: 88
-#' @examples
-#' geno <- cbind(rbinom(2000, 2, 0.3), rbinom(2000, 2, 0.4))
-#' geno_sd <- standardiseGenotypes(geno)
-standardiseGenotypes <- function(geno) {
-    apply(geno, 2, function(snp) {
-        allele_freq <- getAlleleFrequencies(snp)
-        var_snp <- sqrt(2*allele_freq[1]*allele_freq[2])
-        if (var_snp == 0) {
-            snp_sd <- snp
-        } else {
-            snp_sd <- (snp - 2*allele_freq[1])/var_snp
-        }
-        return (snp_sd)
-    })
+#' @examples 
+#' 
+readStandardGenotypes <- function(filename, format = c("plink", "hapgen"),
+                                  verbose=TRUE, ...) {
+    if (format == "plink") {
+        genotypes <- snpStats::read.plink(bed=filename, 
+                                          na.strings = c("0", "-9"), 
+                                          sep = ".")
+    } else if (format == "hapgen") {
+        
+    } else if (format == "hapgen") {
+        
+    } else {
+        vmessage(format, " is not a supported genotype format. Supported",
+                 "formats are plink, hapgen and ")
+    }
 }
 
 #' Draw random SNPs from genotypes.  
@@ -109,9 +134,9 @@ standardiseGenotypes <- function(geno) {
 #' @param sampleID prefix [string] for naming samples (followed by sample number
 #'  from 1 to NrSamples)
 #' @param standardise [boolean]; if TRUE standardised genotypes will be returned
+#' @param verbose [boolean]; if TRUE, progress info is printed to standard out
 #' @return [N x NrCausalSNPs] matrix of randomly drawn, standardised (depending 
 #' on standardise option) SNPs 
-#' @param verbose [boolean]; if TRUE, progress info is printed to standard out
 #' @details In order to chose SNPs from external genotype files without reading 
 #' them into memory, genotypes for each chromosome need to be accesible as 
 #' [SNPs x samples] in a separate file, containing "chrChromosomenumber" (e.g 
@@ -159,6 +184,8 @@ getCausalSNPs <- function(NrCausalSNPs=20,  genotypes=NULL, chr=NULL,
                  , "or decrease number of causal SNPs"))
         }
 		causalSNPs <- genotypes[, sample(1:ncol(genotypes), NrCausalSNPs)]
+	} else if (FALSE) {
+	    
 	} else {
 	    if (grepl("~", genoFilePrefix)) {
 	        stop(paste("genoFilePrefix contains ~: path expansion not", 
