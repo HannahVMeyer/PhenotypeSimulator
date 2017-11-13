@@ -26,26 +26,6 @@
 #' for effect sizes of SNPs
 #' @param sdBeta vector of standard deviation/distance from midpoint [double] 
 #' of normal/uniform distribution for effect sizes of SNPs
-#' @param pIndependentGeneticString alternative to pIndependentGenetic,  
-#' a comma-separated [string] with proportion(s) [double] of genetic effects 
-#' to have a trait-independent effect; typically used when run as 
-#' command line application
-#' @param pTraitIndependentGeneticString alternative to 
-#' pTraitIndependentGenetic, a comma-separated [string] with proportion(s) 
-#' [double] of traits influenced by independent fixed genetic effects; typically 
-#' used when run as command line application
-#' @param distBetaString alternative to distBeta, a comma-separated [string] 
-#' with name(s) [string] of distribution to use to simulate effect sizes of 
-#' SNPs; one of "unif" or "norm"; typically used when run as command line 
-#' application
-#' @param mBetaString  alternative to mBeta, a comma- separated [string] with 
-#' means/midpoints [double] of normal/uniform distribution for effect sizes of 
-#' SNPs; typically used when run as command line application
-#' @param sdBetaString alternative to sdBeta, a comma- separated [string] with 
-#' standard deviation/distance from midpoint [double] of normal/uniform 
-#' distribution for effect sizes of SNPs; typically used when run as 
-#' command line application
-
 #' @param verbose [boolean]; if TRUE, progress info is printed to standard out
 #' @return named list of shared fixed genetic effects (shared: [N x P] matrix), 
 #' independent fixed genetic effects (independent: [N x P] matrix), 
@@ -60,26 +40,7 @@
 geneticFixedEffects <- function(X_causal, P, N=NULL, pIndependentGenetic=0.4, 
                                 pTraitIndependentGenetic=0.2, 
                                 distBeta="norm", mBeta=0, sdBeta=1, 
-                                pIndependentGeneticString=NULL, 
-                                pTraitIndependentGeneticString=NULL, 
-                                distBetaString=NULL, mBetaString=NULL, 
-                                sdBetaString=NULL, verbose=TRUE) {
-    if (!is.null(distBetaString)) {
-        distBeta <- commaList2vector(distBetaString)
-    }
-    if (!is.null(mBetaString)) {
-        mBeta <- commaList2vector(mBetaString)
-    }
-    if (!is.null(sdBetaString)) {
-        sdBeta <- commaList2vector(sdBetaString)
-    }
-    if (!is.null(pIndependentGeneticString)) {
-        pIndependentGenetic <- commaList2vector(pIndependentGeneticString)
-    }
-    if (!is.null(pTraitIndependentGeneticString)) {
-        pTraitIndependentGenetic <- 
-            commaList2vector(pTraitIndependentGeneticString)
-    }
+                                verbose=TRUE) {
     NrGenotypeSamples <- nrow(X_causal) 
     if (!is.null(N)) {
         if (N > NrGenotypeSamples) {
@@ -187,9 +148,6 @@ geneticFixedEffects <- function(X_causal, P, N=NULL, pIndependentGenetic=0.4,
 #' drawn from different distributions/different parameters of the same 
 #' distribution can be simulated by specifying NrFixedEffects and supplying the 
 #' respective distribution parameters (*Confounders and *Beta) explained below. 
-#' If a model parameter and its "String' version are provided, i.e. 
-#' NrConfounders and NrConfoundersStrings, the "String' specification will be 
-#' used!
 #'
 #' @param N number [integer] of samples to simulate
 #' @param P number [integer] of phenotypes to simulate
@@ -217,48 +175,6 @@ geneticFixedEffects <- function(X_causal, P, N=NULL, pIndependentGenetic=0.4,
 #' for effect sizes of confounders
 #' @param sdBeta vector of standard deviation/distance from midpoint [double] 
 #' of normal/uniform distribution for effect sizes of confounders
-#' @param NrConfoundersString alternative to NrConfounder, a comma-separated
-#' [string] with number(s) [integer] of confounders to simulate; typically used 
-#' when run as command line application
-#' @param pIndependentConfoundersString alternative to pIndependentConfounders,  
-#' a comma-separated [string] with proportion(s) [double] of noise effects 
-#' (confounders) to have a trait-independent effect; typically used when run as 
-#' command line application
-#' @param pTraitIndependentConfoundersString alternative to 
-#' pTraitIndependentConfounders,  a comma-separated [string] with proportion(s) 
-#' [double] of traits influenced by independent fixed noise effects; typically 
-#' used when run as command line application
-#' @param distConfoundersString alternative to distConfounders, a comma-
-#' separated [string] with name(s) [string] of distributions to use to 
-#' simulate confounders; one of "unif", "norm", "bin", "cat_norm", "cat_unif";
-#' typically used when run as command line application 
-#' @param distBetaString alternative to distBeta, a comma-separated [string] 
-#' with name(s) [string] of distribution to use to simulate effect sizes of 
-#' confounders; one of "unif" or "norm"; typically used when run as command line 
-#' application
-#' @param mConfoundersString alternative to mConfounders, a comma-
-#' separated [string] with of mean/midpoint(s) [double] of normal/uniform 
-#' distribution for confounders; typically used when run as command line 
-#' application
-#' @param sdConfoundersString alternative to sdConfounders, a comma-
-#' separated [string] with standard deviation(s)/distance from 
-#' midpoint(s) [double] of normal/uniform distribution for confounders; 
-#' typically used when run as command line application
-#' @param catConfoundersString alternative to catConfounders, a comma-
-#' separated [string] with the number of confounder categories [integer]; 
-#' required if distConfounders "cat_norm" or "cat_unif"; 
-#' typically used when run as command line application
-#' @param probConfoundersString alternative to probConfounders, a comma-
-#' separated [string] with probability(s) [double] of binomial 
-#' confounders (0/1); required if distConfounders "bin"; typically used
-#'  when run as command line application
-#' @param mBetaString  alternative to mBeta, a comma- separated [string] with 
-#' means/midpoints [double] of normal/uniform distribution for effect sizes of 
-#' confounders; typically used when run as command line application
-#' @param sdBetaString alternative to sdBeta, a comma- separated [string] with 
-#' standard deviation/distance from midpoint [double] of normal/uniform 
-#' distribution for effect sizes of confounders; typically used when run as 
-#' command line application
 #' @return named list of shared fixed noise effects (shared: [N x P] matrix), 
 #' independent fixed noise effects (independent: [N x P] matrix), 
 #' the causal SNPs named by having a shared or independent effect 
@@ -298,18 +214,7 @@ noiseFixedEffects <- function(N, P, NrFixedEffects=1, NrConfounders=10,
                               distConfounders="norm", mConfounders=0, 
                               sdConfounders=1, catConfounders=NULL, 
                               probConfounders=NULL, distBeta="norm", mBeta=0, 
-                              sdBeta=1, 
-                              NrConfoundersString=NULL, 
-                              pIndependentConfoundersString=NULL, 
-                              pTraitIndependentConfoundersString=NULL, 
-                              distConfoundersString=NULL, 
-                              mConfoundersString=NULL, 
-                              sdConfoundersString=NULL, 
-                              catConfoundersString=NULL, 
-                              probConfoundersString=NULL, 
-                              distBetaString=NULL, 
-                              mBetaString=NULL, 
-                              sdBetaString=NULL) {
+                              sdBeta=1) {
     
     oneFixedEffectComponent <- function(N, P, NrConfounders, 
                                         pIndependentConfounders, 
@@ -398,19 +303,11 @@ noiseFixedEffects <- function(N, P, NrFixedEffects=1, NrConfounders=10,
                     cov_effect=cov_effect))
     }
     
-    if (!is.null(pIndependentConfoundersString)) {
-        pIndependentConfounders <- commaList2vector(
-            pIndependentConfoundersString)
-    }
     if (length(pIndependentConfounders) != 1 && 
         length(pIndependentConfounders) != NrFixedEffects ) {
         stop(paste("Length of pIndependentConfounders (", 
                     length(pIndependentConfounders), ")
                     doesn't match NrFixedEffects (", NrFixedEffects, ")"))
-    }
-    if (!is.null(pTraitIndependentConfoundersString)) {
-        pTraitIndependentConfounders <- 
-            commaList2vector(pTraitIndependentConfoundersString)
     }
     if (length(pTraitIndependentConfounders) != 1 && 
         length(pTraitIndependentConfounders) != NrFixedEffects ) {
@@ -418,73 +315,45 @@ noiseFixedEffects <- function(N, P, NrFixedEffects=1, NrConfounders=10,
                        length(pTraitIndependentConfounders), ") doesn't match 
                        NrFixedEffects (", NrFixedEffects, ")"))
     }        
-    if (!is.null(NrConfoundersString)) {
-        NrConfounders <- commaList2vector(NrConfoundersString)
-    }
     if (length(NrConfounders) != 1 && 
         length(NrConfounders) != NrFixedEffects ) {
         stop(paste("Length of NrConfounders (", length(NrConfounders), ")
                    doesn't match NrFixedEffects (", NrFixedEffects, ")"))
-    }
-    if (!is.null(distConfoundersString)) {
-        distConfounders <- 
-            unlist(strsplit(distConfoundersString, split=","))
     }
     if (length(distConfounders) != 1 && 
         length(distConfounders) != NrFixedEffects ) {
         stop(paste("Length of distConfounders (", length(distConfounders)
             , ") doesn't match NrFixedEffects (", NrFixedEffects, ")"))
     }
-    if (!is.null(mConfoundersString)) {
-        mConfounders <- commaList2vector(mConfoundersString)
-    }
     if (length(mConfounders) != 1 && 
         length(mConfounders) != NrFixedEffects ) {
         stop(paste("Length of mConfounders (", length(mConfounders), ")
                    doesn't match NrFixedEffects (", NrFixedEffects, ")"))
-    }
-    if (!is.null(sdConfoundersString)) {
-        sdConfounders <- commaList2vector(sdConfoundersString)
     }
     if (length(sdConfounders) != 1 && 
         length(sdConfounders) != NrFixedEffects ) {
         stop(paste("Length of sdConfounders (", length(sdConfounders), ")
                    doesn't match NrFixedEffects (", NrFixedEffects, ")"))
     }
-    if (!is.null(probConfoundersString)) {
-        probConfounders <- commaList2vector(probConfoundersString)
-    }
     if (length(probConfounders) > 1 && 
         length(probConfounders) != NrFixedEffects ) {
         stop(paste("Length of probConfounders (", length(probConfounders),")
                    doesn't match NrFixedEffects (", NrFixedEffects, ")"))
-    }
-    if (!is.null(catConfoundersString)) {
-        catConfounders <- commaList2vector(catConfoundersString)
     }
     if (length(catConfounders) > 1 && 
         length(catConfounders) != NrFixedEffects ) {
         stop(paste("Length of catConfounders (", length(catConfounders), ")
                    doesn't match NrFixedEffects (", NrFixedEffects, ")"))
     }
-    if (!is.null(distBetaString)) {
-        distBeta <- commaList2vector(distBetaString)
-    }
     if (length(distBeta) != 1 && 
         length(distBeta) != NrFixedEffects ) {
         stop(paste("Length of distBeta (", length(distBeta), ")
                    doesn't match NrFixedEffects (", NrFixedEffects, ")"))
     }
-    if (!is.null(mBetaString)) {
-        mBeta <- commaList2vector(mBetaString)
-    }
     if (length(mBeta) != 1 && 
         length(mBeta) != NrFixedEffects ) {
         stop(paste("Length of mBeta (", length(mBeta), ")
                    doesn't match NrFixedEffects (", NrFixedEffects, ")"))
-    }
-    if (!is.null(sdBetaString)) {
-        sdBeta <- commaList2vector(sdBetaString)
     }
     if (length(sdBeta) != 1 && 
         length(sdBeta) != NrFixedEffects ) {

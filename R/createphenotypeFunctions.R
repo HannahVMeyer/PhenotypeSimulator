@@ -854,16 +854,12 @@ createPheno <- function(P, N, sampleID="ID_", phenoID="trait_",
 #' @param chr numeric vector of chromosomes to chose NrCausalSNPs from; only 
 #' used when external genotype data is provided i.e. is.null(genoFilePrefix) == 
 #' FALSE
-#' @param chr_string alternative to chr, a [string] with chromosomes separated 
-#' by comma; most often used when run as a command line application.
 #' @param NrChrCausal Number [integer] of causal chromosomes to  chose 
 #' NrCausalSNPs from (as opposed to the actual chromosomes to chose from via chr
-#' 'chr_string);  only used when external genotype data is provided i.e. 
+#' );  only used when external genotype data is provided i.e. 
 #' is.null(genoFilePrefix) == FALSE. 
 #' @param SNPfrequencies vector of allele frequencies [double] from which to 
 #' sample
-#' @param SNPfrequencyString alternative to a frequencies vector, a [string] 
-#' with frequencies separated by comma
 #' @param genoFilePrefix path/to/chromosome-wise-genotype-file-ending-before-
 #' "chrChromosomeNumber" [string]
 #' @param genoFileSuffix [string] following chromosome number including 
@@ -904,59 +900,6 @@ createPheno <- function(P, N, sampleID="ID_", phenoID="trait_",
 #' have a trait-independent fixed effect
 #' @param pTraitIndependentGenetic Proportion [double] of traits influenced by 
 #' independent fixed genetic effects
-#' @param NrConfoundersString alternative to NrConfounder, a comma-separated
-#' [string] with number(s) [integer] of confounders to simulate; typically used 
-#' when run as command line application
-#' @param pIndependentConfoundersString alternative to pIndependentConfounders, 
-#' a comma-separated [string] with proportion(s) [double] of noise effects 
-#' (confounders) to have a trait-independent effect; typically used when run as 
-#' command line application
-#' @param pTraitIndependentConfoundersString alternative to 
-#' pTraitIndependentConfounders,  a comma-separated [string] with proportion(s) 
-#' [double] of traits influenced by independent fixed noise effects; typically 
-#' used when run as command line application
-#' @param distConfoundersString alternative to distConfounders, a comma-
-#' separated [string] with name(s) [string] of distributions to use to 
-#' simulate confounders; one of "unif", "norm", "bin", "cat_norm", "cat_unif";
-#' typically used when run as command line application 
-#' @param distBetaConfoundersString alternative to distBeta, a comma-separated 
-#' [string] with name(s) [string] of distribution to use to simulate effect 
-#' sizes of confounders; one of "unif" or "norm"; typically used when run as 
-#' command line application
-#' @param mConfoundersString alternative to mConfounders, a comma-
-#' separated [string] with of mean/midpoint(s) [double] of normal/uniform 
-#' distribution for confounders; typically used when run as command line 
-#' application
-#' @param sdConfoundersString alternative to sdConfounders, a comma-
-#' separated [string] with standard deviation(s)/distance from 
-#' midpoint(s) [double] of normal/uniform distribution for confounders; 
-#' typically used when run as command line application
-#' @param catConfoundersString alternative to catConfounders, a comma-
-#' separated [string] with the number of confounder categories [integer]; 
-#' required if distConfounders "cat_norm" or "cat_unif"; 
-#' typically used when run as command line application
-#' @param probConfoundersString alternative to probConfounders, a comma-
-#' separated [string] with probability(s) [double] of binomial 
-#' confounders (0/1); required if distConfounders "bin"; typically used
-#'  when run as command line application
-#' @param mBetaConfoundersString  alternative to mBeta, a comma- separated 
-#' [string] with means/midpoints [double] of normal/uniform distribution for 
-#' effect sizes of confounders; typically used when run as command line 
-#' application
-#' @param sdBetaConfoundersString alternative to sdBeta, a comma- separated 
-#' [string] with standard deviation/distance from midpoint [double] of 
-#' normal/uniform 
-#' distribution for effect sizes of confounders; typically used when run as 
-#' command line application
-#' @param distBetaGeneticString name [string] of distribution to use to simulate 
-#' effect sizes of SNPs; one of "unif" or "norm"; typically used when run as 
-#' command line application
-#' @param mBetaGeneticString mean/midpoint [double] of normal/uniform 
-#' distribution for effect sizes of SNPs; typically used when run as command 
-#' line application
-#' @param sdBetaGeneticString standard deviation/extension from midpoint 
-#' [double] of normal/uniform distribution for effect sizes of SNPs; typically 
-#' used when run as command line application
 #' @param meanNoiseBg mean [double] of the normal distribution for noise bg 
 #' effects
 #' @param sdNoiseBg standard deviation [double] of the normal distribution for 
@@ -997,7 +940,7 @@ createPheno <- function(P, N, sampleID="ID_", phenoID="trait_",
 #' simulatedPhenotype <- runSimulation(N=100, P=5, cNrSNP=10,
 #' genVar=genVar, h2s=1, phi=1)
 runSimulation <- function(N=1000, P=10, tNrSNP=5000, cNrSNP=20, 
-                          NrConfounders=10, seed=219453, chr_string=NULL, 
+                          NrConfounders=10, seed=219453, 
                           chr=NULL, NrChrCausal=NULL,
                           genVar=NULL, h2s=NULL, theta=0.8, h2bg=NULL, eta=0.8, 
                           noiseVar=NULL, rho=NULL, delta=NULL, gamma=0.8, 
@@ -1017,22 +960,7 @@ runSimulation <- function(N=1000, P=10, tNrSNP=5000, cNrSNP=20,
                           pTraitIndependentConfounders=0.2, 
                           pcorr=0.8, meanNoiseBg=0, sdNoiseBg=1, 
                           SNPfrequencies=c(0.1, 0.2, 0.4), 
-                          SNPfrequencyString=NULL,
                           pIndependentGenetic=0.4, pTraitIndependentGenetic=0.2,
-                          NrConfoundersString=NULL, 
-                          pIndependentConfoundersString=NULL, 
-                          pTraitIndependentConfoundersString=NULL, 
-                          distConfoundersString=NULL, 
-                          mConfoundersString=NULL, 
-                          sdConfoundersString=NULL, 
-                          catConfoundersString=NULL, 
-                          probConfoundersString=NULL, 
-                          distBetaConfoundersString=NULL, 
-                          mBetaConfoundersString=NULL, 
-                          sdBetaConfoundersString=NULL,
-                          distBetaGeneticString=NULL, 
-                          mBetaGeneticString=NULL, 
-                          sdBetaGeneticString=NULL,
                           verbose=TRUE) {
 
     vmessage(c("Set seed:", seed), verbose=verbose)
@@ -1083,28 +1011,7 @@ runSimulation <- function(N=1000, P=10, tNrSNP=5000, cNrSNP=20,
                                             probConfounders = probConfounders,
                                             distBeta=distBetaConfounders, 
                                             mBeta=mBetaConfounders, 
-                                            sdBeta=sdBetaConfounders,
-                                            NrConfoundersString=
-                                                NrConfoundersString,
-                                            pIndependentConfoundersString=
-                                                pIndependentConfoundersString,
-                                            pTraitIndependentConfoundersString=
-                                            pTraitIndependentConfoundersString,
-                                            distConfoundersString=
-                                                distConfoundersString, 
-                                            mConfoundersString=
-                                                mConfoundersString, 
-                                            sdConfoundersString=
-                                                sdConfoundersString, 
-                                            catConfoundersString=
-                                                catConfoundersString, 
-                                            probConfoundersString=
-                                                probConfoundersString,
-                                            distBetaString=
-                                                distBetaConfoundersString, 
-                                            mBetaString=mBetaConfoundersString, 
-                                            sdBetaString=
-                                                sdBetaConfoundersString)
+                                            sdBeta=sdBetaConfounders)
         } else {
             noiseFixed <- NULL
         }
@@ -1132,7 +1039,6 @@ runSimulation <- function(N=1000, P=10, tNrSNP=5000, cNrSNP=20,
                 genotypes <- simulateGenotypes(N=N, NrSNP=tNrSNP, 
                                                frequencies=SNPfrequencies, 
                                                sampleID=sampleID, 
-                                               frequencyString=SNPfrequencyString, 
                                                verbose=verbose)
                 
                 causalSNPs <- getCausalSNPs(NrCausalSNPs=cNrSNP, 
@@ -1142,7 +1048,6 @@ runSimulation <- function(N=1000, P=10, tNrSNP=5000, cNrSNP=20,
                                             verbose=verbose)
             } else {
                 causalSNPs <- getCausalSNPs(NrCausalSNPs=cNrSNP, chr=chr, 
-                                            chr_string=chr_string,
                                             NrChrCausal=NrChrCausal,
                                             genoFilePrefix=genoFilePrefix, 
                                             genoFileSuffix=genoFileSuffix, 
@@ -1160,12 +1065,7 @@ runSimulation <- function(N=1000, P=10, tNrSNP=5000, cNrSNP=20,
                                                 pTraitIndependentGenetic,
                                             distBeta=distBetaGenetic, 
                                             mBeta=mBetaGenetic, 
-                                            sdBeta=sdBetaGenetic,
-                                            distBetaString=
-                                                distBetaGeneticString, 
-                                            mBetaString=mBetaGeneticString, 
-                                            sdBetaString=
-                                                sdBetaGeneticString)
+                                            sdBeta=sdBetaGenetic)
         } else {
             genFixed <- NULL
             genotypes <- NULL
@@ -1177,7 +1077,6 @@ runSimulation <- function(N=1000, P=10, tNrSNP=5000, cNrSNP=20,
                     genotypes <- simulateGenotypes(N=N, NrSNP=tNrSNP, 
                                                    frequencies=SNPfrequencies, 
                                                    sampleID=sampleID, 
-                                                   frequencyString=SNPfrequencyString, 
                                                    verbose=verbose)
                 }    
                 kinship <- getKinship(X=genotypes$X_sd, sampleID=sampleID, 
@@ -1246,12 +1145,6 @@ runSimulation <- function(N=1000, P=10, tNrSNP=5000, cNrSNP=20,
 #' @param pheno_subset_vec optional vector of phenotype subset sizes [integer] 
 #' if provided, draws subsets of traits out of the total simulated dataset 
 #' and saves them separately 
-#' @param sample_subset_string optional [string] of comma-separated numbers e.g.
-#'  "50,100,500"; alternative to \code{sample_subset_vec}, typically used when
-#'  run as command line application
-#' @param pheno_subset_string optional [string] of comma-separated numbers e.g. 
-#' "10,50,80"; alternative to \code{pheno_subset_vec}, typically used when
-#'  run as command line application
 #' @param saveAsTable [boolean] if TRUE, data will be saved as .csv 
 #' @param saveAsRDS [boolean] if TRUE, data will be saved as .RDS; at least one 
 #' of 'saveAsTable' or 'saveAsRDS' has to be TRUE, both can be TRUE
@@ -1272,7 +1165,6 @@ runSimulation <- function(N=1000, P=10, tNrSNP=5000, cNrSNP=20,
 #' #saveAsPlink=TRUE)
 savePheno <- function(simulatedData, directoryGeno, directoryPheno, 
                       sample_subset_vec=NULL, pheno_subset_vec=NULL, 
-                      sample_subset_string=NULL, pheno_subset_string=NULL, 
                       outstring=NULL, saveAsTable=TRUE, saveAsRDS=FALSE, 
                       saveAsPlink=FALSE, verbose=TRUE) {
     if (!saveAsTable && !saveAsRDS) {
@@ -1298,19 +1190,14 @@ savePheno <- function(simulatedData, directoryGeno, directoryPheno,
     NrSNP <-simulatedData$setup$NrCausalSNPs
     genVar <- simulatedData$varComponents$genVar
 
-    if (! is.null(sample_subset_string) || ! is.null(sample_subset_vec)) {
-        vmessage(c("Create sample subsets:", sample_subset_string), 
+    if (! is.null(sample_subset_vec)) {
+        vmessage(c("Create sample subsets:", sample_subset_vec), 
                  verbose=verbose)
-        if (! is.null(sample_subset_string)) {
-            ssample <- commaList2vector(sample_subset_string)
-        } else {
-            ssample <- sample_subset_vec
-        }
-        if (any(ssample > N)) {
+        if (any(sample_subset_vec > N)) {
             stop(paste("Sample subset value chosen that is larger than",
                        "number of simulated samples"))
         }
-        sample_subset <- sapply(ssample, function(s) {
+        sample_subset <- sapply(sample_subset_vec, function(s) {
             tmp <- sample(1:N, s, replace=FALSE)
             names(tmp) <- paste(sampleID, tmp, sep="")
             return(tmp)
@@ -1319,19 +1206,14 @@ savePheno <- function(simulatedData, directoryGeno, directoryPheno,
         sample_subset <- list(set=seq(1, N, 1))
     }
 
-    if (! is.null(pheno_subset_string) || ! is.null(pheno_subset_vec)) {
-        vmessage(c("Create pheno subsets:", pheno_subset_string), 
+    if (! is.null(pheno_subset_vec)) {
+        vmessage(c("Create pheno subsets:", pheno_subset_vec), 
                  verbose=verbose)
-        if (! is.null(pheno_subset_string)) {
-            psample <- commaList2vector(pheno_subset_string)
-        } else {
-            psample <- pheno_subset_vec
-        }
-        if (any(psample > P)) {
+        if (any(pheno_subset_vec > P)) {
             stop(paste("Phenotype subset value chosen that is larger than",
                        "number of simulated traits"))
         }
-        pheno_subset <- sapply(psample, function(s) {
+        pheno_subset <- sapply(pheno_subset_vec, function(s) {
             tmp <- sample(1:P, s, replace=FALSE)
             names(tmp) <- paste(phenoID, tmp, sep="")
             return(tmp)

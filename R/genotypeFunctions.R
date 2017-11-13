@@ -32,9 +32,6 @@ getAlleleFrequencies <- function(snp) {
 #' @param N number of samples for which to simulate bi-allelelic genotypes
 #' @param NrSNP number of SNPs to simulate
 #' @param frequencies vector of allele frequencies [double] from which to sample
-#' @param frequencyString alternative to a frequencies vector, a [string] with 
-#' frequencies separated by comma
-#' can be supplied; most often used when run as a command line application
 #' @param sampleID prefix for naming samples (followed by sample number from 1 
 #' to N)
 #' @param verbose boolean; if TRUE, progress info is printed to standard out
@@ -45,13 +42,9 @@ getAlleleFrequencies <- function(snp) {
 #' @examples
 #' N10NrSNP10 <- simulateGenotypes(N=10, NrSNP=10)
 #' N10NrSNP10 <- simulateGenotypes(N=10, NrSNP=10,
-#' frequencyString="0.2,0.3,0.4")
+#' frequency="0.2,0.3,0.4")
 simulateGenotypes <- function(N, NrSNP=5000, frequencies=c(0.1, 0.2, 0.4), 
-                              sampleID="ID_", verbose=TRUE, 
-                              frequencyString=NULL) {
-	if (! is.null(frequencyString)) {
-		frequencies=commaList2vector(frequencyString)
-	}
+                              sampleID="ID_", verbose=TRUE) {
     if (any(frequencies < 0) || any(frequencies > 1)) {
         stop ("Allele frequencies must be between 0 and 1")
     }
@@ -103,11 +96,9 @@ standardiseGenotypes <- function(geno) {
 #' @param chr numeric vector of chromosomes to chose NrCausalSNPs from; only 
 #' used when external genotype data is provided i.e. is.null(genoFilePrefix) 
 #' == FALSE
-#' @param chr_string [string] alternative to chr, a string with chromosomes 
-#' separated by comma; most often used when run as a command line application
 #' @param NrChrCausal Number [integer] of causal chromosomes to  chose 
 #' NrCausalSNPs from (as opposed to the actual chromosomes to chose from via chr
-#' 'chr_string);  only used when external genotype data is provided i.e. 
+#' );  only used when external genotype data is provided i.e. 
 #' is.null(genoFilePrefix) == FALSE. 
 #' @param genoFilePrefix full path/to/chromosome-wise-genotype-file-ending-
 #' before-"chrChromosomeNumber" (no '~' expansion!) [string]
@@ -154,7 +145,7 @@ standardiseGenotypes <- function(geno) {
 #' genoFilePrefix=genoFilePrefix, 
 #' genoFileSuffix=genoFileSuffix)
 getCausalSNPs <- function(NrCausalSNPs=20,  genotypes=NULL, chr=NULL, 
-                          chr_string=NULL, NrChrCausal=NULL,
+                          NrChrCausal=NULL,
                           genoFilePrefix=NULL, genoFileSuffix=NULL, 
                           genoFileDelimiter=",", 
                           sampleID="ID_", standardise=FALSE, verbose=TRUE) {
@@ -174,21 +165,17 @@ getCausalSNPs <- function(NrCausalSNPs=20,  genotypes=NULL, chr=NULL,
 	                   "guaranteed on every platform (see path.expand{base}),",
 	                   "please provide full file path to genotype files"))
 	    }
-	    if (all(c( is.null(chr_string), is.null(chr), is.null(NrChrCausal)))) {
+	    if (all(c(is.null(chr), is.null(NrChrCausal)))) {
 	        stop(paste("No information about chromosomes to sample from", 
-	                   "provided; please specify either chr_string, chr or", 
+	                   "provided; please specify either chr or", 
                        "NrChrCausal"))
 	    }
-	    if (all(c( !is.null(chr_string), !is.null(chr))) ||
-	        all(c( !is.null(chr_string), !is.null(NrChrCausal))) ||
-	        all(c( !is.null(NrChrCausal), !is.null(chr)))) {
+	    if (all(c( !is.null(NrChrCausal), !is.null(chr)))) {
 	        stop(paste("Too much information for sampling chromosomes provided,"
-	                   , "please specifiy only either chr_string, chr or",
+	                   , "please specifiy only either chr or",
                         "NrChrCausal"))
 	    }
-		if (! is.null(chr_string)) {
-			ChrCausal <- commaList2vector(chr_string)
-		} else if (! is.null(chr)) {
+		if (! is.null(chr)) {
 			ChrCausal <- chr
 		} else {
 			ChrCausal <- sample(1:22, NrChrCausal)

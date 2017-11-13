@@ -300,18 +300,40 @@ simulatePhenotypes <- function() {
         message("Total noise variance: ", 1 - args$genVar)
     }
     
+    
+    NrConfounders <- commaList2vector(args$NrConfoundersStrings)
+    chr <- commaList2vector(args$chr_string)
+    SNPfrequency <- commaList2vector(args$SNPfrequencyString)
+    pIndependentConfounders <- commaList2vector(args$pIndependentConfounders)
+    pTraitIndependentConfounders <-
+        commaList2vector(args$pTraitIndependentConfoundersString)
+    distBetaGenetic <- commaList2vector(args$distBetaGeneticString)
+    
+    mBetaGenetic <- commaList2vector(args$mBetaGeneticString) 
+    sdBetaGenetic <- commaList2vector(args$sdBetaGeneticString)
+    distConfounders <- commaList2vector(args$distConfoundersString) 
+    mConfounders <- commaList2vector(args$mConfoundersString)
+    sdConfounders <- commaList2vector(args$sdConfoundersString)
+    catConfounders <- commaList2vector(args$catConfoundersString)
+    probConfounders <- commaList2vector(args$probConfoundersString)
+    distBetaConfounders <- commaList2vector(args$distBetaConfoundersString)
+    mBetaConfounders <- commaList2vector(args$mBetaConfoundersStrin)
+    sdBetaConfounders <- commaList2vector(args$sdBetaConfoundersString)
+    sample_subset <- commaList2vector(args$sample_subset_string)
+    pheno_subset <- commaList2vector(args$pheno_subset_string)
+    
+    
     simulatedPheno <- runSimulation( N=args$N, P=args$P, seed=args$seed,
                                      tNrSNP=args$tNrSNP, cNrSNP=args$cNrSNP,
-                                     NrConfoundersString=
-                                         args$NrConfoundersStrings, 
+                                     NrConfounders=NrConfounders, 
                                      NrFixedEffects=args$NrFixedEffects,
-                                     chr_string=args$chr_string, 
+                                     chr=chr, 
                                      NrChrCausal=args$NrChrCausal,
                                      sampleID=args$sampleID, 
                                      phenoID=args$phenoID,
                                      genoFilePrefix=args$genoFilePrefix, 
                                      genoFileSuffix=args$genoFileSuffix, 
-                                     SNPfrequencyString=args$SNPfrequencyString,
+                                     SNPfrequency=SNPfrequency ,
                                      genoFileDelimiter=args$genoFileDelimiter,
                                      kinshipfile=args$kinshipfile,
                                      kinshipHeader=args$kinshipHeader,
@@ -326,41 +348,33 @@ simulatePhenotypes <- function() {
                                      alpha=args$alpha,
                                      gamma=args$gamma, 
                                      pcorr=args$pcorr,
-                                     pIndependentConfoundersString=
-                                         args$pIndependentConfoundersString, 
-                                     pTraitIndependentConfoundersString=
-                                        args$pTraitIndependentConfoundersString, 
+                                     pIndependentConfounders=
+                                         pIndependentConfounders, 
+                                     pTraitIndependentConfounders=
+                                        pTraitIndependentConfounders, 
                                      pIndependentGenetic=
                                          args$pIndependentGenetic, 
                                      pTraitIndependentGenetic=
-                                         args$pTraitIndependentGenetic, 
-                                     distBetaGeneticString=
-                                         args$distBetaGeneticString,
-                                     mBetaGeneticString=args$mBetaGeneticString, 
-                                     sdBetaGeneticString=
-                                         args$sdBetaGeneticString,
-                                     distConfoundersString=
-                                         args$distConfoundersString, 
-                                     mConfoundersString=args$mConfoundersString, 
-                                     sdConfoundersString=
-                                         args$sdConfoundersString,
-                                     catConfoundersString=
-                                         args$catConfoundersString,
-                                     probConfoundersString=
-                                         args$probConfoundersString,
-                                     distBetaConfoundersString=
-                                         args$distBetaConfoundersString,
-                                     mBetaConfoundersString=
-                                         args$mBetaConfoundersString, 
-                                     sdBetaConfoundersString=
-                                         args$sdBetaConfoundersString,
+                                         pTraitIndependentGenetic, 
+                                     distBetaGenetic=distBetaGenetic,
+                                     mBetaGenetic=args$mBetaGenetic, 
+                                     sdBetaGenetic=
+                                         args$sdBetaGenetic,
+                                     distConfounders=distConfounders, 
+                                     mConfounders=mConfounders, 
+                                     sdConfounders=sdConfounders,
+                                     catConfounders=catConfounders,
+                                     probConfounders=probConfounders,
+                                     distBetaConfounders=distBetaConfounders,
+                                     mBetaConfounders=mBetaConfounders, 
+                                     sdBetaConfounders=sdBetaConfounders,
                                      meanNoiseBg=args$meanNoiseBg, 
                                      sdNoiseBg=args$sdNoiseBg,
                                      verbose=args$verbose)
     
     outdir <- savePheno(simulatedPheno, 
-                            sample_subset_string=args$sample_subset_string, 
-                            pheno_subset_string=args$pheno_subset_string,  
+                            sample_subset=sample_subset, 
+                            pheno_subset=pheno_subset,  
                             outstring=args$outstring, 
                             directoryGeno=args$directoryGeno, 
                             directoryPheno=args$directoryPheno,
