@@ -1,6 +1,7 @@
 #' Compute allele frequencies from genotype data.
 #'
-#' @param snp vector of length N samples with genotypes encoded as 0,1 and 2
+#' @param snp [N x 1] vector of length N samples with genotypes of single SNP 
+#' encoded as 0,1 and 2
 #' @return vector with minor and major allele frequency
 #' @export
 #' @examples
@@ -8,6 +9,11 @@
 #' snp <- rbinom(200, 2, 0.3)
 #' allelefreq <- getAlleleFrequencies(snp)
 getAlleleFrequencies <- function(snp) {
+    if (dim(data.frame(snp))[2] != 1) {
+        stop ("getAllelelFrequencies takes a [N x 1] vector of genotypes, but ",
+              "provided genotype dimensions are: [", dim(snp)[1], " x ",
+              dim(snp)[2], "]")
+    }
     counts <- as.data.frame(table(factor(snp, levels=c(0,1,2))))[,2]
     q <- (2*counts[3] +  counts[2])/(2*length(snp))
     if ( q < 0.5) {
