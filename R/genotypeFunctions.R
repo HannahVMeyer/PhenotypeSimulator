@@ -39,19 +39,13 @@ getAlleleFrequencies <- function(snp) {
 #' geno <- cbind(rbinom(2000, 2, 0.3), rbinom(2000, 2, 0.4))
 #' geno_sd <- standardiseGenotypes(geno)
 standardiseGenotypes <- function(geno) {
-    apply(geno, 2, function(snp) {
-        allele_freq <- getAlleleFrequencies(snp)
-        var_snp <- sqrt(2*allele_freq[1]*allele_freq[2])
-        if (var_snp == 0) {
-            snp_sd <- snp
-        } else {
-            snp_sd <- (snp - 2*allele_freq[1])/var_snp
-        }
-        return (snp_sd)
-    })
+    allele_freq <-  apply(geno, 2, getAlleleFrequencies)
+    var_geno <- sqrt(2*allele_freq[1,]*allele_freq[2,])
+    var_geno[var_geno == 0] <- 1
+    geno_mean <- sweep(geno, 2, 2*allele_freq[1,], "-")
+    geno_sd <- sweep(geno_mean, 2, var_geno, "/")
+    return (geno_sd)
 }
-
-
 
 #' Simulate bi-allelic genotypes.
 #'
@@ -70,7 +64,7 @@ standardiseGenotypes <- function(geno) {
 #' N10NrSNP10 <- simulateGenotypes(N=10, NrSNP=10,
 #' frequency="0.2,0.3,0.4")
 simulateGenotypes <- function(N, NrSNP=5000, frequencies=c(0.1, 0.2, 0.4), 
-                              sampleID="ID_", verbose=TRUE) {
+                              sampleID="ID_", standardise = FALSE, verbose=TRUE) {
     if (any(frequencies < 0) || any(frequencies > 1)) {
         stop ("Allele frequencies must be between 0 and 1")
     }
@@ -81,7 +75,11 @@ simulateGenotypes <- function(N, NrSNP=5000, frequencies=c(0.1, 0.2, 0.4),
     colnames(X) <- paste(rep(1, ncol(X)), "-", 1:ncol(X), "-SNPID", 1:ncol(X), 
                          sep="")
     rownames(X) <- samples
-    X_sd <- standardiseGenotypes(X)
+    if (standardise) {
+        X_sd <- standardiseGenotypes(X)
+    } else {
+        X_sd <- NULL
+    }
 	return(list(X=X, X_sd=X_sd, samples=samples))
 }
 
