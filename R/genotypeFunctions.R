@@ -14,8 +14,14 @@ getAlleleFrequencies <- function(snp) {
               "provided genotype dimensions are: [", dim(snp)[1], " x ",
               dim(snp)[2], "]")
     }
-    counts <- as.data.frame(table(factor(snp, levels=c(0,1,2))))[,2]
-    q <- (2*counts[3] +  counts[2])/(2*length(snp))
+    pp <- length(which(snp == 0))
+    pq2 <- length(which(snp == 1))
+    qq <- length(which(snp == 2))
+    
+    if ((pp + pq2 + qq != length(snp))) {
+        stop ("SNP vector contains alleles not encoded as 0, 1 or 2")
+    }
+    q <- (2*qq +  pq2)/(2*length(snp))
     if ( q < 0.5) {
         return(c(1-q, q))
     } else {
@@ -39,7 +45,7 @@ getAlleleFrequencies <- function(snp) {
 #' geno <- cbind(rbinom(2000, 2, 0.3), rbinom(2000, 2, 0.4))
 #' geno_sd <- standardiseGenotypes(geno)
 standardiseGenotypes <- function(geno) {
-    allele_freq <-  apply(geno, 2, getAlleleFrequencies)
+    allele_freq <-  sapply(data.frame(geno),  getAlleleFrequencies)
     var_geno <- sqrt(2*allele_freq[1,]*allele_freq[2,])
     var_geno[var_geno == 0] <- 1
     geno_mean <- sweep(geno, 2, 2*allele_freq[1,], "-")
@@ -298,7 +304,7 @@ getKinship <- function(X=NULL, kinshipfile=NULL, sampleID="ID_",
         NrSNP <- ncol(X)
         vmessage(c("Estimating kinship from", NrSNP, "SNPs provided"), 
                  verbose=verbose)
-        kinship <- X %*% t(X)
+        kinship <- tcrossprod(X)
         colnames(kinship) <- paste(sampleID, seq(1, N, 1), sep="")
         vmessage("Normalising kinship", verbose=verbose)
         kinship <- kinship/mean(diag(kinship))
