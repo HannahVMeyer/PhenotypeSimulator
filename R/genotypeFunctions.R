@@ -77,11 +77,10 @@ simulateGenotypes <- function(N, NrSNP=5000, frequencies=c(0.1, 0.2, 0.4),
     samples <-paste(sampleID, seq(1, N, 1), sep="")
     vmessage(c("Simulate", NrSNP, "SNPs..."), verbose=verbose)
     freq <- sample(frequencies, NrSNP, replace=TRUE)
-    X <- matrix(rbinom(N*NrSNP, 2, prob=rep(freq, each=N)), nrow=N)
-    colnames(X) <- paste(rep(1, ncol(X)), "-", 1:ncol(X), "-SNPID", 1:ncol(X), 
-                         sep="")
+    X <- sapply(1:NrSNP, function(x) rbinom(N, 2, freq[x]))
+    colnames(X) <- paste("SNP", 1:ncol(X), sep="")
     rownames(X) <- samples
-	return(list(X=X, freq = freq, samples=samples))
+    return(list(X=X, freq = freq, samples=samples))
 }
 
 
