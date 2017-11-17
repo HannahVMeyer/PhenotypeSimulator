@@ -112,3 +112,33 @@ simulateDist <- function(x,
     }
     return(d)
 }
+
+#' Compute expected genotypes from genotype probabilities.
+#'
+#' Convert genotypes encoded as triplets of probablities (p(AA), p(Aa), p(aa))
+#' into their expected genotype frequencies by 0*p(AA) + p(Aa) + 2p(aa)
+#'
+#' @param probGeno vector [numeric] with genotype probabilites; has to be a
+#' multiple of 3
+#' @return numeric vector of length [length(probGeno)/3] with the expected 
+#' genotype value per individual
+#' @export
+#' @examples
+#' nrSamples <- 10
+#' # Construct genotype probabilty vector (usually obtained from external input)
+#' # First, assign zero probabilty of AA, Aa and aa for all samples
+#' genotype_prob <- rep(0, 3*nrSamples)
+#' # Second, for each sample draw one of 0,1,2 (corresponding to AA, Aa and aa)
+#' genotype_prob[seq(1, nrSamples*3, 3) + sample(0:2, 10, replace=TRUE)] <- 1
+#' genotype_exp <- probGen2expGen(genotype_prob)
+probGen2expGen <- function(probGeno) {
+    if( length(probGeno) %% 3 != 0) {
+        stop("Length of genotype probabilty vector (",  length(probGeno), 
+             ") is not a multiple of three")
+    }
+    multiples <- seq(1, length(probGeno), 3)
+    probGeno[multiples] <- 0
+    probGeno[(multiples + 2)] <- 2 *  probGeno[(multiples + 2)]
+    expGeno <- zoo::rollapply(unlist(probGeno), 3, by = 3, sum, 
+                              partial = FALSE)
+}
