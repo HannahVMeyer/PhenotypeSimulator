@@ -21,11 +21,11 @@ getAlleleFrequencies <- function(snp) {
     if ((pp + pq2 + qq != length(snp))) {
         stop ("SNP vector contains alleles not encoded as 0, 1 or 2")
     }
-    q <- (2*qq +  pq2)/(2*length(snp))
+    p <- (2*pp +  pq2)/(2*length(snp))
     if ( q < 0.5) {
-        return(c(1-q, q))
+        return(c(1-p, p))
     } else {
-        return(c(q, 1-q))
+        return(c(p, 1-p))
     }
 }
 
@@ -84,35 +84,89 @@ simulateGenotypes <- function(N, NrSNP=5000, frequencies=c(0.1, 0.2, 0.4),
 }
 
 
-#' Draw random SNPs from genotypes.  
+#' Read genotype from file.  
 #'
-#' Draw random SNPs from either simulated genotypes or external genotype files.  
+#' readStandardGenotypes can read genotypes from a number of input 
+#' formats for standard GWAS (binary plink, snptest) or simulation software (
+#' binary plink, hapgen2, genome). Alternatively, simple text files (with 
+#' specified delimiter) can be read. For more information on the different file
+#' formats see details. 
 #'
-#' @param filename path/to/genotypefile [string] in plink, hapgen or format (for 
+#' @param filename path/to/genotypefile [string] in plink, oxgen 
+#' (impute2/snptest/hapgen2), genome or [delimiter]-delimited format (for 
 #' format information see details)
 #' @param format name [string] of genotype file format
 #' @param verbose boolean; if TRUE, progress info is printed to standard out
 #' @return 
-#' @param verbose boolean; if TRUE, progress info is printed to standard out
-#' @details PLINK format: https://www.cog-genomics.org/plink/1.9/
+#' @details 
+#' @section Formats
+#' \itemize{
+#' \item PLINK: \url{https://www.cog-genomics.org/plink/1.9/}. Absolute Path 
+#' to plink-format file has to be provided, tilde extansion not provided
+#' \item Oxgen: 
+#' \item Genome:
+#' \item delim:
+#' }
 #' 
-#' @seealso \code{\link{standardiseGenotypes}} 
+#' @section Genotype simulation characteristics
+#' \itemize{
+#' \item PLINK:
+#' \item Hapgen2: 
+#' \item Genome:
+#' \item delim:
+#' }
 #' @export
 #' @examples 
+#' # Genome format
+#' filename_genome  <- system.file("extdata/genotypes/genome/",
+#' "genotypes_genome.txt",
+#' package = "PhenotypeSimulator") 
+#' data_genome <- readStandardGenotypes(filename_genome)
 #' 
-readStandardGenotypes <- function(filename, format = c("plink", "hapgen"),
-                                  verbose=TRUE, ...) {
+#' filename_hapgen  <- system.file("extdata/genotypes/hapgen/",
+#' "genotypes_hapgen.controls",
+#' package = "PhenotypeSimulator") 
+#' data_hapgen <- readStandardGenotypes(filename_hapgen)
+#' 
+#' filename_plink  <- system.file("extdata/genotypes/plink/",
+#' "genotypes_plink",
+#' package = "PhenotypeSimulator") 
+#' data_plink <- readStandardGenotypes(filename_hapgen)
+readStandardGenotypes <- function(filename, format = c("plink", "oxgen", 
+                                                       "genome", "delim"),
+                                  verbose=TRUE, sampleID = "ID_", 
+                                  snpID = "SNP_", delimiter = ",", ...) {
     if (format == "plink") {
-        genotypes <- snpStats::read.plink(bed=filename, 
-                                          na.strings = c("0", "-9"), 
-                                          sep = ".")
-    } else if (format == "hapgen") {
-        
-    } else if (format == "hapgen") {
-        
+        data <- snpStats::read.plink(bed=filename)
+        genotypes <- as(data, 'matrix')
+        id_samples <- rownames(genotypes)
+        id_snps <- colnames(genotypes)
+    } else if (format == "oxgen") {
+        genotypes_raw <- data.table::fread(paste(filename, ".gen", sep=""), 
+                                       data.table=FALSE)
+        genotypes <- apply(genotypes_raw[, -c(1:5)], 1, probGen2expGen)
+        samples <- data.table::fread(paste(filename, ".sample", sep=""), 
+                                     data.table=FALSE, skip=2)
+        id_samples <- samples$V1
+        id_snps <- genotypes_raw$V1
+    } else if (format == "genome") {
+        data <- data.table::fread(filename, skip="Samples:", data.table=FALSE, 
+                                sep=" ", colClasses="character")
+        N <- nrow(data)
+        genotypes <- matrix(unlist(strsplit(data$V2, split="")), nrow=N, 
+                            byrow=TRUE)
+        id_samples <- paste(sampleID, N, "_", data$V1, sep="")
+        id_snps <- paste(snpID, 0:(ncol(genotypes) -1), sep="")
+    } else if (format == "genome") {
+        data <- data.table::fread(filename, data.table=FALSE, 
+                                  sep=delimiter)
+        id_snps <- data$V1
+        data <- data[,-1]
+        id_samples <- colnames(data)
     } else {
         vmessage(format, " is not a supported genotype format. Supported",
-                 "formats are plink, hapgen and ")
+                 "formats are plink, hapgen, genome and delim (where the 
+                 delimiter is specified via delimiter=) ")
     }
 }
 
