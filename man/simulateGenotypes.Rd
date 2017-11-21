@@ -5,7 +5,7 @@
 \title{Simulate bi-allelic genotypes.}
 \usage{
 simulateGenotypes(N, NrSNP = 5000, frequencies = c(0.1, 0.2, 0.4),
-  sampleID = "ID_", verbose = TRUE, frequencyString = NULL)
+  sampleID = "ID_", verbose = TRUE)
 }
 \arguments{
 \item{N}{number of samples for which to simulate bi-allelelic genotypes}
@@ -14,18 +14,14 @@ simulateGenotypes(N, NrSNP = 5000, frequencies = c(0.1, 0.2, 0.4),
 
 \item{frequencies}{vector of allele frequencies [double] from which to sample}
 
-\item{sampleID}{prefix for naming samples (followed by sample number from 1 
-to N)}
+\item{sampleID}{prefix [string] for naming samples (followed by sample number 
+from 1 to N)}
 
 \item{verbose}{boolean; if TRUE, progress info is printed to standard out}
-
-\item{frequencyString}{alternative to a frequencies vector, a [string] with 
-frequencies separated by comma
-can be supplied; most often used when run as a command line application}
 }
 \value{
-list of a [N x NrSNP] matrix of simulated genotypes, [N x NrSNP] 
-matrix of standardised simulated genotypes and vector of sample IDs
+list of a [NrSNP x N] matrix of simulated genotypes, SNP frequencies 
+and vector of sample IDs.
 }
 \description{
 Simulate bi-allelic genotypes.
@@ -33,7 +29,7 @@ Simulate bi-allelic genotypes.
 \examples{
 N10NrSNP10 <- simulateGenotypes(N=10, NrSNP=10)
 N10NrSNP10 <- simulateGenotypes(N=10, NrSNP=10,
-frequencyString="0.2,0.3,0.4")
+frequency="0.2,0.3,0.4")
 }
 \seealso{
 \code{\link{standardiseGenotypes}}
