@@ -7,7 +7,8 @@
 getAlleleFrequencies(snp)
 }
 \arguments{
-\item{snp}{vector of length N samples with genotypes encoded as 0,1 and 2}
+\item{snp}{[N x 1] vector of length N samples with genotypes of single SNP 
+encoded as 0,1 and 2}
 }
 \value{
 vector with minor and major allele frequency
