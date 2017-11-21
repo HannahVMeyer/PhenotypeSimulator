@@ -58,11 +58,11 @@ standardiseGenotypes <- function(geno) {
 #' @param N number of samples for which to simulate bi-allelelic genotypes
 #' @param NrSNP number of SNPs to simulate
 #' @param frequencies vector of allele frequencies [double] from which to sample
-#' @param sampleID prefix for naming samples (followed by sample number from 1 
-#' to N)
+#' @param sampleID prefix [string] for naming samples (followed by sample number 
+#' from 1 to N)
 #' @param verbose boolean; if TRUE, progress info is printed to standard out
-#' @return list of a [N x NrSNP] matrix of simulated genotypes, [N x NrSNP] 
-#' matrix of standardised simulated genotypes and vector of sample IDs
+#' @return list of a [NrSNP x N] matrix of simulated genotypes, SNP frequencies 
+#' and vector of sample IDs.
 #' @seealso \code{\link{standardiseGenotypes}}
 #' @export
 #' @examples
@@ -77,9 +77,9 @@ simulateGenotypes <- function(N, NrSNP=5000, frequencies=c(0.1, 0.2, 0.4),
     samples <-paste(sampleID, seq(1, N, 1), sep="")
     vmessage(c("Simulate", NrSNP, "SNPs..."), verbose=verbose)
     freq <- sample(frequencies, NrSNP, replace=TRUE)
-    X <- sapply(1:NrSNP, function(x) rbinom(N, 2, freq[x]))
-    colnames(X) <- paste("SNP", 1:ncol(X), sep="")
-    rownames(X) <- samples
+    X <- t(sapply(1:NrSNP, function(x) rbinom(N, 2, freq[x])))
+    rownames(X) <- paste("SNP", 1:ncol(X), sep="")
+    colnames(X) <- samples
     return(list(X=X, freq = freq, samples=samples))
 }
 
@@ -87,41 +87,106 @@ simulateGenotypes <- function(N, NrSNP=5000, frequencies=c(0.1, 0.2, 0.4),
 #' Read genotype from file.  
 #'
 #' readStandardGenotypes can read genotypes from a number of input 
-#' formats for standard GWAS (binary plink, snptest) or simulation software (
-#' binary plink, hapgen2, genome). Alternatively, simple text files (with 
-#' specified delimiter) can be read. For more information on the different file
-#' formats see details. 
+#' formats for standard GWAS (binary plink, snptest, bimbam) or simulation 
+#' software (binary plink, hapgen2, genome). Alternatively, simple text files (
+#' with specified delimiter) can be read. For more information on the different 
+#' file formats see **External genotype software and formats**.
 #'
 #' @param filename path/to/genotypefile [string] in plink, oxgen 
-#' (impute2/snptest/hapgen2), genome or [delimiter]-delimited format (for 
-#' format information see details)
+#' (impute2/snptest/hapgen2), genome, bimbam or [delimiter]-delimited format (
+#' for format information see **External genotype software and formats**).
 #' @param format name [string] of genotype file format
+#' @param sampleID prefix [string] for naming samples (followed by sample number 
+#' from 1 to NrSamples)
+#' @param snpID prefix [string] for naming SNPs (followed by SNP number 
+#' from 1 to NrSNPs)
+#' @param delimiter field separator [string] of genotype file
 #' @param verbose boolean; if TRUE, progress info is printed to standard out
-#' @return 
-#' @details 
-#' @section Formats
+#' @return List of [NrSamples X NrSNPs] genotypes, their [NrSNPs] ID (id_snps), 
+#' their [NrSamples] IDs (id_samples) and format specific additional files (
+#' might be used for output writing).
+#' @section External genotype software and formats:
+#' \subsection{Formats:}{
 #' \itemize{
-#' \item PLINK: \url{https://www.cog-genomics.org/plink/1.9/}. Absolute Path 
-#' to plink-format file has to be provided, tilde extansion not provided
-#' \item Oxgen: 
-#' \item Genome:
-#' \item delim:
-#' }
+#' \item PLINK: consists of three files, .bed, .bim and .fam. When specifying 
+#' the filepath, only the core of the name without the ending should be 
+#' specified (i.e. for geno.bed, geno.bim and geno.fam, geno should be 
+#' specified). When reading data from plink file, the absolute path to plink-
+#' format file has to be provided, tilde extansion not provided.
+#' From \url{https://www.cog-genomics.org/plink/1.9/formats}:  The .bed 
+#' files contain the  primary representation of genotype calls at biallelic 
+#' variants in a binary format. The .bim is a text file with no header 
+#' line, and one line  per variant with the following six fields: i) Chromosome 
+#' code (either an integer, or 'X'/'Y'/'XY'/'MT'; '0' indicates unknown) or 
+#' name, ii) Variant identifier, iii) Position in morgans or centimorgans (safe 
+#' to use dummy value of '0'), iv) Base-pair coordinate (normally 1-based, but 
+#' 0 ok; limited to 231-2), v) Allele 1 (corresponding to clear bits in .bed; 
+#' usually minor), vi) Allele 2 (corresponding to set bits in .bed; usually 
+#' major). The .fam file is a text file with no header line, and one line per 
+#' sample with the following six fields: i) Family ID ('FID'), ii), Within-
+#' family ID ('IID'; cannot be '0'), iii) Within-family ID of father ('0' if 
+#' father isn't in dataset, iv) within-family ID of mother ('0' if mother isn't 
+#' in dataset), v) sex code ('1' = male, '2' = female, '0' = unknown), vi) 
+#' Phenotype value ('1' = control, '2' = case, '-9'/'0'/non-numeric = missing 
+#' data if case/control)
+#' \item oxgen: consists of two files, the genotype file ending in .gen 
+#' and the sample file ending in .sample. When specifying the filepath, only
+#' the core of the name without the ending should be specified (i.e. for 
+#' geno.gen and geno.sample, geno should be specified). From
+#'  \url{http://www.stats.ox.ac.uk/~marchini/software/gwas/file_format.html}:
+#' The genotype file stores data on a one-line-per-SNP format. The first 5 
+#' entries of each line should be the SNP ID, RS ID of the SNP, base-pair 
+#' position of the SNP, the allele coded A and the allele coded B. The SNP ID 
+#' can be used to denote the chromosome number of each SNP. The next three 
+#' numbers on the line should be the probabilities of the three genotypes AA, 
+#' AB and BB at the SNP for the first individual in the cohort. The next three 
+#' numbers should be the genotype probabilities for the second individual in the 
+#' cohort. The next three numbers are for the third individual and so on. The 
+#' order of individuals in the genotype file should match the order of the 
+#' individuals in the sample file. The sample file has three parts (a) a header 
+#' line detailing the names of the columns in the file, (b) a line detailing the 
+#' types of variables stored in each column, and (c) a line for each individual 
+#' detailing the information for that individual. For more information on the 
+#' sampple file visit the above url
+#' \item genome: The entire output of genome can be saved via `genome -options >
+#' outoutfile`. The /path/to/outputfile should be provided and this function
+#' extracts the relevant genotype information from this outout file.
+#' \url{http://csg.sph.umich.edu/liang/genome}
+#' \item bimbam: Mean genotype file format of bimbam which is a single file, 
+#' without information on individuals. From 
+#' \url{http://www.haplotype.org/bimbam.html}: The first column of the mean 
+#' genotype files is the SNP ID, the second and third columns are allele types 
+#' with minor allele first. The rest columns are the mean genotypes of different 
+#' individuals – numbers between 0 and 2 that represents the (posterior) mean 
+#' genotype, or dosage of the minor allele.
+#' \item delim: A [delimter]-delimited file of [NrSNPs x NrSamples] genotypes 
+#' with the snpIDs in the first column and the sampleIDs in the first row and 
+#' genotypes encoded as numbers between 0 and 2 representing the (posterior) 
+#' mean genotype, or dosage of the minor allele. Can be user-genotypes or 
+#' genotypes simulated with foward-time algorithms such as simupop 
+#' (\url{http://simupop.sourceforge.net/Main/HomePage}) or MetaSim 
+#' (\url{project.org/web/packages/rmetasim/vignettes/CreatingLandscapes.html}), 
+#' that allow for user-specified output formats 
+#' }}
 #' 
-#' @section Genotype simulation characteristics
+#' \subsection{Genotype simulation characteristics:}{
 #' \itemize{
-#' \item PLINK:
-#' \item Hapgen2: 
-#' \item Genome:
-#' \item delim:
+#' \item PLINK: simple, bi-allelelic genotypes without LD structure, details can 
+#' be found at \url{https://www.cog-genomics.org/plink/1.9/input#simulate}.
+#' \item Hapgen2: resampling-based genotype simulation, details can be found at
+#' \url{http://mathgen.stats.ox.ac.uk/genetics_software/hapgen/hapgen2.html}.
+#' \item Genome: coalescent-based genotype simulation, details can be found at
+#' \url{http://csg.sph.umich.edu/liang/genome/GENOME-manual.pdf}. 
 #' }
+#' Examples on how to call these genotype simulation tools can be found in the 
+#' vignette \emph{sample-scripts-external-genotype-simulation}.}
 #' @export
 #' @examples 
 #' # Genome format
 #' filename_genome  <- system.file("extdata/genotypes/genome/",
 #' "genotypes_genome.txt",
 #' package = "PhenotypeSimulator") 
-#' data_genome <- readStandardGenotypes(filename_genome)
+#' data_genome <- readStandardGenotypes(filename_genome, format ="genome")
 #' 
 #' filename_hapgen  <- system.file("extdata/genotypes/hapgen/",
 #' "genotypes_hapgen.controls",
@@ -133,7 +198,8 @@ simulateGenotypes <- function(N, NrSNP=5000, frequencies=c(0.1, 0.2, 0.4),
 #' package = "PhenotypeSimulator") 
 #' data_plink <- readStandardGenotypes(filename_hapgen)
 readStandardGenotypes <- function(filename, format = c("plink", "oxgen", 
-                                                       "genome", "delim"),
+                                                       "genome", "bimbam",
+                                                       "delim"),
                                   verbose=TRUE, sampleID = "ID_", 
                                   snpID = "SNP_", delimiter = ",", ...) {
     if (format == "plink") {
@@ -141,14 +207,26 @@ readStandardGenotypes <- function(filename, format = c("plink", "oxgen",
         genotypes <- as(data, 'matrix')
         id_samples <- rownames(genotypes)
         id_snps <- colnames(genotypes)
+        format_files <- list(plink_fam = data$fam, plink_map = data$map)
+    } else if (format == "bimbam") {
+        genotypes_raw <- data.table::fread(paste(filename, ".txt", sep=""), 
+                                           data.table=FALSE, sep=delimiter)
+        genotypes <- genotypes_raw[, -c(1:3)]
+        bimbam_snp_postion <- data.table::fread(paste(filename, ".position.txt",
+                                                      sep=""), 
+                                                data.table=FALSE, sep=delimiter)
+        id_samples <- paste(sampleID, nvol(genotypes), sep="")
+        id_snps <- genotypes_raw[,1]
+        format_files <- list(bimbam_snp_postion = bimbam_snp_postion)
     } else if (format == "oxgen") {
         genotypes_raw <- data.table::fread(paste(filename, ".gen", sep=""), 
                                        data.table=FALSE)
         genotypes <- apply(genotypes_raw[, -c(1:5)], 1, probGen2expGen)
-        samples <- data.table::fread(paste(filename, ".sample", sep=""), 
-                                     data.table=FALSE, skip=2)
-        id_samples <- samples$V1
-        id_snps <- genotypes_raw$V1
+        samples<- data.table::fread(paste(filename, ".sample", sep=""), 
+                                     data.table=FALSE)
+        id_samples <- samples$V1[-c(1:2)]
+        id_snps <- genotypes_raw$V1[-c(1:2)]
+        format_files <- list(oxgen_samples = samples)
     } else if (format == "genome") {
         data <- data.table::fread(filename, skip="Samples:", data.table=FALSE, 
                                 sep=" ", colClasses="character")
@@ -157,22 +235,30 @@ readStandardGenotypes <- function(filename, format = c("plink", "oxgen",
                             byrow=TRUE)
         id_samples <- paste(sampleID, N, "_", data$V1, sep="")
         id_snps <- paste(snpID, 0:(ncol(genotypes) -1), sep="")
-    } else if (format == "genome") {
+        format_files = NULL
+    } else if (format == "delim") {
         data <- data.table::fread(filename, data.table=FALSE, 
                                   sep=delimiter)
         id_snps <- data$V1
         data <- data[,-1]
         id_samples <- colnames(data)
+        format_files = NULL
     } else {
-        vmessage(format, " is not a supported genotype format. Supported",
-                 "formats are plink, hapgen, genome and delim (where the 
-                 delimiter is specified via delimiter=) ")
+        stop(format, " is not a supported genotype format. Supported",
+                 "formats are plink, oxgen, genome, bimbam and delim (where the 
+                 delimiter is specified via 'delimiter=') ")
     }
+    return(list(genotypes=genotypes, id_snps=id_snp, id_samples=id_samples, 
+                format_files = format_files))
 }
 
 #' Draw random SNPs from genotypes.  
 #'
-#' Draw random SNPs from either simulated genotypes or external genotype files.  
+#' Draw random SNPs from either simulated genotypes or external genotype files.
+#' When drawing from external genotype files, two options are possible: 
+#' i) reading the entire file into memory or ii) only reading lines of randomly
+#' chosen SNPs, recommended for large genotype files. See details for more 
+#' information.
 #'
 #' @param NrCausalSNPs number [integer] of SNPs to chose at random
 #' @param genotypes [NrSamples x totalNrSNPs] matrix of genotypes
@@ -183,15 +269,19 @@ readStandardGenotypes <- function(filename, format = c("plink", "oxgen",
 #' NrCausalSNPs from (as opposed to the actual chromosomes to chose from via chr
 #' );  only used when external genotype data is provided i.e. 
 #' is.null(genoFilePrefix) == FALSE. 
+#' @param genotypefile needed when loading entire genotype set into memory, 
+#' path/to/genotype file [string] in format specified by \link{format}
+#' @param format needed when loading entire genotype set into memory, specifies 
+#' the format of the genotype data; has to be one of  plink, oxgen, genome, 
+#' bimbam and delim; for details see Details in \link{readStandardGenotypes}
 #' @param genoFilePrefix full path/to/chromosome-wise-genotype-file-ending-
 #' before-"chrChromosomeNumber" (no '~' expansion!) [string]
 #' @param genoFileSuffix [string] following chromosome number including 
 #' .fileformat (e.g. ".csv"); has to be a text format i.e. comma/tab/space
 #' separated
-#' @param genoFileDelimiter field separator [string] of genotype file
+#' @param delimiter field separator [string] of genotypefile or genoFile 
 #' @param sampleID prefix [string] for naming samples (followed by sample number
 #'  from 1 to NrSamples)
-#' @param standardise [boolean]; if TRUE standardised genotypes will be returned
 #' @param verbose [boolean]; if TRUE, progress info is printed to standard out
 #' @return [N x NrCausalSNPs] matrix of randomly drawn, standardised (depending 
 #' on standardise option) SNPs 
@@ -214,37 +304,49 @@ readStandardGenotypes <- function(filename, format = c("plink", "oxgen",
 #' @seealso \code{\link{standardiseGenotypes}} 
 #' @export
 #' @examples
+#' # get causal SNPs from genotypes simulated within PhenotypeSimulator
 #' geno <- simulateGenotypes(N=10, NrSNP=10)
 #' causalSNPsFromSimulatedGenoStandardised <- getCausalSNPs(NrCausalSNPs=10,
-#' genotypes=geno, 
-#' standardise=TRUE)
-#'
+#' genotypes=geno)
+#' 
+#' # Get causal SNPs by reading files from external genotype simulation programs
+#' # for instance simuated via hapgen
+#' #' genotypefile_hapgen  <- system.file("extdata/genotypes/hapgen/",
+#' "genotypes_hapgen.controls",
+#' package = "PhenotypeSimulator") 
+#' causalSNPsFromFile <- getCausalSNPs(NrCausalSNPs=10, 
+#' genotypefile=genotypefile_hapgen)
+#' 
+#'# Get causal SNPs by sampling lines from large SNP files
 #' genotypeFile <- system.file("extdata/genotypes/",
 #' "genotypes_chr22.csv",
 #' package = "PhenotypeSimulator")
 #' genoFilePrefix <- gsub("chr.*", "", genotypeFile) 
 #' genoFileSuffix <- ".csv" 
-#' causalSNPsFromFile <- getCausalSNPs(NrCausalSNPs=10, chr=22, 
+#' causalSNPsFromLines <- getCausalSNPs(NrCausalSNPs=10, chr=22, 
 #' genoFilePrefix=genoFilePrefix, 
 #' genoFileSuffix=genoFileSuffix)
 getCausalSNPs <- function(NrCausalSNPs=20,  genotypes=NULL, chr=NULL, 
-                          NrChrCausal=NULL,
+                          NrChrCausal=NULL, genotypefile=NULL, format=NULL,
                           genoFilePrefix=NULL, genoFileSuffix=NULL, 
-                          genoFileDelimiter=",", 
-                          sampleID="ID_", standardise=FALSE, verbose=TRUE) {
-	if (! is.null(genotypes)) {
-        if (standardise) genotypes <- genotypes$X_sd
-        if (! standardise) genotypes <- genotypes$X
-        N <- ncol(genotypes)
+                          delimiter=",", 
+                          sampleID="ID_", snpID = "SNP_", verbose=TRUE) {
+	if (! is.null(genotypes) || ! is.null(genotypefile)) {
+	    if (is.null(genotypes)){
+    	    genotypeData <- readStandardGenotypes(genotypefile, format=format, 
+    	                                       delimiter=delimiter,
+    	                                       sampleID=sampleID, snpID=snpID,
+    	                                       verbose=verbose)
+    	    genotypes <- genotypeData$genotypes
+	    }
+        N <- nrow(genotypes)
         if ( N < NrCausalSNPs) {
             stop(paste("Number of genotypes is less than number of causal SNPs." 
                  , "Increase number of simulated genotypes in simulateGenotypes"
                  , "or decrease number of causal SNPs"))
         }
-		causalSNPs <- genotypes[, sample(1:ncol(genotypes), NrCausalSNPs)]
-	} else if (FALSE) {
-	    
-	} else {
+		causalSNPs <- t(genotypes[sample(1:ncol(genotypes), NrCausalSNPs),])
+	} else if (! is.null( genoFilePrefix)) {
 	    if (grepl("~", genoFilePrefix)) {
 	        stop(paste("genoFilePrefix contains ~: path expansion not", 
 	                   "guaranteed on every platform (see path.expand{base}),",
@@ -291,17 +393,18 @@ getCausalSNPs <- function(NrCausalSNPs=20,  genotypes=NULL, chr=NULL,
                                                    decreasing=FALSE)]
  			causalSNPsChr <- read.table(
  			    text=read_lines(chromosomefile, randomSNPindex, sep="\n"), 
- 			    sep=genoFileDelimiter, row.names=1)
+ 			    sep=delimiter, row.names=1)
 		})
 		
 		causalSNPs <- t(do.call(rbind, causalSNPs))
         N <- nrow(causalSNPs)
         rownames(causalSNPs) <- paste(sampleID, seq(1, N, 1), sep="")
-        
-        if (standardise) {
-            vmessage("Standardise SNPs...", verbose=verbose)
-            causalSNPs <- standardiseGenotypes(causalSNPs)
-        }
+	} else {
+	    stop(paste("No genotype information provided, please specify either", 
+	               "genotypefile to read genotypes from file, or",
+	               "genoFilePrefix and genoFileSuffix to sample lines from",
+	               "file or directly provide [N x S] matrix of [S] genotypes", 
+	               "from [N] samples"))
 	}
 	return(causalSNPs)	
 }
@@ -311,9 +414,7 @@ getCausalSNPs <- function(NrCausalSNPs=20,  genotypes=NULL, chr=NULL,
 #'
 #' Estimate kinship from standardised genotypes or read pre-computed kinship 
 #' file. Standardised genotypes can be obtained via 
-#' \code{\link{standardiseGenotypes}} or directly from the 
-#' \code{\link{simulateGenotypes}} return object. 
-#' Kinship matrices can optionally be normalised.
+#' \code{\link{standardiseGenotypes}}. 
 #'
 #' @param X [NrSamples x totalNrSNPs] matrix of standardised genotypes
 #' @param sampleID prefix [string] for naming samples (followed by sample number 
