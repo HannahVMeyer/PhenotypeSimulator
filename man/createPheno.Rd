@@ -43,7 +43,7 @@ obtained by \code{\link{noiseBgEffects}}}
 
 \item{h2bg}{Proportion [double] of variance of background genetic effects; 
 either h2s or h2b have to be specified and 
-h2s + h2b = genVar}
+h2s + h2b = 1}
 
 \item{noiseVar}{Proportion [double] of total noise variance}
 
