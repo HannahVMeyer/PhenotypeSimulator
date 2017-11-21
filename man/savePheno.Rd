@@ -5,10 +5,9 @@
 \title{Save final phenotype and phenotype components.}
 \usage{
 savePheno(simulatedData, directoryGeno, directoryPheno,
-  sample_subset_vec = NULL, pheno_subset_vec = NULL,
-  sample_subset_string = NULL, pheno_subset_string = NULL,
-  outstring = NULL, saveAsTable = TRUE, saveAsRDS = FALSE,
-  saveAsPlink = FALSE, verbose = TRUE)
+  sample_subset_vec = NULL, pheno_subset_vec = NULL, outstring = NULL,
+  saveAsTable = TRUE, saveAsRDS = FALSE, saveAsPlink = FALSE,
+  verbose = TRUE)
 }
 \arguments{
 \item{simulatedData}{named list of i) dataframe of proportion of variance 
@@ -32,14 +31,6 @@ saves them separately}
 \item{pheno_subset_vec}{optional vector of phenotype subset sizes [integer] 
 if provided, draws subsets of traits out of the total simulated dataset 
 and saves them separately}
-
-\item{sample_subset_string}{optional [string] of comma-separated numbers e.g.
-"50,100,500"; alternative to \code{sample_subset_vec}, typically used when
-run as command line application}
-
-\item{pheno_subset_string}{optional [string] of comma-separated numbers e.g. 
-"10,50,80"; alternative to \code{pheno_subset_vec}, typically used when
- run as command line application}
 
 \item{outstring}{optional name [string] of subdirectory (in relation to 
 directoryPheno/directoryGeno) to save set-up
