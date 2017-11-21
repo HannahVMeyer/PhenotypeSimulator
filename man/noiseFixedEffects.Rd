@@ -8,12 +8,7 @@ noiseFixedEffects(N, P, NrFixedEffects = 1, NrConfounders = 10,
   pIndependentConfounders = 0.4, pTraitIndependentConfounders = 0.2,
   distConfounders = "norm", mConfounders = 0, sdConfounders = 1,
   catConfounders = NULL, probConfounders = NULL, distBeta = "norm",
-  mBeta = 0, sdBeta = 1, NrConfoundersString = NULL,
-  pIndependentConfoundersString = NULL,
-  pTraitIndependentConfoundersString = NULL, distConfoundersString = NULL,
-  mConfoundersString = NULL, sdConfoundersString = NULL,
-  catConfoundersString = NULL, probConfoundersString = NULL,
-  distBetaString = NULL, mBetaString = NULL, sdBetaString = NULL)
+  mBeta = 0, sdBeta = 1)
 }
 \arguments{
 \item{N}{number [integer] of samples to simulate}
@@ -55,59 +50,6 @@ for effect sizes of confounders}
 
 \item{sdBeta}{vector of standard deviation/distance from midpoint [double] 
 of normal/uniform distribution for effect sizes of confounders}
-
-\item{NrConfoundersString}{alternative to NrConfounder, a comma-separated
-[string] with number(s) [integer] of confounders to simulate; typically used 
-when run as command line application}
-
-\item{pIndependentConfoundersString}{alternative to pIndependentConfounders,
-a comma-separated [string] with proportion(s) [double] of noise effects 
-(confounders) to have a trait-independent effect; typically used when run as 
-command line application}
-
-\item{pTraitIndependentConfoundersString}{alternative to 
-pTraitIndependentConfounders,  a comma-separated [string] with proportion(s) 
-[double] of traits influenced by independent fixed noise effects; typically 
-used when run as command line application}
-
-\item{distConfoundersString}{alternative to distConfounders, a comma-
-separated [string] with name(s) [string] of distributions to use to 
-simulate confounders; one of "unif", "norm", "bin", "cat_norm", "cat_unif";
-typically used when run as command line application}
-
-\item{mConfoundersString}{alternative to mConfounders, a comma-
-separated [string] with of mean/midpoint(s) [double] of normal/uniform 
-distribution for confounders; typically used when run as command line 
-application}
-
-\item{sdConfoundersString}{alternative to sdConfounders, a comma-
-separated [string] with standard deviation(s)/distance from 
-midpoint(s) [double] of normal/uniform distribution for confounders; 
-typically used when run as command line application}
-
-\item{catConfoundersString}{alternative to catConfounders, a comma-
-separated [string] with the number of confounder categories [integer]; 
-required if distConfounders "cat_norm" or "cat_unif"; 
-typically used when run as command line application}
-
-\item{probConfoundersString}{alternative to probConfounders, a comma-
-separated [string] with probability(s) [double] of binomial 
-confounders (0/1); required if distConfounders "bin"; typically used
- when run as command line application}
-
-\item{distBetaString}{alternative to distBeta, a comma-separated [string] 
-with name(s) [string] of distribution to use to simulate effect sizes of 
-confounders; one of "unif" or "norm"; typically used when run as command line 
-application}
-
-\item{mBetaString}{alternative to mBeta, a comma- separated [string] with 
-means/midpoints [double] of normal/uniform distribution for effect sizes of 
-confounders; typically used when run as command line application}
-
-\item{sdBetaString}{alternative to sdBeta, a comma- separated [string] with 
-standard deviation/distance from midpoint [double] of normal/uniform 
-distribution for effect sizes of confounders; typically used when run as 
-command line application}
 }
 \value{
 named list of shared fixed noise effects (shared: [N x P] matrix), 
@@ -129,10 +71,7 @@ Confounders can be simulated as categorical variables or following a binomial
 simulated from a uniform or normal distribution. Multiple confounder sets 
 drawn from different distributions/different parameters of the same 
 distribution can be simulated by specifying NrFixedEffects and supplying the 
-respective distribution parameters (*Confounders and *Beta) explained below. 
-If a model parameter and its "String' version are provided, i.e. 
-NrConfounders and NrConfoundersStrings, the "String' specification will be 
-used!
+respective distribution parameters (*Confounders and *Beta) explained below.
 }
 \examples{
 # fixed noise effect with default setting
