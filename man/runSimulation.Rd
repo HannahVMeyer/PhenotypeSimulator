@@ -5,29 +5,21 @@
 \title{Run phenotype simulation.}
 \usage{
 runSimulation(N = 1000, P = 10, tNrSNP = 5000, cNrSNP = 20,
-  NrConfounders = 10, seed = 219453, chr_string = NULL, chr = NULL,
-  NrChrCausal = NULL, genVar = NULL, h2s = NULL, theta = 0.8,
-  h2bg = NULL, eta = 0.8, noiseVar = NULL, rho = NULL, delta = NULL,
-  gamma = 0.8, phi = NULL, alpha = 0.8, sampleID = "ID_",
-  phenoID = "Trait_", genoFilePrefix = NULL, genoFileSuffix = NULL,
-  genoFileDelimiter = ",", kinshipfile = NULL, kinshipHeader = TRUE,
-  kinshipDelimiter = ",", normalise = TRUE, standardise = TRUE,
-  NrFixedEffects = 1, distConfounders = "norm", mConfounders = 0,
-  sdConfounders = 1, catConfounders = NULL, probConfounders = NULL,
-  distBetaConfounders = "norm", mBetaConfounders = 0,
-  sdBetaConfounders = 1, distBetaGenetic = "norm", mBetaGenetic = 0,
-  sdBetaGenetic = 1, pIndependentConfounders = 0.4,
+  NrConfounders = 10, seed = 219453, chr = NULL, NrChrCausal = NULL,
+  genVar = NULL, h2s = NULL, theta = 0.8, h2bg = NULL, eta = 0.8,
+  noiseVar = NULL, rho = NULL, delta = NULL, gamma = 0.8, phi = NULL,
+  alpha = 0.8, sampleID = "ID_", phenoID = "Trait_",
+  genoFilePrefix = NULL, genoFileSuffix = NULL, genoFileDelimiter = ",",
+  kinshipfile = NULL, kinshipHeader = TRUE, kinshipDelimiter = ",",
+  standardise = TRUE, NrFixedEffects = 1, distConfounders = "norm",
+  mConfounders = 0, sdConfounders = 1, catConfounders = NULL,
+  probConfounders = NULL, distBetaConfounders = "norm",
+  mBetaConfounders = 0, sdBetaConfounders = 1, distBetaGenetic = "norm",
+  mBetaGenetic = 0, sdBetaGenetic = 1, pIndependentConfounders = 0.4,
   pTraitIndependentConfounders = 0.2, pcorr = 0.8, meanNoiseBg = 0,
   sdNoiseBg = 1, SNPfrequencies = c(0.1, 0.2, 0.4),
-  SNPfrequencyString = NULL, pIndependentGenetic = 0.4,
-  pTraitIndependentGenetic = 0.2, NrConfoundersString = NULL,
-  pIndependentConfoundersString = NULL,
-  pTraitIndependentConfoundersString = NULL, distConfoundersString = NULL,
-  mConfoundersString = NULL, sdConfoundersString = NULL,
-  catConfoundersString = NULL, probConfoundersString = NULL,
-  distBetaConfoundersString = NULL, mBetaConfoundersString = NULL,
-  sdBetaConfoundersString = NULL, distBetaGeneticString = NULL,
-  mBetaGeneticString = NULL, sdBetaGeneticString = NULL, verbose = TRUE)
+  pIndependentGenetic = 0.4, pTraitIndependentGenetic = 0.2,
+  verbose = TRUE)
 }
 \arguments{
 \item{N}{number [integer] of samples to simulate}
@@ -44,16 +36,13 @@ effects}
 
 \item{seed}{seed [integer] to initiate random number generation}
 
-\item{chr_string}{alternative to chr, a [string] with chromosomes separated 
-by comma; most often used when run as a command line application.}
-
 \item{chr}{numeric vector of chromosomes to chose NrCausalSNPs from; only 
 used when external genotype data is provided i.e. is.null(genoFilePrefix) == 
 FALSE}
 
 \item{NrChrCausal}{Number [integer] of causal chromosomes to  chose 
 NrCausalSNPs from (as opposed to the actual chromosomes to chose from via chr
-'chr_string);  only used when external genotype data is provided i.e. 
+);  only used when external genotype data is provided i.e. 
 is.null(genoFilePrefix) == FALSE.}
 
 \item{genVar}{Proportion [double] of total genetic variance}
@@ -103,10 +92,6 @@ kinshipfile must be provided}
 \item{kinshipHeader}{[boolean], if TRUE kinship file has header information}
 
 \item{kinshipDelimiter}{field separator [string] of kinship file}
-
-\item{normalise}{[boolean], if TRUE kinship matrix will be normalised by the 
-mean of its diagonal elements and 1e-4 added to the diagonal for numerical 
-stability}
 
 \item{standardise}{[boolean], if TRUE standardised genotypes will be returned}
 
@@ -164,81 +149,11 @@ noise bg effects}
 \item{SNPfrequencies}{vector of allele frequencies [double] from which to 
 sample}
 
-\item{SNPfrequencyString}{alternative to a frequencies vector, a [string] 
-with frequencies separated by comma}
-
 \item{pIndependentGenetic}{Proportion [double] of genetic effects (SNPs) to 
 have a trait-independent fixed effect}
 
 \item{pTraitIndependentGenetic}{Proportion [double] of traits influenced by 
 independent fixed genetic effects}
-
-\item{NrConfoundersString}{alternative to NrConfounder, a comma-separated
-[string] with number(s) [integer] of confounders to simulate; typically used 
-when run as command line application}
-
-\item{pIndependentConfoundersString}{alternative to pIndependentConfounders, 
-a comma-separated [string] with proportion(s) [double] of noise effects 
-(confounders) to have a trait-independent effect; typically used when run as 
-command line application}
-
-\item{pTraitIndependentConfoundersString}{alternative to 
-pTraitIndependentConfounders,  a comma-separated [string] with proportion(s) 
-[double] of traits influenced by independent fixed noise effects; typically 
-used when run as command line application}
-
-\item{distConfoundersString}{alternative to distConfounders, a comma-
-separated [string] with name(s) [string] of distributions to use to 
-simulate confounders; one of "unif", "norm", "bin", "cat_norm", "cat_unif";
-typically used when run as command line application}
-
-\item{mConfoundersString}{alternative to mConfounders, a comma-
-separated [string] with of mean/midpoint(s) [double] of normal/uniform 
-distribution for confounders; typically used when run as command line 
-application}
-
-\item{sdConfoundersString}{alternative to sdConfounders, a comma-
-separated [string] with standard deviation(s)/distance from 
-midpoint(s) [double] of normal/uniform distribution for confounders; 
-typically used when run as command line application}
-
-\item{catConfoundersString}{alternative to catConfounders, a comma-
-separated [string] with the number of confounder categories [integer]; 
-required if distConfounders "cat_norm" or "cat_unif"; 
-typically used when run as command line application}
-
-\item{probConfoundersString}{alternative to probConfounders, a comma-
-separated [string] with probability(s) [double] of binomial 
-confounders (0/1); required if distConfounders "bin"; typically used
- when run as command line application}
-
-\item{distBetaConfoundersString}{alternative to distBeta, a comma-separated 
-[string] with name(s) [string] of distribution to use to simulate effect 
-sizes of confounders; one of "unif" or "norm"; typically used when run as 
-command line application}
-
-\item{mBetaConfoundersString}{alternative to mBeta, a comma- separated 
-[string] with means/midpoints [double] of normal/uniform distribution for 
-effect sizes of confounders; typically used when run as command line 
-application}
-
-\item{sdBetaConfoundersString}{alternative to sdBeta, a comma- separated 
-[string] with standard deviation/distance from midpoint [double] of 
-normal/uniform 
-distribution for effect sizes of confounders; typically used when run as 
-command line application}
-
-\item{distBetaGeneticString}{name [string] of distribution to use to simulate 
-effect sizes of SNPs; one of "unif" or "norm"; typically used when run as 
-command line application}
-
-\item{mBetaGeneticString}{mean/midpoint [double] of normal/uniform 
-distribution for effect sizes of SNPs; typically used when run as command 
-line application}
-
-\item{sdBetaGeneticString}{standard deviation/extension from midpoint 
-[double] of normal/uniform distribution for effect sizes of SNPs; typically 
-used when run as command line application}
 
 \item{verbose}{[boolean]; if TRUE, progress info is printed to standard out}
 }
