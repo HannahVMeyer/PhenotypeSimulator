@@ -5,9 +5,9 @@
 \title{Draw random SNPs from genotypes.}
 \usage{
 getCausalSNPs(NrCausalSNPs = 20, genotypes = NULL, chr = NULL,
-  chr_string = NULL, NrChrCausal = NULL, genoFilePrefix = NULL,
-  genoFileSuffix = NULL, genoFileDelimiter = ",", sampleID = "ID_",
-  standardise = FALSE, verbose = TRUE)
+  NrChrCausal = NULL, genotypefile = NULL, format = NULL,
+  genoFilePrefix = NULL, genoFileSuffix = NULL, delimiter = ",",
+  sampleID = "ID_", snpID = "SNP_", verbose = TRUE)
 }
 \arguments{
 \item{NrCausalSNPs}{number [integer] of SNPs to chose at random}
@@ -18,13 +18,17 @@ getCausalSNPs(NrCausalSNPs = 20, genotypes = NULL, chr = NULL,
 used when external genotype data is provided i.e. is.null(genoFilePrefix) 
 == FALSE}
 
-\item{chr_string}{[string] alternative to chr, a string with chromosomes 
-separated by comma; most often used when run as a command line application}
-
 \item{NrChrCausal}{Number [integer] of causal chromosomes to  chose 
 NrCausalSNPs from (as opposed to the actual chromosomes to chose from via chr
-'chr_string);  only used when external genotype data is provided i.e. 
+);  only used when external genotype data is provided i.e. 
 is.null(genoFilePrefix) == FALSE.}
+
+\item{genotypefile}{needed when loading entire genotype set into memory, 
+path/to/genotype file [string] in format specified by \link{format}}
+
+\item{format}{needed when loading entire genotype set into memory, specifies 
+the format of the genotype data; has to be one of  plink, oxgen, genome, 
+bimbam and delim; for details see Details in \link{readStandardGenotypes}}
 
 \item{genoFilePrefix}{full path/to/chromosome-wise-genotype-file-ending-
 before-"chrChromosomeNumber" (no '~' expansion!) [string]}
@@ -33,12 +37,10 @@ before-"chrChromosomeNumber" (no '~' expansion!) [string]}
 .fileformat (e.g. ".csv"); has to be a text format i.e. comma/tab/space
 separated}
 
-\item{genoFileDelimiter}{field separator [string] of genotype file}
+\item{delimiter}{field separator [string] of genotypefile or genoFile}
 
 \item{sampleID}{prefix [string] for naming samples (followed by sample number
 from 1 to NrSamples)}
-
-\item{standardise}{[boolean]; if TRUE standardised genotypes will be returned}
 
 \item{verbose}{[boolean]; if TRUE, progress info is printed to standard out}
 }
@@ -48,6 +50,10 @@ on standardise option) SNPs
 }
 \description{
 Draw random SNPs from either simulated genotypes or external genotype files.
+When drawing from external genotype files, two options are possible: 
+i) reading the entire file into memory or ii) only reading lines of randomly
+chosen SNPs, recommended for large genotype files. See details for more 
+information.
 }
 \details{
 In order to chose SNPs from external genotype files without reading 
@@ -67,17 +73,26 @@ getCausalSNPs generates a vector of chromosomes from which to sample the SNPs
  from the European populations of the the 1000 Genomes project.
 }
 \examples{
+# get causal SNPs from genotypes simulated within PhenotypeSimulator
 geno <- simulateGenotypes(N=10, NrSNP=10)
 causalSNPsFromSimulatedGenoStandardised <- getCausalSNPs(NrCausalSNPs=10,
-genotypes=geno, 
-standardise=TRUE)
+genotypes=geno)
 
+# Get causal SNPs by reading files from external genotype simulation programs
+# for instance simuated via hapgen
+#' genotypefile_hapgen  <- system.file("extdata/genotypes/hapgen/",
+"genotypes_hapgen.controls",
+package = "PhenotypeSimulator") 
+causalSNPsFromFile <- getCausalSNPs(NrCausalSNPs=10, 
+genotypefile=genotypefile_hapgen)
+
+# Get causal SNPs by sampling lines from large SNP files
 genotypeFile <- system.file("extdata/genotypes/",
 "genotypes_chr22.csv",
 package = "PhenotypeSimulator")
 genoFilePrefix <- gsub("chr.*", "", genotypeFile) 
 genoFileSuffix <- ".csv" 
-causalSNPsFromFile <- getCausalSNPs(NrCausalSNPs=10, chr=22, 
+causalSNPsFromLines <- getCausalSNPs(NrCausalSNPs=10, chr=22, 
 genoFilePrefix=genoFilePrefix, 
 genoFileSuffix=genoFileSuffix)
 }
