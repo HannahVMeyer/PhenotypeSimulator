@@ -4,8 +4,8 @@
 \alias{getKinship}
 \title{Get genetic kinship.}
 \usage{
-getKinship(X = NULL, kinshipfile = NULL, sampleID = "ID_", norm = TRUE,
-  standardise = TRUE, sep = ",", header = TRUE, verbose = TRUE)
+getKinship(X = NULL, kinshipfile = NULL, sampleID = "ID_",
+  standardise = FALSE, sep = ",", header = TRUE, verbose = TRUE)
 }
 \arguments{
 \item{X}{[NrSamples x totalNrSNPs] matrix of standardised genotypes}
@@ -15,10 +15,6 @@ kinshipfile must be provided}
 
 \item{sampleID}{prefix [string] for naming samples (followed by sample number 
 from 1 to NrSamples)}
-
-\item{norm}{[boolean], if TRUE kinship matrix will be normalised by the mean 
-of its diagonal elements and 1e-4 added to the diagonal for numerical 
-stability}
 
 \item{standardise}{[boolean], if TRUE genotypes will be standardised before
 kinship estimation}
@@ -35,26 +31,22 @@ kinship estimation}
 \description{
 Estimate kinship from standardised genotypes or read pre-computed kinship 
 file. Standardised genotypes can be obtained via 
-\code{\link{standardiseGenotypes}} or directly from the 
-\code{\link{simulateGenotypes}} return object. 
-Kinship matrices can optionally be normalised.
+\code{\link{standardiseGenotypes}}.
 }
 \details{
 The kinship is estimated as \eqn{K = XX_T}, with X the standardised
 genotypes of the samples. When estimating the kinship from the provided 
-genotypes, the kinship should be normalised by the mean of its diagonal 
-elements and 1e-4 added to the diagonal for numerical stability via norm=TRUE.
-If a kinship file is provided, normalising can optionally be chosen. For the 
-provided kinship file, normalisation has already been done a priori and norm 
-should be set to FALSE. The provided kinship contains estimates for 50 
-samples across the entire genome.
+genotypes, the kinship is normalised by the mean of its diagonal 
+elements and 1e-4 added to the diagonal for numerical stability.
+The provided kinship contains estimates for 50 samples across the entire 
+genome.
 }
 \examples{
 geno <- simulateGenotypes(N=10, NrSNP=50)
-K_fromGenotypesNormalised <- getKinship(geno$X_sd, norm=TRUE)
+K_fromGenotypesNormalised <- getKinship(geno$X_sd)
 
 kinshipfile <- system.file("extdata/kinship", 
 "kinship.csv",
 package = "PhenotypeSimulator")
-K_fromFile <- getKinship(kinshipfile=kinshipfile, norm=FALSE)
+K_fromFile <- getKinship(kinshipfile=kinshipfile)
 }
