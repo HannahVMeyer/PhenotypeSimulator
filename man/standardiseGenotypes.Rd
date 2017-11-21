@@ -18,7 +18,7 @@ snp_standardised = (snp - 2 * minor_allele_freq)/
 sqrt(2 * minor_allele_freq * major_allele_freq)
 }
 \examples{
-geno <- cbind(rbinom(100, 2, 0.3), rbinom(100, 2, 0.4))
+geno <- cbind(rbinom(2000, 2, 0.3), rbinom(2000, 2, 0.4))
 geno_sd <- standardiseGenotypes(geno)
 }
 \references{
