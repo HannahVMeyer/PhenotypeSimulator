@@ -35,7 +35,6 @@ command line, the help function can be called via
 #--directoryPheno=~/tmp/phenotypes \\
 #--sampleSubset=50,70 \\
 #--phenoSubset=5,10 \\
-#--normalise \\
 #--showProgress \\
 #--saveTable \\
 #--savePlink
