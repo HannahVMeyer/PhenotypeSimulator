@@ -125,7 +125,7 @@ simulateDist <- function(x,
 #' @export
 #' @examples
 #' nrSamples <- 10
-#' # Construct genotype probabilty vector (usually obtained from external input)
+#' # Construct genotype probability vector (usually from external input)
 #' # First, assign zero probabilty of AA, Aa and aa for all samples
 #' genotype_prob <- rep(0, 3*nrSamples)
 #' # Second, for each sample draw one of 0,1,2 (corresponding to AA, Aa and aa)
@@ -141,4 +141,31 @@ probGen2expGen <- function(probGeno) {
     probGeno[(multiples + 2)] <- 2 *  probGeno[(multiples + 2)]
     expGeno <- zoo::rollapply(unlist(probGeno), 3, by = 3, sum, 
                               partial = FALSE)
+}
+
+#' Rewrite expected genotypes into genotype probabilities.
+#'
+#' Convert genotype frequencies to genotypes encoded as triplets of probablities 
+#' (p(AA), p(Aa), p(aa)).
+#'
+#' @param geno vector [numeric] with genotypes 
+#' @return numeric vector of length [length(geno)*3] with the genotype encoded 
+#' as probabbilities (p(AA), p(Aa), p(aa)).
+#' @export
+#' @examples
+#' nrSamples <- 10
+#' # Simulate binomial SNP with 0.2 allele frequency
+#' geno <- rbinom(nrSamples, 2, p=0.2)
+#' geno_prob<- expGen2probGen(geno)
+expGen2probGen <- function(geno) {
+    unlist(lapply(geno, function(g) {
+        if (is.na(g)) return( c(NA,NA,NA))
+        else if (g == 0) return( c(1,0,0))
+        else if (g == 1) return( c(0,1,0))
+        else if (g == 2) return( c(0,0,1))
+        else {
+            stop("Genotypes can only be encoded as 0,1,2 or denoted as missing", 
+                "via NA")
+        }
+    }))
 }
