@@ -225,6 +225,396 @@ writeStandardOutput <- function(data, type, directory, outstring,
     return(data_format)
 }
         
+#' Save final phenotype and phenotype components.
+#'
+#' savePheno saves model setup parameters and simulated genotypes to the 
+#' specified directories. Requires a simulatedData list which is the output of 
+#' \link{runSimulation} .
+#'
+#' @param simulatedData named list of i) dataframe of proportion of variance 
+#' explained for each component (varComponents), 
+#' ii) a named list with the simulated phenotype components (phenoComponents), 
+#' iii) a named list of parameters describing the model setup (setup) and iv) 
+#' a named list of raw components (rawComponents) used for genetic effect 
+#' simulation (genotypes and/or kinship); obtained from \link{runSimulation} 
+#' @param directoryGeno absolute path (no tilde expansion) to parent directory 
+#' [string] where genotypes from simulations should be saved [needs user writing 
+#' permission]
+#' @param directoryPheno absolute path (no tilde expansion) to parent directory 
+#' [string] where final phenotype and phenotype components from simulations 
+#' should be saved [needs user writing permission]
+#' @param outstring optional name [string] of subdirectory (in relation to 
+#' directoryPheno/directoryGeno) to save set-up
+#' independent simulation results
+#' @param sample_subset_vec optional vector of sample subset sizes [integer];
+#' if provided, draws subsets of samples out of the total simulated dataset and 
+#' saves them separately 
+#' @param pheno_subset_vec optional vector of phenotype subset sizes [integer] 
+#' if provided, draws subsets of traits out of the total simulated dataset 
+#' and saves them separately 
+#' @param format vector of format names [string] specifying the output format;
+#' multiple output formats can be requested. Options are: plink, bimbam, 
+#' snptest, csv or rds. For information on format see details. In order to 
+#' save intermediate phenotype components, at least one of csv or rds need to 
+#' be specified. plink/bimbam/snptest will only save final phenotype/genotype 
+#' and covariate data.
+#' @param verbose [boolean]; if TRUE, progress info is printed to standard out
+#' @return list of paths [strings] to final output phenotype (directoryPheno) 
+#' and genotype (directoryGeno) directories. If outstring or subset settings not
+#' NULL, these directories will be subdirectories of the input phenotype and 
+#' genotype directories.
+#' @export
+#' @examples
+#' simulatedPhenotype <- runSimulation(N=100, P=5, cNrSNP=10,
+#' genVar=0.2, h2s=1, phi=1)
+#' #not run
+#' #outputdir <- savePheno(simulatedPhenotype, directoryGeno="/path/to/dir/",  
+#' #directoryPheno="/path/to/dir/", outstring="Date_simulation", 
+#' #saveAsPlink=TRUE)
+savePheno <- function(simulatedData, directoryGeno, directoryPheno, 
+                      format=".csv",
+                      sample_subset_vec=NULL, pheno_subset_vec=NULL, 
+                      outstring=NULL,  verbose=TRUE) {
+    if (grepl("~", directoryGeno)) {
+        stop("directoryGeno contains ~: path expansion not guaranteed on 
+             every platform (see path.expand{base}), please provide full file
+             path to the genotype directory")
+    }
+    if (grepl("~", directoryPheno)) {
+        stop("directoryPheno contains ~: path expansion not guaranteed on 
+             every platform (see path.expand{base}), please provide full file
+             path to the phenotype directory")
+    }
+    modelGenetic <- simulatedData$setup$modelGenetic
+    modelNoise <- simulatedData$setup$modelNoise
+    N <- simulatedData$setup$N
+    P <- simulatedData$setup$P
+    sampleID <-  simulatedData$setup$sampleID
+    phenoID <-  simulatedData$setup$phenoID
+    NrSNP <-simulatedData$setup$NrCausalSNPs
+    genVar <- simulatedData$varComponents$genVar
+    rawComponents <-  simulatedData$rawComponents
+    
+    if (! is.null(sample_subset_vec)) {
+        vmessage(c("Create sample subsets:", sample_subset_vec), 
+                 verbose=verbose)
+        if (any(sample_subset_vec > N)) {
+            stop(paste("Sample subset value chosen that is larger than",
+                       "number of simulated samples"))
+        }
+        sample_subset <- sapply(sample_subset_vec, function(s) {
+            tmp <- sample(1:N, s, replace=FALSE)
+            names(tmp) <- paste(sampleID, tmp, sep="")
+            return(tmp)
+        })
+    } else {
+        sample_subset <- list(set=seq(1, N, 1))
+    }
+    
+    if (! is.null(pheno_subset_vec)) {
+        vmessage(c("Create pheno subsets:", pheno_subset_vec), 
+                 verbose=verbose)
+        if (any(pheno_subset_vec > P)) {
+            stop(paste("Phenotype subset value chosen that is larger than",
+                       "number of simulated traits"))
+        }
+        pheno_subset <- sapply(pheno_subset_vec, function(s) {
+            tmp <- sample(1:P, s, replace=FALSE)
+            names(tmp) <- paste(phenoID, tmp, sep="")
+            return(tmp)
+        })
+    } else {
+        pheno_subset <- list(set=seq(1, P, 1))
+    }
+    
+    ### set-up directories
+    if (is.null(outstring)) {
+        outstring=paste("samples", N, "_NrSNP", NrSNP, "_Cg", genVar, "_model", 
+                        modelNoise, modelGenetic, sep="")
+    }
+    
+    directoryGeno <- file.path(directoryGeno, outstring)
+    ifelse(!dir.exists(directoryGeno), 
+           dir.create(directoryGeno, recursive=TRUE), FALSE)
+    
+    directoryPheno <- file.path(directoryPheno, outstring)
+    ifelse(!dir.exists(directoryPheno), 
+           dir.create(directoryPheno, recursive=TRUE), FALSE)
+    
+    vmessage(c("Save simulation results"), verbose=verbose)
+    out <- l_ply(sample_subset, function(ss) {
+        l_ply(pheno_subset, function(sp, ss) {
+            
+            nrsamples <- length(ss)
+            nrpheno <- length(sp)
+            subset_sampleID <- sampleID[ss]
+            
+            if (nrsamples != dim(simulatedData$phenoComponents$Y)[1] ||
+                nrpheno != dim(simulatedData$phenoComponents$Y)[2] ) {
+                outstring=paste("samples", nrsamples, "_traits", 
+                                nrpheno, "_NrSNP", NrSNP, "_Cg", genVar, 
+                                "_model", modelNoise, modelGenetic, sep="")
+                directoryPheno = paste(directoryPheno,"/", "samples", nrsamples, 
+                                       "_NrSNP",NrSNP, "_Cg", genVar, "_model", 
+                                       modelNoise, modelGenetic, sep="")
+                
+                ifelse(!dir.exists(directoryPheno), 
+                       dir.create(directoryPheno, recursive=TRUE), FALSE)
+            }
+            vmessage(c("Save phenotype to ", directoryPheno, "/Y..."), 
+                     verbose=verbose, sep="")
+            subset_Y <- simulatedData$phenoComponents$Y[ss,sp]
+            if ("rds" %in% format) {
+                saveRDS(subset_Y, 
+                        paste(directoryPheno, "/Ysim_", outstring ,".rds", 
+                              sep=""))
+            }
+            if ("plink" %in% format) {
+            }
+            if ("bimbam" %in% format) {
+            }
+            if ("snptest" %in% format) {
+            }
+            if ("csv" %in% format) {
+                write.table(subset_Y, paste(directoryPheno, "/Ysim_", outstring,
+                                            ".csv", sep=""), sep=",", quote=FALSE,
+                            col.names=NA, row.names=TRUE)
+            }
+            
+            if (grepl("Bg", modelGenetic)) {
+                subset_genBg <- simulatedData$phenoComponents$Y_genBg[ss,sp]
+                subset_cov_Y_genBg <- 
+                    simulatedData$phenoComponents$cov_Y_genBg[sp,sp]
+                vmessage(c("Save genetic background to ", directoryPheno, 
+                           "/Y_genBg..."), verbose=verbose, sep="")
+                if ("rds" %in% format) {
+                    saveRDS(subset_genBg, paste(directoryPheno, 
+                                                "/Y_genBg_", outstring,".rds", sep=""))
+                    saveRDS(subset_cov_Y_genBg, paste(directoryPheno, 
+                                                      "/cov_Y_genBg_", outstring,".rds", sep=""))
+                }
+                if ("csv" %in% format) {
+                    write.table(subset_genBg, paste(directoryPheno, 
+                                                    "/Y_genBg_", outstring,".csv", 
+                                                    sep=""),
+                                sep=",",quote=FALSE, col.names=NA, 
+                                row.names=TRUE)
+                    write.table(subset_cov_Y_genBg, 
+                                paste(directoryPheno, "/cov_Y_genBg_", 
+                                      outstring, ".csv", sep=""), sep=",",
+                                quote=FALSE, col.names=FALSE, row.names=FALSE)
+                }
+                if(!is.null(simulatedData$rawComponents$kinship)) {
+                    vmessage(c("Save kinship to", directoryGeno), 
+                             verbose=verbose)
+                    write.table(simulatedData$rawComponents$kinship[ss,ss], 
+                                paste(directoryPheno, "/kinship_", outstring,
+                                      ".csv", sep=""), sep=",",
+                                col.names=TRUE, row.names=FALSE)
+                }
+            }
+            if (grepl("Fixed", modelGenetic)) {
+                subset_genFixed <- 
+                    simulatedData$phenoComponents$Y_genFixed[ss,sp]
+                vmessage(c("Save genetic fixed effects to ", directoryPheno, 
+                           "/Y_genFixed..."), verbose=verbose, sep="")
+                if ("rds" %in% format) {
+                    saveRDS(subset_genFixed, 
+                            paste(directoryPheno, "/Y_genFixed_", outstring,
+                                  ".rds", sep=""))
+                }
+                if ("csv" %in% format) {
+                    write.table(subset_genFixed, 
+                                paste(directoryPheno, "/Y_genFixed_", outstring,
+                                      ".csv", sep=""), sep=",", quote=FALSE, 
+                                col.names=NA, row.names=TRUE)
+                }
+                
+                vmessage(c("Save SNPs and effect sizes to ", directoryGeno, 
+                           "/SNP..."), verbose=verbose, sep="")
+                SNP <- simulatedData$phenoComponents$genFixed$cov[,ss]
+                SNP_effect <- 
+                    simulatedData$phenoComponents$genFixed$cov_effect[sp,]
+                rownames(SNP_effect) <- colnames(subset_Y)
+                if ("rds" %in% format) {
+                    saveRDS(SNP,  
+                            paste(directoryGeno,"/SNP_NrSNP", NrSNP, "_",  
+                                  outstring,".rds",sep=""))
+                    saveRDS(SNP_effect,  
+                            paste(directoryGeno, "/SNP_effects_NrSNP", NrSNP, 
+                                  "_", outstring, ".rds",sep=""))
+                }
+                if ("csv" %in% format) {
+                    write.table(SNP,
+                                paste(directoryGeno, "/SNP_NrSNP", NrSNP, "_",  
+                                      outstring, ".csv",sep=""), sep=",", 
+                                col.names=NA, row.names=TRUE, 
+                                quote=FALSE)
+                    write.table(SNP_effect,  
+                                paste(directoryGeno, "/SNP_effects_NrSNP", 
+                                      NrSNP, "_", outstring, ".csv",sep=""), 
+                                sep=",", col.names=NA, row.names=TRUE, 
+                                quote=FALSE)
+                }
+                
+                if (!is.null(simulatedData$rawComponents$genotypes)) {
+                    vmessage(c("Save genotypes to", directoryGeno), 
+                             verbose=verbose)
+                    N <- nrow(simulatedData$rawComponents$genotypes$X)
+                    geno <- simulatedData$rawComponents$genotypes$X[ss,]
+                    samples <-paste(sampleID, seq(1, N, 1), sep="")
+                    X_id <- data.frame(FID=samples, IID=samples, PAT=rep(0, N), 
+                                       MAT=rep(0, N), SEX=rep(0, N), 
+                                       PHENOTYPE=rep(-9, N))
+                    rownames(X_id) <- samples
+                    if ("csv" %in% format) {
+                        write.table(X_id[ss,], paste(directoryGeno, 
+                                                     "/genotypes_ID_", outstring, ".txt", sep=""), 
+                                    sep="\t", 
+                                    col.names=TRUE, row.names=FALSE, quote=FALSE)
+                        write.table(
+                            t(geno), 
+                            paste(directoryGeno, "/genotypes_", outstring,
+                                  ".csv", sep=""), 
+                            sep=",", col.names=NA, row.names=TRUE, 
+                            quote=FALSE)
+                    }
+                    if ("plink" %in% format) {
+                        plink.out <- write.plink(file.base=paste(directoryGeno, 
+                                                                 "/genotypes_", 
+                                                                 outstring, 
+                                                                 sep=""), 
+                                                 snps=as(geno, "SnpMatrix"), 
+                                                 sex=X_id$SEX[ss], 
+                                                 father=X_id$PAT[ss], 
+                                                 mother=X_id$MAT[ss], 
+                                                 pedigree=X_id$FID[ss], 
+                                                 id=X_id$IID[ss], 
+                                                 phenotype=X_id$PHENOTYPE[ss])
+                    }
+                }
+            }
+            
+            if (grepl("Correlatd", modelNoise)) {
+                subset_correlatedBg <- 
+                    simulatedData$phenoComponents$Y_correlatedBg[ss,sp]
+                vmessage(c("Save correlated background to ", directoryPheno, 
+                           "/Y_correlatedBg..."), verbose=verbose, sep="")
+                if ("rds" %in% format) {
+                    saveRDS(subset_correlatedBg, paste(directoryPheno
+                                                       , "/Y_correlatedBg_", outstring,".rds", 
+                                                       sep=""))
+                }
+                if ("csv" %in% format) {
+                    write.table(subset_correlatedBg,
+                                paste(directoryPheno, 
+                                      "/Y_correlatedBg_",
+                                      outstring, ".csv", sep=""), 
+                                sep=",", quote=FALSE, col.names=NA, 
+                                row.names=TRUE)
+                }
+            }
+            if (grepl("Bg", modelNoise)) {
+                subset_noiseBg <- simulatedData$phenoComponents$Y_noiseBg[ss,sp]
+                subset_cov_Y_noiseBg <- 
+                    simulatedData$phenoComponents$cov_Y_noiseBg[sp,sp]
+                vmessage(c("Save noise background to ", directoryPheno, 
+                           "/Y_noiseBg..."), verbose=verbose, sep="")
+                if ("rds" %in% format) {
+                    saveRDS(subset_noiseBg, paste(directoryPheno, 
+                                                  "/Y_noiseBg_", outstring,".rds", sep=""))
+                    saveRDS(subset_cov_Y_noiseBg, 
+                            paste(directoryPheno, "/cov_Y_noiseBg_", 
+                                  outstring,".rds", sep=""))
+                }
+                if ("csv" %in% format) {
+                    write.table(subset_noiseBg, 
+                                paste(directoryPheno, "/Y_noiseBg_", 
+                                      outstring,".csv", sep=""), sep=",",
+                                quote=FALSE, col.names=NA, 
+                                row.names=TRUE)
+                    write.table(subset_cov_Y_noiseBg, 
+                                paste(directoryPheno, "/cov_Y_noiseBg_",
+                                      outstring,".csv", sep=""), sep=",",
+                                quote=FALSE, col.names=FALSE, 
+                                row.names=FALSE)
+                }
+            }
+            
+            if (grepl("Fixed", modelNoise)) {
+                subset_noiseFixed <- 
+                    simulatedData$phenoComponents$Y_noiseFixed[ss,sp]
+                vmessage(c("Save noise fixed effects to ", directoryPheno, 
+                           "/Y_noiseFixed..."), verbose=verbose, sep="")
+                if ("rds" %in% format) {
+                    saveRDS(subset_noiseFixed, 
+                            paste(directoryPheno, "/Y_noiseFixed_", outstring,
+                                  ".rds", sep=""))
+                }
+                if ("plink" %in% format) {
+                    if (is.null(simulatedData$rawComponents$plink_samples)) {
+                        pheno <- cbind(row.names(subset_noiseFixed), 
+                                       subset_noiseFixed)
+                    } else {
+                        pheno <- 
+                            cbind(simulatedData$rawComponents$plink_samples[,1:2],
+                                  subset_noiseFixed)
+                    }               
+                    colnames(pheno) <- c("FID", "IID", colnames(cov))
+                    write.table(cbind(row.names(subset_noiseFixed), 
+                                      subset_noiseFixed), 
+                                paste(directoryPheno, "/Ysim_", outstring,
+                                      "_plinkcovariates.txt", sep=""), sep="\t", 
+                                quote=FALSE, col.names=FALSE, row.names=TRUE)
+                }
+                if ("csv" %in% format) {
+                    write.table(subset_noiseFixed, 
+                                paste(directoryPheno, "/Y_noiseFixed_", 
+                                      outstring,".csv", sep=""), sep=",", 
+                                quote=FALSE, col.names=NA, row.names=TRUE)
+                }
+                vmessage(c("Save covariates and effect sizes to ", 
+                           directoryPheno, "/Covs..."), verbose=verbose, sep="")
+                cov <- t(simulatedData$phenoComponents$noiseFixed$cov[,ss])
+                rownames(cov) <- rownames(subset_Y)
+                cov_effect <- 
+                    simulatedData$phenoComponents$noiseFixed$cov_effect[sp,]
+                if ("rds" %in% format) {
+                    saveRDS(cov, paste(directoryPheno, "/Covs_", 
+                                       outstring, ".rds", sep=""))
+                    saveRDS(simulatedData$phenoComponents$noiseFixed$cov_effects
+                            , paste(directoryPheno, "/Covs_effect_", outstring,
+                                    ".rds", sep=""))
+                }
+                if ("csv" %in% format) {
+                    write.table(cov, paste(directoryPheno, "/Covs_",
+                                           outstring, ".csv", sep=""), sep=",",
+                                quote=FALSE, col.names=NA, 
+                                row.names=TRUE)
+                    write.table(
+                        simulatedData$phenoComponents$noiseFixed$cov_effects, 
+                        paste(directoryPheno, "/Covs_effect_", outstring,".csv",
+                              sep=""), sep=",", quote=FALSE, col.names=TRUE, 
+                        row.names=FALSE)
+                }
+            }
+            
+            if ("rds" %in% format) {
+                saveRDS(simulatedData$varComponents, 
+                        paste(directoryPheno, "/varComponents_",  outstring,
+                              ".rds", sep=""))
+            }
+            if ("csv" %in% format) {
+                write.table(simulatedData$varComponents, 
+                            paste(directoryPheno, "/varComponents_", outstring,
+                                  ".csv", sep=""), sep=",", quote=FALSE,
+                            col.names=TRUE, row.names=FALSE)
+            }
+        }, ss =ss)
+    })
+    return(list(directoryPheno=directoryPheno, directoryGeno=directoryGeno))
+    }
+
         
         
         
