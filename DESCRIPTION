@@ -27,6 +27,7 @@ Imports:
     plyr,
     mvtnorm,
     snpStats,
+    zoo,
     Rcpp (>= 0.12.11)
 Suggests:
     testthat,
