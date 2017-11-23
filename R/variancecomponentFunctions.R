@@ -76,16 +76,15 @@ geneticFixedEffects <- function(X_causal, P, N=NULL, pIndependentGenetic=0.4,
             snpIDshared <- colnames(X_causal)
         }
 
-        #betaX_shared <- rnorm(NrSharedSNPs) %*% t(rnorm(P))
         betaX_shared <- simulateDist(NrSharedSNPs, dist=distBeta, m=mBeta, 
                                      std=sdBeta) %*% t(simulateDist(P, 
                                                         dist=distBeta,
                                                         m=mBeta, std=sdBeta))
-        cov <- t(data.frame(X_shared))
-        rownames(cov) <- snpIDshared
+        cov <- data.frame(X_shared)
+        colnames(cov) <- snpIDshared
         cov_effect <- data.frame(t(betaX_shared))
         colnames(cov_effect) <- paste(colnames(cov_effect), "_", 
-                                      rownames(cov), sep="")
+                                      colnames(cov), sep="")
         Gshared = X_shared %*% betaX_shared
     }
    
@@ -112,20 +111,20 @@ geneticFixedEffects <- function(X_causal, P, N=NULL, pIndependentGenetic=0.4,
         betaX_independent[,p_nongenetic] <- 
             matrix(rep(0,  length(which(p_nongenetic)) * NrIndependentSNPs), 
                                                 nrow=NrIndependentSNPs)
-        cov <- t(data.frame(X_independent))
-        rownames(cov) <- snpIDindependent
+        cov <- data.frame(X_independent)
+        colnames(cov) <- snpIDindependent
         cov_effect <- data.frame(t(betaX_independent))
         colnames(cov_effect) <- paste(colnames(cov_effect), "_", 
-                                      rownames(cov), sep="")
+                                      colnames(cov), sep="")
         Gindependent = X_independent %*% betaX_independent
     }
     if (NrSharedSNPs != 0 && NrIndependentSNPs != 0) {
-        cov = rbind(t(X_shared), t(X_independent))
-        rownames(cov) <- c( snpIDshared, snpIDindependent)
+        cov = cbind(X_shared, X_independent)
+        colnames(cov) <- c( snpIDshared, snpIDindependent)
         cov_effect = data.frame(betaX_shared=t(betaX_shared), 
                                 betaX_independent=t(betaX_independent))
         colnames(cov_effect) <- paste(colnames(cov_effect), "_", 
-                                      rownames(cov), sep="")
+                                      colnames(cov), sep="")
     }
     
     return(list(shared=Gshared, 
@@ -259,7 +258,7 @@ noiseFixedEffects <- function(N, P, NrFixedEffects=1, NrConfounders=10,
                                          seq(1, NrSharedConfounders, 1), sep="")
             
             Cshared <- shared %*% beta_shared
-            cov <- t(data.frame(shared))
+            cov <- data.frame(shared)
             cov_effect <- data.frame(t(beta_shared))
         } 
         if (NrIndependentConfounders != 0) {
@@ -292,11 +291,11 @@ noiseFixedEffects <- function(N, P, NrFixedEffects=1, NrConfounders=10,
                 nrow=NrIndependentConfounders)
         
             Cindependent <- independent %*% beta_independent
-            cov <- t(data.frame(independent))
+            cov <- data.frame(independent)
             cov_effect <- data.frame(t(beta_independent))
         }
         if (NrSharedConfounders != 0 && NrIndependentConfounders != 0) {
-            cov <- t(data.frame(shared, independent))
+            cov <- data.frame(shared, independent)
             cov_effect <- data.frame(t(beta_shared), t(beta_independent))
         }
         return(list(shared=Cshared, independent=Cindependent, cov=cov, 
@@ -408,7 +407,7 @@ noiseFixedEffects <- function(N, P, NrFixedEffects=1, NrConfounders=10,
         })
         shared <- addNonNulls(lapply(tmp, function(x) x$shared))
         independent <- addNonNulls(lapply(tmp, function(x) x$independent))
-        cov <- do.call(rbind, lapply(tmp, function(x) x$cov))
+        cov <- do.call(cbind, lapply(tmp, function(x) x$cov))
         cov_effect <- do.call(cbind, lapply(tmp, function(x) x$cov_effect))
         return(list(shared=shared, independent=independent, cov=cov, 
                     cov_effect=cov_effect))
