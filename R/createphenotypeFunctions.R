@@ -489,6 +489,9 @@ runSimulation <- function(N=1000, P=10, tNrSNP=5000, cNrSNP=20,
                       pIndependentGenetic=pIndependentGenetic, 
                       pTraitIndependentGenetic=pTraitIndependentGenetic, 
                       v=verbose)
+    
+    id_traits <- paste(phenoID, seq(1, P, 1), sep="")
+    id_samples <- paste(sampleID, seq(1, N, 1), sep="")
 
     ### create simulated phenotypes
     # 1. Simulate genetic terms
@@ -516,8 +519,7 @@ runSimulation <- function(N=1000, P=10, tNrSNP=5000, cNrSNP=20,
                                                sampleID = sampleID, 
                                                snpID = snpID, 
                                                delimiter = genoDelimiter)
-            sampleID <- genotypes$id_samples
-            snpID <- genotypes$id_snps
+            id_samples <- genotypes$id_samples
         } else {
             genotypes <- NULL
         }
@@ -529,6 +531,7 @@ runSimulation <- function(N=1000, P=10, tNrSNP=5000, cNrSNP=20,
                                     delimiter=genoDelimiter, 
                                     sampleID=sampleID, 
                                     verbose=verbose)
+        id_snps <- genotypes$id_snps
         
         vmessage("Simulate genetic fixed effects", verbose=verbose)
         genFixed <- geneticFixedEffects(X_causal=causalSNPs, N=N, P=P, 
@@ -550,8 +553,8 @@ runSimulation <- function(N=1000, P=10, tNrSNP=5000, cNrSNP=20,
         
         Y_genFixed <- addNonNulls(list(genFixed_shared_rescaled, 
                                        genFixed_independent_rescaled))
-        colnames(Y_genFixed) <- paste(phenoID, seq(1, P, 1), sep="")
-        rownames(Y_genFixed) <- paste(sampleID, seq(1, N, 1), sep="")
+        colnames(Y_genFixed) <- id_traits
+        rownames(Y_genFixed) <- id_samples
         
     } else {
         genFixed <- NULL
@@ -569,8 +572,8 @@ runSimulation <- function(N=1000, P=10, tNrSNP=5000, cNrSNP=20,
                                                    sampleID = sampleID, 
                                                    snpID = snpID, 
                                                    delimiter = delimiter)
-                sampleID <- genotypes$id_samples
-                snpID <- genotypes$id_snps
+                id_samples <- genotypes$id_samples
+                id_snps <- genotypes$id_snps
             }
             if (is.null(genotypes)) {
                 genotypes <- simulateGenotypes(N=N, NrSNP=tNrSNP, 
@@ -578,17 +581,17 @@ runSimulation <- function(N=1000, P=10, tNrSNP=5000, cNrSNP=20,
                                                sampleID=sampleID, 
                                                verbose=verbose)
             }
-            genotypes_sd <- standardiseGenotypes(genotypes$genotypes)
-            kinship <- getKinship(X=genotypes_sd, sampleID=sampleID, 
+            kinship <- getKinship(X=genotypes$genotypes, standardise=standardise, 
+                                  sampleID=sampleID, 
                                   verbose=verbose)
         } else {
+            vmessage("Read kinship from file", verbose=verbose)
             kinship <- getKinship(kinshipfile=kinshipfile, sampleID=sampleID, 
                                   sep=kinshipDelimiter, 
                                   header=kinshipHeader, verbose=verbose)
         }
         
-        vmessage("Simulate genetic background effects"
-                 , verbose=verbose)
+        vmessage("Simulate genetic background effects", verbose=verbose)
         genBg <- geneticBgEffects(P=P, kinship=kinship)
         
         var_genBg_shared <- model$eta * model$h2bg * model$genVar
@@ -600,8 +603,8 @@ runSimulation <- function(N=1000, P=10, tNrSNP=5000, cNrSNP=20,
         
         Y_genBg <- addNonNulls(list(genBg_shared_rescaled, 
                                     genBg_independent_rescaled))
-        colnames(Y_genBg) <- paste(phenoID, seq(1, P, 1), sep="")
-        rownames(Y_genBg) <- paste(sampleID, seq(1, N, 1), sep="")
+        colnames(Y_genBg) <- id_traits
+        rownames(Y_genBg) <- id_samples
         
         cov_Y_genBg <- t(Y_genBg) %*% Y_genBg
         cov_Y_genBg <-  cov_Y_genBg/mean(diag(cov_Y_genBg))
@@ -625,8 +628,8 @@ runSimulation <- function(N=1000, P=10, tNrSNP=5000, cNrSNP=20,
                                                  var_noiseCorrelated)
         
         Y_correlatedBg <- correlatedBg_rescaled
-        colnames(Y_correlatedBg) <- paste(phenoID, seq(1, P, 1), sep="")
-        rownames(Y_correlatedBg) <- paste(sampleID, seq(1, N, 1), sep="")
+        colnames(Y_correlatedBg) <- id_traits
+        rownames(Y_correlatedBg) <- id_samples
     } else {
         correlatedBg <- NULL
         var_noiseCorrelated <- 0
@@ -646,8 +649,8 @@ runSimulation <- function(N=1000, P=10, tNrSNP=5000, cNrSNP=20,
         
         Y_noiseBg <- addNonNulls(list(noiseBg_shared_rescaled, 
                                       noiseBg_independent_rescaled))
-        colnames(Y_noiseBg) <- paste(phenoID, seq(1, P, 1), sep="")
-        rownames(Y_noiseBg) <- paste(sampleID, seq(1, N, 1), sep="")
+        colnames(Y_noiseBg) <- id_traits
+        rownames(Y_noiseBg) <- id_samples
         cov_Y_noiseBg <- t(Y_noiseBg) %*% Y_noiseBg
         cov_Y_noiseBg <-  cov_Y_noiseBg/mean(diag(cov_Y_noiseBg))
         diag(cov_Y_noiseBg) <- diag(cov_Y_noiseBg) + 1e-4
@@ -689,16 +692,15 @@ runSimulation <- function(N=1000, P=10, tNrSNP=5000, cNrSNP=20,
         
         Y_noiseFixed <- addNonNulls(list(noiseFixed_shared_rescaled, 
                                          noiseFixed_independent_rescaled))
-        colnames(Y_noiseFixed) <- paste(phenoID, seq(1, P, 1), sep="")
-        rownames(Y_noiseFixed) <- paste(sampleID, seq(1, N, 1), sep="")
+        colnames(Y_noiseFixed) <- id_traits
+        rownames(Y_noiseFixed) <- id_samples
     } else {
         noiseFixed <- NULL
         var_noiseFixed_shared <- 0
         var_noiseFixed_independent <- 0
         Y_noiseFixed <- NULL
     }
-    
-    
+
     
     # 3. Construct final simulated phenotype 
     vmessage("Construct final simulated phenotype"
@@ -708,8 +710,8 @@ runSimulation <- function(N=1000, P=10, tNrSNP=5000, cNrSNP=20,
                        Y_correlatedBg)
     Y <-  addNonNulls(components)
     Y <- scale(Y)
-    colnames(Y) <- paste(phenoID, seq(1, P, 1), sep="")
-    rownames(Y) <- paste(sampleID, seq(1, N, 1), sep="")
+    colnames(Y) <- id_traits
+    rownames(Y) <- id_samples
     
     varComponents <- data.frame(genVar=model$genVar, h2s=model$h2s, 
                                 h2bg=model$h2bg, 
@@ -734,7 +736,7 @@ runSimulation <- function(N=1000, P=10, tNrSNP=5000, cNrSNP=20,
     setup <- list(P=P, N=N, NrCausalSNPs=cNrSNP, 
                   modelGenetic=model$modelGenetic, 
                   modelNoise=model$modelNoise, 
-                  sampleID=sampleID, phenoID=phenoID, snpID=snpID)
+                  id_samples=id_samples, id_traits=id_traits, id_snps=id_snps)
     rawComponents <- list(kinship=kinship, genotypes=genotypes)
 
     return(list(varComponents=varComponents, phenoComponents=phenoComponents, 
