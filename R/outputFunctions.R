@@ -206,7 +206,7 @@ writeStandardOutput <- function(data, type, directory,
         }
         if (type == "geno") {
             if (is.null(standardInput)) {
-                probGen <- apply(data, 1, expGen2probGen)
+                probGen <- t(apply(data, 2, expGen2probGen))
                 data_format <- cbind(id_snps, id_snps, 1:length(id_snps),
                                      rep("A", length(id_snps)),
                                      rep("B", length(id_snps)), probGen)
