@@ -567,10 +567,10 @@ savePheno <- function(simulatedData, directoryGeno, directoryPheno,
                         paste(directoryPheno, "/Covs_", outstring, ".csv", 
                               sep=""), 
                         sep=",", quote=FALSE, col.names=NA, row.names=TRUE)
-            write.table(phenoComponents$noiseFixed$cov_effects, 
+            write.table(phenoComponents$noiseFixed$cov_effect, 
                         paste(directoryPheno, "/Covs_effect_", outstring,".csv",
                               sep=""), 
-                        sep=",", quote=FALSE, col.names=TRUE, row.names=FALSE)
+                        sep=",", quote=FALSE, col.names=NA, row.names=TRUE)
         }
         if ("plink" %in% format) {
             plink_cov <- writeStandardOutput(phenoComponents$noiseFixed$cov, 
