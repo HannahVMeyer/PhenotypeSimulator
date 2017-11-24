@@ -436,11 +436,13 @@ getCausalSNPs <- function(NrCausalSNPs=20,  genotypes=NULL, chr=NULL,
 getKinship <- function(X=NULL, kinshipfile=NULL, sampleID="ID_", 
                        standardise=FALSE, sep=",", header=TRUE, verbose=TRUE) {
     if (!is.null(X)) {
-        if (standardise) {
-            X <- standardiseGenotypes(X)
-        }
         N <- nrow(X)
         NrSNP <- ncol(X)
+        if (standardise) {
+            vmessage(c("Standardising the", NrSNP, "SNPs provided"), 
+                     verbose=verbose)
+            X <- standardiseGenotypes(X)
+        }
         vmessage(c("Estimating kinship from", NrSNP, "SNPs provided"), 
                  verbose=verbose)
         kinship <- tcrossprod(X)
