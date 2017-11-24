@@ -15,7 +15,9 @@
 #' equal to the number of samples in X_causal (rows); if less than  number of 
 #' samples in X_causal, N random rows of X_causal will be drawn; if not 
 #' specified, N assumed to be equal to samples in X_causal
-#' @param P number [integer] of phenotypes to simulate 
+#' @param P number [integer] of phenotypes to simulate
+#' @param phenoID prefix [string] for naming traits (followed by trait number 
+#' from 1 to P)
 #' @param pIndependentGenetic Proportion [double] of genetic effects (SNPs) to
 #'  have an independent fixed effect
 #' @param pTraitIndependentGenetic Proportion [double] of traits influenced by 
@@ -37,7 +39,8 @@
 #' genotypes <- simulateGenotypes(N=100, NrSNP=20, verbose=FALSE)
 #' causalSNPs <- getCausalSNPs(genotypes=genotypes)
 #' geneticFixed <- geneticFixedEffects(X_causal=causalSNPs, P=10, N=100)
-geneticFixedEffects <- function(X_causal, P, N=NULL, pIndependentGenetic=0.4, 
+geneticFixedEffects <- function(X_causal, P, N=NULL, phenoID="Trait_",
+                                pIndependentGenetic=0.4, 
                                 pTraitIndependentGenetic=0.2, 
                                 distBeta="norm", mBeta=0, sdBeta=1, 
                                 verbose=TRUE) {
@@ -85,6 +88,7 @@ geneticFixedEffects <- function(X_causal, P, N=NULL, pIndependentGenetic=0.4,
         cov_effect <- data.frame(t(betaX_shared))
         colnames(cov_effect) <- paste(colnames(cov_effect), "_", 
                                       colnames(cov), sep="")
+        rownames(cov_effect) <- paste(phenoID, 1:P, sep="")
         Gshared = X_shared %*% betaX_shared
     }
    
@@ -116,6 +120,7 @@ geneticFixedEffects <- function(X_causal, P, N=NULL, pIndependentGenetic=0.4,
         cov_effect <- data.frame(t(betaX_independent))
         colnames(cov_effect) <- paste(colnames(cov_effect), "_", 
                                       colnames(cov), sep="")
+        rownames(cov_effect) <- paste(phenoID, 1:P, sep="")
         Gindependent = X_independent %*% betaX_independent
     }
     if (NrSharedSNPs != 0 && NrIndependentSNPs != 0) {
@@ -125,6 +130,7 @@ geneticFixedEffects <- function(X_causal, P, N=NULL, pIndependentGenetic=0.4,
                                 betaX_independent=t(betaX_independent))
         colnames(cov_effect) <- paste(colnames(cov_effect), "_", 
                                       colnames(cov), sep="")
+        rownames(cov_effect) <- paste(phenoID, 1:P, sep="")
     }
     
     return(list(shared=Gshared, 
@@ -150,6 +156,8 @@ geneticFixedEffects <- function(X_causal, P, N=NULL, pIndependentGenetic=0.4,
 #'
 #' @param N number [integer] of samples to simulate
 #' @param P number [integer] of phenotypes to simulate
+#' @param phenoID prefix [string] for naming traits (followed by trait number 
+#' from 1 to P)
 #' @param NrFixedEffects number [integer] of different fixed effects to simulate
 #' ; allows to simulate fixed effects from different distributions or with 
 #'  differen parameters
@@ -207,7 +215,8 @@ geneticFixedEffects <- function(X_causal, P, N=NULL, pIndependentGenetic=0.4,
 #'  noiseFE_binomialandNormalConfounders <- noiseFixedEffects(P=10, N=20, 
 #'  NrFixedEffects=2, NrConfounders=c(2,2), distConfounders=c("bin", "norm"), 
 #'  probConfounders=0.2)
-noiseFixedEffects <- function(N, P, NrFixedEffects=1, NrConfounders=10, 
+noiseFixedEffects <- function(N, P, phenoID="Trait_", NrFixedEffects=1, 
+                              NrConfounders=10, 
                               pIndependentConfounders=0.4, 
                               pTraitIndependentConfounders=0.2, 
                               distConfounders="norm", mConfounders=0, 
@@ -260,6 +269,7 @@ noiseFixedEffects <- function(N, P, NrFixedEffects=1, NrConfounders=10,
             Cshared <- shared %*% beta_shared
             cov <- data.frame(shared)
             cov_effect <- data.frame(t(beta_shared))
+            rownames(cov_effect) <- paste(phenoID, 1:P, sep="")
         } 
         if (NrIndependentConfounders != 0) {
             independent <- matrix(simulateDist(N * NrIndependentConfounders, 
@@ -293,10 +303,12 @@ noiseFixedEffects <- function(N, P, NrFixedEffects=1, NrConfounders=10,
             Cindependent <- independent %*% beta_independent
             cov <- data.frame(independent)
             cov_effect <- data.frame(t(beta_independent))
+            rownames(cov_effect) <- paste(phenoID, 1:P, sep="")
         }
         if (NrSharedConfounders != 0 && NrIndependentConfounders != 0) {
             cov <- data.frame(shared, independent)
             cov_effect <- data.frame(t(beta_shared), t(beta_independent))
+            rownames(cov_effect) <- paste(phenoID, 1:P, sep="")
         }
         return(list(shared=Cshared, independent=Cindependent, cov=cov, 
                     cov_effect=cov_effect))
