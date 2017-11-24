@@ -156,6 +156,8 @@ geneticFixedEffects <- function(X_causal, P, N=NULL, phenoID="Trait_",
 #'
 #' @param N number [integer] of samples to simulate
 #' @param P number [integer] of phenotypes to simulate
+#' @param sampleID prefix [string] for naming samples (followed by sample number
+#' from 1 to N)
 #' @param phenoID prefix [string] for naming traits (followed by trait number 
 #' from 1 to P)
 #' @param NrFixedEffects number [integer] of different fixed effects to simulate
@@ -215,8 +217,8 @@ geneticFixedEffects <- function(X_causal, P, N=NULL, phenoID="Trait_",
 #'  noiseFE_binomialandNormalConfounders <- noiseFixedEffects(P=10, N=20, 
 #'  NrFixedEffects=2, NrConfounders=c(2,2), distConfounders=c("bin", "norm"), 
 #'  probConfounders=0.2)
-noiseFixedEffects <- function(N, P, phenoID="Trait_", NrFixedEffects=1, 
-                              NrConfounders=10, 
+noiseFixedEffects <- function(N, P, sampleID="ID_",phenoID="Trait_", 
+                              NrFixedEffects=1, NrConfounders=10, 
                               pIndependentConfounders=0.4, 
                               pTraitIndependentConfounders=0.2, 
                               distConfounders="norm", mConfounders=0, 
@@ -268,6 +270,7 @@ noiseFixedEffects <- function(N, P, phenoID="Trait_", NrFixedEffects=1,
             
             Cshared <- shared %*% beta_shared
             cov <- data.frame(shared)
+            rownames(cov) <- paste(sampleID, 1:N, sep="")
             cov_effect <- data.frame(t(beta_shared))
             rownames(cov_effect) <- paste(phenoID, 1:P, sep="")
         } 
@@ -302,11 +305,13 @@ noiseFixedEffects <- function(N, P, phenoID="Trait_", NrFixedEffects=1,
         
             Cindependent <- independent %*% beta_independent
             cov <- data.frame(independent)
+            rownames(cov) <- paste(sampleID, 1:N, sep="")
             cov_effect <- data.frame(t(beta_independent))
             rownames(cov_effect) <- paste(phenoID, 1:P, sep="")
         }
         if (NrSharedConfounders != 0 && NrIndependentConfounders != 0) {
             cov <- data.frame(shared, independent)
+            rownames(cov) <- paste(sampleID, 1:N, sep="")
             cov_effect <- data.frame(t(beta_shared), t(beta_independent))
             rownames(cov_effect) <- paste(phenoID, 1:P, sep="")
         }
