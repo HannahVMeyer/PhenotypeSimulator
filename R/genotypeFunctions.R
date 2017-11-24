@@ -242,9 +242,9 @@ readStandardGenotypes <- function(filename, format = c("plink", "oxgen",
         data <- data.table::fread(filename, skip="Samples:", data.table=FALSE, 
                                 sep=" ", colClasses="character")
         N <- nrow(data)
-        genotypes <- matrix(unlist(strsplit(data$V2, split="")), nrow=N, 
-                            byrow=TRUE)
-        id_samples <- paste(sampleID, N, "_", data$V1, sep="")
+        genotypes <- matrix(as.numeric(unlist(strsplit(data$V2, split=""))), 
+                            nrow=N, byrow=TRUE)
+        id_samples <- paste(sampleID, 1:N, "_", gsub(":", "", data$V1), sep="")
         id_snps <- paste(snpID, 0:(ncol(genotypes) -1), sep="")
         format_files = NULL
     } else if (format == "delim") {
