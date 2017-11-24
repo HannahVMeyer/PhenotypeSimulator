@@ -212,7 +212,7 @@ readStandardGenotypes <- function(filename, format = c("plink", "oxgen",
     }
     if (format == "plink") {
         data <- snpStats::read.plink(bed=filename)
-        genotypes <- as(data, 'matrix')
+        genotypes <- as(data$genotypes, 'numeric')
         id_samples <- rownames(genotypes)
         id_snps <- colnames(genotypes)
         format_files <- list(plink_fam = data$fam, plink_map = data$map)
@@ -220,12 +220,14 @@ readStandardGenotypes <- function(filename, format = c("plink", "oxgen",
         genotypes_raw <- data.table::fread(paste(filename, ".txt", sep=""), 
                                            data.table=FALSE, sep=delimiter)
         genotypes <- t(genotypes_raw[, -c(1:3)])
+        bimbam_snp_info <- genotypes_raw[, c(1:3)]
         bimbam_snp_postion <- data.table::fread(paste(filename, ".position.txt",
                                                       sep=""), 
                                                 data.table=FALSE, sep=delimiter)
         id_samples <- paste(sampleID, nrow(genotypes), sep="")
         id_snps <- genotypes_raw[,1]
-        format_files <- list(bimbam_snp_postion = bimbam_snp_postion)
+        format_files <- list(bimbam_snp_postion = bimbam_snp_postion,
+                             bimbam_snp_info = bimbam_snp_info)
     } else if (format == "oxgen") {
         genotypes_raw <- data.table::fread(paste(filename, ".gen", sep=""), 
                                        data.table=FALSE)
@@ -234,7 +236,8 @@ readStandardGenotypes <- function(filename, format = c("plink", "oxgen",
                                      data.table=FALSE)
         id_samples <- samples$ID_1[-1]
         id_snps <- genotypes_raw$V1
-        format_files <- list(oxgen_samples = samples)
+        format_files <- list(oxgen_samples = samples, 
+                             oxgen_genotypes=genotypes_raw)
     } else if (format == "genome") {
         data <- data.table::fread(filename, skip="Samples:", data.table=FALSE, 
                                 sep=" ", colClasses="character")
@@ -326,8 +329,7 @@ readStandardGenotypes <- function(filename, format = c("plink", "oxgen",
 getCausalSNPs <- function(NrCausalSNPs=20,  genotypes=NULL, chr=NULL, 
                           NrChrCausal=NULL, genoFilePrefix=NULL, 
                           genoFileSuffix=NULL, 
-                          delimiter=",", 
-                          sampleID="ID_", snpID = "SNP_", verbose=TRUE) {
+                          delimiter=",", sampleID="ID_", verbose=TRUE) {
 	if (! is.null(genotypes)) {
         if ( ncol(genotypes) < NrCausalSNPs) {
             stop(paste("Number of genotypes is less than number of causal SNPs." 
