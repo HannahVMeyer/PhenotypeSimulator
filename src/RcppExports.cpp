@@ -7,7 +7,7 @@ using namespace Rcpp;
 
 // read_lines
 Rcpp::CharacterVector read_lines(std::string const& filename, Rcpp::NumericVector const& lines, char sep);
-RcppExport SEXP PhenotypeSimulator_read_lines(SEXP filenameSEXP, SEXP linesSEXP, SEXP sepSEXP) {
+RcppExport SEXP _PhenotypeSimulator_read_lines(SEXP filenameSEXP, SEXP linesSEXP, SEXP sepSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -20,7 +20,7 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"PhenotypeSimulator_read_lines", (DL_FUNC) &PhenotypeSimulator_read_lines, 3},
+    {"_PhenotypeSimulator_read_lines", (DL_FUNC) &_PhenotypeSimulator_read_lines, 3},
     {NULL, NULL, 0}
 };
 
