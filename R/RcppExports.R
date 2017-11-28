@@ -7,6 +7,6 @@
 #' @param lines vector of line numbers [integer] to be read
 #' @param sep [string] end-of-line delimiter
 read_lines <- function(filename, lines, sep = '\n') {
-    .Call(PhenotypeSimulator_read_lines, filename, lines, sep)
+    .Call(`_PhenotypeSimulator_read_lines`, filename, lines, sep)
 }
 
