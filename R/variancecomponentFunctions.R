@@ -37,7 +37,7 @@
 #' @export
 #' @examples
 #' genotypes <- simulateGenotypes(N=100, NrSNP=20, verbose=FALSE)
-#' causalSNPs <- getCausalSNPs(genotypes=genotypes)
+#' causalSNPs <- getCausalSNPs(genotypes=genotypes$genotypes)
 #' geneticFixed <- geneticFixedEffects(X_causal=causalSNPs, P=10, N=100)
 geneticFixedEffects <- function(X_causal, P, N=NULL, phenoID="Trait_",
                                 pIndependentGenetic=0.4, 
@@ -463,7 +463,7 @@ noiseFixedEffects <- function(N, P, sampleID="ID_",phenoID="Trait_",
 #' @export
 #' @examples
 #' genotypes <- simulateGenotypes(N=100, NrSNP=400, verbose=FALSE)
-#' kinship <- getKinship(genotypes$X_sd, verbose=FALSE)
+#' kinship <- getKinship(genotypes$genotypes, standardise=TRUE, verbose=FALSE)
 #' geneticBg <- geneticBgEffects(P=10, kinship=kinship)
 geneticBgEffects <- function(P, kinship) {
     N <- ncol(kinship)
