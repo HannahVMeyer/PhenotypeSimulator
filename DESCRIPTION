@@ -28,6 +28,7 @@ Imports:
     mvtnorm,
     snpStats,
     zoo,
+    data.table,
     Rcpp (>= 0.12.11)
 Suggests:
     testthat,
