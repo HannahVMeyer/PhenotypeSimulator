@@ -112,7 +112,7 @@ writeStandardOutput <- function(directory,
             } else {
                 pheno_format <- cbind(standardInput_samples[,1:2], phenotypes)
             }
-            write.table(pheno_format, paste(directory, "/Ysim_", outstring,
+            write.table(pheno_format, paste(directory, "/Ysim", outstring,
                                      "_plink.txt", sep=""), 
                         sep="\t", quote=FALSE, col.names=FALSE, row.names=TRUE)
         }
@@ -129,7 +129,7 @@ writeStandardOutput <- function(directory,
                                     "PHENOTYPE")
             }
             plink.out <- snpStats::write.plink(file.base=paste(directory,
-                                                               "/genotypes_", 
+                                                               "/genotypes", 
                                                                outstring, 
                                                                sep=""), 
                                          snps=as(genotypes, "SnpMatrix"), 
@@ -147,14 +147,14 @@ writeStandardOutput <- function(directory,
                 covs_format <- cbind(standardInput_samples[,1:2], covariates)
             }
             colnames(covs_format) <- c("FID", "IID", colnames(covariates))
-            write.table(covs_format, paste(directory, "/Covs_", outstring,
+            write.table(covs_format, paste(directory, "/Covs", outstring,
                                            "_plink.txt", sep=""), 
                         sep="\t", quote=FALSE, col.names=TRUE, row.names=FALSE)
         }
     }
     if (format == "bimbam") {
         if (!is.null(phenotypes)) {
-            write.table(phenotypes, paste(directory, "/Ysim_", outstring, 
+            write.table(phenotypes, paste(directory, "/Ysim", outstring, 
                                 "_bimbam.txt", sep=""), sep="\t", 
                         quote=FALSE, col.names=FALSE, row.names=FALSE)
         }
@@ -165,7 +165,7 @@ writeStandardOutput <- function(directory,
             } else {
                 geno_format <- standardInput_genotypes
             }
-            write.table(geno_format, paste(directory, "/genotypes_", outstring, 
+            write.table(geno_format, paste(directory, "/genotypes", outstring, 
                                            ".bimbam", sep=""),
                         sep=",", col.names=FALSE, row.names=FALSE, quote=FALSE)
         }
@@ -173,7 +173,7 @@ writeStandardOutput <- function(directory,
     }
     if (format == "gemma") {
         if (!is.null(phenotypes)) {
-            write.table(phenotypes, paste(directory, "/Ysim_", outstring, 
+            write.table(phenotypes, paste(directory, "/Ysim", outstring, 
                                     "_gemma.txt", sep=""), sep="\t", 
                         quote=FALSE, col.names=FALSE, row.names=FALSE)
         }
@@ -184,13 +184,13 @@ writeStandardOutput <- function(directory,
             } else {
                 geno_format <- standardInput_genotypes
             }
-            write.table(geno_format, paste(directory, "/genotypes_", outstring, 
+            write.table(geno_format, paste(directory, "/genotypes", outstring, 
                                            ".gemma", sep=""),
                         sep=",", col.names=FALSE, row.names=FALSE, quote=FALSE)
             
         }
         if (!is.null(kinship)) {
-            write.table(kinship, paste(directory, "/Kinship_", outstring,
+            write.table(kinship, paste(directory, "/Kinship", outstring,
                                     "_gemma.txt", sep=""), sep="\t", 
                         quote=FALSE, col.names=FALSE, row.names=FALSE)
         }
@@ -198,7 +198,7 @@ writeStandardOutput <- function(directory,
             if (intercept_gemma) {
                 covariates <- cbind(rep(1, length(id_samples)), covariates)
             }
-            write.table(covariates, paste(directory, "/Covs_", outstring,
+            write.table(covariates, paste(directory, "/Covs", outstring,
                                     "_gemma.txt", sep=""), sep="\t", 
                         quote=FALSE, col.names=FALSE, row.names=FALSE)
         }
@@ -220,7 +220,7 @@ writeStandardOutput <- function(directory,
             }
             rownames(pheno_format) <- 1:(length(id_samples) + 1)
             if (is.null(covariates)) {
-                write.table(pheno_format, paste(directory, "/Ysim_", outstring, 
+                write.table(pheno_format, paste(directory, "/Ysim", outstring, 
                                             "_snptest.samples", 
                                             sep=""), 
                         sep=" ", quote=FALSE, col.names=TRUE, row.names=FALSE)
@@ -235,7 +235,7 @@ writeStandardOutput <- function(directory,
             } else {
                 geno_format <- standardInput_genotypes
             }
-            write.table(geno_format, paste(directory, "/genotypes_", outstring, 
+            write.table(geno_format, paste(directory, "/genotypes", outstring, 
                                            ".snptest", sep=""),
                         col.names=FALSE, row.names=FALSE, quote=FALSE)
         }
@@ -247,7 +247,7 @@ writeStandardOutput <- function(directory,
             ids <- pheno_format[, 1:3]
             pheno <- pheno_format[, -c(1:3)]
             covs_format <- cbind(ids, covs, pheno, make.row.names=FALSE)
-            write.table(covs_format, paste(directory, "/Ysim_", outstring, 
+            write.table(covs_format, paste(directory, "/Ysim", outstring, 
                                            "_snptest.samples", sep=""),
                         col.names=TRUE, row.names=FALSE, quote=FALSE)
         }
@@ -340,13 +340,16 @@ savePheno <- function(simulatedData, directoryGeno, directoryPheno,
     vmessage(c("Save phenotype to ", directoryPheno, "/Y..."), verbose=verbose, 
              sep="")
 
+    if (outstring != "") {
+        outstring <- paste("_", outstring, sep="")
+    }
     if ("rds" %in% format) {
         saveRDS(phenoComponents$Y, 
-                paste(directoryPheno, "/Ysim_", outstring ,".rds", sep=""))
+                paste(directoryPheno, "/Ysim", outstring ,".rds", sep=""))
     }
     if ("csv" %in% format) {
         write.table(phenoComponents$Y, 
-                    paste(directoryPheno, "/Ysim_", outstring, ".csv", sep=""), 
+                    paste(directoryPheno, "/Ysim", outstring, ".csv", sep=""), 
                     sep=",", quote=FALSE, col.names=NA, row.names=TRUE)
     }
     if ("plink" %in% format) {
@@ -409,29 +412,29 @@ savePheno <- function(simulatedData, directoryGeno, directoryPheno,
                    "/Y_genBg..."), verbose=verbose, sep="")
         if ("rds" %in% format) {
             saveRDS(phenoComponents$Y_genBg, 
-                    paste(directoryPheno, "/Y_genBg_", outstring,".rds",sep=""))
+                    paste(directoryPheno, "/Y_genBg", outstring,".rds",sep=""))
             saveRDS(phenoComponents$cov_Y_genBg, 
-                    paste(directoryPheno, "/cov_Y_genBg_", outstring,".rds", 
+                    paste(directoryPheno, "/cov_Y_genBg", outstring,".rds", 
                           sep=""))
         }
         if ("csv" %in% format) {
             write.table(phenoComponents$Y_genBg, 
-                        paste(directoryPheno, "/Y_genBg_", outstring,".csv", 
+                        paste(directoryPheno, "/Y_genBg", outstring,".csv", 
                               sep=""),
                         sep=",",quote=FALSE, col.names=NA, row.names=TRUE)
             write.table(phenoComponents$cov_Y_genBg, 
-                        paste(directoryPheno, "/cov_Y_genBg_", outstring,".csv", 
+                        paste(directoryPheno, "/cov_Y_genBg", outstring,".csv", 
                               sep=""), 
                         sep=",", quote=FALSE, col.names=FALSE, row.names=FALSE)
         }
         vmessage(c("Save kinship to", directoryGeno), verbose=verbose)
         if ("rds" %in% format) {
             saveRDS(rawComponents$kinship, 
-                    paste(directoryPheno, "/kinship_",outstring,".csv", sep="")) 
+                    paste(directoryPheno, "/kinship",outstring,".csv", sep="")) 
         }
         if ("csv" %in% format) {
             write.table(rawComponents$kinship, 
-                        paste(directoryPheno, "/kinship_",outstring,".csv", 
+                        paste(directoryPheno, "/kinship",outstring,".csv", 
                               sep=""), 
                         sep=",", col.names=TRUE, row.names=FALSE)
         }
@@ -442,12 +445,12 @@ savePheno <- function(simulatedData, directoryGeno, directoryPheno,
                    "/Y_genFixed..."), verbose=verbose, sep="")
         if ("rds" %in% format) {
             saveRDS(phenoComponents$Y_genFixed, 
-                    paste(directoryPheno, "/Y_genFixed_", outstring, ".rds", 
+                    paste(directoryPheno, "/Y_genFixed", outstring, ".rds", 
                           sep=""))
         }
         if ("csv" %in% format) {
             write.table(phenoComponents$Y_genFixed, 
-                        paste(directoryPheno, "/Y_genFixed_", outstring, ".csv", 
+                        paste(directoryPheno, "/Y_genFixed", outstring, ".csv", 
                               sep=""), 
                         sep=",", quote=FALSE, col.names=NA, row.names=TRUE)
         }
@@ -456,19 +459,19 @@ savePheno <- function(simulatedData, directoryGeno, directoryPheno,
                    "/SNP..."), verbose=verbose, sep="")
         if ("rds" %in% format) {
             saveRDS(phenoComponents$genFixed$cov,  
-                    paste(directoryGeno,"/SNP_NrSNP", NrSNP, "_", outstring,
+                    paste(directoryGeno,"/SNP_NrSNP", NrSNP, outstring,
                           ".rds",sep=""))
             saveRDS(phenoComponents$genFixed$cov_effect,  
-                    paste(directoryGeno, "/SNP_effects_NrSNP", NrSNP, "_", 
+                    paste(directoryGeno, "/SNP_effects_NrSNP", NrSNP, 
                           outstring, ".rds",sep=""))
         }
         if ("csv" %in% format) {
             write.table(phenoComponents$genFixed$cov,
-                        paste(directoryGeno, "/SNP_NrSNP", NrSNP, "_",  
+                        paste(directoryGeno, "/SNP_NrSNP", NrSNP,  
                               outstring, ".csv",sep=""), 
                         sep=",", col.names=NA, row.names=TRUE, quote=FALSE)
             write.table(phenoComponents$genFixed$cov_effect,  
-                        paste(directoryGeno, "/SNP_effects_NrSNP", NrSNP, "_", 
+                        paste(directoryGeno, "/SNP_effects_NrSNP", NrSNP, 
                               outstring, ".csv",sep=""), 
                         sep=",", col.names=NA, row.names=TRUE, quote=FALSE)
         }
@@ -477,12 +480,12 @@ savePheno <- function(simulatedData, directoryGeno, directoryPheno,
         vmessage(c("Save genotypes to", directoryGeno), verbose=verbose)
         if ("csv" %in% format) {
             write.table(t(rawComponents$genotypes$genotypes), 
-                paste(directoryGeno, "/genotypes_", outstring, ".csv", sep=""), 
+                paste(directoryGeno, "/genotypes", outstring, ".csv", sep=""), 
                 sep=",", col.names=NA, row.names=TRUE, quote=FALSE)
         }
         if ("rds" %in% format) {
             saveRDS(t(rawComponents$genotypes$genotypes), 
-                    paste(directoryGeno, "/genotypes_", outstring, ".rds", 
+                    paste(directoryGeno, "/genotypes", outstring, ".rds", 
                           sep=""))
         }
     }
@@ -492,12 +495,12 @@ savePheno <- function(simulatedData, directoryGeno, directoryPheno,
                    "/Y_correlatedBg..."), verbose=verbose, sep="")
         if ("rds" %in% format) {
             saveRDS(phenoComponents$Y_correlatedBg, 
-                    paste(directoryPheno, "/Y_correlatedBg_", outstring,".rds", 
+                    paste(directoryPheno, "/Y_correlatedBg", outstring,".rds", 
                           sep=""))
         }
         if ("csv" %in% format) {
             write.table(phenoComponents$Y_correlatedBg,
-                        paste(directoryPheno, "/Y_correlatedBg_", outstring, 
+                        paste(directoryPheno, "/Y_correlatedBg", outstring, 
                               ".csv", sep=""), 
                         sep=",", quote=FALSE, col.names=NA, row.names=TRUE)
         }
@@ -507,19 +510,19 @@ savePheno <- function(simulatedData, directoryGeno, directoryPheno,
                    ), verbose=verbose, sep="")
         if ("rds" %in% format) {
             saveRDS(phenoComponents$Y_noiseBg, 
-                    paste(directoryPheno, "/Y_noiseBg_", outstring,".rds", 
+                    paste(directoryPheno, "/Y_noiseBg", outstring,".rds", 
                           sep=""))
             saveRDS(phenoComponents$cov_Y_noiseBg, 
-                    paste(directoryPheno, "/cov_Y_noiseBg_", outstring,".rds", 
+                    paste(directoryPheno, "/cov_Y_noiseBg", outstring,".rds", 
                           sep=""))
         }
         if ("csv" %in% format) {
             write.table(phenoComponents$Y_noiseBg, 
-                        paste(directoryPheno, "/Y_noiseBg_", outstring,".csv", 
+                        paste(directoryPheno, "/Y_noiseBg", outstring,".csv", 
                               sep=""), sep=",",
                         quote=FALSE, col.names=NA, row.names=TRUE)
             write.table(phenoComponents$cov_Y_noiseBg, 
-                        paste(directoryPheno, "/cov_Y_noiseBg_",
+                        paste(directoryPheno, "/cov_Y_noiseBg",
                               outstring,".csv", sep=""), sep=",",
                         quote=FALSE, col.names=FALSE, row.names=FALSE)
         }
@@ -530,12 +533,12 @@ savePheno <- function(simulatedData, directoryGeno, directoryPheno,
                    "/Y_noiseFixed..."), verbose=verbose, sep="")
         if ("rds" %in% format) {
             saveRDS(phenoComponents$Y_noiseFixed, 
-                    paste(directoryPheno, "/Y_noiseFixed_", outstring, ".rds", 
+                    paste(directoryPheno, "/Y_noiseFixed", outstring, ".rds", 
                           sep=""))
         }
         if ("csv" %in% format) {
             write.table(phenoComponents$Y_noiseFixed, 
-                        paste(directoryPheno, "/Y_noiseFixed_", outstring,
+                        paste(directoryPheno, "/Y_noiseFixed", outstring,
                               ".csv", sep=""), 
                         sep=",", quote=FALSE, col.names=NA, row.names=TRUE)
         }
@@ -544,30 +547,30 @@ savePheno <- function(simulatedData, directoryGeno, directoryPheno,
                    directoryPheno, "/Covs..."), verbose=verbose, sep="")
         if ("rds" %in% format) {
             saveRDS(phenoComponents$noiseFixed$cov,
-                    paste(directoryPheno, "/Covs_", outstring, ".rds", sep=""))
+                    paste(directoryPheno, "/Covs", outstring, ".rds", sep=""))
             saveRDS(phenoComponents$noiseFixed$cov_effects,
-                    paste(directoryPheno, "/Covs_effect_", outstring, ".rds", 
+                    paste(directoryPheno, "/Covs_effect", outstring, ".rds", 
                           sep=""))
         }
         if ("csv" %in% format) {
             write.table(phenoComponents$noiseFixed$cov, 
-                        paste(directoryPheno, "/Covs_", outstring, ".csv", 
+                        paste(directoryPheno, "/Covs", outstring, ".csv", 
                               sep=""), 
                         sep=",", quote=FALSE, col.names=NA, row.names=TRUE)
             write.table(phenoComponents$noiseFixed$cov_effect, 
-                        paste(directoryPheno, "/Covs_effect_", outstring,".csv",
+                        paste(directoryPheno, "/Covs_effect", outstring,".csv",
                               sep=""), 
                         sep=",", quote=FALSE, col.names=NA, row.names=TRUE)
         }
     }
     if ("rds" %in% format) {
         saveRDS(simulatedData$varComponents, 
-                paste(directoryPheno, "/varComponents_",  outstring, ".rds", 
+                paste(directoryPheno, "/varComponents",  outstring, ".rds", 
                       sep=""))
     }
     if ("csv" %in% format) {
         write.table(simulatedData$varComponents, 
-                    paste(directoryPheno, "/varComponents_", outstring, ".csv",
+                    paste(directoryPheno, "/varComponents", outstring, ".csv",
                           sep=""), 
                     sep=",", quote=FALSE, col.names=TRUE, row.names=FALSE)
     }
