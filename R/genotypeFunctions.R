@@ -2,7 +2,7 @@
 #'
 #' @param snp [N x 1] vector of length N samples with genotypes of single SNP 
 #' encoded as 0,1 and 2
-#' @return vector with minor and major allele frequency
+#' @return vector with ref (0-encoded) and alt (1-encoded) allele frequency
 #' @export
 #' @examples
 #' # create snp vector with minor allele frequency 0.3
@@ -22,18 +22,15 @@ getAlleleFrequencies <- function(snp) {
         stop ("SNP vector contains alleles not encoded as 0, 1 or 2")
     }
     p <- (2*pp +  pq2)/(2*length(snp))
-    if ( p < 0.5) {
-        return(c(1-p, p))
-    } else {
-        return(c(p, 1-p))
-    }
+    return(c(p, 1-p))
 }
+
 
 #' Standardise genotypes 
 #'
 #' Genotypes are standardised as described in Yang et al:
-#' snp_standardised = (snp - 2 * minor_allele_freq)/
-#' sqrt(2 * minor_allele_freq * major_allele_freq)
+#' snp_standardised = (snp - 2 * ref_allele_freq)/
+#' sqrt(2 * ref_allele_freq * alt_allele_freq)
 #'
 #' @param geno [N x NrSNP] matrix/dataframe of genotypes
 #' @return [N x NrSNP] matrix of standardised genotypes
@@ -42,7 +39,7 @@ getAlleleFrequencies <- function(snp) {
 #' @references Yang, J., Lee, S.H., Goddard, M.E., Visscher, P.M. (2011) GCTA: 
 #' a tool for genome-wide complex trait analysis, AJHG: 88
 #' @examples
-#' geno <- cbind(rbinom(2000, 2, 0.3), rbinom(2000, 2, 0.4))
+#' geno <- cbind(rbinom(2000, 2, 0.3), rbinom(2000, 2, 0.4),rbinom(2000, 2, 0.5))
 #' geno_sd <- standardiseGenotypes(geno)
 standardiseGenotypes <- function(geno) {
     allele_freq <-  sapply(data.frame(geno),  getAlleleFrequencies)
@@ -70,7 +67,7 @@ standardiseGenotypes <- function(geno) {
 #' @examples
 #' N10NrSNP10 <- simulateGenotypes(N=10, NrSNP=10)
 #' N10NrSNP10 <- simulateGenotypes(N=10, NrSNP=10,
-#' frequency="0.2,0.3,0.4")
+#' frequencies=c(0.2,0.3,0.4))
 simulateGenotypes <- function(N, NrSNP=5000, frequencies=c(0.1, 0.2, 0.4), 
                               sampleID="ID_", snpID="SNP_", verbose=TRUE) {
     if (any(frequencies < 0) || any(frequencies > 1)) {
@@ -98,7 +95,8 @@ simulateGenotypes <- function(N, NrSNP=5000, frequencies=c(0.1, 0.2, 0.4),
 #' @param filename path/to/genotypefile [string] in plink, oxgen 
 #' (impute2/snptest/hapgen2), genome, bimbam or [delimiter]-delimited format (
 #' for format information see \emph{External genotype software and formats}).
-#' @param format name [string] of genotype file format
+#' @param format name [string] of genotype file format. Options are: "plink", 
+#' "oxgen", "genome", "bimbam" or "delim"
 #' @param sampleID prefix [string] for naming samples (followed by sample number 
 #' from 1 to NrSamples)
 #' @param snpID prefix [string] for naming SNPs (followed by SNP number 
@@ -194,17 +192,15 @@ simulateGenotypes <- function(N, NrSNP=5000, frequencies=c(0.1, 0.2, 0.4),
 #' filename_hapgen  <- system.file("extdata/genotypes/hapgen/",
 #' "genotypes_hapgen.controls",
 #' package = "PhenotypeSimulator") 
-#' data_hapgen <- readStandardGenotypes(filename_hapgen)
+#' data_hapgen <- readStandardGenotypes(filename_hapgen, format='oxgen')
 #' 
 #' filename_plink  <- system.file("extdata/genotypes/plink/",
 #' "genotypes_plink",
 #' package = "PhenotypeSimulator") 
-#' data_plink <- readStandardGenotypes(filename_hapgen)
-readStandardGenotypes <- function(filename, format = c("plink", "oxgen", 
-                                                       "genome", "bimbam",
-                                                       "delim"),
+#' data_plink <- readStandardGenotypes(filename_hapgen, format="plink")
+readStandardGenotypes <- function(filename, format = NULL,
                                   verbose=TRUE, sampleID = "ID_", 
-                                  snpID = "SNP_", delimiter = ",", ...) {
+                                  snpID = "SNP_", delimiter = ",") {
     if (is.null(format)) {
         stop("Genotypefile format has to be specified, supported",
              "formats are plink, oxgen, genome, bimbam and delim (where the 
@@ -315,7 +311,7 @@ readStandardGenotypes <- function(filename, format = c("plink", "oxgen",
 #' # get causal SNPs from genotypes simulated within PhenotypeSimulator
 #' geno <- simulateGenotypes(N=10, NrSNP=10)
 #' causalSNPsFromSimulatedGenoStandardised <- getCausalSNPs(NrCausalSNPs=10,
-#' genotypes=geno)
+#' genotypes=geno$genotypes)
 #' 
 #'# Get causal SNPs by sampling lines from large SNP files
 #' genotypeFile <- system.file("extdata/genotypes/",
@@ -331,6 +327,10 @@ getCausalSNPs <- function(NrCausalSNPs=20,  genotypes=NULL, chr=NULL,
                           genoFileSuffix=NULL, 
                           delimiter=",", sampleID="ID_", verbose=TRUE) {
 	if (! is.null(genotypes)) {
+	    if (!is.matrix(genotypes) || is.data.frame(genotypes)) {
+	        stop("Genotypes have to be provided as a [NrSamples x NrSNP] matrix",
+	             " or data.frame but are provided as ",typeof(genotypes))
+	    }
         if ( ncol(genotypes) < NrCausalSNPs) {
             stop(paste("Number of genotypes is less than number of causal SNPs." 
                  , "Increase number of simulated genotypes in simulateGenotypes"
@@ -427,7 +427,7 @@ getCausalSNPs <- function(NrCausalSNPs=20,  genotypes=NULL, chr=NULL,
 #' @export
 #' @examples
 #' geno <- simulateGenotypes(N=10, NrSNP=50)
-#' K_fromGenotypesNormalised <- getKinship(geno$X_sd)
+#' K_fromGenotypesNormalised <- getKinship(geno$genotypes, standardise=TRUE)
 #'
 #' kinshipfile <- system.file("extdata/kinship", 
 #' "kinship.csv",
