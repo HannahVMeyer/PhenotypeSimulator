@@ -28,11 +28,7 @@
 #' #--catConfounders=0,3,4,0 \
 #' #--directoryGeno=~/tmp/genotypes \
 #' #--directoryPheno=~/tmp/phenotypes \
-#' #--sampleSubset=50,70 \
-#' #--phenoSubset=5,10 \
 #' #--showProgress \
-#' #--saveTable \
-#' #--savePlink
 
 
 simulatePhenotypes <- function() {
@@ -240,21 +236,16 @@ simulatePhenotypes <- function() {
         make_option(c("--genoFileDelimiter"), action="store", 
                     dest="genoFileDelimiter", default=",", type="character", 
                     help="Field separator of genotype file [default: %default]"),
+        
         make_option(c("--sampleID"), action="store", dest="sampleID", 
                     default="ID_", type="character", help="Prefix for naming 
                     simulated samples [default: %default]"),
         make_option(c("--phenoID"), action="store", dest="phenoID", 
                     default="Trait_", type="character", help="Prefix for naming 
                     simulated phenotypes [default: %default]"),
-        
-        make_option(c("-sSubset", "--sampleSubset"), action="store", 
-                    dest="sample_subset_string", default=NULL, type="character", 
-                    help="Comma-separated list of samples sizes to be drawn and 
-                    saved from simulation [default: %default]"),
-        make_option(c("-pSubset", "--phenoSubset"), action="store", 
-                    dest="pheno_subset_string", default=NULL, type="character", 
-                    help="Comma-separated list of phenotype sizes to be drawn 
-                    and saved from simulation [default: %default]"),
+        make_option(c("--snpID"), action="store", dest="snpID", 
+                    default="SNP_", type="character", help="Prefix for naming 
+                    simulated snps [default: %default]"),
         
         make_option(c("-saveTable", "--saveTable"), action="store_true", 
                     dest="saveAsTable", default=FALSE, type="logical", 
@@ -268,9 +259,30 @@ simulatePhenotypes <- function() {
                     set  [default: %default]"),
         make_option(c("-savePlink", "--savePlink"), action="store_true", 
                     dest="saveAsPlink", default=FALSE, type="logical", 
-                    help="When flag is set, simulated genotypes can additionally
-                    be saved in the binary plink format, i.e. .bed, .bim and 
-                    .fam files. [default: %default]")
+                    help="When flag is set, simulated genotypes are saved in the 
+                    binary plink format, i.e. .bed, .bim and .fam files. 
+                    [default: %default]"),
+        make_option(c("-saveGEMMA", "--saveGEMMA"), action="store_true", 
+                    dest="saveAsGEMMA", default=FALSE, type="logical", 
+                    help="When flag is set, simulated genotypes are saved in the 
+                    binary plink format, i.e. .bed, .bim and .fam files. 
+                    [default: %default]"),
+        make_option(c("-gemmaIntercept", "--gemmaIntercept"), 
+                    action="store_true", dest="intercept_gemma", default=FALSE, 
+                    type="logical", help ="if saveGEMMA: when modeling an 
+                    intercept term in gemma, a column of 1's have to be appended 
+                    to the covariate files. Set gemmaIntercept to TRUE to 
+                    include a column of 1's in the output"),
+        make_option(c("-saveBIMBAM", "--saveBIMBAM"), action="store_true", 
+                    dest="saveAsBIMBAM", default=FALSE, type="logical", 
+                    help="When flag is set, simulated genotypes are saved in the 
+                    binary plink format, i.e. .bed, .bim and .fam files. 
+                    [default: %default]"),
+        make_option(c("-saveSNPTEST", "--saveSNPTEST"), action="store_true", 
+                    dest="saveAsSNPTEST", default=FALSE, type="logical", 
+                    help="When flag is set, simulated genotypes are saved in the 
+                    binary plink format, i.e. .bed, .bim and .fam files. 
+                    [default: %default]")
         )
     args <- parse_args(OptionParser(option_list=option_list))
     if(!args$saveAsRDS && !args$saveAsTable) {
@@ -303,7 +315,7 @@ simulatePhenotypes <- function() {
     
     NrConfounders <- commaList2vector(args$NrConfoundersStrings)
     chr <- commaList2vector(args$chr_string)
-    SNPfrequency <- commaList2vector(args$SNPfrequencyString)
+    SNPfrequencies <- commaList2vector(args$SNPfrequencyString)
     pIndependentConfounders <- commaList2vector(args$pIndependentConfounders)
     pTraitIndependentConfounders <-
         commaList2vector(args$pTraitIndependentConfoundersString)
@@ -322,6 +334,13 @@ simulatePhenotypes <- function() {
     sample_subset <- commaList2vector(args$sample_subset_string)
     pheno_subset <- commaList2vector(args$pheno_subset_string)
     
+    format <- NULL
+    if (args$saveAsRDS) format <- c(format, "rds")
+    if (args$saveAsTable) format <- c(format, "csv")
+    if (args$saveAsPLINK) format <- c(format, "plink")
+    if (args$saveAsGEMMA) format <- c(format, "gemma")
+    if (args$saveAsBIMBAM) format <- c(format, "bimbam")
+    if (args$saveAsSNPTEST) format <- c(format, "snptest")
     
     simulatedPheno <- runSimulation( N=args$N, P=args$P, seed=args$seed,
                                      tNrSNP=args$tNrSNP, cNrSNP=args$cNrSNP,
@@ -333,8 +352,8 @@ simulatePhenotypes <- function() {
                                      phenoID=args$phenoID,
                                      genoFilePrefix=args$genoFilePrefix, 
                                      genoFileSuffix=args$genoFileSuffix, 
-                                     SNPfrequency=SNPfrequency ,
-                                     genoFileDelimiter=args$genoFileDelimiter,
+                                     SNPfrequencies=SNPfrequencies ,
+                                     genoDelimiter=args$genoFileDelimiter,
                                      kinshipfile=args$kinshipfile,
                                      kinshipHeader=args$kinshipHeader,
                                      kinshipDelimiter=args$kinshipDelimiter,
@@ -355,7 +374,7 @@ simulatePhenotypes <- function() {
                                      pIndependentGenetic=
                                          args$pIndependentGenetic, 
                                      pTraitIndependentGenetic=
-                                         pTraitIndependentGenetic, 
+                                         args$pTraitIndependentGenetic, 
                                      distBetaGenetic=distBetaGenetic,
                                      mBetaGenetic=args$mBetaGenetic, 
                                      sdBetaGenetic=
@@ -373,13 +392,10 @@ simulatePhenotypes <- function() {
                                      verbose=args$verbose)
     
     outdir <- savePheno(simulatedPheno, 
-                            sample_subset=sample_subset, 
-                            pheno_subset=pheno_subset,  
-                            outstring=args$outstring, 
-                            directoryGeno=args$directoryGeno, 
-                            directoryPheno=args$directoryPheno,
-                            verbose=args$verbose,
-                            saveAsTable=args$saveAsTable,
-                            saveAsRDS=args$saveAsRDS,
-                            saveAsPlink=args$saveAsPlink)
+                        format=format,
+                        intercept_gemma=args$intercept_gemma,
+                        outstring=args$outstring, 
+                        directoryGeno=args$directoryGeno, 
+                        directoryPheno=args$directoryPheno,
+                        verbose=args$verbose)
 }
