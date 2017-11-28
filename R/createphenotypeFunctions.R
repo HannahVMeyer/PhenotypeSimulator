@@ -444,7 +444,6 @@ setModel <- function(genVar=NULL, h2s=NULL, theta=0.8, h2bg=NULL, eta=0.8,
 #' component (varComponents), 
 #' the scaled phenotype components (phenoComponents) and and parameters used for 
 #' phenotype set-up and labeling (setup)
-#' @seealso \code{\link{createPheno}}, which this function wraps
 #' @export
 #' @examples
 #' # simulate phenotype of 100 samples, 10 traits from genetic and noise 
@@ -489,7 +488,7 @@ runSimulation <- function(N=1000, P=10, tNrSNP=5000, cNrSNP=20,
                       pIndependentGenetic=pIndependentGenetic, 
                       pTraitIndependentGenetic=pTraitIndependentGenetic, 
                       v=verbose)
-    
+    id_snps <- NULL
     id_traits <- paste(phenoID, seq(1, P, 1), sep="")
     id_samples <- paste(sampleID, seq(1, N, 1), sep="")
 
@@ -571,7 +570,7 @@ runSimulation <- function(N=1000, P=10, tNrSNP=5000, cNrSNP=20,
                                                    verbose=verbose, 
                                                    sampleID = sampleID, 
                                                    snpID = snpID, 
-                                                   delimiter = delimiter)
+                                                   delimiter = genoDelimiter)
                 id_samples <- genotypes$id_samples
                 id_snps <- genotypes$id_snps
             }
@@ -581,7 +580,8 @@ runSimulation <- function(N=1000, P=10, tNrSNP=5000, cNrSNP=20,
                                                sampleID=sampleID, 
                                                verbose=verbose)
             }
-            kinship <- getKinship(X=genotypes$genotypes, standardise=standardise, 
+            kinship <- getKinship(X=genotypes$genotypes, 
+                                  standardise=standardise, 
                                   sampleID=sampleID, 
                                   verbose=verbose)
         } else {
