@@ -9,6 +9,7 @@
 #' @param genotypes data.frame/matrix
 #' @param phenotypes data.frame/matrix
 #' @param covariates data.frame/matrix
+#' @param kinship data.frame/matrix
 #' @param format name [string] of genotype file format, options are: "plink", 
 #' "snptest", "gemma", "bimbam", "delim". For details on the file formats see 
 #' \emph{External formats}.
@@ -246,7 +247,7 @@ writeStandardOutput <- function(directory,
             covs <- rbind(line2, covariates, make.row.names=FALSE)
             ids <- pheno_format[, 1:3]
             pheno <- pheno_format[, -c(1:3)]
-            covs_format <- cbind(ids, covs, pheno, make.row.names=FALSE)
+            covs_format <- cbind(ids, covs, pheno)
             write.table(covs_format, paste(directory, "/Ysim", outstring, 
                                            "_snptest.samples", sep=""),
                         col.names=TRUE, row.names=FALSE, quote=FALSE)
