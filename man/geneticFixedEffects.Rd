@@ -4,9 +4,9 @@
 \alias{geneticFixedEffects}
 \title{Simulate genetic fixed effects.}
 \usage{
-geneticFixedEffects(X_causal, P, N = NULL, pIndependentGenetic = 0.4,
-  pTraitIndependentGenetic = 0.2, distBeta = "norm", mBeta = 0,
-  sdBeta = 1, verbose = TRUE)
+geneticFixedEffects(X_causal, P, N = NULL, phenoID = "Trait_",
+  pIndependentGenetic = 0.4, pTraitIndependentGenetic = 0.2,
+  distBeta = "norm", mBeta = 0, sdBeta = 1, verbose = TRUE)
 }
 \arguments{
 \item{X_causal}{[N x NrCausalSNPs] matrix of standardised (depending on 
@@ -18,6 +18,9 @@ standardise option) SNPs}
 equal to the number of samples in X_causal (rows); if less than  number of 
 samples in X_causal, N random rows of X_causal will be drawn; if not 
 specified, N assumed to be equal to samples in X_causal}
+
+\item{phenoID}{prefix [string] for naming traits (followed by trait number 
+from 1 to P)}
 
 \item{pIndependentGenetic}{Proportion [double] of genetic effects (SNPs) to
 have an independent fixed effect}
@@ -53,6 +56,6 @@ chosen via pTraitIndependentGenetic.
 }
 \examples{
 genotypes <- simulateGenotypes(N=100, NrSNP=20, verbose=FALSE)
-causalSNPs <- getCausalSNPs(genotypes=genotypes)
+causalSNPs <- getCausalSNPs(genotypes=genotypes$genotypes)
 geneticFixed <- geneticFixedEffects(X_causal=causalSNPs, P=10, N=100)
 }

@@ -4,16 +4,22 @@
 \alias{noiseFixedEffects}
 \title{Simulate noise fixed effects.}
 \usage{
-noiseFixedEffects(N, P, NrFixedEffects = 1, NrConfounders = 10,
-  pIndependentConfounders = 0.4, pTraitIndependentConfounders = 0.2,
-  distConfounders = "norm", mConfounders = 0, sdConfounders = 1,
-  catConfounders = NULL, probConfounders = NULL, distBeta = "norm",
-  mBeta = 0, sdBeta = 1)
+noiseFixedEffects(N, P, sampleID = "ID_", phenoID = "Trait_",
+  NrFixedEffects = 1, NrConfounders = 10, pIndependentConfounders = 0.4,
+  pTraitIndependentConfounders = 0.2, distConfounders = "norm",
+  mConfounders = 0, sdConfounders = 1, catConfounders = NULL,
+  probConfounders = NULL, distBeta = "norm", mBeta = 0, sdBeta = 1)
 }
 \arguments{
 \item{N}{number [integer] of samples to simulate}
 
 \item{P}{number [integer] of phenotypes to simulate}
+
+\item{sampleID}{prefix [string] for naming samples (followed by sample number
+from 1 to N)}
+
+\item{phenoID}{prefix [string] for naming traits (followed by trait number 
+from 1 to P)}
 
 \item{NrFixedEffects}{number [integer] of different fixed effects to simulate
 ; allows to simulate fixed effects from different distributions or with 

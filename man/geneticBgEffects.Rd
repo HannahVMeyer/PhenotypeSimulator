@@ -35,6 +35,6 @@ E = KBA
 }
 \examples{
 genotypes <- simulateGenotypes(N=100, NrSNP=400, verbose=FALSE)
-kinship <- getKinship(genotypes$X_sd, verbose=FALSE)
+kinship <- getKinship(genotypes$genotypes, standardise=TRUE, verbose=FALSE)
 geneticBg <- geneticBgEffects(P=10, kinship=kinship)
 }

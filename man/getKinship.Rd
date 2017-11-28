@@ -43,7 +43,7 @@ genome.
 }
 \examples{
 geno <- simulateGenotypes(N=10, NrSNP=50)
-K_fromGenotypesNormalised <- getKinship(geno$X_sd)
+K_fromGenotypesNormalised <- getKinship(geno$genotypes, standardise=TRUE)
 
 kinshipfile <- system.file("extdata/kinship", 
 "kinship.csv",

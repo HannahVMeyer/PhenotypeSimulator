@@ -5,9 +5,8 @@
 \title{Draw random SNPs from genotypes.}
 \usage{
 getCausalSNPs(NrCausalSNPs = 20, genotypes = NULL, chr = NULL,
-  NrChrCausal = NULL, genotypefile = NULL, format = NULL,
-  genoFilePrefix = NULL, genoFileSuffix = NULL, delimiter = ",",
-  sampleID = "ID_", snpID = "SNP_", verbose = TRUE)
+  NrChrCausal = NULL, genoFilePrefix = NULL, genoFileSuffix = NULL,
+  delimiter = ",", sampleID = "ID_", verbose = TRUE)
 }
 \arguments{
 \item{NrCausalSNPs}{number [integer] of SNPs to chose at random}
@@ -22,13 +21,6 @@ used when external genotype data is provided i.e. is.null(genoFilePrefix)
 NrCausalSNPs from (as opposed to the actual chromosomes to chose from via chr
 );  only used when external genotype data is provided i.e. 
 is.null(genoFilePrefix) == FALSE.}
-
-\item{genotypefile}{needed when loading entire genotype set into memory, 
-path/to/genotype file [string] in format specified by \link{format}}
-
-\item{format}{needed when loading entire genotype set into memory, specifies 
-the format of the genotype data; has to be one of  plink, oxgen, genome, 
-bimbam and delim; for details see Details in \link{readStandardGenotypes}}
 
 \item{genoFilePrefix}{full path/to/chromosome-wise-genotype-file-ending-
 before-"chrChromosomeNumber" (no '~' expansion!) [string]}
@@ -76,15 +68,7 @@ getCausalSNPs generates a vector of chromosomes from which to sample the SNPs
 # get causal SNPs from genotypes simulated within PhenotypeSimulator
 geno <- simulateGenotypes(N=10, NrSNP=10)
 causalSNPsFromSimulatedGenoStandardised <- getCausalSNPs(NrCausalSNPs=10,
-genotypes=geno)
-
-# Get causal SNPs by reading files from external genotype simulation programs
-# for instance simuated via hapgen
-#' genotypefile_hapgen  <- system.file("extdata/genotypes/hapgen/",
-"genotypes_hapgen.controls",
-package = "PhenotypeSimulator") 
-causalSNPsFromFile <- getCausalSNPs(NrCausalSNPs=10, 
-genotypefile=genotypefile_hapgen)
+genotypes=geno$genotypes)
 
 # Get causal SNPs by sampling lines from large SNP files
 genotypeFile <- system.file("extdata/genotypes/",

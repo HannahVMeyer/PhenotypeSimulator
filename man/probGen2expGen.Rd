@@ -20,7 +20,7 @@ into their expected genotype frequencies by 0*p(AA) + p(Aa) + 2p(aa)
 }
 \examples{
 nrSamples <- 10
-# Construct genotype probabilty vector (usually obtained from external input)
+# Construct genotype probability vector (usually from external input)
 # First, assign zero probabilty of AA, Aa and aa for all samples
 genotype_prob <- rep(0, 3*nrSamples)
 # Second, for each sample draw one of 0,1,2 (corresponding to AA, Aa and aa)

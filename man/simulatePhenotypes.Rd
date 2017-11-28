@@ -33,9 +33,5 @@ command line, the help function can be called via
 #--catConfounders=0,3,4,0 \\
 #--directoryGeno=~/tmp/genotypes \\
 #--directoryPheno=~/tmp/phenotypes \\
-#--sampleSubset=50,70 \\
-#--phenoSubset=5,10 \\
 #--showProgress \\
-#--saveTable \\
-#--savePlink
 }

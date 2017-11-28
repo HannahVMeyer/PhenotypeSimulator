@@ -8,14 +8,15 @@ runSimulation(N = 1000, P = 10, tNrSNP = 5000, cNrSNP = 20,
   NrConfounders = 10, seed = 219453, chr = NULL, NrChrCausal = NULL,
   genVar = NULL, h2s = NULL, theta = 0.8, h2bg = NULL, eta = 0.8,
   noiseVar = NULL, rho = NULL, delta = NULL, gamma = 0.8, phi = NULL,
-  alpha = 0.8, sampleID = "ID_", phenoID = "Trait_",
-  genoFilePrefix = NULL, genoFileSuffix = NULL, genoFileDelimiter = ",",
-  kinshipfile = NULL, kinshipHeader = TRUE, kinshipDelimiter = ",",
-  standardise = TRUE, NrFixedEffects = 1, distConfounders = "norm",
-  mConfounders = 0, sdConfounders = 1, catConfounders = NULL,
-  probConfounders = NULL, distBetaConfounders = "norm",
-  mBetaConfounders = 0, sdBetaConfounders = 1, distBetaGenetic = "norm",
-  mBetaGenetic = 0, sdBetaGenetic = 1, pIndependentConfounders = 0.4,
+  alpha = 0.8, sampleID = "ID_", phenoID = "Trait_", snpID = "SNP_",
+  genotypefile = NULL, format = NULL, genoFilePrefix = NULL,
+  genoFileSuffix = NULL, genoDelimiter = ",", kinshipfile = NULL,
+  kinshipHeader = TRUE, kinshipDelimiter = ",", standardise = TRUE,
+  NrFixedEffects = 1, distConfounders = "norm", mConfounders = 0,
+  sdConfounders = 1, catConfounders = NULL, probConfounders = NULL,
+  distBetaConfounders = "norm", mBetaConfounders = 0,
+  sdBetaConfounders = 1, distBetaGenetic = "norm", mBetaGenetic = 0,
+  sdBetaGenetic = 1, pIndependentConfounders = 0.4,
   pTraitIndependentConfounders = 0.2, pcorr = 0.8, meanNoiseBg = 0,
   sdNoiseBg = 1, SNPfrequencies = c(0.1, 0.2, 0.4),
   pIndependentGenetic = 0.4, pTraitIndependentGenetic = 0.2,
@@ -52,23 +53,22 @@ is.null(genoFilePrefix) == FALSE.}
 \item{theta}{Proportion [double] of variance of shared fixed genetic effects}
 
 \item{h2bg}{Proportion [double] of genetic variance of background effects; 
-either h2s or h2bg have to be specified and 
-h2s + h2bg = 1}
+either h2s or h2bg have to be specified and h2s + h2bg = 1}
 
 \item{eta}{Proportion [double] of variance of shared bg genetic effects}
 
 \item{noiseVar}{Proportion [double] of total noise variance}
 
 \item{rho}{Proportion [double] of noise variance of correlated effects; sum 
-of rho, delta and phi cannot be greater than 1}
+of rho, delta and phi has to be equal 1}
 
 \item{delta}{Proportion [double] of noise variance of fixed effects; sum of 
-rho, delta and phi cannot be greater than 1}
+rho, delta and phi  has to be equal 1}
 
 \item{gamma}{Proportion [double] of variance of shared fixed noise effects}
 
 \item{phi}{Proportion [double] of noise variance of background effects; sum 
-of rho, delta and phi cannot be greater than 1}
+of rho, delta and phi  has to be equal 1}
 
 \item{alpha}{Variance [double] of shared bg noise effect}
 
@@ -78,13 +78,24 @@ from 1 to N)}
 \item{phenoID}{prefix [string] for naming traits (followed by trait number 
 from 1 to P)}
 
-\item{genoFilePrefix}{path/to/chromosome-wise-genotype-file-ending-before-
-"chrChromosomeNumber" [string]}
+\item{snpID}{prefix [string] for naming SNPs (followed by SNP number from 1 
+to NrSNP)}
+
+\item{genotypefile}{needed when loading entire genotype set into memory, 
+path/to/genotype file [string] in format specified by \link{format}}
+
+\item{format}{needed when loading entire genotype set into memory, specifies 
+the format of the genotype data; has to be one of  plink, oxgen, genome, 
+bimbam and delim; for details see Details in \link{readStandardGenotypes}}
+
+\item{genoFilePrefix}{full path/to/chromosome-wise-genotype-file-ending-
+before-"chrChromosomeNumber" (no '~' expansion!) [string]}
 
 \item{genoFileSuffix}{[string] following chromosome number including 
-.fileformat (e.g. ".csv")}
+.fileformat (e.g. ".csv"); has to be a text format i.e. comma/tab/space
+separated}
 
-\item{genoFileDelimiter}{field separator [string] of genotype file}
+\item{genoDelimiter}{field separator [string] of genotypefile or genoFile}
 
 \item{kinshipfile}{path/to/kinshipfile [string] to be read; either X or 
 kinshipfile must be provided}
@@ -165,8 +176,8 @@ phenotype set-up and labeling (setup)
 }
 \description{
 runSimulation wraps around the phenotype component functions (genFixedEffects
-, genBgEffects, noiseBgEffects, noiseFixedEffects and correlatedBgEffects)
-and combines the simulated phenotype components via create phenotype.
+, genBgEffects, noiseBgEffects, noiseFixedEffects and correlatedBgEffects),
+rescales each component and combines them into the final phenotype.
 }
 \examples{
 # simulate phenotype of 100 samples, 10 traits from genetic and noise 
@@ -174,7 +185,4 @@ and combines the simulated phenotype components via create phenotype.
 genVar = 0.2
 simulatedPhenotype <- runSimulation(N=100, P=5, cNrSNP=10,
 genVar=genVar, h2s=1, phi=1)
-}
-\seealso{
-\code{\link{createPheno}}, which this function wraps
 }

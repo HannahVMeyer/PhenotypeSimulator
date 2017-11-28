@@ -4,16 +4,16 @@
 \alias{readStandardGenotypes}
 \title{Read genotype from file.}
 \usage{
-readStandardGenotypes(filename, format = c("plink", "oxgen", "genome",
-  "bimbam", "delim"), verbose = TRUE, sampleID = "ID_", snpID = "SNP_",
-  delimiter = ",", ...)
+readStandardGenotypes(filename, format = NULL, verbose = TRUE,
+  sampleID = "ID_", snpID = "SNP_", delimiter = ",")
 }
 \arguments{
 \item{filename}{path/to/genotypefile [string] in plink, oxgen 
 (impute2/snptest/hapgen2), genome, bimbam or [delimiter]-delimited format (
-for format information see **External genotype software and formats**).}
+for format information see \emph{External genotype software and formats}).}
 
-\item{format}{name [string] of genotype file format}
+\item{format}{name [string] of genotype file format. Options are: "plink", 
+"oxgen", "genome", "bimbam" or "delim"}
 
 \item{verbose}{boolean; if TRUE, progress info is printed to standard out}
 
@@ -35,7 +35,7 @@ readStandardGenotypes can read genotypes from a number of input
 formats for standard GWAS (binary plink, snptest, bimbam) or simulation 
 software (binary plink, hapgen2, genome). Alternatively, simple text files (
 with specified delimiter) can be read. For more information on the different 
-file formats see **External genotype software and formats**.
+file formats see \emph{External genotype software and formats}.
 }
 \section{External genotype software and formats}{
 
@@ -125,10 +125,10 @@ data_genome <- readStandardGenotypes(filename_genome, format ="genome")
 filename_hapgen  <- system.file("extdata/genotypes/hapgen/",
 "genotypes_hapgen.controls",
 package = "PhenotypeSimulator") 
-data_hapgen <- readStandardGenotypes(filename_hapgen)
+data_hapgen <- readStandardGenotypes(filename_hapgen, format='oxgen')
 
 filename_plink  <- system.file("extdata/genotypes/plink/",
 "genotypes_plink",
 package = "PhenotypeSimulator") 
-data_plink <- readStandardGenotypes(filename_hapgen)
+data_plink <- readStandardGenotypes(filename_hapgen, format="plink")
 }

@@ -5,7 +5,7 @@
 \title{Simulate bi-allelic genotypes.}
 \usage{
 simulateGenotypes(N, NrSNP = 5000, frequencies = c(0.1, 0.2, 0.4),
-  sampleID = "ID_", verbose = TRUE)
+  sampleID = "ID_", snpID = "SNP_", verbose = TRUE)
 }
 \arguments{
 \item{N}{number of samples for which to simulate bi-allelelic genotypes}
@@ -17,10 +17,13 @@ simulateGenotypes(N, NrSNP = 5000, frequencies = c(0.1, 0.2, 0.4),
 \item{sampleID}{prefix [string] for naming samples (followed by sample number 
 from 1 to N)}
 
+\item{snpID}{prefix [string] for naming SNPs (followed by SNP number 
+from 1 to NrSNP)}
+
 \item{verbose}{boolean; if TRUE, progress info is printed to standard out}
 }
 \value{
-list of a [NrSNP x N] matrix of simulated genotypes, SNP frequencies 
+list of a [N x NrSNP] matrix of simulated genotypes, SNP frequencies 
 and vector of sample IDs.
 }
 \description{
@@ -29,7 +32,7 @@ Simulate bi-allelic genotypes.
 \examples{
 N10NrSNP10 <- simulateGenotypes(N=10, NrSNP=10)
 N10NrSNP10 <- simulateGenotypes(N=10, NrSNP=10,
-frequency="0.2,0.3,0.4")
+frequencies=c(0.2,0.3,0.4))
 }
 \seealso{
 \code{\link{standardiseGenotypes}}

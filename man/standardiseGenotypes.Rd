@@ -14,11 +14,11 @@ standardiseGenotypes(geno)
 }
 \description{
 Genotypes are standardised as described in Yang et al:
-snp_standardised = (snp - 2 * minor_allele_freq)/
-sqrt(2 * minor_allele_freq * major_allele_freq)
+snp_standardised = (snp - 2 * ref_allele_freq)/
+sqrt(2 * ref_allele_freq * alt_allele_freq)
 }
 \examples{
-geno <- cbind(rbinom(2000, 2, 0.3), rbinom(2000, 2, 0.4))
+geno <- cbind(rbinom(2000, 2, 0.3), rbinom(2000, 2, 0.4),rbinom(2000, 2, 0.5))
 geno_sd <- standardiseGenotypes(geno)
 }
 \references{

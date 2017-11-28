@@ -11,7 +11,7 @@ getAlleleFrequencies(snp)
 encoded as 0,1 and 2}
 }
 \value{
-vector with minor and major allele frequency
+vector with ref (0-encoded) and alt (1-encoded) allele frequency
 }
 \description{
 Compute allele frequencies from genotype data.
