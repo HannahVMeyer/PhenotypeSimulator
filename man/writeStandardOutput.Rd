@@ -4,18 +4,23 @@
 \alias{writeStandardOutput}
 \title{Write simulated data into formats used by standard GWAS software}
 \usage{
-writeStandardOutput(data, type, directory, id_samples, id_snps, id_traits,
-  outstring = NULL, standardInput = NULL, format = c("plink", "snptest",
-  "gemma", "bimbam", "delim"), intercept_gemma = FALSE,
-  pheno_snptest = NULL, verbose = TRUE, delimiter = ",")
+writeStandardOutput(directory, genotypes = NULL, phenotypes = NULL,
+  covariates = NULL, kinship = NULL, id_samples, id_snps, id_traits,
+  outstring = NULL, standardInput_samples = NULL,
+  standardInput_genotypes = NULL, format = NULL, intercept_gemma = FALSE,
+  verbose = TRUE, delimiter = ",")
 }
 \arguments{
-\item{data}{data.frame/matrix}
-
-\item{type}{[string]}
-
 \item{directory}{absolute path (no tilde expansion) to parent directory 
 [string] where the data should be saved [needs user writing permission]}
+
+\item{genotypes}{data.frame/matrix}
+
+\item{phenotypes}{data.frame/matrix}
+
+\item{covariates}{data.frame/matrix}
+
+\item{kinship}{data.frame/matrix}
 
 \item{id_samples}{[string]}
 
@@ -27,18 +32,17 @@ writeStandardOutput(data, type, directory, id_samples, id_snps, id_traits,
 directoryPheno/directoryGeno) to save set-up
 independent simulation results}
 
-\item{standardInput}{[]}
+\item{standardInput_samples}{[]}
 
-\item{format}{name [string] of genotype file format}
+\item{standardInput_genotypes}{[]}
+
+\item{format}{name [string] of genotype file format, options are: "plink", 
+"snptest", "gemma", "bimbam", "delim". For details on the file formats see 
+\emph{External formats}.}
 
 \item{intercept_gemma}{[boolean] When modeling an intercept term in gemma, a 
 column of 1's have to be appended to the covariate files. Set intercept_gemma
 to TRUE to include a column of 1's in the output.}
-
-\item{pheno_snptest}{The snptest .samples file contains sample IDs, 
-covariates and phenotypes. Thus, when writing the covariates file, the 
-formated sample ID and phenotype data have to be provided 
-(output from type = "pheno", format ="snptest")}
 
 \item{verbose}{[boolean]; if TRUE, progress info is printed to standard out}
 
@@ -54,7 +58,7 @@ writeStandardOutput can write genotypes and phenotypes as well as possible
 covariates and kinship matrices into a number of formats for standard GWAS: 
 plink, snptest, bimbam, gemma. Alternatively, simple text files (
 with specified delimiter) can be written. For more information on the 
-different file formats see \emph{Externa formats}.
+different file formats see \emph{External formats}.
 }
 \section{External formats}{
 
@@ -103,3 +107,19 @@ genotype, or dosage of the minor allele.
 }
 }
 
+\examples{
+simulation <- runSimulation(N=10, P=2, genVar=0.4, h2s=0.2, phi=1)
+genotypes <- simulation$rawComponents$genotypes
+kinship <-  simulation$rawComponents$kinship
+phenotypes <- simulation$phenoComponents$Y
+
+\dontrun{
+# Save in plink format (.bed, .bim, .fam, Y_sim_plink.txt)
+writeStandardOutput(directory=/path/to/output, genotypes=genotypes, 
+phenotypes=phenotypes, format="plink")
+
+# Save in gemma format (gemma)
+writeStandardOutput(directory=/path/to/output, genotypes=genotypes,
+phenotypes=phenotypes, kinship=kinship, format="gemma")
+}
+}

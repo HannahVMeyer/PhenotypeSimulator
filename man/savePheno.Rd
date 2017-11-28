@@ -54,8 +54,8 @@ specified directories. Requires a simulatedData list which is the output of
 \examples{
 simulatedPhenotype <- runSimulation(N=100, P=5, cNrSNP=10,
 genVar=0.2, h2s=0.2, phi=1)
-#not run
-#outputdir <- savePheno(simulatedPhenotype, directoryGeno="/path/to/dir/",  
-#directoryPheno="/path/to/dir/", outstring="Data_simulation", 
-#format=c("csv", "plink"))
+\dontrun{
+outputdir <- savePheno(simulatedPhenotype, directoryGeno="/path/to/dir/",  
+directoryPheno="/path/to/dir/", outstring="Data_simulation", 
+format=c("csv", "plink"))}
 }
