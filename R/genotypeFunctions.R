@@ -190,14 +190,16 @@ simulateGenotypes <- function(N, NrSNP=5000, frequencies=c(0.1, 0.2, 0.4),
 #' data_genome <- readStandardGenotypes(filename_genome, format ="genome")
 #' 
 #' filename_hapgen  <- system.file("extdata/genotypes/hapgen/",
-#' "genotypes_hapgen.controls",
+#' "genotypes_hapgen.controls.gen",
 #' package = "PhenotypeSimulator") 
+#' filename_hapgen <- gsub("\\.gen", "", filename_hapgen)
 #' data_hapgen <- readStandardGenotypes(filename_hapgen, format='oxgen')
 #' 
 #' filename_plink  <- system.file("extdata/genotypes/plink/",
-#' "genotypes_plink",
+#' "genotypes_plink.bed",
 #' package = "PhenotypeSimulator") 
-#' data_plink <- readStandardGenotypes(filename_hapgen, format="plink")
+#' filename_plink <- gsub("\\.bed", "", filename_plink)
+#' data_plink <- readStandardGenotypes(filename_plink, format="plink")
 readStandardGenotypes <- function(filename, format = NULL,
                                   verbose=TRUE, sampleID = "ID_", 
                                   snpID = "SNP_", delimiter = ",") {
