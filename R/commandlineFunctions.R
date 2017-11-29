@@ -120,44 +120,68 @@ simulatePhenotypes <- function() {
         make_option(c("-pcorr", "--pcorr"), action="store", dest="pcorr", 
                     default=0.6, type="double", help="Correlation strength of
                     correlated noise effects [default: %default]"),
+        make_option(c("--pTraitsAffectedConfounders"), action="store", 
+                    dest="pTraitsAffectedConfoundersString", default="1", 
+                    type="character", help="[Proportion(s) of traits affected by 
+                    the confounder; for more than one type of confounders, give
+                    values separated by commas, i.e. '0.2,0.5,1', 
+                    default: %default]"),
         make_option(c("--distConfounders"), action="store", 
                     dest="distConfoundersString", default="norm", 
-                    type="character", help="[distribution to simulate 
+                    type="character", help="[distribution(s) to simulate 
                     confounders; one of 'unif', 'norm', 'bin', 'cat_norm', 
-                    'cat_unif', default: %default]"),
+                    'cat_unif'; for more than one type of confounders, give
+                    values separated by commas, i.e. 'norm,cat_unif', 
+                    default: %default]"),
         make_option(c("--mConfounders"), action="store", 
                     dest="mConfounderString", default="0", type="character", 
                     help="Mean/midpoint(s) of normal/uniform distribution for 
-                    confounders [default: %default]"),
+                    confounders; for more than one type of confounders, give
+                    values separated by commas, i.e. '0,2,1', 
+                    [default: %default]"),
         make_option(c("--sdConfounders"), action="store", 
                     dest="sdConfounderString", default="1", type="character", 
                     help="standard deviation(s)/distance from midpoint(s) of 
-                    normal/uniform distribution for confounders 
-                    [default: %default]"),
+                    normal/uniform distribution for confounders; for more than
+                    one type of confounders, give values separated by commas, 
+                    i.e. '1,2,1', [default: %default]"),
         make_option(c("--catConfounders"), action="store", 
                     dest="catConfoundersString", default=NULL, type="character", 
                     help="number(s) of confounder categories; required if 
-                    distConfounders 'cat_norm' or 'cat_unif' 
+                    distConfounders 'cat_norm' or 'cat_unif'; for more than one 
+                    type of confounders, give values separated by commas, i.e. 
+                    '2,0,5' (second confounder not categorical),
                     [default: %default]"),
         make_option(c("--probConfounders"), action="store", 
                     dest="probConfoundersString", default=0, type="character", 
                     help="probability(s) of binomial confounders (0/1); required 
-                    if distConfounders 'bin' [default: %default]"),
+                    if distConfounders 'bin', for more than one 
+                    type of confounders, give values separated by commas, i.e. 
+                    '0.2,0.6,0' (third confounder not binomial), 
+                    [default: %default]"),
         make_option(c("--distBetaConfounders"), action="store", 
                     dest="distBetaConfoundersString", default="norm", 
                     type="character", help="Name(s) of distribution to use to 
                     simulate effect sizes of confounders; one of 'unif' or 
-                    'norm' [default: %default]"),
+                    'norm'; for more than one type of confounders, give values 
+                    separated by commas, i.e. 'norm,unif', [default: %default]"),
         make_option(c("--mBetaConfounders"), action="store", 
                     dest="mBetaConfoundersString", 
                     default=0, type="character", help="Mean/midpoint of normal
-                    /uniform distribution for effect sizes of confounders 
-                    [default: %default]"),
+                    /uniform distribution for effect sizes of confounders;  for 
+                    more than one type of confounders, give values separated by 
+                    commas, i.e. '0,0.5', [default: %default]"),
         make_option(c("--sdBetaConfounders"), action="store", 
                     dest="sdBetaConfoundersString", 
                     default=1, type="character", help="Standard deviation/
                     distance from midpoint of normal/uniform distribution for 
-                    effect sizes of confounders [default: %default]"),
+                    effect sizes of confounders;  for 
+                    more than one type of confounders, give values separated by 
+                    commas, i.e. '1,2', [default: %default]"),
+        make_option(c("--pTraitsAffectedGenetics"), action="store", 
+                    dest="pTraitsAffectedGeneticsString", default=1, 
+                    type="integer", help="[Proportion of traits affected by 
+                    the fixed genetic effects; default: %default]"),
         make_option(c("--distBetaGenetic"), action="store", 
                     dest="distBetaGeneticString", default="norm", 
                     type="character", help="Name(s) of distribution to use to 
@@ -313,6 +337,8 @@ simulatePhenotypes <- function() {
     pIndependentConfounders <- commaList2vector(args$pIndependentConfounders)
     pTraitIndependentConfounders <-
         commaList2vector(args$pTraitIndependentConfoundersString)
+    pTraitsAffectedConfounders <-
+        commaList2vector(args$pTraitsAffectedConfoundersString)
     distBetaGenetic <- commaList2vector(args$distBetaGeneticString)
     
     mBetaGenetic <- commaList2vector(args$mBetaGeneticString) 
@@ -325,8 +351,7 @@ simulatePhenotypes <- function() {
     distBetaConfounders <- commaList2vector(args$distBetaConfoundersString)
     mBetaConfounders <- commaList2vector(args$mBetaConfoundersStrin)
     sdBetaConfounders <- commaList2vector(args$sdBetaConfoundersString)
-    sample_subset <- commaList2vector(args$sample_subset_string)
-    pheno_subset <- commaList2vector(args$pheno_subset_string)
+
     
     format <- NULL
     if (args$saveAsRDS) format <- c(format, "rds")
@@ -338,6 +363,10 @@ simulatePhenotypes <- function() {
     
     simulatedPheno <- runSimulation( N=args$N, P=args$P, seed=args$seed,
                                      tNrSNP=args$tNrSNP, cNrSNP=args$cNrSNP,
+                                     pTraitsAffectedGenetics=
+                                         args$pTraitsAffectedGenetics,
+                                     pTraitsAffectedConfounders=
+                                         pTraitsAffectedConfounders,
                                      NrConfounders=NrConfounders, 
                                      NrFixedEffects=args$NrFixedEffects,
                                      chr=chr, 
