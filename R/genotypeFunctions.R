@@ -106,6 +106,9 @@ simulateGenotypes <- function(N, NrSNP=5000, frequencies=c(0.1, 0.2, 0.4),
 #' @return List of [NrSamples X NrSNPs] genotypes, their [NrSNPs] ID (id_snps), 
 #' their [NrSamples] IDs (id_samples) and format specific additional files (
 #' might be used for output writing).
+#' @details The file formats and software formates supported are described
+#' below. For large external genotypes, consider the option to only read, 
+#' randomly selected, causal SNPs into memory via \link{getCausalSNPs}.
 #' @section External genotype software and formats:
 #' \subsection{Formats:}{
 #' \itemize{
@@ -233,7 +236,7 @@ readStandardGenotypes <- function(filename, format = NULL,
         samples<- data.table::fread(paste(filename, ".sample", sep=""), 
                                      data.table=FALSE)
         id_samples <- samples$ID_1[-1]
-        id_snps <- genotypes_raw$V1
+        id_snps <- genotypes_raw$V2
         format_files <- list(oxgen_samples = samples, 
                              oxgen_genotypes=genotypes_raw)
     } else if (format == "genome") {
@@ -265,11 +268,10 @@ readStandardGenotypes <- function(filename, format = NULL,
 
 #' Draw random SNPs from genotypes.  
 #'
-#' Draw random SNPs from either simulated genotypes or external genotype files.
-#' When drawing from external genotype files, two options are possible: 
-#' i) reading the entire file into memory or ii) only reading lines of randomly
-#' chosen SNPs, recommended for large genotype files. See details for more 
-#' information.
+#' Draw random SNPs from genotypes provided or external genotype files.
+#' When drawing from external genotype files, only lines of randomly
+#' chosen SNPs are read, which is recommended for large genotype files. See 
+#' details for more information.
 #'
 #' @param NrCausalSNPs number [integer] of SNPs to chose at random
 #' @param genotypes [NrSamples x totalNrSNPs] matrix of genotypes
@@ -285,7 +287,15 @@ readStandardGenotypes <- function(filename, format = NULL,
 #' @param genoFileSuffix [string] following chromosome number including 
 #' .fileformat (e.g. ".csv"); has to be a text format i.e. comma/tab/space
 #' separated
-#' @param delimiter field separator [string] of genotypefile or genoFile 
+#' @param delimiter field separator [string] of genotypefile or genoFile
+#' @param skipFields number [integer] of fields (columns) to skip in 
+#' genoFilePrefix-genoFileSuffix file. See details.
+#' @param probabilities [bool]. If set to TRUE, the genotypes in the files 
+#' described by genoFilePrefix and genoFileSuffix are provided as triplets of 
+#' probablities (p(AA), p(Aa), p(aa)) and are converted into their expected 
+#' genotype frequencies by 0*p(AA) + p(Aa) + 2p(aa) via \link{probGen2expGen}.
+#' @param oxgen [bool] is genoFilePrefix-genoFileSuffix file on oxgen format?
+#' See \link{readStandardGenotypes} for details.
 #' @param sampleID prefix [string] for naming samples (followed by sample number
 #'  from 1 to NrSamples)
 #' @param verbose [boolean]; if TRUE, progress info is printed to standard out
@@ -299,13 +309,15 @@ readStandardGenotypes <- function(filename, format = NULL,
 #' (/path/to/dir/related_nopopstructure_) and genoFileSuffix (.csv) specify the 
 #' strings leading and following the "chrChromosomenumber". The first column in 
 #' each file needs to be the SNP_ID and files cannot contain a header. 
-#' getCausalSNPs generates a vector of chromosomes from which to sample the SNPs
-#' . For each of the chromosomes, it counts the number of SNPs in the chromosome
-#' file and creates vectors of random numbers ranging from 1:NrSNPSinFile. Only 
-#' the lines corresponding to these numbers are then read into R. The example 
-#' data provided for chromosome 22 contains genotypes (50 samples) of the first 
-#' 500 SNPs on chromosome 22 with a minor allele frequency of greater than 2% 
-#' from the European populations of the the 1000 Genomes project.
+#' Subsequent columns containing additional SNP information can be skipped by 
+#' setting skipFields. getCausalSNPs generates a vector of chromosomes from 
+#' which to sample the SNPs. For each of the chromosomes, it counts the number 
+#' of SNPs in the chromosome file and creates vectors of random numbers ranging 
+#' from 1:NrSNPSinFile. Only the lines corresponding to these numbers are then
+#' read into R. The example data provided for chromosome 22 contains genotypes 
+#' (50 samples) of the first 500 SNPs on chromosome 22 with a minor allele 
+#' frequency of greater than 2% from the European populations of the the 1000 
+#' Genomes project.
 #'  
 #' @seealso \code{\link{standardiseGenotypes}} 
 #' @export
@@ -324,10 +336,11 @@ readStandardGenotypes <- function(filename, format = NULL,
 #' causalSNPsFromLines <- getCausalSNPs(NrCausalSNPs=10, chr=22, 
 #' genoFilePrefix=genoFilePrefix, 
 #' genoFileSuffix=genoFileSuffix)
-getCausalSNPs <- function(NrCausalSNPs=20,  genotypes=NULL, chr=NULL, 
-                          NrChrCausal=NULL, genoFilePrefix=NULL, 
-                          genoFileSuffix=NULL, 
-                          delimiter=",", sampleID="ID_", verbose=TRUE) {
+getCausalSNPs <- function(NrCausalSNPs=20,  genotypes=NULL,
+                          chr=NULL, NrChrCausal=NULL, genoFilePrefix=NULL, 
+                          genoFileSuffix=NULL, oxgen=FALSE,
+                          delimiter=",", skipFields=NULL, probabilities=FALSE, 
+                          sampleID="ID_", verbose=TRUE) {
 	if (! is.null(genotypes)) {
 	    if (!is.matrix(genotypes) || is.data.frame(genotypes)) {
 	        stop("Genotypes have to be provided as a [NrSamples x NrSNP] matrix",
@@ -373,6 +386,8 @@ getCausalSNPs <- function(NrCausalSNPs=20,  genotypes=NULL, chr=NULL,
 		           genoFilePrefix, "...)", sep=""), verbose=verbose)
 		
 		causalSNPs <- lapply(seq_along(ChrCausal), function(chrom) {
+		    vmessage(c("Get causal SNPs from chr", chrom, "...)", sep=""), 
+		             verbose=verbose)
 			chromosomefile <- paste(genoFilePrefix, "chr", ChrCausal[chrom], 
 			                        genoFileSuffix, sep="")
 			SNPsOnChromosome <- R.utils::countLines(chromosomefile) - 1
@@ -387,8 +402,19 @@ getCausalSNPs <- function(NrCausalSNPs=20,  genotypes=NULL, chr=NULL,
  			causalSNPsChr <- read.table(
  			    text=read_lines(chromosomefile, randomSNPindex, sep="\n"), 
  			    sep=delimiter, row.names=1)
+ 			if (oxgen) {
+ 			    rownames(causalSNPsChr) <- causalSNPsChr [,1]
+ 			    skipFields <- 4
+ 			    probabilities <- TRUE
+ 			}
+ 			if (!is.null(skipFields)) {
+ 			    causalSNPsChr <- causalSNPsChr[,-c(1:skipFields)] 
+ 			}
+ 			if (probabilities) {
+ 			    causalSNPsChr <- t(apply(causalSNPsChr, 1, probGen2expGen))
+ 			}
+ 			return(causalSNPsChr)
 		})
-		
 		causalSNPs <- t(do.call(rbind, causalSNPs))
         N <- nrow(causalSNPs)
         rownames(causalSNPs) <- paste(sampleID, seq(1, N, 1), sep="")
