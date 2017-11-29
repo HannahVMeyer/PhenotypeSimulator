@@ -364,6 +364,13 @@ setModel <- function(genVar=NULL, h2s=NULL, theta=0.8, h2bg=NULL, eta=0.8,
 #' NrCausalSNPs from (as opposed to the actual chromosomes to chose from via chr
 #' );  only used when external genotype data is provided i.e. 
 #' is.null(genoFilePrefix) == FALSE. 
+#' @param pTraitsAffectedGenetics proportion [double] of traits affected by the 
+#' genetic effect. For non-integer results of pTraitsAffected*P, the ceiling of  
+#' the result is used. Allows to simulate for instance different levels of 
+#' pleiotropy.
+#' @param pTraitsAffectedConfounders vector of proportion(s) [double] of traits 
+#' affected by the confounders. For non-integer results of pTraitsAffected*P, 
+#' the ceiling of the result is used.
 #' @param SNPfrequencies vector of allele frequencies [double] from which to 
 #' sample
 #' @param genotypefile needed when loading entire genotype set into memory, 
@@ -376,6 +383,14 @@ setModel <- function(genVar=NULL, h2s=NULL, theta=0.8, h2bg=NULL, eta=0.8,
 #' @param genoFileSuffix [string] following chromosome number including 
 #' .fileformat (e.g. ".csv"); has to be a text format i.e. comma/tab/space
 #' separated
+#' @param skipFields number [integer] of fields (columns) in to skip in 
+#' genoFilePrefix-genoFileSuffix. See details.
+#' @param probabilities [bool]. If set to TRUE, the genotypes in the files 
+#' described by genoFilePrefix and genoFileSuffix are provided as triplets of 
+#' probablities (p(AA), p(Aa), p(aa)) and are converted into their expected 
+#' genotype frequencies by 0*p(AA) + p(Aa) + 2p(aa) via \link{probGen2expGen}.
+#' @param oxgen [bool] is genoFilePrefix-genoFileSuffix file on oxgen format?
+#' See \link{readStandardGenotypes} for details.
 #' @param genoDelimiter field separator [string] of genotypefile or genoFile 
 #' @param kinshipfile path/to/kinshipfile [string] to be read; either X or 
 #' kinshipfile must be provided
@@ -453,7 +468,10 @@ setModel <- function(genVar=NULL, h2s=NULL, theta=0.8, h2bg=NULL, eta=0.8,
 #' genVar=genVar, h2s=1, phi=1)
 runSimulation <- function(N=1000, P=10, tNrSNP=5000, cNrSNP=20, 
                           NrConfounders=10, seed=219453, 
+                          pTraitsAffectedGenetics=1,
+                          pTraitsAffectedConfounders=1,
                           chr=NULL, NrChrCausal=NULL,
+                          skipFields=NULL, probabilities=FALSE, oxgen=FALSE,
                           genVar=NULL, h2s=NULL, theta=0.8, h2bg=NULL, eta=0.8, 
                           noiseVar=NULL, rho=NULL, delta=NULL, gamma=0.8, 
                           phi=NULL, alpha=0.8, 
@@ -534,6 +552,8 @@ runSimulation <- function(N=1000, P=10, tNrSNP=5000, cNrSNP=20,
         
         vmessage("Simulate genetic fixed effects", verbose=verbose)
         genFixed <- geneticFixedEffects(X_causal=causalSNPs, N=N, P=P, 
+                                        pTraitsAffected=
+                                            pTraitsAffectedGenetics,
                                         pIndependentGenetic=
                                             pIndependentGenetic, 
                                         pTraitIndependentGenetic=
@@ -666,6 +686,8 @@ runSimulation <- function(N=1000, P=10, tNrSNP=5000, cNrSNP=20,
         noiseFixed <- noiseFixedEffects(P=P, N=N, 
                                         NrFixedEffects = NrFixedEffects,
                                         NrConfounders=NrConfounders,
+                                        pTraitsAffected=
+                                            pTraitsAffectedConfounders,
                                         pIndependentConfounders=
                                             pIndependentConfounders,
                                         pTraitIndependentConfounders=
