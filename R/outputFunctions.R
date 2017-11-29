@@ -7,31 +7,30 @@
 #' different file formats see \emph{External formats}.
 #'
 #' @param genotypes [NrSample x NrSNP] data.frame/matrix of genotypes [integers]
-#' /[doubles]
+#' /[doubles].
 #' @param phenotypes [NrSample x NrTrait] data.frame/matrix of phenotypes 
-#' [doubles]
+#' [doubles].
 #' @param covariates [NrSample x NrCovariates] data.frame/matrix of covariates
-#' [integers]/[doubles]
+#' [integers]/[doubles].
 #' @param kinship [NrSample x NrSamples] data.frame/matrix of kinship estimates
-#' [doubles]
+#' [doubles].
 #' @param format name [string] of genotype file format, options are: "plink", 
 #' "snptest", "gemma", "bimbam", "delim". For details on the file formats see 
 #' \emph{External formats}.
 #' @param id_samples vector of [NrSamples] sample IDs [string] of simulated 
-#' phenotypes, genotypes and covariates
+#' phenotypes, genotypes and covariates.
 #' @param id_snps vector of [NrSNPs] snp IDs [string] of (simulated) 
-#' genotypes
+#' genotypes.
 #' @param id_traits vector of [NrTraits] phenotype IDs [string] of 
-#' simulated phenotypes
+#' simulated phenotypes.
 #' @param standardInput_samples data.frame of sample information obtained when 
-#' reading genotypes from plink, oxgen or genome file
+#' reading genotypes from plink, oxgen or genome file.
 #' @param standardInput_genotypes data.frame of genotypes obtained when 
-#' reading genotypes from plink, oxgen, or genome file
+#' reading genotypes from plink, oxgen, or genome file.
 #' @param directory absolute path (no tilde expansion) to parent directory 
 #' [string] where the data should be saved [needs user writing permission]
 #' @param outstring optional name [string] of subdirectory (in relation to 
-#' directoryPheno/directoryGeno) to save set-up
-#' independent simulation results
+#' directory) to save set-up independent simulation results.
 #' @param intercept_gemma [boolean] When modeling an intercept term in gemma, a 
 #' column of 1's have to be appended to the covariate files. Set intercept_gemma
 #' to TRUE to include a column of 1's in the output.
@@ -122,16 +121,17 @@
 #' 
 #' \dontrun{
 #' # Save in plink format (.bed, .bim, .fam, Y_sim_plink.txt)
-#' writeStandardOutput(directory="/path/to/output", genotypes=genotypes$genotypes, 
-#' phenotypes=phenotypes, id_samples = genotypes$id_samples, 
-#' id_snps = genotypes$id_snps, id_traits = colnames(phenotypes), 
-#' format="plink")
+#' writeStandardOutput(directory="/path/to/output", 
+#' genotypes=genotypes$genotypes, phenotypes=phenotypes, 
+#' id_samples = genotypes$id_samples, id_snps = genotypes$id_snps, 
+#' id_traits = colnames(phenotypes), format="plink")
 #' 
 #' # Save in gemma and snptest format
-#' writeStandardOutput(directory="/path/to/output", genotypes=genotypes$genotypes, 
-#' phenotypes=phenotypes, id_samples = genotypes$id_samples, 
-#' id_snps = genotypes$id_snps, id_traits = colnames(phenotypes),
-#'  kinship=kinship, format=c("snptest", "gemma"))
+#' writeStandardOutput(directory="/path/to/output", 
+#' genotypes=genotypes$genotypes, phenotypes=phenotypes, 
+#' id_samples = genotypes$id_samples, id_snps = genotypes$id_snps, 
+#' id_traits = colnames(phenotypes), kinship=kinship, 
+#' format=c("snptest", "gemma"))
 #' }
 writeStandardOutput <- function(directory, 
                                 genotypes=NULL, phenotypes=NULL, 
@@ -334,21 +334,14 @@ writeStandardOutput <- function(directory,
 #' simulatedPhenotype <- runSimulation(N=100, P=5, cNrSNP=10,
 #' genVar=0.2, h2s=0.2, phi=1)
 #' \dontrun{
-#' outputdir <- savePheno(simulatedPhenotype, directoryGeno="/path/to/dir/",  
-#' directoryPheno="/path/to/dir/", outstring="Data_simulation", 
-#' format=c("csv", "plink"))}
-savePheno <- function(simulatedData, directoryGeno, directoryPheno, 
-                      format=".csv",
+#' outputdir <- savePheno(simulatedPhenotype, directory="/path/to/dir/",  
+#' outstring="Data_simulation", format=c("csv", "plink"))}
+savePheno <- function(simulatedData, directory, format=".csv",
                       outstring="",  intercept_gemma = TRUE, verbose=TRUE) {
-    if (grepl("~", directoryGeno)) {
-        stop("directoryGeno contains ~: path expansion not guaranteed on 
+    if (grepl("~", directory)) {
+        stop("directory contains ~: path expansion not guaranteed on 
              every platform (see path.expand{base}), please provide full file
-             path to the genotype directory")
-    }
-    if (grepl("~", directoryPheno)) {
-        stop("directoryPheno contains ~: path expansion not guaranteed on 
-             every platform (see path.expand{base}), please provide full file
-             path to the phenotype directory")
+             path to the directory")
     }
     modelGenetic <- simulatedData$setup$modelGenetic
     modelNoise <- simulatedData$setup$modelNoise
@@ -369,15 +362,12 @@ savePheno <- function(simulatedData, directoryGeno, directoryPheno,
                         "_model", modelNoise, modelGenetic, sep="")
     }
     
-    directoryGeno <- file.path(directoryGeno, outstring)
-    if (!dir.exists(directoryGeno)) dir.create(directoryGeno, recursive=TRUE)
-    
-    directoryPheno <- file.path(directoryPheno, outstring)
-    if (!dir.exists(directoryPheno)) dir.create(directoryPheno, recursive=TRUE)
+    directory <- file.path(directory, outstring)
+    if (!dir.exists(directory)) dir.create(directory, recursive=TRUE)
     
     vmessage(c("Save simulation results"), verbose=verbose)
            
-    vmessage(c("Save phenotype to ", directoryPheno, "/Y..."), verbose=verbose, 
+    vmessage(c("Save phenotype to ", directory, "/Y..."), verbose=verbose, 
              sep="")
 
     if (outstring != "") {
@@ -385,11 +375,11 @@ savePheno <- function(simulatedData, directoryGeno, directoryPheno,
     }
     if ("rds" %in% format) {
         saveRDS(phenoComponents$Y, 
-                paste(directoryPheno, "/Ysim", outstring ,".rds", sep=""))
+                paste(directory, "/Ysim", outstring ,".rds", sep=""))
     }
     if ("csv" %in% format) {
         write.table(phenoComponents$Y, 
-                    paste(directoryPheno, "/Ysim", outstring, ".csv", sep=""), 
+                    paste(directory, "/Ysim", outstring, ".csv", sep=""), 
                     sep=",", quote=FALSE, col.names=NA, row.names=TRUE)
     }
     if ("plink" %in% format) {
@@ -400,7 +390,7 @@ savePheno <- function(simulatedData, directoryGeno, directoryPheno,
                                      format="plink", 
                                      standardInput_samples = 
                                          rawComponents$genotypes$format_files$plink_fam,
-                                     directory=directoryPheno, 
+                                     directory=directory, 
                                      id_samples=id_samples,
                                      id_snps=id_snps,
                                      id_traits=id_traits)
@@ -415,7 +405,7 @@ savePheno <- function(simulatedData, directoryGeno, directoryPheno,
                                            rawComponents$genotypes$format_files$oxgen_genotypes,
                                        standardInput_samples = 
                                            rawComponents$genotypes$format_files$snptest_samples,
-                                       directory=directoryPheno, 
+                                       directory=directory, 
                                        id_samples=id_samples,
                                        id_snps=id_snps,
                                        id_traits=id_traits)
@@ -428,7 +418,7 @@ savePheno <- function(simulatedData, directoryGeno, directoryPheno,
                                       format="bimbam", 
                                       standardInput_genotypes = 
                                           rawComponents$genotypes$format_files$bimbam_snp_info,
-                                      directory=directoryPheno, 
+                                      directory=directory, 
                                       id_samples=id_samples,
                                       id_snps=id_snps,
                                       id_traits=id_traits)
@@ -441,178 +431,178 @@ savePheno <- function(simulatedData, directoryGeno, directoryPheno,
                                      format="gemma", 
                                      standardInput_genotypes = 
                                          rawComponents$genotypes$format_files$bimbam_snp_info,
-                                     directory=directoryPheno, 
+                                     directory=directory, 
                                      id_samples=id_samples,
                                      id_snps=id_snps,
                                      id_traits=id_traits)
     }
     
     if (grepl("Bg", modelGenetic)) {
-        vmessage(c("Save genetic background component to ", directoryPheno,
+        vmessage(c("Save genetic background component to ", directory,
                    "/Y_genBg..."), verbose=verbose, sep="")
         if ("rds" %in% format) {
             saveRDS(phenoComponents$Y_genBg, 
-                    paste(directoryPheno, "/Y_genBg", outstring,".rds",sep=""))
+                    paste(directory, "/Y_genBg", outstring,".rds",sep=""))
             saveRDS(phenoComponents$cov_Y_genBg, 
-                    paste(directoryPheno, "/cov_Y_genBg", outstring,".rds", 
+                    paste(directory, "/cov_Y_genBg", outstring,".rds", 
                           sep=""))
         }
         if ("csv" %in% format) {
             write.table(phenoComponents$Y_genBg, 
-                        paste(directoryPheno, "/Y_genBg", outstring,".csv", 
+                        paste(directory, "/Y_genBg", outstring,".csv", 
                               sep=""),
                         sep=",",quote=FALSE, col.names=NA, row.names=TRUE)
             write.table(phenoComponents$cov_Y_genBg, 
-                        paste(directoryPheno, "/cov_Y_genBg", outstring,".csv", 
+                        paste(directory, "/cov_Y_genBg", outstring,".csv", 
                               sep=""), 
                         sep=",", quote=FALSE, col.names=FALSE, row.names=FALSE)
         }
         vmessage(c("Save kinship to", directoryGeno), verbose=verbose)
         if ("rds" %in% format) {
             saveRDS(rawComponents$kinship, 
-                    paste(directoryPheno, "/kinship",outstring,".csv", sep="")) 
+                    paste(directory, "/kinship",outstring,".csv", sep="")) 
         }
         if ("csv" %in% format) {
             write.table(rawComponents$kinship, 
-                        paste(directoryPheno, "/kinship",outstring,".csv", 
+                        paste(directory, "/kinship",outstring,".csv", 
                               sep=""), 
                         sep=",", col.names=TRUE, row.names=FALSE)
         }
     }
         
     if (grepl("Fixed", modelGenetic)) {
-        vmessage(c("Save genetic fixed effects to ", directoryPheno, 
+        vmessage(c("Save genetic fixed effects to ", directory, 
                    "/Y_genFixed..."), verbose=verbose, sep="")
         if ("rds" %in% format) {
             saveRDS(phenoComponents$Y_genFixed, 
-                    paste(directoryPheno, "/Y_genFixed", outstring, ".rds", 
+                    paste(directory, "/Y_genFixed", outstring, ".rds", 
                           sep=""))
         }
         if ("csv" %in% format) {
             write.table(phenoComponents$Y_genFixed, 
-                        paste(directoryPheno, "/Y_genFixed", outstring, ".csv", 
+                        paste(directory, "/Y_genFixed", outstring, ".csv", 
                               sep=""), 
                         sep=",", quote=FALSE, col.names=NA, row.names=TRUE)
         }
         
-        vmessage(c("Save causal SNPs and their effect sizes to ", directoryGeno, 
+        vmessage(c("Save causal SNPs and their effect sizes to ", directory, 
                    "/SNP..."), verbose=verbose, sep="")
         if ("rds" %in% format) {
             saveRDS(phenoComponents$genFixed$cov,  
-                    paste(directoryGeno,"/SNP_NrSNP", NrSNP, outstring,
+                    paste(directory,"/SNP_NrSNP", NrSNP, outstring,
                           ".rds",sep=""))
             saveRDS(phenoComponents$genFixed$cov_effect,  
-                    paste(directoryGeno, "/SNP_effects_NrSNP", NrSNP, 
+                    paste(directory, "/SNP_effects_NrSNP", NrSNP, 
                           outstring, ".rds",sep=""))
         }
         if ("csv" %in% format) {
             write.table(phenoComponents$genFixed$cov,
-                        paste(directoryGeno, "/SNP_NrSNP", NrSNP,  
+                        paste(directory, "/SNP_NrSNP", NrSNP,  
                               outstring, ".csv",sep=""), 
                         sep=",", col.names=NA, row.names=TRUE, quote=FALSE)
             write.table(phenoComponents$genFixed$cov_effect,  
-                        paste(directoryGeno, "/SNP_effects_NrSNP", NrSNP, 
+                        paste(directory, "/SNP_effects_NrSNP", NrSNP, 
                               outstring, ".csv",sep=""), 
                         sep=",", col.names=NA, row.names=TRUE, quote=FALSE)
         }
     }
     if (!is.null(rawComponents$genotypes)) {
-        vmessage(c("Save genotypes to", directoryGeno), verbose=verbose)
+        vmessage(c("Save genotypes to", directory), verbose=verbose)
         if ("csv" %in% format) {
             write.table(t(rawComponents$genotypes$genotypes), 
-                paste(directoryGeno, "/genotypes", outstring, ".csv", sep=""), 
+                paste(directory, "/genotypes", outstring, ".csv", sep=""), 
                 sep=",", col.names=NA, row.names=TRUE, quote=FALSE)
         }
         if ("rds" %in% format) {
             saveRDS(t(rawComponents$genotypes$genotypes), 
-                    paste(directoryGeno, "/genotypes", outstring, ".rds", 
+                    paste(directory, "/genotypes", outstring, ".rds", 
                           sep=""))
         }
     }
     
     if (grepl("Correlated", modelNoise)) {
-        vmessage(c("Save correlated background to ", directoryPheno, 
+        vmessage(c("Save correlated background to ", directory, 
                    "/Y_correlatedBg..."), verbose=verbose, sep="")
         if ("rds" %in% format) {
             saveRDS(phenoComponents$Y_correlatedBg, 
-                    paste(directoryPheno, "/Y_correlatedBg", outstring,".rds", 
+                    paste(directory, "/Y_correlatedBg", outstring,".rds", 
                           sep=""))
         }
         if ("csv" %in% format) {
             write.table(phenoComponents$Y_correlatedBg,
-                        paste(directoryPheno, "/Y_correlatedBg", outstring, 
+                        paste(directory, "/Y_correlatedBg", outstring, 
                               ".csv", sep=""), 
                         sep=",", quote=FALSE, col.names=NA, row.names=TRUE)
         }
     }
     if (grepl("Bg", modelNoise)) {
-        vmessage(c("Save noise background to ", directoryPheno, "/Y_noiseBg..."
+        vmessage(c("Save noise background to ", directory, "/Y_noiseBg..."
                    ), verbose=verbose, sep="")
         if ("rds" %in% format) {
             saveRDS(phenoComponents$Y_noiseBg, 
-                    paste(directoryPheno, "/Y_noiseBg", outstring,".rds", 
+                    paste(directory, "/Y_noiseBg", outstring,".rds", 
                           sep=""))
             saveRDS(phenoComponents$cov_Y_noiseBg, 
-                    paste(directoryPheno, "/cov_Y_noiseBg", outstring,".rds", 
+                    paste(directory, "/cov_Y_noiseBg", outstring,".rds", 
                           sep=""))
         }
         if ("csv" %in% format) {
             write.table(phenoComponents$Y_noiseBg, 
-                        paste(directoryPheno, "/Y_noiseBg", outstring,".csv", 
+                        paste(directory, "/Y_noiseBg", outstring,".csv", 
                               sep=""), sep=",",
                         quote=FALSE, col.names=NA, row.names=TRUE)
             write.table(phenoComponents$cov_Y_noiseBg, 
-                        paste(directoryPheno, "/cov_Y_noiseBg",
+                        paste(directory, "/cov_Y_noiseBg",
                               outstring,".csv", sep=""), sep=",",
                         quote=FALSE, col.names=FALSE, row.names=FALSE)
         }
     }
     
     if (grepl("Fixed", modelNoise)) {
-        vmessage(c("Save noise fixed effects to ", directoryPheno, 
+        vmessage(c("Save noise fixed effects to ", directory, 
                    "/Y_noiseFixed..."), verbose=verbose, sep="")
         if ("rds" %in% format) {
             saveRDS(phenoComponents$Y_noiseFixed, 
-                    paste(directoryPheno, "/Y_noiseFixed", outstring, ".rds", 
+                    paste(directory, "/Y_noiseFixed", outstring, ".rds", 
                           sep=""))
         }
         if ("csv" %in% format) {
             write.table(phenoComponents$Y_noiseFixed, 
-                        paste(directoryPheno, "/Y_noiseFixed", outstring,
+                        paste(directory, "/Y_noiseFixed", outstring,
                               ".csv", sep=""), 
                         sep=",", quote=FALSE, col.names=NA, row.names=TRUE)
         }
         
         vmessage(c("Save covariates and their effect sizes to ", 
-                   directoryPheno, "/Covs..."), verbose=verbose, sep="")
+                   directory, "/Covs..."), verbose=verbose, sep="")
         if ("rds" %in% format) {
             saveRDS(phenoComponents$noiseFixed$cov,
-                    paste(directoryPheno, "/Covs", outstring, ".rds", sep=""))
+                    paste(directory, "/Covs", outstring, ".rds", sep=""))
             saveRDS(phenoComponents$noiseFixed$cov_effects,
-                    paste(directoryPheno, "/Covs_effect", outstring, ".rds", 
+                    paste(directory, "/Covs_effect", outstring, ".rds", 
                           sep=""))
         }
         if ("csv" %in% format) {
             write.table(phenoComponents$noiseFixed$cov, 
-                        paste(directoryPheno, "/Covs", outstring, ".csv", 
+                        paste(directory, "/Covs", outstring, ".csv", 
                               sep=""), 
                         sep=",", quote=FALSE, col.names=NA, row.names=TRUE)
             write.table(phenoComponents$noiseFixed$cov_effect, 
-                        paste(directoryPheno, "/Covs_effect", outstring,".csv",
+                        paste(directory, "/Covs_effect", outstring,".csv",
                               sep=""), 
                         sep=",", quote=FALSE, col.names=NA, row.names=TRUE)
         }
     }
     if ("rds" %in% format) {
         saveRDS(simulatedData$varComponents, 
-                paste(directoryPheno, "/varComponents",  outstring, ".rds", 
+                paste(directory, "/varComponents",  outstring, ".rds", 
                       sep=""))
     }
     if ("csv" %in% format) {
         write.table(simulatedData$varComponents, 
-                    paste(directoryPheno, "/varComponents", outstring, ".csv",
+                    paste(directory, "/varComponents", outstring, ".csv",
                           sep=""), 
                     sep=",", quote=FALSE, col.names=TRUE, row.names=FALSE)
     }
-    return(list(directoryPheno=directoryPheno, directoryGeno=directoryGeno))
+    return(list(directory=directory))
 }

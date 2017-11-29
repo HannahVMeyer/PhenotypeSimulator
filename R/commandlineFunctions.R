@@ -200,16 +200,11 @@ simulatePhenotypes <- function() {
                     SNPs from (as opposed to a independent list of chromosomes 
                     to draw from via --chrom) [default: %default]"),
         
-        make_option(c("-dg", "--directoryGeno"), action="store", 
-                    dest="directoryGeno", default=NULL, type="character", help=
+        make_option(c("-d", "--directory"), action="store", 
+                    dest="directory", default=NULL, type="character", help=
                     "Absolute path (no tilde expansion) to parent directory
-                    for genotypes; [needs user writing permission,
-                    [default: %default]"),
-        make_option(c("-dp", "--directoryPheno"), action="store", 
-                    dest="directoryPheno", default=NULL, type="character", 
-                    help="Absolute path (no tilde expansion) to parent directory
-                    for phenotypes; needs user writing permission,
-                    [default: %default]"),
+                    where simulation results should be saved; [needs user 
+                    writing permission, [default: %default]"),
         make_option(c("-ds", "--subdirectory"), action="store", dest="outstring"
                     , default=NULL, type="character", help="Name of subdirectory
                     to be created within dg/dp [default: %default]"),
@@ -290,8 +285,7 @@ simulatePhenotypes <- function() {
     }
     
     if (args$verbose) {
-        message("Phenotype directory: ", args$directoryPheno)
-        message("Genotype directory: ", args$directoryGeno)
+        message("Output directory: ", args$directory)
         message("Subdirectory: ", args$outstring)
         if (!is.null(args$kinshipfile)) {
             message("Kinship file: ", args$kinshipfile)
@@ -395,7 +389,6 @@ simulatePhenotypes <- function() {
                         format=format,
                         intercept_gemma=args$intercept_gemma,
                         outstring=args$outstring, 
-                        directoryGeno=args$directoryGeno, 
-                        directoryPheno=args$directoryPheno,
+                        directory=args$directory, 
                         verbose=args$verbose)
 }
