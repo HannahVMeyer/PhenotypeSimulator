@@ -6,18 +6,27 @@
 #' with specified delimiter) can be written. For more information on the 
 #' different file formats see \emph{External formats}.
 #'
-#' @param genotypes data.frame/matrix
-#' @param phenotypes data.frame/matrix
-#' @param covariates data.frame/matrix
-#' @param kinship data.frame/matrix
+#' @param genotypes [NrSample x NrSNP] data.frame/matrix of genotypes [integers]
+#' /[doubles]
+#' @param phenotypes [NrSample x NrTrait] data.frame/matrix of phenotypes 
+#' [doubles]
+#' @param covariates [NrSample x NrCovariates] data.frame/matrix of covariates
+#' [integers]/[doubles]
+#' @param kinship [NrSample x NrSamples] data.frame/matrix of kinship estimates
+#' [doubles]
 #' @param format name [string] of genotype file format, options are: "plink", 
 #' "snptest", "gemma", "bimbam", "delim". For details on the file formats see 
 #' \emph{External formats}.
-#' @param id_samples  [string] 
-#' @param id_snps [string] 
-#' @param id_traits [string] 
-#' @param standardInput_samples []
-#' @param standardInput_genotypes []
+#' @param id_samples vector of [NrSamples] sample IDs [string] of simulated 
+#' phenotypes, genotypes and covariates
+#' @param id_snps vector of [NrSNPs] snp IDs [string] of (simulated) 
+#' genotypes
+#' @param id_traits vector of [NrTraits] phenotype IDs [string] of 
+#' simulated phenotypes
+#' @param standardInput_samples data.frame of sample information obtained when 
+#' reading genotypes from plink, oxgen or genome file
+#' @param standardInput_genotypes data.frame of genotypes obtained when 
+#' reading genotypes from plink, oxgen, or genome file
 #' @param directory absolute path (no tilde expansion) to parent directory 
 #' [string] where the data should be saved [needs user writing permission]
 #' @param outstring optional name [string] of subdirectory (in relation to 
@@ -33,7 +42,7 @@
 #' might be used for output writing).
 #' @section External formats:
 #' \itemize{
-#' \item PLINK: consists of three files, .bed, .bim and .fam. 
+#' \item plink format: consists of three files, .bed, .bim and .fam. 
 #' From \url{https://www.cog-genomics.org/plink/1.9/formats}:  The .bed 
 #' files contain the  primary representation of genotype calls at biallelic 
 #' variants in a binary format. The .bim is a text file with no header 
@@ -50,7 +59,7 @@
 #' in dataset), v) sex code ('1' = male, '2' = female, '0' = unknown), vi) 
 #' Phenotype value ('1' = control, '2' = case, '-9'/'0'/non-numeric = missing 
 #' data if case/control)
-#' \item snptest: consists of two files, the genotype file ending in .gen 
+#' \item snptest format: consists of two files, the genotype file ending in .gen 
 #' and the sample file ending in .sample. From
 #'  \url{http://www.stats.ox.ac.uk/~marchini/software/gwas/file_format.html}:
 #' The genotype file stores data on a one-line-per-SNP format. The first 5 
@@ -65,17 +74,46 @@
 #' individuals in the sample file. The sample file has three parts (a) a header 
 #' line detailing the names of the columns in the file, (b) a line detailing the 
 #' types of variables stored in each column, and (c) a line for each individual 
-#' detailing the information for that individual. For more information on the 
-#' sampple file visit the above url
-#' \item bimbam: Mean genotype file format of bimbam which is a single file, 
-#' without information on individuals. From 
+#' detailing the information for that individual. 
+#' a) The header line needs a minimum of three entries. The first three entries 
+#' should always be ID_1, ID_2 and missing. They denote that the first three 
+#' columns contain the first ID, second ID and missing data proportion of each 
+#' individual. Additional entries on this line should be the names of covariates 
+#' or phenotypes that are included in the file. In the above example, there are 
+#' 4 covariates named cov_1, cov_2, cov_3, cov_4, a continuous phenotype named 
+#' pheno1 and a binary phenotype named bin1. All phenotypes should appear after 
+#' the covariates in this file. b) The second line (the variable type line) 
+#' details the type of variables included in each column. The first three 
+#' entries of this line should be set to 0. Subsequent entries in this line for 
+#' covariates and phenotypes should be specified by the following rules: D for
+#' Discrete covariates (coded using positive integers), C for Continuous 
+#' covariates, P for Continuous Phenotype, B for Binary Phenotype (0 = Controls, 
+#' 1 = Cases). c) Individual information: one line for each individual 
+#' containing the information specified by the entries of the header line.
+#' Entries of the sample file are separated by spaces.
+#' \item bimbam format: consists of a) a simple, tab-separated phenotype file 
+#' without sample or phenotype header/index and b) the mean genotype file format 
+#' which is a single file, without information on individuals. From 
 #' \url{http://www.haplotype.org/bimbam.html}: The first column of the mean 
 #' genotype files is the SNP ID, the second and third columns are allele types 
 #' with minor allele first. The rest columns are the mean genotypes of different 
 #' individuals – numbers between 0 and 2 that represents the (posterior) mean 
 #' genotype, or dosage of the minor allele.
+#' \item gemma format: consists of a) a simple, tab-separated phenotype file 
+#' without sample or phenotype header/index and b) the mean genotype file format 
+#' which is a single file, without information on individuals (both the same as 
+#' above for bimbam format). In addition and if applicable, c) a kinship file 
+#' and d) covariate file. From 
+#' \url{http://www.xzlab.org/software/GEMMAmanual.pdf}: The kinship file 
+#' contains a NrSample × NrSample matrix, where each row and each column 
+#' corresponds to individuals in the same order as in the mean genotype file, 
+#' and ith row and jth column is a number indicating the relatedness value 
+#' between ith and jth individuals. The covariates file has the same format as 
+#' the phenotype file dsecribed above and must contain a column of 1’s if one 
+#' wants to include an intercept term (set parameter intercept_gemma=TRUE).
 #' }
 #' @export
+#' @seealso \link{readStandardGenotypes}
 #' @examples 
 #' simulation <- runSimulation(N=10, P=2, genVar=0.4, h2s=0.2, phi=1)
 #' genotypes <- simulation$rawComponents$genotypes
@@ -84,12 +122,16 @@
 #' 
 #' \dontrun{
 #' # Save in plink format (.bed, .bim, .fam, Y_sim_plink.txt)
-#' writeStandardOutput(directory=/path/to/output, genotypes=genotypes, 
-#' phenotypes=phenotypes, format="plink")
+#' writeStandardOutput(directory="/path/to/output", genotypes=genotypes$genotypes, 
+#' phenotypes=phenotypes, id_samples = genotypes$id_samples, 
+#' id_snps = genotypes$id_snps, id_traits = colnames(phenotypes), 
+#' format="plink")
 #' 
-#' # Save in gemma format (gemma)
-#' writeStandardOutput(directory=/path/to/output, genotypes=genotypes,
-#' phenotypes=phenotypes, kinship=kinship, format="gemma")
+#' # Save in gemma and snptest format
+#' writeStandardOutput(directory="/path/to/output", genotypes=genotypes$genotypes, 
+#' phenotypes=phenotypes, id_samples = genotypes$id_samples, 
+#' id_snps = genotypes$id_snps, id_traits = colnames(phenotypes),
+#'  kinship=kinship, format=c("snptest", "gemma"))
 #' }
 writeStandardOutput <- function(directory, 
                                 genotypes=NULL, phenotypes=NULL, 
@@ -106,7 +148,7 @@ writeStandardOutput <- function(directory,
              "snptest, gemma, bimbam, delim (where the delimiter is specified", "
              via 'delimiter=')")
     }
-    if (format == "plink") {
+    if ("plink" %in% format) {
         if (!is.null(phenotypes)) {
             if (is.null(standardInput_samples)) {
                 pheno_format <- cbind(id_samples, id_samples, phenotypes)
@@ -153,7 +195,7 @@ writeStandardOutput <- function(directory,
                         sep="\t", quote=FALSE, col.names=TRUE, row.names=FALSE)
         }
     }
-    if (format == "bimbam") {
+    if ("bimbam" %in% format) {
         if (!is.null(phenotypes)) {
             write.table(phenotypes, paste(directory, "/Ysim", outstring, 
                                 "_bimbam.txt", sep=""), sep="\t", 
@@ -172,7 +214,7 @@ writeStandardOutput <- function(directory,
         }
         
     }
-    if (format == "gemma") {
+    if ("gemma" %in% format) {
         if (!is.null(phenotypes)) {
             write.table(phenotypes, paste(directory, "/Ysim", outstring, 
                                     "_gemma.txt", sep=""), sep="\t", 
@@ -204,7 +246,7 @@ writeStandardOutput <- function(directory,
                         quote=FALSE, col.names=FALSE, row.names=FALSE)
         }
     }
-    if (format == "snptest") {
+    if ("snptest" %in% format) {
         if (!is.null(phenotypes)) {
             line2 <- rep("P", length(id_traits))
             pheno_tmp <- rbind(line2, phenotypes)
@@ -250,7 +292,7 @@ writeStandardOutput <- function(directory,
             covs_format <- cbind(ids, covs, pheno)
             write.table(covs_format, paste(directory, "/Ysim", outstring, 
                                            "_snptest.samples", sep=""),
-                        col.names=TRUE, row.names=FALSE, quote=FALSE)
+                        sep=" ", col.names=TRUE, row.names=FALSE, quote=FALSE)
         }
     }
 }
@@ -267,29 +309,26 @@ writeStandardOutput <- function(directory,
 #' iii) a named list of parameters describing the model setup (setup) and iv) 
 #' a named list of raw components (rawComponents) used for genetic effect 
 #' simulation (genotypes and/or kinship); obtained from \link{runSimulation} 
-#' @param directoryGeno absolute path (no tilde expansion) to parent directory 
-#' [string] where genotypes from simulations should be saved [needs user writing 
+#' @param directory absolute path (no tilde expansion) to parent directory 
+#' [string] where simulated data should be saved [needs user writing 
 #' permission]
-#' @param directoryPheno absolute path (no tilde expansion) to parent directory 
-#' [string] where final phenotype and phenotype components from simulations 
-#' should be saved [needs user writing permission]
 #' @param outstring optional name [string] of subdirectory (in relation to 
-#' directoryPheno/directoryGeno) to save set-up
-#' independent simulation results
+#' directoryPheno/directoryGeno) to save set-up dependent simulation results; if
+#' set to NULL, subdirectory named by NrSamples, NrSNPs, genetic Model and 
+#' noise Model and genVar is created.
 #' @param intercept_gemma [boolean] When modeling an intercept term in gemma, a 
 #' column of 1's have to be appended to the covariate files. Set intercept_gemma
 #' to TRUE to include a column of 1's in the output.
 #' @param format vector of format names [string] specifying the output format;
 #' multiple output formats can be requested. Options are: plink, bimbam, 
-#' snptest, csv or rds. For information on format see details. In order to 
-#' save intermediate phenotype components, at least one of csv or rds need to 
-#' be specified. plink/bimbam/snptest will only save final phenotype/genotype 
-#' and covariate data.
+#' snptest, gemma, csv or rds. For information on format see details. In order
+#' to save intermediate phenotype components, at least one of csv or rds need to 
+#' be specified. plink/bimbam/snptest will only save final phenotype/genotype, 
+#' kinship and covariate data.
 #' @param verbose [boolean]; if TRUE, progress info is printed to standard out
 #' @return list of paths [strings] to final output phenotype (directoryPheno) 
-#' and genotype (directoryGeno) directories. If outstring or subset settings not
-#' NULL, these directories will be subdirectories of the input phenotype and 
-#' genotype directories.
+#' and genotype (directoryGeno) directories. If outstring is NULL, these 
+#' directories will be subdirectories of the input phenotype and genotype directories.
 #' @export
 #' @examples
 #' simulatedPhenotype <- runSimulation(N=100, P=5, cNrSNP=10,
@@ -300,7 +339,7 @@ writeStandardOutput <- function(directory,
 #' format=c("csv", "plink"))}
 savePheno <- function(simulatedData, directoryGeno, directoryPheno, 
                       format=".csv",
-                      outstring=NULL,  intercept_gemma = TRUE, verbose=TRUE) {
+                      outstring="",  intercept_gemma = TRUE, verbose=TRUE) {
     if (grepl("~", directoryGeno)) {
         stop("directoryGeno contains ~: path expansion not guaranteed on 
              every platform (see path.expand{base}), please provide full file
