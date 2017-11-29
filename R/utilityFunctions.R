@@ -132,15 +132,30 @@ simulateDist <- function(x,
 #' genotype_prob[seq(1, nrSamples*3, 3) + sample(0:2, 10, replace=TRUE)] <- 1
 #' genotype_exp <- probGen2expGen(genotype_prob)
 probGen2expGen <- function(probGeno) {
+    if (is.list(probGeno) || !is.vector(probGeno, mode="numeric")) {
+        stop("probGen2expGen takes a vector of genotype probabilities as input,
+             but ",  typeof(probGeno), " provided.")
+    }
     if( length(probGeno) %% 3 != 0) {
         stop("Length of genotype probabilty vector (",  length(probGeno), 
              ") is not a multiple of three")
     }
+    if( any(is.na(probGeno))) {
+        stop("Samples need to be fully genotyped, but missing genotype data
+             detected. Consider imputing missing data, or excluding missing 
+             genotypes")
+    }
     multiples <- seq(1, length(probGeno), 3)
+    testProb <- zoo::rollapply(unlist(probGeno), 3, by = 3, sum, 
+                              partial = FALSE)
+    if (any(testProb != 1)) {
+        stop("Genotype probabilities do not sum to 1")
+    }
     probGeno[multiples] <- 0
     probGeno[(multiples + 2)] <- 2 *  probGeno[(multiples + 2)]
     expGeno <- zoo::rollapply(unlist(probGeno), 3, by = 3, sum, 
                               partial = FALSE)
+    return(expGeno )
 }
 
 #' Rewrite expected genotypes into genotype probabilities.
