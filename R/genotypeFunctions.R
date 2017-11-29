@@ -148,7 +148,7 @@ simulateGenotypes <- function(N, NrSNP=5000, frequencies=c(0.1, 0.2, 0.4),
 #' line detailing the names of the columns in the file, (b) a line detailing the 
 #' types of variables stored in each column, and (c) a line for each individual 
 #' detailing the information for that individual. For more information on the 
-#' sampple file visit the above url
+#' sampple file visit the above url or see \link{writeStandardOutput}.
 #' \item genome: The entire output of genome can be saved via `genome -options >
 #' outoutfile`. The /path/to/outputfile should be provided and this function
 #' extracts the relevant genotype information from this outout file.
@@ -251,7 +251,7 @@ readStandardGenotypes <- function(filename, format = NULL,
         id_snps <- data$V1
         genotypes <- t(data[,-1])
         id_samples <- colnames(data)
-        format_files = NULL
+        format_files <- NULL
     } else {
         stop(format, " is not a supported genotype format. Supported",
                  "formats are plink, oxgen, genome, bimbam and delim (where the 
@@ -301,11 +301,11 @@ readStandardGenotypes <- function(filename, format = NULL,
 #' each file needs to be the SNP_ID and files cannot contain a header. 
 #' getCausalSNPs generates a vector of chromosomes from which to sample the SNPs
 #' . For each of the chromosomes, it counts the number of SNPs in the chromosome
-#'  file and creates vectors of random numbers ranging from 1:NrSNPSinFile. Only 
-#'  the lines corresponding to these numbers are then read into R. The example 
-#'  data provided for chromosome 22 contains genotypes (50 samples) of the first 
-#'  500 SNPs on chromosome 22 with a minor allele frequency of greater than 2% 
-#'  from the European populations of the the 1000 Genomes project.
+#' file and creates vectors of random numbers ranging from 1:NrSNPSinFile. Only 
+#' the lines corresponding to these numbers are then read into R. The example 
+#' data provided for chromosome 22 contains genotypes (50 samples) of the first 
+#' 500 SNPs on chromosome 22 with a minor allele frequency of greater than 2% 
+#' from the European populations of the the 1000 Genomes project.
 #'  
 #' @seealso \code{\link{standardiseGenotypes}} 
 #' @export
