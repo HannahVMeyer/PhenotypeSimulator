@@ -313,7 +313,7 @@ writeStandardOutput <- function(directory,
 #' [string] where simulated data should be saved [needs user writing 
 #' permission]
 #' @param outstring optional name [string] of subdirectory (in relation to 
-#' directoryPheno/directoryGeno) to save set-up dependent simulation results; if
+#' directory) to save set-up dependent simulation results; if
 #' set to NULL, subdirectory named by NrSamples, NrSNPs, genetic Model and 
 #' noise Model and genVar is created.
 #' @param intercept_gemma [boolean] When modeling an intercept term in gemma, a 
@@ -326,9 +326,8 @@ writeStandardOutput <- function(directory,
 #' be specified. plink/bimbam/snptest will only save final phenotype/genotype, 
 #' kinship and covariate data.
 #' @param verbose [boolean]; if TRUE, progress info is printed to standard out
-#' @return list of paths [strings] to final output phenotype (directoryPheno) 
-#' and genotype (directoryGeno) directories. If outstring is NULL, these 
-#' directories will be subdirectories of the input phenotype and genotype directories.
+#' @return list of paths [strings] to final output directory. If outstring is 
+#' NULL, this directory will be a subdirectory of the input directory.
 #' @export
 #' @examples
 #' simulatedPhenotype <- runSimulation(N=100, P=5, cNrSNP=10,
@@ -457,7 +456,7 @@ savePheno <- function(simulatedData, directory, format=".csv",
                               sep=""), 
                         sep=",", quote=FALSE, col.names=FALSE, row.names=FALSE)
         }
-        vmessage(c("Save kinship to", directoryGeno), verbose=verbose)
+        vmessage(c("Save kinship to", directory), verbose=verbose)
         if ("rds" %in% format) {
             saveRDS(rawComponents$kinship, 
                     paste(directory, "/kinship",outstring,".csv", sep="")) 
