@@ -360,6 +360,9 @@ setModel <- function(genVar=NULL, h2s=NULL, theta=0.8, h2bg=NULL, eta=0.8,
 #' @param chr numeric vector of chromosomes to chose NrCausalSNPs from; only 
 #' used when external genotype data is provided i.e. is.null(genoFilePrefix) == 
 #' FALSE
+#' @param NrSNPsOnChromosome specifies the number of SNPs per entry in chr 
+#' (see above); has to be the same length as chr. If not provided, lines in file 
+#' will be counted (which can be slow for large files)
 #' @param NrChrCausal Number [integer] of causal chromosomes to  chose 
 #' NrCausalSNPs from (as opposed to the actual chromosomes to chose from via chr
 #' );  only used when external genotype data is provided i.e. 
@@ -470,7 +473,7 @@ runSimulation <- function(N=1000, P=10, tNrSNP=5000, cNrSNP=20,
                           NrConfounders=10, seed=219453, 
                           pTraitsAffectedGenetics=1,
                           pTraitsAffectedConfounders=1,
-                          chr=NULL, NrChrCausal=NULL,
+                          chr=NULL, NrSNPsOnChromosome=NULL,NrChrCausal=NULL,
                           skipFields=NULL, probabilities=FALSE, oxgen=FALSE,
                           genVar=NULL, h2s=NULL, theta=0.8, h2bg=NULL, eta=0.8, 
                           noiseVar=NULL, rho=NULL, delta=NULL, gamma=0.8, 
@@ -542,9 +545,13 @@ runSimulation <- function(N=1000, P=10, tNrSNP=5000, cNrSNP=20,
         }
         causalSNPs <- getCausalSNPs(NrCausalSNPs=cNrSNP, chr=chr, 
                                     NrChrCausal=NrChrCausal,
+                                    NrSNPsOnChromosome=NrSNPsOnChromosome,
                                     genotypes=genotypes$genotypes,
                                     genoFilePrefix=genoFilePrefix, 
                                     genoFileSuffix=genoFileSuffix, 
+                                    oxgen=oxgen,
+                                    probabilities = probabilities,
+                                    skipFields = skipFields,
                                     delimiter=genoDelimiter, 
                                     sampleID=sampleID, 
                                     verbose=verbose)
