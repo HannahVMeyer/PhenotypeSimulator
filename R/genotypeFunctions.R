@@ -278,6 +278,9 @@ readStandardGenotypes <- function(filename, format = NULL,
 #' @param chr numeric vector of chromosomes to chose NrCausalSNPs from; only 
 #' used when external genotype data is provided i.e. is.null(genoFilePrefix) 
 #' == FALSE
+#' @param NrSNPsOnChromosome specifies the number of SNPs per entry in chr 
+#' (see above); has to be the same length as chr. If not provided, lines in file 
+#' will be counted (which can be slow for large files)
 #' @param NrChrCausal Number [integer] of causal chromosomes to  chose 
 #' NrCausalSNPs from (as opposed to the actual chromosomes to chose from via chr
 #' );  only used when external genotype data is provided i.e. 
@@ -337,7 +340,8 @@ readStandardGenotypes <- function(filename, format = NULL,
 #' genoFilePrefix=genoFilePrefix, 
 #' genoFileSuffix=genoFileSuffix)
 getCausalSNPs <- function(NrCausalSNPs=20,  genotypes=NULL,
-                          chr=NULL, NrChrCausal=NULL, genoFilePrefix=NULL, 
+                          chr=NULL, NrSNPsOnChromosome=NULL, 
+                          NrChrCausal=NULL, genoFilePrefix=NULL, 
                           genoFileSuffix=NULL, oxgen=FALSE,
                           delimiter=",", skipFields=NULL, probabilities=FALSE, 
                           sampleID="ID_", verbose=TRUE) {
@@ -382,21 +386,38 @@ getCausalSNPs <- function(NrCausalSNPs=20,  genotypes=NULL,
 			NrCausalSNPsChr[addSNP] <- NrCausalSNPsChr[addSNP] + 1
 		}
 		vmessage(c("Causal chromosomes:", ChrCausal), verbose=verbose)
+		if (!is.null(NrSNPsOnChromosome ) && 
+		    length(ChrCausal) != length(NrSNPsOnChromosome)) {
+		    stop("Not enough information about numbers of SNPs per chromosome 
+		         provdied. Number of causal chromosomes: ", length(ChrCausal),
+		         ", Information about SNPs on these chromosomes given for ",
+		         length(NrSNPsOnChromosome, "."))
+		}
 		vmessage(c("Get causal SNPs from chromsome-wide SNP files (", 
 		           genoFilePrefix, "...)", sep=""), verbose=verbose)
 		
 		causalSNPs <- lapply(seq_along(ChrCausal), function(chrom) {
-		    vmessage(c("Get causal SNPs from chr", chrom, "...)", sep=""), 
-		             verbose=verbose)
+		    vmessage(c("Get", NrCausalSNPsChr[chrom], "causal SNPs from chr", 
+		               chrom, "...", sep=""), verbose=verbose)
 			chromosomefile <- paste(genoFilePrefix, "chr", ChrCausal[chrom], 
 			                        genoFileSuffix, sep="")
-			SNPsOnChromosome <- R.utils::countLines(chromosomefile) - 1
+		    if(is.null(NrSNPsOnChromosome)) {
+    			vmessage(c("Count number of SNPs on", chrom, "...", sep=""), 
+    		             verbose=verbose)
+    			SNPsOnChromosome <- R.utils::countLines(chromosomefile) - 1
+		    } else {
+		        SNPsOnChromosome <- NrSNPsOnChromosome[chrom]
+		    }
 			if (SNPsOnChromosome <  NrCausalSNPsChr[chrom]) {
 			    stop(paste("Number of causal SNPs to be chosen from chromosome", 
 			               chr, "is larger than actual number of SNPs provided",
 			               "in chromosome file"))
 			}
-			randomSNPindex <- sample(1:SNPsOnChromosome, NrCausalSNPsChr[chrom])
+			
+		    vmessage(c("Sample SNPs on", chrom, "...", sep=""), 
+		             verbose=verbose)
+			randomSNPindex <- sample(1:SNPsOnChromosome, 
+			                         NrCausalSNPsChr[chrom])
             randomSNPindex <- randomSNPindex[order(randomSNPindex, 
                                                    decreasing=FALSE)]
  			causalSNPsChr <- read.table(
@@ -494,6 +515,9 @@ getKinship <- function(X=NULL, kinshipfile=NULL, sampleID="ID_",
                 "however it has", nrow(kinship), "rows and", ncol(kinship), 
                 "columns"))
             }
+        }
+        if (!header) {
+            colnames(kinship) <- paste(sampleID, seq(1, N, 1), sep="")
         }
     } else {
         stop ("Either X or kinshipfile must be provided")
