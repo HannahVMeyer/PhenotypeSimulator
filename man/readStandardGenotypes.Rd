@@ -37,6 +37,11 @@ software (binary plink, hapgen2, genome). Alternatively, simple text files (
 with specified delimiter) can be read. For more information on the different 
 file formats see \emph{External genotype software and formats}.
 }
+\details{
+The file formats and software formates supported are described
+below. For large external genotypes, consider the option to only read, 
+randomly selected, causal SNPs into memory via \link{getCausalSNPs}.
+}
 \section{External genotype software and formats}{
 
 \subsection{Formats:}{
@@ -80,7 +85,7 @@ individuals in the sample file. The sample file has three parts (a) a header
 line detailing the names of the columns in the file, (b) a line detailing the 
 types of variables stored in each column, and (c) a line for each individual 
 detailing the information for that individual. For more information on the 
-sampple file visit the above url
+sampple file visit the above url or see \link{writeStandardOutput}.
 \item genome: The entire output of genome can be saved via `genome -options >
 outoutfile`. The /path/to/outputfile should be provided and this function
 extracts the relevant genotype information from this outout file.
