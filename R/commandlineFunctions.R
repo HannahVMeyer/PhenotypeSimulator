@@ -56,12 +56,12 @@ simulatePhenotypes <- function() {
         make_option(c("-cS", "--cNrSNPs"), action="store", dest="cNrSNPs", 
                     default=20, type="integer", help="Number of causal SNPs to 
                     draw from total SNPs [default: %default]"),
-        
         make_option(c("-SNPfrequencies", "--SNPfrequencies"), action="store", 
                     dest="SNPfrequencyString", default="0.1,0.2,0.4", 
                     type="character", help="Comma-separated list of allele 
                     frequencies from which to sample to simulate genotypes 
                     [default: %default]"),
+        
         make_option(c("-psg", "--pIndependentGenetic"), action="store", 
                     dest="pIndependentGenetic", default=0.4, type="double", 
                     help="Proportion of variance of fixed genetic effects to 
@@ -70,6 +70,7 @@ simulatePhenotypes <- function() {
                     dest="pTraitIndependentGenetic", default=0.2, type="double", 
                     help="Proportion of traits influenced by independent fixed 
                     genetic effects [default: %default]"),
+        
         make_option(c("-psn", "--pIndependentConfounders"), action="store", 
                     dest="pIndependentConfounders", default=0.4, 
                     type="character", 
@@ -95,12 +96,11 @@ simulatePhenotypes <- function() {
                     variance of background genetic effects [default: %default]"),
         make_option(c("-theta", "--theta"), action="store", dest="theta", 
                     default=0.8, type="double", help="Proportion of genetic 
-                    variance of shared fixed genetic effects [default: %default]"
-        ),
+                    variance of shared fixed genetic effects [default:
+                    %default]"),
         make_option(c("-eta", "--eta"), action="store", dest="eta", default=0.8, 
                     type="double", help="Proportion of genetic variance of 
                     shared genetic background effects  [default: %default]"),
-        
         make_option(c("-delta", "--delta"), action="store", dest="delta", 
                     default=NULL, type="double", help="Proportion of variance of 
                     fixed noise effects [default: %default]"),
@@ -120,6 +120,7 @@ simulatePhenotypes <- function() {
         make_option(c("-pcorr", "--pcorr"), action="store", dest="pcorr", 
                     default=0.6, type="double", help="Correlation strength of
                     correlated noise effects [default: %default]"),
+        
         make_option(c("--pTraitsAffectedConfounders"), action="store", 
                     dest="pTraitsAffectedConfoundersString", default="1", 
                     type="character", help="[Proportion(s) of traits affected by 
@@ -178,6 +179,7 @@ simulatePhenotypes <- function() {
                     effect sizes of confounders;  for 
                     more than one type of confounders, give values separated by 
                     commas, i.e. '1,2', [default: %default]"),
+        
         make_option(c("--pTraitsAffectedGenetics"), action="store", 
                     dest="pTraitsAffectedGeneticsString", default=1, 
                     type="integer", help="[Proportion of traits affected by 
@@ -214,16 +216,6 @@ simulatePhenotypes <- function() {
                     help="Should genotypes be standardised for simulation of 
                     fixed effects [default: %default]"),
         
-        make_option(c("-chrom", "--chromosomes"), action="store", 
-                    dest="chr_string", default=NULL, type="character", 
-                    help="Comma-separated list of chromosomes to draw causal 
-                    SNPs from [default: %default]"),
-        make_option(c("--NrCausalChrom"), action="store", 
-                    dest="NrChrCausal", default=1, type="integer", 
-                    help="Number of chromosomes to draw causal 
-                    SNPs from (as opposed to a independent list of chromosomes 
-                    to draw from via --chrom) [default: %default]"),
-        
         make_option(c("-d", "--directory"), action="store", 
                     dest="directory", default=NULL, type="character", help=
                     "Absolute path (no tilde expansion) to parent directory
@@ -232,6 +224,7 @@ simulatePhenotypes <- function() {
         make_option(c("-ds", "--subdirectory"), action="store", dest="outstring"
                     , default=NULL, type="character", help="Name of subdirectory
                     to be created within dg/dp [default: %default]"),
+        
         make_option(c("-kf", "--kinshipfile"), action="store", 
                     dest="kinshipfile", default=NULL, type="character", 
                     help="Path to pre-computed, comma-separated kinshipfile 
@@ -244,6 +237,7 @@ simulatePhenotypes <- function() {
                     dest="kinshipDelimiter", default=",", type="character", 
                     help="Field separator of kinship file (e.g. `,`) 
                     [default: %default]"),
+        
         make_option(c("--genoFilePrefix"), action="store", 
                     dest="genoFilePrefix", default=NULL, type="character", 
                     help="Path to and prefix of per-chromosome comma-separated 
@@ -255,6 +249,39 @@ simulatePhenotypes <- function() {
         make_option(c("--genoFileDelimiter"), action="store", 
                     dest="genoFileDelimiter", default=",", type="character", 
                     help="Field separator of genotype file [default: %default]"),
+        make_option(c("--oxgenFile"), action="store_true", 
+                    dest="oxgen", default=FALSE, type="logical", 
+                    help="Is genoFilePrefix-genoFileSuffix file on oxgen format?
+                    [default: %default]"),
+        make_option(c("--probabilitiesFile"), action="store_true", 
+                    dest="probabilities", default=FALSE, type="logical", 
+                    help=" If set to TRUE, the genotypes in genoFilePrefix-
+                    genoFileSuffix are provided as triplets of probablities 
+                    (p(AA), p(Aa), p(aa)) and will be converted into their 
+                    expected genotype frequencies by 0*p(AA) + p(Aa) + 2*p(aa) 
+                    [default: %default]"),
+        make_option(c("--skipFields"), action="store", 
+                    dest="skipFields", default=NULL, type="integer", 
+                    help="Number of fields (columns) to skip in enoFilePrefix-
+                    genoFileSuffix file [default: %default]"),
+        
+        make_option(c("-chrom", "--chromosomes"), action="store", 
+                    dest="chr_string", default=NULL, type="character", 
+                    help="Comma-separated list of chromosomes to draw causal 
+                    SNPs from [default: %default]"),
+        make_option(c("--NrSNPsOnChromosome"), action="store", 
+                    dest="NrSNPsOnChromosomeString", default=NULL, type="string", 
+                    help="Comma-separated list of the number of SNPs per entry 
+                    --chrom (see above); has to be the same length as --chrom. 
+                    If not provided, lines in file will be counted (which can be
+                    slow for large files) [default: %default]"),
+        make_option(c("--NrCausalChrom"), action="store", 
+                    dest="NrChrCausal", default=1, type="integer", 
+                    help="Number of chromosomes to draw causal 
+                    SNPs from (as opposed to a independent list of chromosomes 
+                    to draw from via --chrom) [default: %default]"),
+        
+        
         
         make_option(c("--sampleID"), action="store", dest="sampleID", 
                     default="ID_", type="character", help="Prefix for naming 
@@ -332,15 +359,13 @@ simulatePhenotypes <- function() {
     
     
     NrConfounders <- commaList2vector(args$NrConfoundersStrings)
-    chr <- commaList2vector(args$chr_string)
     SNPfrequencies <- commaList2vector(args$SNPfrequencyString)
     pIndependentConfounders <- commaList2vector(args$pIndependentConfounders)
     pTraitIndependentConfounders <-
         commaList2vector(args$pTraitIndependentConfoundersString)
     pTraitsAffectedConfounders <-
         commaList2vector(args$pTraitsAffectedConfoundersString)
-    distBetaGenetic <- commaList2vector(args$distBetaGeneticString)
-    
+
     mBetaGenetic <- commaList2vector(args$mBetaGeneticString) 
     sdBetaGenetic <- commaList2vector(args$sdBetaGeneticString)
     distConfounders <- commaList2vector(args$distConfoundersString) 
@@ -352,6 +377,10 @@ simulatePhenotypes <- function() {
     mBetaConfounders <- commaList2vector(args$mBetaConfoundersStrin)
     sdBetaConfounders <- commaList2vector(args$sdBetaConfoundersString)
 
+    distBetaGenetic <- commaList2vector(args$distBetaGeneticString)
+    
+    chr <- commaList2vector(args$chr_string)
+    NrSNPsOnChromosome <- commaList2vector(args$NrSNPsOnChromosomeString )
     
     format <- NULL
     if (args$saveAsRDS) format <- c(format, "rds")
@@ -371,6 +400,10 @@ simulatePhenotypes <- function() {
                                      NrFixedEffects=args$NrFixedEffects,
                                      chr=chr, 
                                      NrChrCausal=args$NrChrCausal,
+                                     NrSNPsOnChromosome=NrSNPsOnChromosome,
+                                     probabilities = args$probabilities,
+                                     oxgen=args$oxgen,
+                                     skipeFields=args$skipFields,
                                      sampleID=args$sampleID, 
                                      phenoID=args$phenoID,
                                      genoFilePrefix=args$genoFilePrefix, 
