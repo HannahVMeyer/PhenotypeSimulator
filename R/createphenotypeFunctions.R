@@ -510,8 +510,8 @@ runSimulation <- function(N=1000, P=10, tNrSNP=5000, cNrSNP=20,
                       pTraitIndependentGenetic=pTraitIndependentGenetic, 
                       v=verbose)
     id_snps <- NULL
-    id_traits <- paste(phenoID, seq(1, P, 1), sep="")
-    id_samples <- paste(sampleID, seq(1, N, 1), sep="")
+    id_traits <- paste(phenoID, 1:P, sep="")
+    id_samples <- paste(sampleID, 1:N, sep="")
 
     ### create simulated phenotypes
     # 1. Simulate genetic terms
