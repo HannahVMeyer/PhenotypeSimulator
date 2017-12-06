@@ -148,6 +148,10 @@ writeStandardOutput <- function(directory,
              "snptest, gemma, bimbam, delim (where the delimiter is specified", "
              via 'delimiter=')")
     }
+    if (is.null(genotypes)) {
+        vmessage(c("No genotypes provided. Remaining data still saved in ", 
+                   paste(format, collapse=","), " format."))
+    }
     if ("plink" %in% format) {
         if (!is.null(phenotypes)) {
             if (is.null(standardInput_samples)) {
@@ -381,61 +385,6 @@ savePheno <- function(simulatedData, directory, format=".csv",
                     paste(directory, "/Ysim", outstring, ".csv", sep=""), 
                     sep=",", quote=FALSE, col.names=NA, row.names=TRUE)
     }
-    if ("plink" %in% format) {
-        plink <- writeStandardOutput(phenotypes=phenoComponents$Y, 
-                                     genotypes=rawComponents$genotypes$genotypes,
-                                     covariates=phenoComponents$noiseFixed$cov,
-                                     kinship=rawComponents$kinship,
-                                     format="plink", 
-                                     standardInput_samples = 
-                                         rawComponents$genotypes$format_files$plink_fam,
-                                     directory=directory, 
-                                     id_samples=id_samples,
-                                     id_snps=id_snps,
-                                     id_traits=id_traits)
-    }
-    if ("snptest" %in% format) {
-        snptest <- writeStandardOutput(phenotypes=phenoComponents$Y, 
-                                       genotypes=rawComponents$genotypes$genotypes,
-                                       covariates=phenoComponents$noiseFixed$cov,
-                                       kinship=rawComponents$kinship,
-                                       format="snptest", 
-                                       standardInput_genotypes = 
-                                           rawComponents$genotypes$format_files$oxgen_genotypes,
-                                       standardInput_samples = 
-                                           rawComponents$genotypes$format_files$snptest_samples,
-                                       directory=directory, 
-                                       id_samples=id_samples,
-                                       id_snps=id_snps,
-                                       id_traits=id_traits)
-    }
-    if ("bimbam" %in% format) {
-        bimbam <- writeStandardOutput(phenotypes=phenoComponents$Y, 
-                                      genotypes=rawComponents$genotypes$genotypes,
-                                      covariates=phenoComponents$noiseFixed$cov,
-                                      kinship=rawComponents$kinship,
-                                      format="bimbam", 
-                                      standardInput_genotypes = 
-                                          rawComponents$genotypes$format_files$bimbam_snp_info,
-                                      directory=directory, 
-                                      id_samples=id_samples,
-                                      id_snps=id_snps,
-                                      id_traits=id_traits)
-    }
-    if ("gemma" %in% format) {
-        gemma <- writeStandardOutput(phenotypes=phenoComponents$Y, 
-                                     genotypes=rawComponents$genotypes$genotypes,
-                                     covariates=phenoComponents$noiseFixed$cov,
-                                     kinship=rawComponents$kinship,
-                                     format="gemma", 
-                                     standardInput_genotypes = 
-                                         rawComponents$genotypes$format_files$bimbam_snp_info,
-                                     directory=directory, 
-                                     id_samples=id_samples,
-                                     id_snps=id_snps,
-                                     id_traits=id_traits)
-    }
-    
     if (grepl("Bg", modelGenetic)) {
         vmessage(c("Save genetic background component to ", directory,
                    "/Y_genBg..."), verbose=verbose, sep="")
@@ -518,7 +467,11 @@ savePheno <- function(simulatedData, directory, format=".csv",
                           sep=""))
         }
     }
-    
+    if (is.null(rawComponents$genotypes) && grepl("Fixed", modelGenetic)) {
+        vmessage(c("Only causal SNPs sampled from genoFilePrefix-genoFileSuffix",
+                   "file were read into memory, so no new genotypes files are",
+                   "written"), verbose=verbose)
+    }
     if (grepl("Correlated", modelNoise)) {
         vmessage(c("Save correlated background to ", directory, 
                    "/Y_correlatedBg..."), verbose=verbose, sep="")
@@ -602,6 +555,61 @@ savePheno <- function(simulatedData, directory, format=".csv",
                     paste(directory, "/varComponents", outstring, ".csv",
                           sep=""), 
                     sep=",", quote=FALSE, col.names=TRUE, row.names=FALSE)
+    }
+    if ("plink" %in% format) {
+        plink <- writeStandardOutput(phenotypes=phenoComponents$Y, 
+                                     genotypes=rawComponents$genotypes$genotypes,
+                                     covariates=phenoComponents$noiseFixed$cov,
+                                     kinship=rawComponents$kinship,
+                                     format="plink", 
+                                     standardInput_samples = 
+                                         rawComponents$genotypes$format_files$plink_fam,
+                                     directory=directory, 
+                                     id_samples=id_samples,
+                                     id_snps=id_snps,
+                                     id_traits=id_traits)
+    }
+    if ("snptest" %in% format) {
+        snptest <- writeStandardOutput(phenotypes=phenoComponents$Y, 
+                                       genotypes=rawComponents$genotypes$genotypes,
+                                       covariates=phenoComponents$noiseFixed$cov,
+                                       kinship=rawComponents$kinship,
+                                       format="snptest", 
+                                       standardInput_genotypes = 
+                                           rawComponents$genotypes$format_files$oxgen_genotypes,
+                                       standardInput_samples = 
+                                           rawComponents$genotypes$format_files$snptest_samples,
+                                       directory=directory, 
+                                       id_samples=id_samples,
+                                       id_snps=id_snps,
+                                       id_traits=id_traits)
+    }
+    if ("bimbam" %in% format) {
+        bimbam <- writeStandardOutput(phenotypes=phenoComponents$Y, 
+                                      genotypes=rawComponents$genotypes$genotypes,
+                                      covariates=phenoComponents$noiseFixed$cov,
+                                      kinship=rawComponents$kinship,
+                                      format="bimbam", 
+                                      standardInput_genotypes = 
+                                          rawComponents$genotypes$format_files$bimbam_snp_info,
+                                      directory=directory, 
+                                      id_samples=id_samples,
+                                      id_snps=id_snps,
+                                      id_traits=id_traits)
+    }
+    if ("gemma" %in% format) {
+        gemma <- writeStandardOutput(phenotypes=phenoComponents$Y, 
+                                     genotypes=rawComponents$genotypes$genotypes,
+                                     covariates=phenoComponents$noiseFixed$cov,
+                                     kinship=rawComponents$kinship,
+                                     format="gemma", 
+                                     intercept_gemma=intercept_gemma, 
+                                     standardInput_genotypes = 
+                                         rawComponents$genotypes$format_files$bimbam_snp_info,
+                                     directory=directory, 
+                                     id_samples=id_samples,
+                                     id_snps=id_snps,
+                                     id_traits=id_traits)
     }
     return(list(directory=directory))
 }
