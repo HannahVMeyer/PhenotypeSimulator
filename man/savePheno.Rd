@@ -4,8 +4,8 @@
 \alias{savePheno}
 \title{Save final phenotype and phenotype components.}
 \usage{
-savePheno(simulatedData, directoryGeno, directoryPheno, format = ".csv",
-  outstring = NULL, intercept_gemma = TRUE, verbose = TRUE)
+savePheno(simulatedData, directory, format = ".csv", outstring = "",
+  intercept_gemma = TRUE, verbose = TRUE)
 }
 \arguments{
 \item{simulatedData}{named list of i) dataframe of proportion of variance 
@@ -15,24 +15,21 @@ iii) a named list of parameters describing the model setup (setup) and iv)
 a named list of raw components (rawComponents) used for genetic effect 
 simulation (genotypes and/or kinship); obtained from \link{runSimulation}}
 
-\item{directoryGeno}{absolute path (no tilde expansion) to parent directory 
-[string] where genotypes from simulations should be saved [needs user writing 
+\item{directory}{absolute path (no tilde expansion) to parent directory 
+[string] where simulated data should be saved [needs user writing 
 permission]}
-
-\item{directoryPheno}{absolute path (no tilde expansion) to parent directory 
-[string] where final phenotype and phenotype components from simulations 
-should be saved [needs user writing permission]}
 
 \item{format}{vector of format names [string] specifying the output format;
 multiple output formats can be requested. Options are: plink, bimbam, 
-snptest, csv or rds. For information on format see details. In order to 
-save intermediate phenotype components, at least one of csv or rds need to 
-be specified. plink/bimbam/snptest will only save final phenotype/genotype 
-and covariate data.}
+snptest, gemma, csv or rds. For information on format see details. In order
+to save intermediate phenotype components, at least one of csv or rds need to 
+be specified. plink/bimbam/snptest will only save final phenotype/genotype, 
+kinship and covariate data.}
 
 \item{outstring}{optional name [string] of subdirectory (in relation to 
-directoryPheno/directoryGeno) to save set-up
-independent simulation results}
+directory) to save set-up dependent simulation results; if
+set to NULL, subdirectory named by NrSamples, NrSNPs, genetic Model and 
+noise Model and genVar is created.}
 
 \item{intercept_gemma}{[boolean] When modeling an intercept term in gemma, a 
 column of 1's have to be appended to the covariate files. Set intercept_gemma
@@ -41,10 +38,8 @@ to TRUE to include a column of 1's in the output.}
 \item{verbose}{[boolean]; if TRUE, progress info is printed to standard out}
 }
 \value{
-list of paths [strings] to final output phenotype (directoryPheno) 
-and genotype (directoryGeno) directories. If outstring or subset settings not
-NULL, these directories will be subdirectories of the input phenotype and 
-genotype directories.
+list of paths [strings] to final output directory. If outstring is 
+NULL, this directory will be a subdirectory of the input directory.
 }
 \description{
 savePheno saves model setup parameters and simulated genotypes to the 
@@ -55,7 +50,6 @@ specified directories. Requires a simulatedData list which is the output of
 simulatedPhenotype <- runSimulation(N=100, P=5, cNrSNP=10,
 genVar=0.2, h2s=0.2, phi=1)
 \dontrun{
-outputdir <- savePheno(simulatedPhenotype, directoryGeno="/path/to/dir/",  
-directoryPheno="/path/to/dir/", outstring="Data_simulation", 
-format=c("csv", "plink"))}
+outputdir <- savePheno(simulatedPhenotype, directory="/path/to/dir/",  
+outstring="Data_simulation", format=c("csv", "plink"))}
 }
