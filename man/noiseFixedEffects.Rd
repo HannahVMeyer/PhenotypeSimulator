@@ -5,65 +5,70 @@
 \title{Simulate noise fixed effects.}
 \usage{
 noiseFixedEffects(N, P, sampleID = "ID_", phenoID = "Trait_",
-  NrFixedEffects = 1, NrConfounders = 10, pIndependentConfounders = 0.4,
-  pTraitIndependentConfounders = 0.2, distConfounders = "norm",
-  mConfounders = 0, sdConfounders = 1, catConfounders = NULL,
-  probConfounders = NULL, distBeta = "norm", mBeta = 0, sdBeta = 1)
+  pTraitsAffected = 1, NrFixedEffects = 1, NrConfounders = 10,
+  pIndependentConfounders = 0.4, pTraitIndependentConfounders = 0.2,
+  distConfounders = "norm", mConfounders = 0, sdConfounders = 1,
+  catConfounders = NULL, probConfounders = NULL, distBeta = "norm",
+  mBeta = 0, sdBeta = 1)
 }
 \arguments{
-\item{N}{number [integer] of samples to simulate}
+\item{N}{number [integer] of samples to simulate.}
 
-\item{P}{number [integer] of phenotypes to simulate}
+\item{P}{number [integer] of phenotypes to simulate.}
 
 \item{sampleID}{prefix [string] for naming samples (followed by sample number
-from 1 to N)}
+from 1 to N).}
 
 \item{phenoID}{prefix [string] for naming traits (followed by trait number 
-from 1 to P)}
+from 1 to P).}
+
+\item{pTraitsAffected}{vector of proportion(s) [double] of traits affected by 
+the confounders. For non-integer results of pTraitsAffected*P, the ceiling of 
+the result is used.}
 
 \item{NrFixedEffects}{number [integer] of different fixed effects to simulate
 ; allows to simulate fixed effects from different distributions or with 
- differen parameters}
+ differen parameters.}
 
-\item{NrConfounders}{vector of number(s) [integer] of confounders to simulate}
+\item{NrConfounders}{vector of number(s) [integer] of confounders to 
+simulate.}
 
 \item{pIndependentConfounders}{vector of proportion(s) [double] of noise 
-effects (confounders) to have a trait-independent effect}
+effects (confounders) to have a trait-independent effect.}
 
 \item{pTraitIndependentConfounders}{vector of proportion(s) [double] of 
 traits influenced by independent fixed noise effects}
 
 \item{distConfounders}{vector of name(s) [string] of distribution to use to 
-simulate confounders; one of "unif", "norm", "bin", "cat_norm", "cat_unif"}
+simulate confounders; one of "unif", "norm", "bin", "cat_norm", "cat_unif".}
 
 \item{mConfounders}{vector of mean/midpoint(s) [double] of normal/uniform 
-distribution for confounders}
+distribution for confounders.}
 
 \item{sdConfounders}{vector of standard deviation(s)/distance from 
-midpoint(s) [double] of normal/uniform distribution for confounders}
+midpoint(s) [double] of normal/uniform distribution for confounders.}
 
 \item{catConfounders}{vector of number(s) of confounder categories [integer]; 
-required if distConfounders "cat_norm" or "cat_unif"}
+required if distConfounders "cat_norm" or "cat_unif".}
 
 \item{probConfounders}{vector of probability(s) [double] of binomial 
-confounders (0/1); required if distConfounders "bin"}
+confounders (0/1); required if distConfounders "bin".}
 
 \item{distBeta}{vector of name(s) [string] of distribution to use to simulate 
-effect sizes of confounders; one of "unif" or "norm"}
+effect sizes of confounders; one of "unif" or "norm".}
 
 \item{mBeta}{vector of mean/midpoint [double] of normal/uniform distribution 
-for effect sizes of confounders}
+for effect sizes of confounders.}
 
 \item{sdBeta}{vector of standard deviation/distance from midpoint [double] 
-of normal/uniform distribution for effect sizes of confounders}
+of normal/uniform distribution for effect sizes of confounders.}
 }
 \value{
 named list of shared fixed noise effects (shared: [N x P] matrix), 
 independent fixed noise effects (independent: [N x P] matrix), 
 the causal SNPs named by having a shared or independent effect 
 (cov: [NrConfounders x N] matrix) and the simulated effect sizes of the 
-confounders
-(cov_effect: [P x NrConfounders] dataframe)
+confounders (cov_effect: [P x NrConfounders] dataframe).
 }
 \description{
 noiseFixedEffects simulates a number of fixed noise effects 
@@ -99,11 +104,11 @@ noiseFE_binomialConfounders_uniformBetas <- noiseFixedEffects(P=10, N=20,
 NrConfounders=4, distConfounders="bin", probConfounders=0.2, distBeta="norm", 
 sdBeta=2)
 
- # 4 fixed noise effect with 2 binomial confounders and 2 normally 
- # distributed confounders 
+ # 2 fixed noise effect with 1 binomial confounders and 1 normally 
+ # distributed confounder; the latter only affects 2 traits 
  noiseFE_binomialandNormalConfounders <- noiseFixedEffects(P=10, N=20, 
- NrFixedEffects=2, NrConfounders=c(2,2), distConfounders=c("bin", "norm"), 
- probConfounders=0.2)
+ NrFixedEffects=2, pTraitsAffected =c (1,0.2), NrConfounders=c(2,2), 
+ distConfounders=c("bin", "norm"),  probConfounders=0.2)
 }
 \seealso{
 \code{\link{simulateDist}}
