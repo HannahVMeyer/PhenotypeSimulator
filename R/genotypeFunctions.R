@@ -391,14 +391,15 @@ getCausalSNPs <- function(NrCausalSNPs=20,  genotypes=NULL,
 		    stop("Not enough information about numbers of SNPs per chromosome 
 		         provdied. Number of causal chromosomes: ", length(ChrCausal),
 		         ", Information about SNPs on these chromosomes given for ",
-		         length(NrSNPsOnChromosome, "."))
+		         length(NrSNPsOnChromosome), ".")
 		}
 		vmessage(c("Get causal SNPs from chromsome-wide SNP files (", 
 		           genoFilePrefix, "...)", sep=""), verbose=verbose)
 		
 		causalSNPs <- lapply(seq_along(ChrCausal), function(chrom) {
-		    vmessage(c("Get", NrCausalSNPsChr[chrom], "causal SNPs from chr", 
-		               ChrCausal[chrom], "...", sep=""), verbose=verbose)
+		    vmessage(c("Get", NrCausalSNPsChr[chrom], 
+		               "causal SNPs from chromsome", ChrCausal[chrom], "..."), 
+		             verbose=verbose)
 			chromosomefile <- paste(genoFilePrefix, "chr", ChrCausal[chrom], 
 			                        genoFileSuffix, sep="")
 			if (!file.exists(chromosomefile)) {
@@ -406,8 +407,8 @@ getCausalSNPs <- function(NrCausalSNPs=20,  genotypes=NULL,
                     correct genoFilePrefix and genoFileSuffix?") 
 			}
 		    if(is.null(NrSNPsOnChromosome)) {
-    			vmessage(c("Count number of SNPs on", ChrCausal[chrom], "...", 
-    			           sep=""), verbose=verbose)
+    			vmessage(c("Count number of SNPs on chromosome", 
+    			           ChrCausal[chrom], "...", sep=""), verbose=verbose)
     			SNPsOnChromosome <- R.utils::countLines(chromosomefile) - 1
 		    } else {
 		        SNPsOnChromosome <- NrSNPsOnChromosome[chrom]
@@ -418,7 +419,7 @@ getCausalSNPs <- function(NrCausalSNPs=20,  genotypes=NULL,
 			                SNPs provided In chromosome file"))
 			}
 			
-		    vmessage(c("Sample SNPs on", ChrCausal[chrom], "...", sep=""), 
+		    vmessage(c("Sample SNPs on chromosome", ChrCausal[chrom], "..."), 
 		             verbose=verbose)
 			randomSNPindex <- sample(1:SNPsOnChromosome, 
 			                         NrCausalSNPsChr[chrom])
