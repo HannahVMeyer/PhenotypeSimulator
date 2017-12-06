@@ -5,37 +5,43 @@
 \title{Simulate genetic fixed effects.}
 \usage{
 geneticFixedEffects(X_causal, P, N = NULL, phenoID = "Trait_",
-  pIndependentGenetic = 0.4, pTraitIndependentGenetic = 0.2,
-  distBeta = "norm", mBeta = 0, sdBeta = 1, verbose = TRUE)
+  pTraitsAffected = 1, pIndependentGenetic = 0.4,
+  pTraitIndependentGenetic = 0.2, distBeta = "norm", mBeta = 0,
+  sdBeta = 1, verbose = FALSE)
 }
 \arguments{
 \item{X_causal}{[N x NrCausalSNPs] matrix of standardised (depending on 
-standardise option) SNPs}
+standardise option) SNPs.}
 
-\item{P}{number [integer] of phenotypes to simulate}
+\item{P}{number [integer] of phenotypes to simulate.}
 
 \item{N}{number [integer] of samples to simulate; has to be less than or 
 equal to the number of samples in X_causal (rows); if less than  number of 
 samples in X_causal, N random rows of X_causal will be drawn; if not 
-specified, N assumed to be equal to samples in X_causal}
+specified, N assumed to be equal to samples in X_causal.}
 
 \item{phenoID}{prefix [string] for naming traits (followed by trait number 
 from 1 to P)}
 
+\item{pTraitsAffected}{proportion [double] of traits affected by the genetic
+effect. For non-integer results of pTraitsAffected*P, the ceiling of the 
+result is used. Allows to simulate for instance different levels of 
+pleiotropy.}
+
 \item{pIndependentGenetic}{Proportion [double] of genetic effects (SNPs) to
-have an independent fixed effect}
+have an independent fixed effect.}
 
 \item{pTraitIndependentGenetic}{Proportion [double] of traits influenced by 
 independent fixed genetic effects}
 
 \item{distBeta}{vector of name(s) [string] of distribution to use to simulate 
-effect sizes of SNPs; one of "unif" or "norm"}
+effect sizes of SNPs; one of "unif" or "norm".}
 
 \item{mBeta}{vector of mean/midpoint [double] of normal/uniform distribution 
-for effect sizes of SNPs}
+for effect sizes of SNPs.}
 
 \item{sdBeta}{vector of standard deviation/distance from midpoint [double] 
-of normal/uniform distribution for effect sizes of SNPs}
+of normal/uniform distribution for effect sizes of SNPs.}
 
 \item{verbose}{[boolean]; if TRUE, progress info is printed to standard out}
 }
@@ -44,7 +50,7 @@ named list of shared fixed genetic effects (shared: [N x P] matrix),
 independent fixed genetic effects (independent: [N x P] matrix), 
 the causal SNPs named by having a shared or independent effect 
 (cov: [NrCausalSNPs x N] matrix) and the simulated effect sizes of the causal 
-SNPs (cov_effect: [P x NrCausalSNPs] dataframe)
+SNPs (cov_effect: [P x NrCausalSNPs] dataframe).
 }
 \description{
 geneticFixedEffects takes a matrix of SNPs which should be added as fixed 
