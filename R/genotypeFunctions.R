@@ -398,7 +398,7 @@ getCausalSNPs <- function(NrCausalSNPs=20,  genotypes=NULL,
 		
 		causalSNPs <- lapply(seq_along(ChrCausal), function(chrom) {
 		    vmessage(c("Get", NrCausalSNPsChr[chrom], "causal SNPs from chr", 
-		               chrom, "...", sep=""), verbose=verbose)
+		               ChrCausal[chrom], "...", sep=""), verbose=verbose)
 			chromosomefile <- paste(genoFilePrefix, "chr", ChrCausal[chrom], 
 			                        genoFileSuffix, sep="")
 			if (!file.exists(chromosomefile)) {
@@ -414,8 +414,8 @@ getCausalSNPs <- function(NrCausalSNPs=20,  genotypes=NULL,
 		    }
 			if (SNPsOnChromosome <  NrCausalSNPsChr[chrom]) {
 			    stop(paste("Number of causal SNPs to be chosen from chromosome", 
-			               chr, "is larger than actual number of SNPs provided",
-			               "in chromosome file"))
+			                ChrCausal[chrom], "is larger than actual number of 
+			                SNPs provided In chromosome file"))
 			}
 			
 		    vmessage(c("Sample SNPs on", ChrCausal[chrom], "...", sep=""), 
@@ -432,7 +432,7 @@ getCausalSNPs <- function(NrCausalSNPs=20,  genotypes=NULL,
             }
  			causalSNPsChr <- read.table(text=text, sep=delimiter, row.names=1)
  			if (oxgen) {
- 			    rownames(causalSNPsChr) <- causalSNPsChr [,1]
+ 			    rownames(causalSNPsChr) <- causalSNPsChr[,1]
  			    skipFields <- 4
  			    probabilities <- TRUE
  			}
@@ -445,8 +445,7 @@ getCausalSNPs <- function(NrCausalSNPs=20,  genotypes=NULL,
  			return(causalSNPsChr)
 		})
 		causalSNPs <- t(do.call(rbind, causalSNPs))
-        N <- nrow(causalSNPs)
-        rownames(causalSNPs) <- paste(sampleID, seq(1, N, 1), sep="")
+        rownames(causalSNPs) <- paste(sampleID, 1:nrow(causalSNPs), sep="")
 	} else {
 	    stop(paste("No genotype information provided, please specify either", 
 	               "genotypefile to read genotypes from file, or",
