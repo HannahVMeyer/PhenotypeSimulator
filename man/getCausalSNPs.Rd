@@ -6,7 +6,8 @@
 \usage{
 getCausalSNPs(NrCausalSNPs = 20, genotypes = NULL, chr = NULL,
   NrChrCausal = NULL, genoFilePrefix = NULL, genoFileSuffix = NULL,
-  delimiter = ",", sampleID = "ID_", verbose = TRUE)
+  oxgen = FALSE, delimiter = ",", skipFields = NULL,
+  probabilities = FALSE, sampleID = "ID_", verbose = TRUE)
 }
 \arguments{
 \item{NrCausalSNPs}{number [integer] of SNPs to chose at random}
@@ -29,7 +30,18 @@ before-"chrChromosomeNumber" (no '~' expansion!) [string]}
 .fileformat (e.g. ".csv"); has to be a text format i.e. comma/tab/space
 separated}
 
+\item{oxgen}{[bool] is genoFilePrefix-genoFileSuffix file on oxgen format?
+See \link{readStandardGenotypes} for details.}
+
 \item{delimiter}{field separator [string] of genotypefile or genoFile}
+
+\item{skipFields}{number [integer] of fields (columns) to skip in 
+genoFilePrefix-genoFileSuffix file. See details.}
+
+\item{probabilities}{[bool]. If set to TRUE, the genotypes in the files 
+described by genoFilePrefix and genoFileSuffix are provided as triplets of 
+probablities (p(AA), p(Aa), p(aa)) and are converted into their expected 
+genotype frequencies by 0*p(AA) + p(Aa) + 2p(aa) via \link{probGen2expGen}.}
 
 \item{sampleID}{prefix [string] for naming samples (followed by sample number
 from 1 to NrSamples)}
@@ -41,11 +53,10 @@ from 1 to NrSamples)}
 on standardise option) SNPs
 }
 \description{
-Draw random SNPs from either simulated genotypes or external genotype files.
-When drawing from external genotype files, two options are possible: 
-i) reading the entire file into memory or ii) only reading lines of randomly
-chosen SNPs, recommended for large genotype files. See details for more 
-information.
+Draw random SNPs from genotypes provided or external genotype files.
+When drawing from external genotype files, only lines of randomly
+chosen SNPs are read, which is recommended for large genotype files. See 
+details for more information.
 }
 \details{
 In order to chose SNPs from external genotype files without reading 
@@ -56,13 +67,15 @@ All genotype files need to be saved in the same directory. genoFilePrefix
 (/path/to/dir/related_nopopstructure_) and genoFileSuffix (.csv) specify the 
 strings leading and following the "chrChromosomenumber". The first column in 
 each file needs to be the SNP_ID and files cannot contain a header. 
-getCausalSNPs generates a vector of chromosomes from which to sample the SNPs
-. For each of the chromosomes, it counts the number of SNPs in the chromosome
- file and creates vectors of random numbers ranging from 1:NrSNPSinFile. Only 
- the lines corresponding to these numbers are then read into R. The example 
- data provided for chromosome 22 contains genotypes (50 samples) of the first 
- 500 SNPs on chromosome 22 with a minor allele frequency of greater than 2% 
- from the European populations of the the 1000 Genomes project.
+Subsequent columns containing additional SNP information can be skipped by 
+setting skipFields. getCausalSNPs generates a vector of chromosomes from 
+which to sample the SNPs. For each of the chromosomes, it counts the number 
+of SNPs in the chromosome file and creates vectors of random numbers ranging 
+from 1:NrSNPSinFile. Only the lines corresponding to these numbers are then
+read into R. The example data provided for chromosome 22 contains genotypes 
+(50 samples) of the first 500 SNPs on chromosome 22 with a minor allele 
+frequency of greater than 2% from the European populations of the the 1000 
+Genomes project.
 }
 \examples{
 # get causal SNPs from genotypes simulated within PhenotypeSimulator
