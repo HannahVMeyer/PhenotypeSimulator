@@ -74,7 +74,7 @@ geneticFixedEffects <- function(X_causal, P, N=NULL, phenoID="Trait_",
                 will be affected by the fixed genetic effects. "))
     
     if (NrIndependentSNPs != 0) {
-        vmessage(c("Of the ", traitsAffected, "traits", 
+        vmessage(c("Out of the these affected traits (", traitsAffected, ")", 
                 ceiling(pTraitIndependentGenetic * traitsAffected), " traits 
                 will have independent genetic effects"))
     }
@@ -83,7 +83,6 @@ geneticFixedEffects <- function(X_causal, P, N=NULL, phenoID="Trait_",
     Gindependent <- NULL
    
     if (NrSharedSNPs != 0) {
-        # shared
         if (NrIndependentSNPs != 0) {
             shared <- sample(c(rep(TRUE, NrSharedSNPs), 
                                rep(FALSE, NrIndependentSNPs)), 
@@ -115,7 +114,6 @@ geneticFixedEffects <- function(X_causal, P, N=NULL, phenoID="Trait_",
     }
    
     if (NrIndependentSNPs != 0) {
-        # independent
         if (NrSharedSNPs != 0) {
             independent <- !shared
             X_independent <- X_causal[,independent]
@@ -125,7 +123,6 @@ geneticFixedEffects <- function(X_causal, P, N=NULL, phenoID="Trait_",
             snpIDindependent <- colnames(X_causal)
         }
 
-        #betaX_independent <- matrix(rnorm(P * NrIndependentSNPs), ncol=P)
         betaX_independent <- matrix(simulateDist(traitsAffected * 
                                                      NrIndependentSNPs, 
                                                  dist=distBeta,
