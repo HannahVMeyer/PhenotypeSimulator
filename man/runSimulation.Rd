@@ -5,7 +5,9 @@
 \title{Run phenotype simulation.}
 \usage{
 runSimulation(N = 1000, P = 10, tNrSNP = 5000, cNrSNP = 20,
-  NrConfounders = 10, seed = 219453, chr = NULL, NrChrCausal = NULL,
+  NrConfounders = 10, seed = 219453, pTraitsAffectedGenetics = 1,
+  pTraitsAffectedConfounders = 1, chr = NULL, NrChrCausal = NULL,
+  skipFields = NULL, probabilities = FALSE, oxgen = FALSE,
   genVar = NULL, h2s = NULL, theta = 0.8, h2bg = NULL, eta = 0.8,
   noiseVar = NULL, rho = NULL, delta = NULL, gamma = 0.8, phi = NULL,
   alpha = 0.8, sampleID = "ID_", phenoID = "Trait_", snpID = "SNP_",
@@ -37,6 +39,15 @@ effects}
 
 \item{seed}{seed [integer] to initiate random number generation}
 
+\item{pTraitsAffectedGenetics}{proportion [double] of traits affected by the 
+genetic effect. For non-integer results of pTraitsAffected*P, the ceiling of  
+the result is used. Allows to simulate for instance different levels of 
+pleiotropy.}
+
+\item{pTraitsAffectedConfounders}{vector of proportion(s) [double] of traits 
+affected by the confounders. For non-integer results of pTraitsAffected*P, 
+the ceiling of the result is used.}
+
 \item{chr}{numeric vector of chromosomes to chose NrCausalSNPs from; only 
 used when external genotype data is provided i.e. is.null(genoFilePrefix) == 
 FALSE}
@@ -45,6 +56,17 @@ FALSE}
 NrCausalSNPs from (as opposed to the actual chromosomes to chose from via chr
 );  only used when external genotype data is provided i.e. 
 is.null(genoFilePrefix) == FALSE.}
+
+\item{skipFields}{number [integer] of fields (columns) in to skip in 
+genoFilePrefix-genoFileSuffix. See details.}
+
+\item{probabilities}{[bool]. If set to TRUE, the genotypes in the files 
+described by genoFilePrefix and genoFileSuffix are provided as triplets of 
+probablities (p(AA), p(Aa), p(aa)) and are converted into their expected 
+genotype frequencies by 0*p(AA) + p(Aa) + 2p(aa) via \link{probGen2expGen}.}
+
+\item{oxgen}{[bool] is genoFilePrefix-genoFileSuffix file on oxgen format?
+See \link{readStandardGenotypes} for details.}
 
 \item{genVar}{Proportion [double] of total genetic variance}
 
