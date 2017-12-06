@@ -403,7 +403,7 @@ simulatePhenotypes <- function() {
                                      NrSNPsOnChromosome=NrSNPsOnChromosome,
                                      probabilities = args$probabilities,
                                      oxgen=args$oxgen,
-                                     skipeFields=args$skipFields,
+                                     skipFields=args$skipFields,
                                      sampleID=args$sampleID, 
                                      phenoID=args$phenoID,
                                      genoFilePrefix=args$genoFilePrefix, 
