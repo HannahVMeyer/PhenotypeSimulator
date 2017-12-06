@@ -70,12 +70,12 @@ geneticFixedEffects <- function(X_causal, P, N=NULL, phenoID="Trait_",
     }
     NrSharedSNPs <- NrCausalSNPs - NrIndependentSNPs
     
-    vmessage(c("Out of ", P, " total phenotypes, ", traitsAffected, " traits 
+    vmessage(c("Out of", P, "total phenotypes, ", traitsAffected, "traits 
                 will be affected by the fixed genetic effects. "))
     
     if (NrIndependentSNPs != 0) {
         vmessage(c("Out of the these affected traits (", traitsAffected, ")", 
-                ceiling(pTraitIndependentGenetic * traitsAffected), " traits 
+                ceiling(pTraitIndependentGenetic * traitsAffected), "trait(s) 
                 will have independent genetic effects"))
     }
     
@@ -519,14 +519,12 @@ noiseFixedEffects <- function(N, P, sampleID="ID_",phenoID="Trait_",
 #' matrix) 
 #' @details For the simulation of the genetic background effects, three matrix 
 #' components are used: i) the kinship matrix K [N x N] which is treated as the 
-#' sample-design matrix
-#' (the genetic profile of the samples), ii) an effect-size matrix B [N x P] 
-#' with vec(B) drawn from a normal distribution and iii) the trait design matrix
-#'  A [P x P]. For the
+#' sample-design matrix, ii) matrix B [N x P] with vec(B) drawn from a normal 
+#' distribution and iii) the trait design matrix A [P x P]. For the
 #' independent effect, A is a diagonal matrix with normally distributed values.  
 #' A for the shared effect is a matrix of rowrank one, with normally distributed 
-#' entries in row 1 and zeros elsewhere. The final effect E, the three matrices 
-#' are multiplied as: E = cholesky(K)BA
+#' entries in row 1 and zeros elsewhere. To construct the final effects, the 
+#' three matrices are multiplied as: E = cholesky(K)BA. 
 #' @export
 #' @examples
 #' genotypes <- simulateGenotypes(N=100, NrSNP=400, verbose=FALSE)
@@ -543,12 +541,16 @@ geneticBgEffects <- function(P, kinship) {
     genBgShared <- kinship_chol %*% (B %*% t(A))
     
     # independent effect
-    B <- matrix(rnorm(N * P), ncol=P)
-    A <- matrix(rep(0, P * P), ncol=P)
-    diag(A) <- rnorm(P)
-    genBgIndependent <- kinship_chol %*% (B %*% A)
+    D <- matrix(rnorm(N * P), ncol=P)
+    C <- matrix(rep(0, P * P), ncol=P)
+    diag(C) <- rnorm(P)
+    genBgIndependent <- kinship_chol %*% (D %*% C)
+    
+    cov_shared <- A%*%t(A)
+    cov_independent <- C%*%t(C)
 
-    return(list(shared=genBgShared, independent=genBgIndependent))
+    return(list(shared=genBgShared, independent=genBgIndependent, 
+                cov_shared=cov_shared, cov_independent=cov_independent))
 }
 
 #' Simulate noise background effects.
@@ -562,23 +564,32 @@ geneticBgEffects <- function(P, kinship) {
 #' @return named list of shared background noise effects (shared: [N x P] 
 #' matrix) and independent background noise effects (independent: [N x P] 
 #' matrix) 
-#' @details The independent background effect is simulated as vec(shared) ~ 
-#' N(mean,sd). The shared background effect is simulated as the 
-#' matrix product of two normal
-#' distributions A [N x 1] and B [P x 1]: AB^t
+#' @details For the simulation of the noise background effects, two matrix 
+#' components are used: i) matrix B [N x P] with vec(B) drawn from a normal with 
+#' mean=mean and sd=sd and ii) the trait design matrix A [P x P]. For the
+#' independent effect, A is a diagonal matrix with normally distributed values.  
+#' A for the shared effect is a [ 1 x P] vector of normally distributed 
+#' entries. 
 #' @export
 #' @examples
 #' noiseBG <- noiseBgEffects(N=100, P=20, mean=2)
 noiseBgEffects <- function(N, P, mean=0, sd=1) {
     # shared effect
-    noiseBgShared <- rnorm(n=N, mean=mean, sd=sd) %*% t(rnorm(n=P, 
-                                                                   mean=mean, 
-                                                                   sd=sd))
+    B <- rnorm(n=N, mean=mean, sd=sd)
+    A <- rnorm(n=P, mean=mean, sd=sd)
+    noiseBgShared <-  B %*% A
     
     # independent effect
-    noiseBgIndependent <- matrix(rnorm(n= N * P, mean=mean, sd=sd), ncol=P) 
-   
-    return(list(shared=noiseBgShared, independent=noiseBgIndependent))
+    D <- matrix(rnorm(N * P, mean=mean, sd=sd), ncol=P)
+    C <- matrix(rep(0, P * P), ncol=P)
+    diag(C) <- rnorm(P, mean=mean, sd=sd)
+    noiseBgIndependent <- D %*% C
+    
+    cov_shared <- A %*% t(A)
+    cov_independent <- C %*% t(C)
+    
+    return(list(shared=noiseBgShared, independent=noiseBgIndependent,
+                cov_shared=cov_shared, cov_independent=cov_independent))
 }
 
 #' Simulate correlated background effects.
