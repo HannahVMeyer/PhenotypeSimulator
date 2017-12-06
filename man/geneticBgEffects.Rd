@@ -29,9 +29,8 @@ with vec(B) drawn from a normal distribution and iii) the trait design matrix
  A [P x P]. For the
 independent effect, A is a diagonal matrix with normally distributed values.  
 A for the shared effect is a matrix of rowrank one, with normally distributed 
-entries in row 1 and
-zeros elsewhere. The final effect E, the three matrices are multiplied as: 
-E = KBA
+entries in row 1 and zeros elsewhere. The final effect E, the three matrices 
+are multiplied as: E = cholesky(K)BA
 }
 \examples{
 genotypes <- simulateGenotypes(N=100, NrSNP=400, verbose=FALSE)
