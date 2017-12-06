@@ -401,9 +401,13 @@ getCausalSNPs <- function(NrCausalSNPs=20,  genotypes=NULL,
 		               chrom, "...", sep=""), verbose=verbose)
 			chromosomefile <- paste(genoFilePrefix, "chr", ChrCausal[chrom], 
 			                        genoFileSuffix, sep="")
+			if (!file.exists(chromosomefile)) {
+			    stop(chromosomefile , "does not exist, did you specify the
+                    correct genoFilePrefix and genoFileSuffix?") 
+			}
 		    if(is.null(NrSNPsOnChromosome)) {
-    			vmessage(c("Count number of SNPs on", chrom, "...", sep=""), 
-    		             verbose=verbose)
+    			vmessage(c("Count number of SNPs on", ChrCausal[chrom], "...", 
+    			           sep=""), verbose=verbose)
     			SNPsOnChromosome <- R.utils::countLines(chromosomefile) - 1
 		    } else {
 		        SNPsOnChromosome <- NrSNPsOnChromosome[chrom]
@@ -414,15 +418,19 @@ getCausalSNPs <- function(NrCausalSNPs=20,  genotypes=NULL,
 			               "in chromosome file"))
 			}
 			
-		    vmessage(c("Sample SNPs on", chrom, "...", sep=""), 
+		    vmessage(c("Sample SNPs on", ChrCausal[chrom], "...", sep=""), 
 		             verbose=verbose)
 			randomSNPindex <- sample(1:SNPsOnChromosome, 
 			                         NrCausalSNPsChr[chrom])
             randomSNPindex <- randomSNPindex[order(randomSNPindex, 
                                                    decreasing=FALSE)]
- 			causalSNPsChr <- read.table(
- 			    text=read_lines(chromosomefile, randomSNPindex, sep="\n"), 
- 			    sep=delimiter, row.names=1)
+            text <- read_lines(chromosomefile, randomSNPindex, sep="\n")
+            if (! grepl(delimiter, text[1])) {
+                stop("Delimiter specified for genoFilePrefix-genoFileSuffix (",
+                     delimiter, ") cannot be found in file. Did you specify the
+                     correct delimiter?")
+            }
+ 			causalSNPsChr <- read.table(text=text, sep=delimiter, row.names=1)
  			if (oxgen) {
  			    rownames(causalSNPsChr) <- causalSNPsChr [,1]
  			    skipFields <- 4
@@ -470,9 +478,7 @@ getCausalSNPs <- function(NrCausalSNPs=20,  genotypes=NULL,
 #' @details The kinship is estimated as \eqn{K = XX_T}, with X the standardised
 #' genotypes of the samples. When estimating the kinship from the provided 
 #' genotypes, the kinship is normalised by the mean of its diagonal 
-#' elements and 1e-4 added to the diagonal for numerical stability.
-#' The provided kinship contains estimates for 50 samples across the entire 
-#' genome. 
+#' elements and 1e-4 added to the diagonal for numerical stability. 
 #' @export
 #' @examples
 #' geno <- simulateGenotypes(N=10, NrSNP=50)
@@ -504,6 +510,7 @@ getKinship <- function(X=NULL, kinshipfile=NULL, sampleID="ID_",
         vmessage(c("Reading kinship file from", kinshipfile), verbose=verbose)
         kinship <- as.matrix(read.table(kinshipfile, sep=sep, header=header, 
                                         stringsAsFactors=FALSE))
+        N <- nrow(kinship)
         if (diff(dim(kinship)) !=0) {
             if (abs(diff(dim(kinship))) == 1) {
                 stop (paste("Kinship matrix needs to be a square matrix,",
