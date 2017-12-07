@@ -203,7 +203,7 @@ simulateGenotypes <- function(N, NrSNP=5000, frequencies=c(0.1, 0.2, 0.4),
 #' package = "PhenotypeSimulator") 
 #' filename_plink <- gsub("\\.bed", "", filename_plink)
 #' data_plink <- readStandardGenotypes(filename_plink, format="plink")
-readStandardGenotypes <- function(filename, format = NULL,
+readStandardGenotypes <- function(N, filename, format = NULL,
                                   verbose=TRUE, sampleID = "ID_", 
                                   snpID = "SNP_", delimiter = ",") {
     if (is.null(format)) {
@@ -214,6 +214,14 @@ readStandardGenotypes <- function(filename, format = NULL,
     if (format == "plink") {
         data <- snpStats::read.plink(bed=filename)
         genotypes <- as(data$genotypes, 'numeric')
+        if (N > nrow(genotypes)) {
+            stop("Sample number specified exceeds number of genotypes provided")
+        }
+        if (N < (nrow(genotypes))) {
+            Nsamples <- sort(sample(nrow(genotypes), N))
+            genotypes <- genotypes[Nsamples,]
+            data$fam <-  data$fam[Nsamples,]
+        }
         id_samples <- rownames(genotypes)
         id_snps <- colnames(genotypes)
         format_files <- list(plink_fam = data$fam, plink_map = data$map)
@@ -221,6 +229,13 @@ readStandardGenotypes <- function(filename, format = NULL,
         genotypes_raw <- data.table::fread(paste(filename, ".txt", sep=""), 
                                            data.table=FALSE, sep=delimiter)
         genotypes <- t(genotypes_raw[, -c(1:3)])
+        if (N > nrow(genotypes)) {
+            stop("Sample number specified exceeds number of genotypes provided")
+        }
+        if (N < (nrow(genotypes))) {
+            Nsamples <- sort(sample(nrow(genotypes), N))
+            genotypes <- genotypes[Nsamples,]
+        }
         bimbam_snp_info <- genotypes_raw[, c(1:3)]
         bimbam_snp_postion <- data.table::fread(paste(filename, ".position.txt",
                                                       sep=""), 
@@ -232,9 +247,22 @@ readStandardGenotypes <- function(filename, format = NULL,
     } else if (format == "oxgen") {
         genotypes_raw <- data.table::fread(paste(filename, ".gen", sep=""), 
                                        data.table=FALSE)
-        genotypes <- apply(genotypes_raw[, -c(1:5)], 1, probGen2expGen)
         samples<- data.table::fread(paste(filename, ".sample", sep=""), 
-                                     data.table=FALSE)
+                                    data.table=FALSE)
+        genotypes <- apply(genotypes_raw[, -c(1:5)], 1, probGen2expGen)
+        if (N > nrow(genotypes)) {
+            stop("Sample number specified exceeds number of genotypes provided")
+        }
+        if (N < (nrow(genotypes))) {
+            allsamples <- nrow(genotypes)
+            Nsamples <- sort(sample(allsamples, N))
+            genotypes <- genotypes[Nsamples,]
+            samples <- samples[c(1,(Nsamples+1)),]
+            
+            Nsamples_oxgen <- 5 + sort(c(Nsamples*3, (Nsamples*3)-1, 
+                                     (Nsamples*3)-2))
+            genotypes_raw <- genotypes_raw[ ,c(1:5, Nsamples_oxgen)]
+        }
         id_samples <- samples$ID_1[-1]
         id_snps <- genotypes_raw$V2
         format_files <- list(oxgen_samples = samples, 
@@ -242,9 +270,15 @@ readStandardGenotypes <- function(filename, format = NULL,
     } else if (format == "genome") {
         data <- data.table::fread(filename, skip="Samples:", data.table=FALSE, 
                                 sep=" ", colClasses="character")
-        N <- nrow(data)
         genotypes <- matrix(as.numeric(unlist(strsplit(data$V2, split=""))), 
-                            nrow=N, byrow=TRUE)
+                            nrow= nrow(data), byrow=TRUE)
+        if (N > nrow(genotypes)) {
+            stop("Sample number specified exceeds number of genotypes provided")
+        }
+        if (N < nrow(genotypes)) {
+            Nsamples <- sort(sample(nrow(genotypes), N))
+            genotypes <- genotypes[Nsamples,]
+        }
         id_samples <- paste(sampleID, 1:N, "_", gsub(":", "", data$V1), sep="")
         id_snps <- paste(snpID, 0:(ncol(genotypes) -1), sep="")
         format_files = NULL
@@ -253,7 +287,15 @@ readStandardGenotypes <- function(filename, format = NULL,
                                   sep=delimiter)
         id_snps <- data$V1
         genotypes <- t(data[,-1])
-        id_samples <- colnames(data)
+        colnames(genotypes) <- id_snps
+        if (N > nrow(genotypes)) {
+            stop("Sample number specified exceeds number of genotypes provided")
+        }
+        if (N < nrow(genotypes)) {
+            Nsamples <- sort(sample(nrow(genotypes), N))
+            genotypes <- genotypes[Nsamples,]
+        }
+        id_samples <- rownames(genotypes)
         format_files <- NULL
     } else {
         stop(format, " is not a supported genotype format. Supported",
@@ -339,7 +381,7 @@ readStandardGenotypes <- function(filename, format = NULL,
 #' causalSNPsFromLines <- getCausalSNPs(NrCausalSNPs=10, chr=22, 
 #' genoFilePrefix=genoFilePrefix, 
 #' genoFileSuffix=genoFileSuffix)
-getCausalSNPs <- function(NrCausalSNPs=20,  genotypes=NULL,
+getCausalSNPs <- function(N, NrCausalSNPs=20,  genotypes=NULL,
                           chr=NULL, NrSNPsOnChromosome=NULL, 
                           NrChrCausal=NULL, genoFilePrefix=NULL, 
                           genoFileSuffix=NULL, oxgen=FALSE,
@@ -355,7 +397,7 @@ getCausalSNPs <- function(NrCausalSNPs=20,  genotypes=NULL,
                  , "Increase number of simulated genotypes in simulateGenotypes"
                  , "or decrease number of causal SNPs"))
         }
-		causalSNPs <- genotypes[,sample(1:ncol(genotypes), NrCausalSNPs)]
+		causalSNPs <- genotypes[,sort(sample(ncol(genotypes), NrCausalSNPs))]
 	} else if (! is.null( genoFilePrefix)) {
 	    if (grepl("~", genoFilePrefix)) {
 	        stop(paste("genoFilePrefix contains ~: path expansion not", 
@@ -454,7 +496,21 @@ getCausalSNPs <- function(NrCausalSNPs=20,  genotypes=NULL,
 	               "file or directly provide [N x S] matrix of [S] genotypes", 
 	               "from [N] samples"))
 	}
-	return(causalSNPs)	
+    NrGenotypeSamples <- nrow(causalSNPs) 
+    if (N > NrGenotypeSamples) {
+        stop("Sample number specified exceeds number of genotypes provided")
+    }
+    if (N < NrGenotypeSamples) {
+        vmessage(c("Sampling", N, "samples from", NrGenotypeSamples,
+                   "genotypes provided"))
+        Nsamples <- sort(sample(NrGenotypeSamples, N))
+        causalSNPs <- causalSNPs[Nsamples,]
+        if (!is.null(genotypes)) {
+            genotypes <- genotypes[Nsamples,]
+        }
+        
+    }
+	return(list(causalSNPs=causalSNPs, genotypes=genotypes))
 }
 
 
@@ -488,8 +544,9 @@ getCausalSNPs <- function(NrCausalSNPs=20,  genotypes=NULL,
 #' "kinship.csv",
 #' package = "PhenotypeSimulator")
 #' K_fromFile <- getKinship(kinshipfile=kinshipfile)
-getKinship <- function(X=NULL, kinshipfile=NULL, sampleID="ID_", 
-                       standardise=FALSE, sep=",", header=TRUE, verbose=TRUE) {
+getKinship <- function(N, sampleID="ID_", X=NULL, kinshipfile=NULL, 
+                       id_samples=NULL, standardise=FALSE, sep=",", header=TRUE, 
+                       verbose=TRUE) {
     if (!is.null(X)) {
         N <- nrow(X)
         NrSNP <- ncol(X)
@@ -501,7 +558,7 @@ getKinship <- function(X=NULL, kinshipfile=NULL, sampleID="ID_",
         vmessage(c("Estimating kinship from", NrSNP, "SNPs provided"), 
                  verbose=verbose)
         kinship <- tcrossprod(X)
-        colnames(kinship) <- paste(sampleID, seq(1, N, 1), sep="")
+        colnames(kinship) <- id_samples
         vmessage("Normalising kinship", verbose=verbose)
         kinship <- kinship/mean(diag(kinship))
         # Make numerically stable
@@ -510,7 +567,6 @@ getKinship <- function(X=NULL, kinshipfile=NULL, sampleID="ID_",
         vmessage(c("Reading kinship file from", kinshipfile), verbose=verbose)
         kinship <- as.matrix(read.table(kinshipfile, sep=sep, header=header, 
                                         stringsAsFactors=FALSE))
-        N <- nrow(kinship)
         if (diff(dim(kinship)) !=0) {
             if (abs(diff(dim(kinship))) == 1) {
                 stop (paste("Kinship matrix needs to be a square matrix,",
@@ -524,7 +580,7 @@ getKinship <- function(X=NULL, kinshipfile=NULL, sampleID="ID_",
             }
         }
         if (!header) {
-            colnames(kinship) <- paste(sampleID, seq(1, N, 1), sep="")
+            colnames(kinship) <- id_samples
         }
     } else {
         stop ("Either X or kinshipfile must be provided")
