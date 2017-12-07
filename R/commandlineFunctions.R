@@ -292,7 +292,9 @@ simulatePhenotypes <- function() {
         make_option(c("--snpID"), action="store", dest="snpID", 
                     default="SNP_", type="character", help="Prefix for naming 
                     simulated snps [default: %default]"),
-        
+        make_option(c("-saveIntermediate", "--saveIntermediate"), 
+                    action="store_true", dest="saveIntermediate", default=FALSE, 
+                    type="logical", help="[default: %default]"),
         make_option(c("-saveTable", "--saveTable"), action="store_true", 
                     dest="saveAsTable", default=FALSE, type="logical", 
                     help="Output format of results: when flag set, output saved 
@@ -449,6 +451,7 @@ simulatePhenotypes <- function() {
     
     outdir <- savePheno(simulatedPheno, 
                         format=format,
+                        saveIntermediate=saveIntermediate,
                         intercept_gemma=args$intercept_gemma,
                         outstring=args$outstring, 
                         directory=args$directory, 
