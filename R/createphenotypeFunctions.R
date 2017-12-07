@@ -1,15 +1,14 @@
 #' Scale phenotype component.
 #'
-#' The function scales the specified phenotype component such that the average 
-#' column variance is equal
-#' to the user-specified proportion of variance. 
+#' The function scales the specified component such that the average column 
+#' variance is equal to the user-specified proportion of variance. 
 #'
 #' @param component numeric [N x P] phenotype matrix where N are the number of 
-#' observations and P numer of phenotypes
-#' @param propvar numeric specifying the proportion of variance that should be 
-#' explained by this phenotype component
-#' @return component_scaled numeric [N x P] phenotype matrix if propvar != 0 or 
-#' NULL
+#' observations and P numer of phenotypes 
+#' @param propvar number [double] specifying the proportion of variance that 
+#' should be explained by this phenotype component
+#' @return a list with the [N x P] matrix of the scaled component (component) 
+#' and the [double] scale factor if propvar != 0 or else returns NULL
 #' @export
 #' @examples
 #' x <- matrix(rnorm(100), nc=10)
@@ -18,9 +17,12 @@ rescaleVariance <- function(component, propvar) {
     if (propvar != 0) {
         var_component <- var(component)
         mean_var <- mean(diag(var_component))
-        scale_factor <- mean_var/propvar
-        component_scaled <- component/sqrt(scale_factor)
-        return(component_scaled)
+        scale_factor <- sqrt(propvar/mean_var)
+        component_scaled <- component * scale_factor
+        colnames(component_scaled) <- colnames(component)
+        rownames(component_scaled) <- rownames(component)
+        return(list(component=component_scaled,
+                    scale_factor=scale_factor))
     } else {
         return(NULL)
     }
@@ -460,7 +462,7 @@ setModel <- function(genVar=NULL, h2s=NULL, theta=0.8, h2bg=NULL, eta=0.8,
 #' @param verbose [boolean]; if TRUE, progress info is printed to standard out
 #' @return named list of absolute levels of variance explained by each phenotype 
 #' component (varComponents), 
-#' the scaled phenotype components (phenoComponents) and and parameters used for 
+#' the scaled phenotype components (phenoComponents) and parameters used for 
 #' phenotype set-up and labeling (setup)
 #' @export
 #' @examples
@@ -510,7 +512,7 @@ runSimulation <- function(N=1000, P=10, tNrSNP=5000, cNrSNP=20,
                       pTraitIndependentGenetic=pTraitIndependentGenetic, 
                       v=verbose)
     id_snps <- NULL
-    id_traits <- paste(phenoID, 1:P, sep="")
+    id_phenos <- paste(phenoID, 1:P, sep="")
     id_samples <- paste(sampleID, 1:N, sep="")
 
     ### create simulated phenotypes
@@ -534,7 +536,8 @@ runSimulation <- function(N=1000, P=10, tNrSNP=5000, cNrSNP=20,
                                            snpID=snpID, 
                                            verbose=verbose)
         } else if (! is.null(genotypefile)) {
-            genotypes <- readStandardGenotypes(genotypefile, format=format,
+            genotypes <- readStandardGenotypes(N=N, filename=genotypefile, 
+                                               format=format,
                                                verbose=verbose, 
                                                sampleID = sampleID, 
                                                snpID = snpID, 
@@ -543,7 +546,7 @@ runSimulation <- function(N=1000, P=10, tNrSNP=5000, cNrSNP=20,
         } else {
             genotypes <- NULL
         }
-        causalSNPs <- getCausalSNPs(NrCausalSNPs=cNrSNP, chr=chr, 
+        causalSNPs <- getCausalSNPs(N=N, NrCausalSNPs=cNrSNP, chr=chr, 
                                     NrChrCausal=NrChrCausal,
                                     NrSNPsOnChromosome=NrSNPsOnChromosome,
                                     genotypes=genotypes$genotypes,
@@ -555,10 +558,14 @@ runSimulation <- function(N=1000, P=10, tNrSNP=5000, cNrSNP=20,
                                     delimiter=genoDelimiter, 
                                     sampleID=sampleID, 
                                     verbose=verbose)
+        genotypes$genotypes <- causalSNPs$genotypes
+        genotypes$id_samples <- rownames(causalSNPs$genotypes)
+        
         id_snps <- genotypes$id_snps
+        id_samples <- genotypes$id_samples 
         
         vmessage("Simulate genetic fixed effects", verbose=verbose)
-        genFixed <- geneticFixedEffects(X_causal=causalSNPs, N=N, P=P, 
+        genFixed <- geneticFixedEffects(X_causal=causalSNPs$causalSNPs, N=N, P=P, 
                                         pTraitsAffected=
                                             pTraitsAffectedGenetics,
                                         pIndependentGenetic=
@@ -567,7 +574,10 @@ runSimulation <- function(N=1000, P=10, tNrSNP=5000, cNrSNP=20,
                                             pTraitIndependentGenetic,
                                         distBeta=distBetaGenetic, 
                                         mBeta=mBetaGenetic, 
-                                        sdBeta=sdBetaGenetic)
+                                        sdBeta=sdBetaGenetic,
+                                        id_phenos=id_phenos,
+                                        id_samples=id_samples,
+                                        phenoID=phenoID)
         
         var_genFixed_shared <- model$theta * model$h2s * model$genVar
         var_genFixed_independent <- (1 - model$theta) * model$h2s * model$genVar
@@ -577,11 +587,10 @@ runSimulation <- function(N=1000, P=10, tNrSNP=5000, cNrSNP=20,
         genFixed_independent_rescaled <- rescaleVariance(genFixed$independent, 
                                                 var_genFixed_independent)
         
-        Y_genFixed <- addNonNulls(list(genFixed_shared_rescaled, 
-                                       genFixed_independent_rescaled))
-        colnames(Y_genFixed) <- id_traits
-        rownames(Y_genFixed) <- id_samples
+        Y_genFixed <- addNonNulls(list(genFixed_shared_rescaled$component, 
+                                       genFixed_independent_rescaled$component))
         
+        id_samples <- genFixed$id_samples
     } else {
         genFixed <- NULL
         genotypes <- NULL
@@ -604,22 +613,26 @@ runSimulation <- function(N=1000, P=10, tNrSNP=5000, cNrSNP=20,
             if (is.null(genotypes)) {
                 genotypes <- simulateGenotypes(N=N, NrSNP=tNrSNP, 
                                                frequencies=SNPfrequencies, 
+                                               id_samples=id_samples,
                                                sampleID=sampleID, 
                                                verbose=verbose)
             }
             kinship <- getKinship(X=genotypes$genotypes, 
-                                  standardise=standardise, 
-                                  sampleID=sampleID, 
+                                  N=N, standardise=standardise, 
+                                  id_samples=id_samples,
+                                  sampleID=sampleID,
                                   verbose=verbose)
         } else {
             vmessage("Read kinship from file", verbose=verbose)
-            kinship <- getKinship(kinshipfile=kinshipfile, sampleID=sampleID, 
+            kinship <- getKinship(kinshipfile=kinshipfile, 
                                   sep=kinshipDelimiter, 
-                                  header=kinshipHeader, verbose=verbose)
+                                  N=N, header=kinshipHeader, verbose=verbose,
+                                 sampleID=sampleID, id_samples=id_samples)
         }
         
         vmessage("Simulate genetic background effects", verbose=verbose)
-        genBg <- geneticBgEffects(P=P, kinship=kinship)
+        genBg <- geneticBgEffects(N=N, P=P, kinship=kinship, 
+                                  id_phenos=id_phenos)
         
         var_genBg_shared <- model$eta * model$h2bg * model$genVar
         var_genBg_independent <- (1 - model$eta) * model$h2bg * model$genVar
@@ -628,43 +641,61 @@ runSimulation <- function(N=1000, P=10, tNrSNP=5000, cNrSNP=20,
         genBg_independent_rescaled <- rescaleVariance(genBg$independent,
                                                       var_genBg_independent)
         
-        Y_genBg <- addNonNulls(list(genBg_shared_rescaled, 
-                                    genBg_independent_rescaled))
-        colnames(Y_genBg) <- id_traits
-        rownames(Y_genBg) <- id_samples
+        Y_genBg <- addNonNulls(list(genBg_shared_rescaled$component, 
+                                    genBg_independent_rescaled$component))
+       
+        cov_genBg_shared <- genBg$cov_shared
+        diag(cov_genBg_shared) <- diag(cov_genBg_shared) + 1e-4
+        cov_genBg_shared_rescaled <- cov_genBg_shared * 
+                                        genBg_shared_rescaled$scale_factor^2
+         
+        cov_genBg_independent <- genBg$cov_independent
+        diag(cov_genBg_independent) <- diag(cov_genBg_independent) + 1e-4
+        cov_genBg_independent_rescaled <- cov_genBg_independent * 
+                                    genBg_independent_rescaled$scale_factor^2
         
-        cov_Y_genBg <- t(Y_genBg) %*% Y_genBg
-        cov_Y_genBg <-  cov_Y_genBg/mean(diag(cov_Y_genBg))
-        diag(cov_Y_genBg) <- diag(cov_Y_genBg) + 1e-4
+        cov_genBg <- cov_genBg_shared_rescaled + cov_genBg_independent_rescaled
+        
+        id_samples <- genBg$id_samples
     } else {
         genBg <- NULL
         kinship <- NULL
         var_genBg_shared <- 0
         var_genBg_independent <- 0
         Y_genBg <- NULL
-        cov_Y_genBg <- NULL
+        cov_genBg <- NULL
+        cov_genBg_shared <- NULL
+        cov_genBg_independent <- NULL
     }
     # 1. Simulate noise terms
     vmessage(c("Simulate noise terms (noise model:", model$modelNoise, ")"),
              verbose=verbose)
     if (grepl('Correlated', model$modelNoise))  {
         vmessage("Simulate correlated background effects", verbose=verbose)
-        correlatedBg <- correlatedBgEffects(N=N, P=P, pcorr=model$pcorr)
+        correlatedBg <- correlatedBgEffects(N=N, P=P, pcorr=model$pcorr, 
+                                            id_phenos=id_phenos,
+                                            id_samples=id_samples,
+                                            sampleID=sampleID,
+                                            phenoID=phenoID)
         var_noiseCorrelated <- model$rho *  model$noiseVar
-        correlatedBg_rescaled <- rescaleVariance(correlatedBg, 
+        correlatedBg_rescaled <- rescaleVariance(correlatedBg$correlatedBg, 
                                                  var_noiseCorrelated)
         
-        Y_correlatedBg <- correlatedBg_rescaled
-        colnames(Y_correlatedBg) <- id_traits
-        rownames(Y_correlatedBg) <- id_samples
+        Y_correlatedBg <- correlatedBg_rescaled$component
+        
+        cov_correlatedBg <- correlatedBg$cov_correlated * 
+                            correlatedBg_rescaled$scale_factor^2
     } else {
         correlatedBg <- NULL
         var_noiseCorrelated <- 0
         Y_correlatedBg <- NULL 
+        cov_correlated <- NULL
     }
     if (grepl('Bg', model$modelNoise)) {
         vmessage("Simulate noise background effects", verbose=verbose)
-        noiseBg <- noiseBgEffects(N=N, P=P, mean=meanNoiseBg, sd=sdNoiseBg)
+        noiseBg <- noiseBgEffects(N=N, P=P, mean=meanNoiseBg, sd=sdNoiseBg,
+                                  id_phenos=id_phenos, id_samples=id_samples,
+                                  sampleID=sampleID, phenoID=phenoID)
         
         var_noiseBg_shared <- model$alpha * model$phi * model$noiseVar
         var_noiseBg_independent <- (1 - model$alpha) * model$phi * model$noiseVar
@@ -674,19 +705,32 @@ runSimulation <- function(N=1000, P=10, tNrSNP=5000, cNrSNP=20,
         noiseBg_independent_rescaled <- rescaleVariance(noiseBg$independent, 
                                                         var_noiseBg_independent)
         
-        Y_noiseBg <- addNonNulls(list(noiseBg_shared_rescaled, 
-                                      noiseBg_independent_rescaled))
-        colnames(Y_noiseBg) <- id_traits
+        Y_noiseBg <- addNonNulls(list(noiseBg_shared_rescaled$component, 
+                                      noiseBg_independent_rescaled$component))
+        colnames(Y_noiseBg) <- id_phenos
         rownames(Y_noiseBg) <- id_samples
-        cov_Y_noiseBg <- t(Y_noiseBg) %*% Y_noiseBg
-        cov_Y_noiseBg <-  cov_Y_noiseBg/mean(diag(cov_Y_noiseBg))
-        diag(cov_Y_noiseBg) <- diag(cov_Y_noiseBg) + 1e-4
+        
+        cov_noiseBg_shared <- noiseBg$cov_shared
+        diag(cov_noiseBg_shared) <- diag(cov_noiseBg_shared) + 1e-4
+        cov_noiseBg_shared_rescaled <- cov_noiseBg_shared * 
+                                    noiseBg_shared_rescaled$scale_factor^2
+        
+        cov_noiseBg_independent <- noiseBg$cov_independent
+        diag(cov_noiseBg_independent) <- diag(cov_noiseBg_independent) + 1e-4
+        cov_noiseBg_independent_rescaled <- cov_noiseBg_independent * 
+                                    noiseBg_independent_rescaled$scale_factor^2
+        
+        cov_noiseBg <- cov_noiseBg_shared_rescaled + 
+                        cov_noiseBg_independent_rescaled
+        
     } else {
         noiseBg <- NULL
         var_noiseBg_shared <- 0
         var_noiseBg_independent <- 0
         Y_noiseBg <- NULL
-        cov_Y_noiseBg <- NULL
+        cov_noiseBg <- NULL
+        cov_noiseBg_shared <- NULL
+        cov_noiseBg_independent <- NULL
     }
     if (grepl('Fixed', model$modelNoise)) {
         vmessage("Simulate noise fixed effects", verbose=verbose)
@@ -706,7 +750,11 @@ runSimulation <- function(N=1000, P=10, tNrSNP=5000, cNrSNP=20,
                                         probConfounders = probConfounders,
                                         distBeta=distBetaConfounders, 
                                         mBeta=mBetaConfounders, 
-                                        sdBeta=sdBetaConfounders)
+                                        sdBeta=sdBetaConfounders,
+                                        id_phenos=id_phenos,
+                                        id_samples=id_samples,
+                                        sampleID=sampleID,
+                                        phenoID=phenoID)
         
         
         var_noiseFixed_shared <- model$gamma * model$delta * model$noiseVar
@@ -719,10 +767,8 @@ runSimulation <- function(N=1000, P=10, tNrSNP=5000, cNrSNP=20,
             noiseFixed$independent, 
             var_noiseFixed_independent)
         
-        Y_noiseFixed <- addNonNulls(list(noiseFixed_shared_rescaled, 
-                                         noiseFixed_independent_rescaled))
-        colnames(Y_noiseFixed) <- id_traits
-        rownames(Y_noiseFixed) <- id_samples
+        Y_noiseFixed <- addNonNulls(list(noiseFixed_shared_rescaled$component, 
+                                    noiseFixed_independent_rescaled$component))
     } else {
         noiseFixed <- NULL
         var_noiseFixed_shared <- 0
@@ -739,9 +785,7 @@ runSimulation <- function(N=1000, P=10, tNrSNP=5000, cNrSNP=20,
                        Y_correlatedBg)
     Y <-  addNonNulls(components)
     Y <- scale(Y)
-    colnames(Y) <- id_traits
-    rownames(Y) <- id_samples
-    
+  
     varComponents <- data.frame(genVar=model$genVar, h2s=model$h2s, 
                                 h2bg=model$h2bg, 
                                 var_genFixed_shared=var_genFixed_shared, 
@@ -756,19 +800,45 @@ runSimulation <- function(N=1000, P=10, tNrSNP=5000, cNrSNP=20,
                                 var_noiseBg_shared=var_noiseBg_shared, 
                                 var_noiseBg_independent=var_noiseBg_independent, 
                                 var_noiseCorrelated=var_noiseCorrelated)
-    phenoComponents <- list(Y=Y, Y_genFixed=Y_genFixed, Y_genBg=Y_genBg, 
+    phenoComponentsFinal <- list(Y=Y, Y_genFixed=Y_genFixed, Y_genBg=Y_genBg, 
                             Y_noiseFixed=Y_noiseFixed, Y_noiseBg=Y_noiseBg, 
                             Y_correlatedBg=Y_correlatedBg, 
-                            cov_Y_genBg=cov_Y_genBg, 
-                            cov_Y_noiseBg=cov_Y_noiseBg, genFixed=genFixed, 
-                            noiseFixed=noiseFixed)
+                            cov_genBg=cov_genBg, 
+                            cov_noiseBg=cov_noiseBg,
+                            cov_correlatedBg = cov_correlatedBg)
+    phenoComponentsIntermediate <- list(
+                                 Y_genFixed_shared=
+                                     genFixed_shared_rescaled$component,
+                                 Y_genFixed_independent=
+                                     genFixed_independent_rescaled$component,
+                                 Y_noiseFixed_shared=
+                                     noiseFixed_shared_rescaled$component,
+                                 Y_noiseFixed_independent=
+                                     noiseFixed_independent_rescaled$component,
+                                 Y_genBg_shared=
+                                     genBg_shared_rescaled$component,
+                                 Y_genBg_independent=
+                                     genBg_independent_rescaled$component,
+                                 Y_noiseBg_shared=
+                                     noiseBg_shared_rescaled$component,
+                                 Y_noiseBg_independent=
+                                     noiseBg_independent_rescaled$component,
+                                 cov_genBg_shared=cov_genBg_shared, 
+                                 cov_genBg_independent=cov_genBg_independent, 
+                                 cov_noiseBg_shared=cov_noiseBg_shared,
+                                 cov_noiseBg_independent=cov_noiseBg_independent, 
+                                 genFixed=genFixed, 
+                                 noiseFixed=noiseFixed)
+    
     setup <- list(P=P, N=N, NrCausalSNPs=cNrSNP, 
                   modelGenetic=model$modelGenetic, 
                   modelNoise=model$modelNoise, 
-                  id_samples=id_samples, id_traits=id_traits, id_snps=id_snps)
+                  id_samples=id_samples, id_phenos=id_phenos, id_snps=id_snps)
     rawComponents <- list(kinship=kinship, genotypes=genotypes)
 
-    return(list(varComponents=varComponents, phenoComponents=phenoComponents, 
+    return(list(varComponents=varComponents, 
+                phenoComponentsFinal=phenoComponentsFinal, 
+                phenoComponentsIntermediate=phenoComponentsIntermediate, 
                 setup=setup, rawComponents=rawComponents))
 }
 
