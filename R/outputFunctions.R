@@ -21,7 +21,7 @@
 #' phenotypes, genotypes and covariates.
 #' @param id_snps vector of [NrSNPs] snp IDs [string] of (simulated) 
 #' genotypes.
-#' @param id_traits vector of [NrTraits] phenotype IDs [string] of 
+#' @param id_phenos vector of [NrTraits] phenotype IDs [string] of 
 #' simulated phenotypes.
 #' @param standardInput_samples data.frame of sample information obtained when 
 #' reading genotypes from plink, oxgen or genome file.
@@ -124,19 +124,19 @@
 #' writeStandardOutput(directory="/path/to/output", 
 #' genotypes=genotypes$genotypes, phenotypes=phenotypes, 
 #' id_samples = genotypes$id_samples, id_snps = genotypes$id_snps, 
-#' id_traits = colnames(phenotypes), format="plink")
+#' id_phenos = colnames(phenotypes), format="plink")
 #' 
 #' # Save in gemma and snptest format
 #' writeStandardOutput(directory="/path/to/output", 
 #' genotypes=genotypes$genotypes, phenotypes=phenotypes, 
 #' id_samples = genotypes$id_samples, id_snps = genotypes$id_snps, 
-#' id_traits = colnames(phenotypes), kinship=kinship, 
+#' id_phenos = colnames(phenotypes), kinship=kinship, 
 #' format=c("snptest", "gemma"))
 #' }
 writeStandardOutput <- function(directory, 
                                 genotypes=NULL, phenotypes=NULL, 
                                 covariates=NULL, kinship=NULL,
-                                id_samples, id_snps, id_traits, 
+                                id_samples, id_snps, id_phenos, 
                                 outstring=NULL, 
                                 standardInput_samples=NULL,
                                 standardInput_genotypes=NULL,
@@ -252,7 +252,7 @@ writeStandardOutput <- function(directory,
     }
     if ("snptest" %in% format) {
         if (!is.null(phenotypes)) {
-            line2 <- rep("P", length(id_traits))
+            line2 <- rep("P", length(id_phenos))
             pheno_tmp <- rbind(line2, phenotypes)
             
             if (is.null(standardInput_samples)) {
@@ -329,6 +329,7 @@ writeStandardOutput <- function(directory,
 #' to save intermediate phenotype components, at least one of csv or rds need to 
 #' be specified. plink/bimbam/snptest will only save final phenotype/genotype, 
 #' kinship and covariate data.
+#' @param saveIntermediate 
 #' @param verbose [boolean]; if TRUE, progress info is printed to standard out
 #' @return list of paths [strings] to final output directory. If outstring is 
 #' NULL, this directory will be a subdirectory of the input directory.
@@ -340,7 +341,8 @@ writeStandardOutput <- function(directory,
 #' outputdir <- savePheno(simulatedPhenotype, directory="/path/to/dir/",  
 #' outstring="Data_simulation", format=c("csv", "plink"))}
 savePheno <- function(simulatedData, directory, format=".csv",
-                      outstring="",  intercept_gemma = TRUE, verbose=TRUE) {
+                      outstring="", saveIntermediate=TRUE, 
+                      intercept_gemma = TRUE, verbose=TRUE) {
     if (grepl("~", directory)) {
         stop("directory contains ~: path expansion not guaranteed on 
              every platform (see path.expand{base}), please provide full file
@@ -351,12 +353,13 @@ savePheno <- function(simulatedData, directory, format=".csv",
     nrsamples <- simulatedData$setup$N
     nrpheno <- simulatedData$setup$P
     id_samples <-  simulatedData$setup$id_samples
-    id_traits <-  simulatedData$setup$id_traits
+    id_phenos <-  simulatedData$setup$id_phenos
     id_snps <-  simulatedData$setup$id_snps
     NrSNP <-simulatedData$setup$NrCausalSNPs
     genVar <- simulatedData$varComponents$genVar
     rawComponents <-  simulatedData$rawComponents
-    phenoComponents <- simulatedData$phenoComponents
+    phenoComponents <- simulatedData$phenoComponentsFinal
+    phenoIntermediate <- simulatedData$phenoComponentsIntermediate
     
     
     ### set-up directories
@@ -391,9 +394,23 @@ savePheno <- function(simulatedData, directory, format=".csv",
         if ("rds" %in% format) {
             saveRDS(phenoComponents$Y_genBg, 
                     paste(directory, "/Y_genBg", outstring,".rds",sep=""))
-            saveRDS(phenoComponents$cov_Y_genBg, 
+            saveRDS(phenoComponents$cov_genBg, 
                     paste(directory, "/cov_Y_genBg", outstring,".rds", 
                           sep=""))
+            if (saveIntermediate){
+                saveRDS(phenoIntermediate$Y_genBg_shared, 
+                        paste(directory, "/Y_genBg_shared", outstring, ".rds",
+                              sep=""))
+                saveRDS(phenoIntermediate$cov_genBg_shared, 
+                        paste(directory, "/cov_genBg_shared", outstring, ".rds", 
+                              sep=""))
+                saveRDS(phenoIntermediate$Y_genBg_independent, 
+                        paste(directory, "/Y_genBg_independent", outstring,
+                              ".rds", sep=""))
+                saveRDS(phenoIntermediate$cov_genBg_independent, 
+                        paste(directory, "/cov_genBg_independent", outstring,
+                              ".rds", sep=""))
+            }
         }
         if ("csv" %in% format) {
             write.table(phenoComponents$Y_genBg, 
@@ -404,6 +421,26 @@ savePheno <- function(simulatedData, directory, format=".csv",
                         paste(directory, "/cov_Y_genBg", outstring,".csv", 
                               sep=""), 
                         sep=",", quote=FALSE, col.names=FALSE, row.names=FALSE)
+            if (saveIntermediate){
+                write.table(phenoIntermediate$Y_genBg_shared, 
+                            paste(directory, "/Y_genBg_shared", outstring,
+                                  ".csv", sep=""),
+                            sep=",",quote=FALSE, col.names=NA, row.names=TRUE)
+                write.table(phenoIntermediate$cov_genBg_shared, 
+                            paste(directory, "/cov_genBg_shared", outstring,
+                                  ".csv", sep=""), 
+                            sep=",", quote=FALSE, col.names=FALSE,
+                            row.names=FALSE)
+                write.table(phenoIntermediate$Y_genBg_independent, 
+                            paste(directory, "/Y_genBg_independent", outstring,
+                                  ".csv", sep=""),
+                            sep=",",quote=FALSE, col.names=NA, row.names=TRUE)
+                write.table(phenoIntermediate$cov_genBg_independent, 
+                            paste(directory, "/cov_genBg_independent", 
+                                  outstring,".csv", sep=""), 
+                            sep=",", quote=FALSE, col.names=FALSE, 
+                            row.names=FALSE)
+            }
         }
         vmessage(c("Save kinship to", directory), verbose=verbose)
         if ("rds" %in% format) {
@@ -425,12 +462,30 @@ savePheno <- function(simulatedData, directory, format=".csv",
             saveRDS(phenoComponents$Y_genFixed, 
                     paste(directory, "/Y_genFixed", outstring, ".rds", 
                           sep=""))
+            if (saveIntermediate){
+                saveRDS(phenoIntermediate$Y_genFixed_shared, 
+                        paste(directory, "/Y_genFixed_shared", outstring, ".rds",
+                              sep=""))
+                saveRDS(phenoIntermediate$Y_genFixed_independent, 
+                        paste(directory, "/Y_genFixed_independent", outstring,
+                              ".rds", sep=""))
+            }
         }
         if ("csv" %in% format) {
             write.table(phenoComponents$Y_genFixed, 
                         paste(directory, "/Y_genFixed", outstring, ".csv", 
                               sep=""), 
                         sep=",", quote=FALSE, col.names=NA, row.names=TRUE)
+            if (saveIntermediate){
+                write.table(phenoIntermediate$Y_genFixed_shared, 
+                            paste(directory, "/Y_genFIxed_shared", outstring,
+                                  ".csv", sep=""),
+                            sep=",", quote=FALSE, col.names=NA, row.names=TRUE)
+                write.table(phenoIntermediate$Y_genFixed_independent, 
+                            paste(directory, "/Y_genFixed_independent", 
+                                  outstring, ".csv", sep=""),
+                            sep=",", quote=FALSE, col.names=NA, row.names=TRUE)
+            }
         }
         
         vmessage(c("Save causal SNPs and their effect sizes to ", directory, 
@@ -479,12 +534,19 @@ savePheno <- function(simulatedData, directory, format=".csv",
             saveRDS(phenoComponents$Y_correlatedBg, 
                     paste(directory, "/Y_correlatedBg", outstring,".rds", 
                           sep=""))
+            saveRDS(phenoComponents$cov_correlatedBg, 
+                    paste(directory, "/cov_correlatedBg", outstring,".rds", 
+                          sep=""))
         }
         if ("csv" %in% format) {
             write.table(phenoComponents$Y_correlatedBg,
                         paste(directory, "/Y_correlatedBg", outstring, 
                               ".csv", sep=""), 
                         sep=",", quote=FALSE, col.names=NA, row.names=TRUE)
+            write.table(phenoComponents$cov_correlatedBg,
+                        paste(directory, "/cov_correlatedBg", outstring, 
+                              ".csv", sep=""), 
+                        sep=",", quote=FALSE, col.names=FALSE, row.names=FALSE)
         }
     }
     if (grepl("Bg", modelNoise)) {
@@ -495,8 +557,22 @@ savePheno <- function(simulatedData, directory, format=".csv",
                     paste(directory, "/Y_noiseBg", outstring,".rds", 
                           sep=""))
             saveRDS(phenoComponents$cov_Y_noiseBg, 
-                    paste(directory, "/cov_Y_noiseBg", outstring,".rds", 
+                    paste(directory, "/cov_noiseBg", outstring,".rds", 
                           sep=""))
+            if (saveIntermediate){
+                saveRDS(phenoIntermediate$Y_noiseBg_shared, 
+                        paste(directory, "/Y_noiseBg_shared", outstring, ".rds",
+                              sep=""))
+                saveRDS(phenoIntermediate$cov_noiseBg_shared, 
+                        paste(directory, "/cov_noiseBg_shared", outstring, 
+                              ".rds", sep=""))
+                saveRDS(phenoIntermediate$Y_noiseBg_independent, 
+                        paste(directory, "/Y_noiseBg_independent", outstring,
+                              ".rds", sep=""))
+                saveRDS(phenoIntermediate$cov_noiseBg_independent, 
+                        paste(directory, "/cov_noiseBg_independent", outstring,
+                              ".rds", sep=""))
+            }
         }
         if ("csv" %in% format) {
             write.table(phenoComponents$Y_noiseBg, 
@@ -504,9 +580,29 @@ savePheno <- function(simulatedData, directory, format=".csv",
                               sep=""), sep=",",
                         quote=FALSE, col.names=NA, row.names=TRUE)
             write.table(phenoComponents$cov_Y_noiseBg, 
-                        paste(directory, "/cov_Y_noiseBg",
+                        paste(directory, "/cov_noiseBg",
                               outstring,".csv", sep=""), sep=",",
                         quote=FALSE, col.names=FALSE, row.names=FALSE)
+            if (saveIntermediate){
+                write.table(phenoIntermediate$Y_noiseBg_shared, 
+                            paste(directory, "/Y_noiseBg_shared", outstring,
+                                  ".csv", sep=""),
+                            sep=",",quote=FALSE, col.names=NA, row.names=TRUE)
+                write.table(phenoIntermediate$cov_noiseBg_shared, 
+                            paste(directory, "/cov_noiseBg_shared", outstring,
+                                  ".csv", sep=""), 
+                            sep=",", quote=FALSE, col.names=FALSE,
+                            row.names=FALSE)
+                write.table(phenoIntermediate$Y_noiseBg_independent, 
+                            paste(directory, "/Y_noiseBg_independent", 
+                                  outstring, ".csv", sep=""),
+                            sep=",",quote=FALSE, col.names=NA, row.names=TRUE)
+                write.table(phenoIntermediate$cov_noiseBg_independent, 
+                            paste(directory, "/cov_noiseBg_independent", 
+                                  outstring,".csv", sep=""), 
+                            sep=",", quote=FALSE, col.names=FALSE, 
+                            row.names=FALSE)
+            }
         }
     }
     
@@ -567,7 +663,7 @@ savePheno <- function(simulatedData, directory, format=".csv",
                                      directory=directory, 
                                      id_samples=id_samples,
                                      id_snps=id_snps,
-                                     id_traits=id_traits)
+                                     id_phenos=id_phenos)
     }
     if ("snptest" %in% format) {
         snptest <- writeStandardOutput(phenotypes=phenoComponents$Y, 
@@ -582,7 +678,7 @@ savePheno <- function(simulatedData, directory, format=".csv",
                                        directory=directory, 
                                        id_samples=id_samples,
                                        id_snps=id_snps,
-                                       id_traits=id_traits)
+                                       id_phenos=id_phenos)
     }
     if ("bimbam" %in% format) {
         bimbam <- writeStandardOutput(phenotypes=phenoComponents$Y, 
@@ -595,7 +691,7 @@ savePheno <- function(simulatedData, directory, format=".csv",
                                       directory=directory, 
                                       id_samples=id_samples,
                                       id_snps=id_snps,
-                                      id_traits=id_traits)
+                                      id_phenos=id_phenos)
     }
     if ("gemma" %in% format) {
         gemma <- writeStandardOutput(phenotypes=phenoComponents$Y, 
@@ -609,7 +705,7 @@ savePheno <- function(simulatedData, directory, format=".csv",
                                      directory=directory, 
                                      id_samples=id_samples,
                                      id_snps=id_snps,
-                                     id_traits=id_traits)
+                                     id_phenos=id_phenos)
     }
     return(list(directory=directory))
 }
