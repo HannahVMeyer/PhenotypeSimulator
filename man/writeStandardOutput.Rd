@@ -5,7 +5,7 @@
 \title{Write simulated data into formats used by standard GWAS software}
 \usage{
 writeStandardOutput(directory, genotypes = NULL, phenotypes = NULL,
-  covariates = NULL, kinship = NULL, id_samples, id_snps, id_traits,
+  covariates = NULL, kinship = NULL, id_samples, id_snps, id_phenos,
   outstring = NULL, standardInput_samples = NULL,
   standardInput_genotypes = NULL, format = NULL, intercept_gemma = FALSE,
   verbose = TRUE, delimiter = ",")
@@ -32,7 +32,7 @@ phenotypes, genotypes and covariates.}
 \item{id_snps}{vector of [NrSNPs] snp IDs [string] of (simulated) 
 genotypes.}
 
-\item{id_traits}{vector of [NrTraits] phenotype IDs [string] of 
+\item{id_phenos}{vector of [NrTraits] phenotype IDs [string] of 
 simulated phenotypes.}
 
 \item{outstring}{optional name [string] of subdirectory (in relation to 
@@ -154,13 +154,13 @@ phenotypes <- simulation$phenoComponents$Y
 writeStandardOutput(directory="/path/to/output", 
 genotypes=genotypes$genotypes, phenotypes=phenotypes, 
 id_samples = genotypes$id_samples, id_snps = genotypes$id_snps, 
-id_traits = colnames(phenotypes), format="plink")
+id_phenos = colnames(phenotypes), format="plink")
 
 # Save in gemma and snptest format
 writeStandardOutput(directory="/path/to/output", 
 genotypes=genotypes$genotypes, phenotypes=phenotypes, 
 id_samples = genotypes$id_samples, id_snps = genotypes$id_snps, 
-id_traits = colnames(phenotypes), kinship=kinship, 
+id_phenos = colnames(phenotypes), kinship=kinship, 
 format=c("snptest", "gemma"))
 }
 }

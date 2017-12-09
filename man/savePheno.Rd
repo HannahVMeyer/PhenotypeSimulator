@@ -5,7 +5,7 @@
 \title{Save final phenotype and phenotype components.}
 \usage{
 savePheno(simulatedData, directory, format = ".csv", outstring = "",
-  intercept_gemma = TRUE, verbose = TRUE)
+  saveIntermediate = TRUE, intercept_gemma = TRUE, verbose = TRUE)
 }
 \arguments{
 \item{simulatedData}{named list of i) dataframe of proportion of variance 
@@ -30,6 +30,10 @@ kinship and covariate data.}
 directory) to save set-up dependent simulation results; if
 set to NULL, subdirectory named by NrSamples, NrSNPs, genetic Model and 
 noise Model and genVar is created.}
+
+\item{saveIntermediate}{[bool] if TRUE, intermediate phenotype components
+such as shared and independent genetic and noise fixed and backgrounde 
+effects are saved.}
 
 \item{intercept_gemma}{[boolean] When modeling an intercept term in gemma, a 
 column of 1's have to be appended to the covariate files. Set intercept_gemma
