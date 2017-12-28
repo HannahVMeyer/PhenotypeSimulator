@@ -4,18 +4,36 @@
 \alias{correlatedBgEffects}
 \title{Simulate correlated background effects.}
 \usage{
-correlatedBgEffects(N, P, pcorr)
+correlatedBgEffects(N, P, pcorr, corr_mat = NULL, sampleID = "ID_",
+  phenoID = "Trait_", id_samples = paste(sampleID, 1:N, sep = ""),
+  id_phenos = paste(phenoID, 1:P, sep = ""))
 }
 \arguments{
-\item{N}{number [integer] of samples to simulate}
+\item{N}{Number [integer] of samples to simulate.}
 
-\item{P}{number [integer] of phenotypes to simulate}
+\item{P}{Number [integer] of phenotypes to simulate.}
 
-\item{pcorr}{initial strength of correlation [double] between neighbouring 
-traits}
+\item{pcorr}{Initial strength of correlation [double] between neighbouring 
+traits. Decreases by pcorr^(distance); distance from 0 to P-1. See details.}
+
+\item{corr_mat}{Optional [P x P] correlation matrix [double] as covariance 
+component for the multivariate normal distribution. If not provided, pcorr is
+used to construct the correlation matrix.}
+
+\item{sampleID}{Prefix [string] for naming samples.}
+
+\item{phenoID}{Prefix [string] for naming traits.}
+
+\item{id_samples}{Vector of [NrSamples] sample IDs [string]; if not provided
+constructed by paste(sampleID, 1:N, sep="").}
+
+\item{id_phenos}{Vector of [NrTraits] phenotype IDs [string]; if not provided
+constructed by paste(phenoID, 1:P, sep="").}
 }
 \value{
-[N x P] matrix of correlated background effects
+Named list with [N x P] matrix of correlated background effects (
+correlatedBg) and the correlation matrix (cov_correlated). If corr_mat 
+provided corr_mat == cov_correlated.
 }
 \description{
 correlatedBgEffects computes a background effect that simulates structured 
@@ -23,13 +41,13 @@ correlation between the phenotypes.
 }
 \details{
 correlatedBgEffects can be used to simulate phenotypes with a 
-defined level of correlation between traits. The level of correlation depends
- on the distance
-of the traits. Traits of distance d=1 (adjacent columns) will have 
-correlation cor=\eqn{pcorr^1}{pcorr^1}, traits with d=2 have 
-cor=\eqn{pcorr^2}{pcorr^2} up to traits with d=(P-1) 
-cor=\eqn{pcorr^{(P-1)}}{pcorr^{(P-1)}}. The correlated background effect 
-correlated is simulated based on this correlation structure C: 
+defined level of correlation between traits. If the corr_mat is not provided,
+a simple correlation structure based on the distance of the traits will be 
+constructed. Traits of distance d=1 (adjacent columns) will have correlation 
+cor=\eqn{pcorr^1}{pcorr^1}, traits with d=2 have cor=\eqn{pcorr^2}{pcorr^2} 
+up to traits with d=(P-1) cor=\eqn{pcorr^{(P-1)}}{pcorr^{(P-1)}}. The 
+correlated background effect correlated is simulated based on this 
+correlation structure C: 
 \eqn{correlated ~ N_{NP}(0,C)}{correlated ~ N_{NP}(0,C)}.
 }
 \examples{

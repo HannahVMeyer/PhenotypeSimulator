@@ -2,28 +2,33 @@
 % Please edit documentation in R/variancecomponentFunctions.R
 \name{geneticFixedEffects}
 \alias{geneticFixedEffects}
-\title{Simulate genetic fixed effects.}
+\title{Simulate genetic variant effects.}
 \usage{
-geneticFixedEffects(X_causal, P, N = NULL, phenoID = "Trait_",
-  pTraitsAffected = 1, pIndependentGenetic = 0.4,
-  pTraitIndependentGenetic = 0.2, distBeta = "norm", mBeta = 0,
-  sdBeta = 1, verbose = FALSE)
+geneticFixedEffects(X_causal, P, N, phenoID = "Trait_",
+  id_samples = rownames(X_causal), id_phenos = paste(phenoID, 1:P, sep =
+  ""), pTraitsAffected = 1, pIndependentGenetic = 0.4,
+  pTraitIndependentGenetic = 0.2, keepSameIndependent = FALSE,
+  distBeta = "norm", mBeta = 0, sdBeta = 1, verbose = FALSE)
 }
 \arguments{
-\item{X_causal}{[N x NrCausalSNPs] matrix of standardised (depending on 
-standardise option) SNPs.}
+\item{X_causal}{[N x NrCausalSNPs] Matrix of [NrCausalSNPs] SNPs from [N] 
+samples.}
 
-\item{P}{number [integer] of phenotypes to simulate.}
+\item{P}{Number [integer] of phenotypes to simulate.}
 
-\item{N}{number [integer] of samples to simulate; has to be less than or 
-equal to the number of samples in X_causal (rows); if less than  number of 
-samples in X_causal, N random rows of X_causal will be drawn; if not 
-specified, N assumed to be equal to samples in X_causal.}
+\item{N}{Number [integer] of samples to simulate; has to be provided as a 
+dimnesionality check for X_causal and downstream analyses; nrow(X_causal) has 
+to be equal to N.}
 
-\item{phenoID}{prefix [string] for naming traits (followed by trait number 
-from 1 to P)}
+\item{phenoID}{Prefix [string] for naming traits.}
 
-\item{pTraitsAffected}{proportion [double] of traits affected by the genetic
+\item{id_samples}{Vector of [NrSamples] sample IDs [string]; if not provided
+colnames(X_causal) used.}
+
+\item{id_phenos}{Vector of [NrTraits] phenotype IDs [string]; if not provided
+constructed by paste(phenoID, 1:P, sep="").}
+
+\item{pTraitsAffected}{Proportion [double] of traits affected by the genetic
 effect. For non-integer results of pTraitsAffected*P, the ceiling of the 
 result is used. Allows to simulate for instance different levels of 
 pleiotropy.}
@@ -32,36 +37,39 @@ pleiotropy.}
 have an independent fixed effect.}
 
 \item{pTraitIndependentGenetic}{Proportion [double] of traits influenced by 
-independent fixed genetic effects}
+independent fixed genetic effects.}
 
-\item{distBeta}{vector of name(s) [string] of distribution to use to simulate 
+\item{keepSameIndependent}{[boolean] If set to TRUE, the independent genetic 
+effects always influence the same subset of traits.}
+
+\item{distBeta}{Vector of name(s) [string] of distribution to use to simulate 
 effect sizes of SNPs; one of "unif" or "norm".}
 
-\item{mBeta}{vector of mean/midpoint [double] of normal/uniform distribution 
-for effect sizes of SNPs.}
+\item{mBeta}{Vector of mean/midpoint(s) [double] of normal/uniform 
+distribution for effect sizes of SNPs.}
 
-\item{sdBeta}{vector of standard deviation/distance from midpoint [double] 
+\item{sdBeta}{Vector of standard deviation/distance from midpoint [double] 
 of normal/uniform distribution for effect sizes of SNPs.}
 
-\item{verbose}{[boolean]; if TRUE, progress info is printed to standard out}
+\item{verbose}{[boolean] If TRUE, progress info is printed to standard out}
 }
 \value{
-named list of shared fixed genetic effects (shared: [N x P] matrix), 
+Named list of shared fixed genetic effects (shared: [N x P] matrix), 
 independent fixed genetic effects (independent: [N x P] matrix), 
-the causal SNPs named by having a shared or independent effect 
+the causal SNPs labeled as shared or independent effect 
 (cov: [NrCausalSNPs x N] matrix) and the simulated effect sizes of the causal 
 SNPs (cov_effect: [P x NrCausalSNPs] dataframe).
 }
 \description{
-geneticFixedEffects takes a matrix of SNPs which should be added as fixed 
-effect to the phenotype. SNPs can have effects across all traits (shared) 
-or to a number of traits only (independent); the proportion of independent 
-SNPs from the total input SNPs can be chosen via pIndependentGenetic. The 
-number of traits that are associated with independent genetic effects can be 
-chosen via pTraitIndependentGenetic.
+geneticFixedEffects takes genetic variants which should be added as genetic 
+variant effects to the phenotype. These variants can have the same effects 
+across all traits (shared) or can be independent across traits (independent); 
+in addition, only a certain proportion of traits can be affected by the 
+genetic variants.
 }
 \examples{
 genotypes <- simulateGenotypes(N=100, NrSNP=20, verbose=FALSE)
-causalSNPs <- getCausalSNPs(genotypes=genotypes$genotypes)
-geneticFixed <- geneticFixedEffects(X_causal=causalSNPs, P=10, N=100)
+causalSNPs <- getCausalSNPs(N=100, genotypes=genotypes$genotypes)
+geneticFixed <- geneticFixedEffects(N=100, X_causal=causalSNPs, 
+P=10)
 }

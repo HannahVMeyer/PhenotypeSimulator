@@ -2,32 +2,55 @@
 % Please edit documentation in R/variancecomponentFunctions.R
 \name{noiseBgEffects}
 \alias{noiseBgEffects}
-\title{Simulate noise background effects.}
+\title{Simulate observational noise effects.}
 \usage{
-noiseBgEffects(N, P, mean = 0, sd = 1)
+noiseBgEffects(N, P, mean = 0, sd = 1, sampleID = "ID_",
+  phenoID = "Trait_", shared = TRUE, independent = TRUE,
+  id_samples = paste(sampleID, 1:N, sep = ""), id_phenos = paste(phenoID,
+  1:P, sep = ""))
 }
 \arguments{
-\item{N}{number [integer] of samples to simulate}
+\item{N}{Number [integer] of samples to simulate.}
 
-\item{P}{number [integer] of phenotypes to simulate}
+\item{P}{Number [integer] of phenotypes to simulate.}
 
-\item{mean}{mean [double] of the normal distribution}
+\item{mean}{Mean [double] of the normal distribution.}
 
-\item{sd}{standard deviation [double] of the normal distribution}
+\item{sd}{Standard deviation [double] of the normal distribution.}
+
+\item{sampleID}{Prefix [string] for naming samples.}
+
+\item{phenoID}{Prefix [string] for naming traits.}
+
+\item{shared}{[bool] shared effect simulated if set to TRUE; at least one of 
+shared or independent has to be set to TRUE.}
+
+\item{independent}{[bool] independent effect simulated if set to TRUE.}
+
+\item{id_samples}{Vector of [NrSamples] sample IDs [string]; if not provided
+constructed by paste(sampleID, 1:N, sep="").}
+
+\item{id_phenos}{Vector of [NrTraits] phenotype IDs [string]; if not provided
+constructed by paste(phenoID, 1:P, sep="").}
 }
 \value{
-named list of shared background noise effects (shared: [N x P] 
-matrix) and independent background noise effects (independent: [N x P] 
-matrix)
+Named list of shared noise effects (shared: [N x P] matrix) and 
+independent noise effects (independent: [N x P] matrix), the covariance term 
+of the shared effect (cov_shared: [P x P] matrix) and the covariance term of 
+the independent effect (cov_independent: [P x P] matrix).
 }
 \description{
-noiseBgEffects simulates two random noise effects (shared and independent).
+noiseBgEffects simulates observational noise with a proportion of the effect 
+shared across samples and a proportion independent across samples.
 }
 \details{
-The independent background effect is simulated as vec(shared) ~ 
-N(mean,sd). The shared background effect is simulated as the 
-matrix product of two normal
-distributions A [N x 1] and B [P x 1]: AB^t
+For the simulation of the observational noise effects, two 
+components are used: i) matrix B [N x P] with vec(B) drawn from a normal 
+distribution with mean=mean and sd=sd and ii) the trait design matrix A 
+[P x P]. For the independent effect, A is a diagonal matrix with normally 
+distributed values.  A for the shared effect is a matrix of rowrank one, with 
+normally distributed entries in row 1 and zeros elsewhere.  To construct the 
+final effects, the two matrices are multiplied as: E = BA^T.
 }
 \examples{
 noiseBG <- noiseBgEffects(N=100, P=20, mean=2)

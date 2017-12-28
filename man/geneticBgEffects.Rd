@@ -2,38 +2,59 @@
 % Please edit documentation in R/variancecomponentFunctions.R
 \name{geneticBgEffects}
 \alias{geneticBgEffects}
-\title{Simulate genetic background effects.}
+\title{Simulate infinitesimal genetic effects (reflecting sample kinship).}
 \usage{
-geneticBgEffects(P, kinship)
+geneticBgEffects(P, N, kinship, phenoID = "Trait_",
+  id_samples = colnames(kinship), shared = TRUE, independent = TRUE,
+  id_phenos = paste(phenoID, 1:P, sep = ""))
 }
 \arguments{
-\item{P}{number [integer] of phenotypes to simulate}
+\item{P}{Number [integer] of phenotypes to simulate .}
 
-\item{kinship}{[N x N] matrix of kinship estimates [double]}
+\item{N}{Number [integer] of samples to simulate; has to be provided as a 
+dimnesionality check for kinship and downstream analyses; nrow(kinship) has 
+to be equal to N.}
+
+\item{kinship}{[N x N] Matrix of kinship estimates [double].}
+
+\item{phenoID}{Prefix [string] for naming traits.}
+
+\item{id_samples}{Vector of [NrSamples] sample IDs [string]; if not provided
+colnames(kinship) are used.}
+
+\item{shared}{[bool] shared effect simulated if set to TRUE; at least one of 
+shared or independent has to be set to TRUE.}
+
+\item{independent}{[bool] independent effect simulated if set to TRUE.}
+
+\item{id_phenos}{Vector of [NrTraits] phenotype IDs [string]; if not provided
+constructed by paste(phenoID, 1:P, sep="").}
 }
 \value{
-named list of shared background genetic effects (shared: [N x P] 
-matrix) and independent background genetic effects (independent: [N x P] 
-matrix)
+Named list of shared infinitesimal genetic effects (shared: [N x P] 
+matrix) and independent infinitesimal genetic effects (independent: [N x P] 
+matrix), the covariance term of the shared effect (cov_shared: [P x P] 
+matrix) and the covariance term of the independent effect (cov_independent: 
+[P x P] matrix).
 }
 \description{
-geneticBgEffects simulates two random genetic effects (shared and 
-independent) based on the kinship estimates of the (simulated) samples.
+geneticBgEffects simulates an infinitesimal genetic effects with a proportion 
+of the effect shared across samples and a proportion independent across 
+samples; they are based on the kinship estimates of the (simulated) samples.
 }
 \details{
-For the simulation of the genetic background effects, three matrix 
-components are used: i) the kinship matrix K [N x N] which is treated as the 
-sample-design matrix
-(the genetic profile of the samples), ii) an effect-size matrix B [N x P] 
-with vec(B) drawn from a normal distribution and iii) the trait design matrix
- A [P x P]. For the
+For the simulation of the infinitesimal genetic effects, three 
+matrix components are used: i) the kinship matrix K [N x N] which is treated 
+as the sample design matrix, ii) matrix B [N x P] with vec(B) drawn from a 
+normal distribution and iii) the trait design matrix A [P x P]. For the
 independent effect, A is a diagonal matrix with normally distributed values.  
 A for the shared effect is a matrix of rowrank one, with normally distributed 
-entries in row 1 and zeros elsewhere. The final effect E, the three matrices 
-are multiplied as: E = cholesky(K)BA
+entries in row 1 and zeros elsewhere. To construct the final effects, the 
+three matrices are multiplied as: E = cholesky(K)BA^T.
 }
 \examples{
 genotypes <- simulateGenotypes(N=100, NrSNP=400, verbose=FALSE)
-kinship <- getKinship(genotypes$genotypes, standardise=TRUE, verbose=FALSE)
-geneticBg <- geneticBgEffects(P=10, kinship=kinship)
+kinship <- getKinship(N=100, X=genotypes$genotypes, standardise=TRUE, 
+verbose=FALSE)
+geneticBg <- geneticBgEffects(N=100, P=10, kinship=kinship)
 }
