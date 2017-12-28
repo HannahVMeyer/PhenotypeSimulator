@@ -5,36 +5,35 @@
 #' software: plink, snptest, bimbam, gemma. For more information on the 
 #' different file formats see \emph{External formats}.
 #'
-#' @param genotypes [NrSamples x NrSNP] data.frame/matrix of genotypes 
+#' @param genotypes [NrSamples x NrSNP] Data.frame/matrix of genotypes 
 #' [integers]/[doubles].
-#' @param phenotypes [NrSamples x NrTrait] data.frame/matrix of phenotypes 
+#' @param phenotypes [NrSamples x NrTrait] Data.frame/matrix of phenotypes 
 #' [doubles].
-#' @param covariates [NrSamples x NrCovariates] data.frame/matrix of covariates
+#' @param covariates [NrSamples x NrCovariates] Data.frame/matrix of covariates
 #' [integers]/[doubles].
-#' @param kinship [NrSamples x NrSamples] data.frame/matrix of kinship estimates
+#' @param kinship [NrSamples x NrSamples] Data.frame/matrix of kinship estimates
 #' [doubles].
-#' @param format vector of name(s) [string] of file formats, options are: 
+#' @param format Vector of name(s) [string] of file formats, options are: 
 #' "plink", "snptest", "gemma", "bimbam", "delim". For details on the file 
 #' formats see \emph{External formats}.
-#' @param id_samples vector of [NrSamples] sample IDs [string] of simulated 
+#' @param id_samples Vector of [NrSamples] sample IDs [string] of simulated 
 #' phenotypes, genotypes and covariates.
-#' @param id_snps vector of [NrSNPs] SNP IDs [string] of (simulated) 
+#' @param id_snps Vector of [NrSNPs] SNP IDs [string] of (simulated) 
 #' genotypes.
-#' @param id_phenos vector of [NrTraits] phenotype IDs [string] of 
+#' @param id_phenos Vector of [NrTraits] phenotype IDs [string] of 
 #' simulated phenotypes.
-#' @param standardInput_samples (optional) data.frame of sample information 
+#' @param standardInput_samples (optional) Data.frame of sample information 
 #' obtained when genotypes were read from plink, oxgen or genome file.
-#' @param standardInput_genotypes (optional) data.frame of genotypes obtained 
+#' @param standardInput_genotypes (optional) Data.frame of genotypes obtained 
 #' when reading genotypes from plink, oxgen, or genome file.
-#' @param directory absolute path (no tilde expansion) to parent directory 
+#' @param directory Absolute path (no tilde expansion) to parent directory 
 #' [string] where the data should be saved [needs user writing permission]
-#' @param outstring (optional) name [string] of subdirectory (in relation to 
+#' @param outstring (optional) Name [string] of subdirectory (in relation to 
 #' directory) to save set-up independent simulation results.
 #' @param intercept_gemma [boolean] When modeling an intercept term in gemma, a 
 #' column of 1's have to be appended to the covariate files. Set intercept_gemma
 #' to TRUE to include a column of 1's in the output.
-#' @param verbose [boolean]; if TRUE, progress info is printed to standard out
-#' @return TRUE
+#' @param verbose [boolean]; If TRUE, progress info is printed to standard out
 #' @section External formats:
 #' \itemize{
 #' \item plink format: consists of three files, .bed, .bim and .fam. 
@@ -55,7 +54,8 @@
 #' Phenotype value ('1' = control, '2' = case, '-9'/'0'/non-numeric = missing 
 #' data if case/control)
 #' \item snptest format: consists of two files, the genotype file ending in .gen 
-#' and the sample file ending in .sample. From
+#' (genotypes_snptest.gen) and the sample file ending in .sample 
+#' (Ysim_snptest.sample). From
 #'  \url{http://www.stats.ox.ac.uk/~marchini/software/gwas/file_format.html}:
 #' The genotype file stores data on a one-line-per-SNP format. The first 5 
 #' entries of each line should be the SNP ID, RS ID of the SNP, base-pair 
@@ -87,18 +87,19 @@
 #' containing the information specified by the entries of the header line.
 #' Entries of the sample file are separated by spaces.
 #' \item bimbam format: consists of a) a simple, tab-separated phenotype file 
-#' without sample or phenotype header/index and b) the mean genotype file format 
-#' which is a single file, without information on individuals. From 
-#' \url{http://www.haplotype.org/bimbam.html}: The first column of the mean 
-#' genotype files is the SNP ID, the second and third columns are allele types 
-#' with minor allele first. The rest columns are the mean genotypes of different 
-#' individuals – numbers between 0 and 2 that represents the (posterior) mean 
-#' genotype, or dosage of the minor allele.
+#' without sample or phenotype header/index (Ysim_bimbam.txt) and b) the mean 
+#' genotype file format which is a single file, without information on individuals: 
+#' (genotypes.bimbam). From \url{http://www.haplotype.org/bimbam.html}: 
+#' The first column of the mean genotype files is the SNP ID, the second and 
+#' third columns are allele types with minor allele first. The rest columns are 
+#' the mean genotypes of different individuals – numbers between 0 and 2 that 
+#' represents the (posterior) mean genotype, or dosage of the minor allele.
 #' \item gemma format: consists of a) a simple, tab-separated phenotype file 
-#' without sample or phenotype header/index and b) the mean genotype file format 
-#' which is a single file, without information on individuals (both the same as 
-#' above for bimbam format). In addition and if applicable, c) a kinship file 
-#' and d) covariate file. From 
+#' without sample or phenotype header/index (Ysim_gemma.txt) and b) the mean 
+#' genotype file format which is a single file, without information on 
+#' individuals(genotypes.gemma); a) and b) both the same as above for bimbam 
+#' format). In addition and if applicable, c) a kinship file (Kinship_gemma.txt)
+#' and d) covariate file (Covs_gemma.txt). From 
 #' \url{http://www.xzlab.org/software/GEMMAmanual.pdf}: The kinship file 
 #' contains a NrSample × NrSample matrix, where each row and each column 
 #' corresponds to individuals in the same order as in the mean genotype file, 
@@ -140,15 +141,16 @@ writeStandardOutput <- function(directory,
                                 intercept_gemma=FALSE, 
                                 verbose=TRUE) {
     if (is.null(format)) {
-        stop("Output format has to be specified, supported formats are plink", 
+        stop("Output format has to be specified, supported formats are plink ", 
              "snptest, gemma, and bimbam")
     }
     if (is.null(genotypes)) {
         vmessage(c("No genotypes provided. Remaining data still saved in ", 
-                   paste(format, collapse=","), " format."))
+                   paste(format, collapse=","), " format."), verbose=verbose)
     }
     if ("plink" %in% format) {
         if (!is.null(phenotypes)) {
+            vmessage(c("Save phenotypes in PLINK format"), verbose=verbose)
             if (is.null(standardInput_samples)) {
                 pheno_format <- cbind(id_samples, id_samples, phenotypes)
             } else {
@@ -156,9 +158,10 @@ writeStandardOutput <- function(directory,
             }
             write.table(pheno_format, paste(directory, "/Ysim", outstring,
                                      "_plink.txt", sep=""), 
-                        sep="\t", quote=FALSE, col.names=FALSE, row.names=TRUE)
+                        sep="\t", quote=FALSE, col.names=FALSE, row.names=FALSE)
         }
         if (!is.null(genotypes)) {
+            vmessage(c("Save genotypes in PLINK format"), verbose=verbose)
             if (is.null(standardInput_genotypes)) {
                 N <- nrow(genotypes)
                 X_id <- data.frame(FID=id_samples, IID=id_samples, 
@@ -183,6 +186,7 @@ writeStandardOutput <- function(directory,
                                          phenotype=X_id$PHENOTYPE)
         }
         if (!is.null(covariates)) {
+            vmessage(c("Save covariates in PLINK format"), verbose=verbose)
             if (is.null(standardInput_samples)) {
                 covs_format <- cbind(id_samples, id_samples, covariates)
             } else {
@@ -196,53 +200,65 @@ writeStandardOutput <- function(directory,
     }
     if ("bimbam" %in% format) {
         if (!is.null(phenotypes)) {
-            write.table(phenotypes, paste(directory, "/Ysim", outstring, 
-                                "_bimbam.txt", sep=""), sep="\t", 
-                        quote=FALSE, col.names=FALSE, row.names=FALSE)
+            vmessage(c("Save phenotypes in BIMBAM format"), verbose=verbose)
+            write.table(phenotypes, 
+                        paste(directory, "/Ysim", outstring, "_bimbam.txt",
+                              sep=""),
+                        sep="\t", quote=FALSE, col.names=FALSE, row.names=FALSE)
         }
         if (!is.null(genotypes)) {
+            vmessage(c("Save genotypes in BIMBAM format"), verbose=verbose)
             if (is.null(standardInput_genotypes)) {
                 geno_format <- cbind(id_snps, rep("A", length(id_snps)),
                                      rep("B", length(id_snps)), t(genotypes))
             } else {
                 geno_format <- standardInput_genotypes
             }
-            write.table(geno_format, paste(directory, "/genotypes", outstring, 
-                                           ".bimbam", sep=""),
+            write.table(geno_format, 
+                        paste(directory, "/genotypes", outstring, ".bimbam", 
+                              sep=""),
                         sep=",", col.names=FALSE, row.names=FALSE, quote=FALSE)
         }
         
     }
     if ("gemma" %in% format) {
         if (!is.null(phenotypes)) {
-            write.table(phenotypes, paste(directory, "/Ysim", outstring, 
-                                    "_gemma.txt", sep=""), sep="\t", 
-                        quote=FALSE, col.names=FALSE, row.names=FALSE)
+            vmessage(c("Save phenotypes in GEMMA format"), verbose=verbose)
+            write.table(phenotypes, 
+                        paste(directory, "/Ysim", outstring, "_gemma.txt", 
+                              sep=""), 
+                        sep="\t", quote=FALSE, col.names=FALSE, row.names=FALSE)
         }
         if (!is.null(genotypes)) {
+            vmessage(c("Save genotypes in GEMMA format"), verbose=verbose)
             if (is.null(standardInput_genotypes)) {
                 geno_format <- cbind(id_snps, rep("A", length(id_snps)),
                                      rep("B", length(id_snps)), t(genotypes))
             } else {
                 geno_format <- standardInput_genotypes
             }
-            write.table(geno_format, paste(directory, "/genotypes", outstring, 
-                                           ".gemma", sep=""),
+            write.table(geno_format, 
+                        paste(directory, "/genotypes", outstring, ".gemma", 
+                              sep=""),
                         sep=",", col.names=FALSE, row.names=FALSE, quote=FALSE)
             
         }
         if (!is.null(kinship)) {
-            write.table(kinship, paste(directory, "/Kinship", outstring,
-                                    "_gemma.txt", sep=""), sep="\t", 
-                        quote=FALSE, col.names=FALSE, row.names=FALSE)
+            vmessage(c("Save kinship in GEMMA format"), verbose=verbose)
+            write.table(kinship, 
+                        paste(directory, "/Kinship", outstring, "_gemma.txt", 
+                              sep=""), 
+                        sep="\t", quote=FALSE, col.names=FALSE, row.names=FALSE)
         }
         if (!is.null(covariates)) {
+            vmessage(c("Save covariates in GEMMA format"), verbose=verbose)
             if (intercept_gemma) {
                 covariates <- cbind(rep(1, length(id_samples)), covariates)
             }
-            write.table(covariates, paste(directory, "/Covs", outstring,
-                                    "_gemma.txt", sep=""), sep="\t", 
-                        quote=FALSE, col.names=FALSE, row.names=FALSE)
+            write.table(covariates, 
+                        paste(directory, "/Covs", outstring, "_gemma.txt", 
+                              sep=""), 
+                        sep="\t", quote=FALSE, col.names=FALSE, row.names=FALSE)
         }
     }
     if ("snptest" %in% format) {
@@ -253,8 +269,8 @@ writeStandardOutput <- function(directory,
             if (is.null(standardInput_samples)) {
                 line2 <- c(0, 0, 0)
                 samples_tmp <- cbind(ID_1=id_samples, 
-                             ID_2=id_samples, 
-                             missing=rep(0, length(id_samples)))
+                                     ID_2=id_samples, 
+                                     missing=rep(0, length(id_samples)))
                 samples_tmp <- rbind(line2 , samples_tmp)
                 pheno_format <- cbind(samples_tmp, pheno_tmp)
             } else {
@@ -262,13 +278,17 @@ writeStandardOutput <- function(directory,
             }
             rownames(pheno_format) <- 1:(length(id_samples) + 1)
             if (is.null(covariates)) {
-                write.table(pheno_format, paste(directory, "/Ysim", outstring, 
-                                            "_snptest.samples", 
-                                            sep=""), 
-                        sep=" ", quote=FALSE, col.names=TRUE, row.names=FALSE)
+                vmessage(c("Save phenotypes in SNPTEST format"), 
+                         verbose=verbose)
+                write.table(pheno_format, 
+                            paste(directory, "/Ysim", outstring, 
+                                  "_snptest.sample", sep=""), 
+                            sep=" ", quote=FALSE, col.names=TRUE, 
+                            row.names=FALSE)
             }
         }
         if (!is.null(genotypes)) {
+            vmessage(c("Save genotypes in SNPTEST format"), verbose=verbose)
             if (is.null(standardInput_genotypes)) {
                 probGen <- t(apply(genotypes, 2, expGen2probGen))
                 geno_format <- cbind(id_snps, id_snps, 1:length(id_snps),
@@ -277,11 +297,14 @@ writeStandardOutput <- function(directory,
             } else {
                 geno_format <- standardInput_genotypes
             }
-            write.table(geno_format, paste(directory, "/genotypes", outstring, 
-                                           ".snptest", sep=""),
+            write.table(geno_format, 
+                        paste(directory, "/genotypes", outstring, "_snptest.gen", 
+                              sep=""),
                         col.names=FALSE, row.names=FALSE, quote=FALSE)
         }
         if (!is.null(covariates)) {
+            vmessage(c("Save phenotypes and covariates in SNPTEST format"), 
+                         verbose=verbose)
             line2 <- rep("C", length(colnames(covariates)))
             line2[grepl("cat",colnames(covariates))] <- "D"                
             line2[grepl("bin",colnames(covariates))] <- "D" 
@@ -289,8 +312,9 @@ writeStandardOutput <- function(directory,
             ids <- pheno_format[, 1:3]
             pheno <- pheno_format[, -c(1:3)]
             covs_format <- cbind(ids, covs, pheno)
-            write.table(covs_format, paste(directory, "/Ysim", outstring, 
-                                           "_snptest.samples", sep=""),
+            write.table(covs_format, 
+                        paste(directory, "/Ysim", outstring, "_snptest.sample", 
+                              sep=""),
                         sep=" ", col.names=TRUE, row.names=FALSE, quote=FALSE)
         }
     }
@@ -303,7 +327,7 @@ writeStandardOutput <- function(directory,
 #' parameters and variance components to the specified directories. Requires a 
 #' simulatedData list which is the output of \link{runSimulation}.
 #'
-#' @param simulatedData named list of i) dataframe of proportion of variance 
+#' @param simulatedData Named list of i) dataframe of proportion of variance 
 #' explained for each component (varComponents), 
 #' ii) a named list with the final simulated phenotype components 
 #' (phenoComponentsFinal), iii) a named list with the intermediate simulated 
@@ -311,27 +335,27 @@ writeStandardOutput <- function(directory,
 #' parameters describing the model setup (setup) and v) a named list of raw 
 #' components (rawComponents) used for genetic effect simulation (genotypes 
 #' and/or kinship); obtained from \link{runSimulation} 
-#' @param directory absolute path (no tilde expansion) to parent directory 
+#' @param directory Absolute path (no tilde expansion) to parent directory 
 #' [string] where simulated data should be saved [needs user writing 
 #' permission]
-#' @param outstring optional name [string] of subdirectory (in relation to 
+#' @param outstring Optional name [string] of subdirectory (in relation to 
 #' directory) to save set-up dependent simulation results; if
 #' set to NULL, subdirectory named by NrSamples, NrSNPs, genetic Model and 
 #' noise Model and genVar is created.
 #' @param intercept_gemma [boolean] When modeling an intercept term in gemma, a 
 #' column of 1's have to be appended to the covariate files. Set intercept_gemma
 #' to TRUE to include a column of 1's in the output; only used when 
-#' "gemma" %in% format
-#' @param format vector of format name(s) [string] specifying the output format;
+#' "gemma" \%in\% format
+#' @param format Vector of format name(s) [string] specifying the output format;
 #' multiple output formats can be requested. Options are: plink, bimbam, 
 #' snptest, gemma, csv or rds. For information on format see details. In order
 #' to save intermediate phenotype components, at least one of csv or rds need to 
 #' be specified. plink/bimbam/snptest will only save final phenotype/genotype, 
 #' kinship and covariate data.
-#' @param saveIntermediate [bool] if TRUE, intermediate phenotype components
-#' such as shared and independent genetic and noise fixed effects are saved.
-#' @param verbose [boolean]; if TRUE, progress info is printed to standard out
-#' @return path [string] to final output directory. If outstring is 
+#' @param saveIntermediate [bool] If TRUE, intermediate phenotype components
+#' such as shared and independent effect components are saved.
+#' @param verbose [boolean]; If TRUE, progress info is printed to standard out
+#' @return Path [string] to final output directory. If outstring is 
 #' NULL, this directory will be a subdirectory of the input directory.
 #' @export
 #' @examples
@@ -389,7 +413,7 @@ savePheno <- function(simulatedData, directory, format=".csv",
                     sep=",", quote=FALSE, col.names=NA, row.names=TRUE)
     }
     if (grepl("Bg", modelGenetic)) {
-        vmessage(c("Save genetic background component to ", directory,
+        vmessage(c("Save infinitesimal genetic component to ", directory,
                    "/Y_genBg..."), verbose=verbose, sep="")
         if ("rds" %in% format) {
             saveRDS(phenoComponents$Y_genBg, 
@@ -456,7 +480,7 @@ savePheno <- function(simulatedData, directory, format=".csv",
     }
         
     if (grepl("Fixed", modelGenetic)) {
-        vmessage(c("Save genetic fixed effects to ", directory, 
+        vmessage(c("Save genetic variant effects to ", directory, 
                    "/Y_genFixed..."), verbose=verbose, sep="")
         if ("rds" %in% format) {
             saveRDS(phenoComponents$Y_genFixed, 
@@ -478,7 +502,7 @@ savePheno <- function(simulatedData, directory, format=".csv",
                         sep=",", quote=FALSE, col.names=NA, row.names=TRUE)
             if (saveIntermediate){
                 write.table(phenoIntermediate$Y_genFixed_shared, 
-                            paste(directory, "/Y_genFIxed_shared", outstring,
+                            paste(directory, "/Y_genFixed_shared", outstring,
                                   ".csv", sep=""),
                             sep=",", quote=FALSE, col.names=NA, row.names=TRUE)
                 write.table(phenoIntermediate$Y_genFixed_independent, 
@@ -488,8 +512,8 @@ savePheno <- function(simulatedData, directory, format=".csv",
             }
         }
         
-        vmessage(c("Save causal SNPs and their effect sizes to ", directory, 
-                   "/SNP..."), verbose=verbose, sep="")
+        vmessage(c("Save genetic variants and their effect sizes to ", 
+                   directory, "/SNP..."), verbose=verbose, sep="")
         if ("rds" %in% format) {
             saveRDS(phenoComponents$genFixed$cov,  
                     paste(directory,"/SNP_NrSNP", NrSNP, outstring,
@@ -499,11 +523,11 @@ savePheno <- function(simulatedData, directory, format=".csv",
                           outstring, ".rds",sep=""))
         }
         if ("csv" %in% format) {
-            write.table(phenoComponents$genFixed$cov,
+            write.table(phenoIntermediate$genFixed$cov,
                         paste(directory, "/SNP_NrSNP", NrSNP,  
                               outstring, ".csv",sep=""), 
                         sep=",", col.names=NA, row.names=TRUE, quote=FALSE)
-            write.table(phenoComponents$genFixed$cov_effect,  
+            write.table(phenoIntermediate$genFixed$cov_effect,  
                         paste(directory, "/SNP_effects_NrSNP", NrSNP, 
                               outstring, ".csv",sep=""), 
                         sep=",", col.names=NA, row.names=TRUE, quote=FALSE)
@@ -550,7 +574,7 @@ savePheno <- function(simulatedData, directory, format=".csv",
         }
     }
     if (grepl("Bg", modelNoise)) {
-        vmessage(c("Save noise background to ", directory, "/Y_noiseBg..."
+        vmessage(c("Save observational noise to ", directory, "/Y_noiseBg..."
                    ), verbose=verbose, sep="")
         if ("rds" %in% format) {
             saveRDS(phenoComponents$Y_noiseBg, 
@@ -607,35 +631,53 @@ savePheno <- function(simulatedData, directory, format=".csv",
     }
     
     if (grepl("Fixed", modelNoise)) {
-        vmessage(c("Save noise fixed effects to ", directory, 
+        vmessage(c("Save confounder effects to ", directory, 
                    "/Y_noiseFixed..."), verbose=verbose, sep="")
         if ("rds" %in% format) {
             saveRDS(phenoComponents$Y_noiseFixed, 
                     paste(directory, "/Y_noiseFixed", outstring, ".rds", 
                           sep=""))
+            if (saveIntermediate){
+                saveRDS(phenoIntermediate$Y_noiseFixed_shared, 
+                        paste(directory, "/Y_noiseFixed_shared", outstring,
+                              ".rds", sep=""))
+                saveRDS(phenoIntermediate$Y_genFixed_independent, 
+                        paste(directory, "/Y_noiseFixed_independent", outstring,
+                              ".rds", sep=""))
+            }
         }
         if ("csv" %in% format) {
             write.table(phenoComponents$Y_noiseFixed, 
                         paste(directory, "/Y_noiseFixed", outstring,
                               ".csv", sep=""), 
                         sep=",", quote=FALSE, col.names=NA, row.names=TRUE)
+            if (saveIntermediate){
+                write.table(phenoIntermediate$Y_noiseFixed_shared, 
+                            paste(directory, "/Y_noiseFixed_shared", outstring,
+                                  ".csv", sep=""),
+                            sep=",", quote=FALSE, col.names=NA, row.names=TRUE)
+                write.table(phenoIntermediate$Y_noiseFixed_independent, 
+                            paste(directory, "/Y_noiseFixed_independent", 
+                                  outstring, ".csv", sep=""),
+                            sep=",", quote=FALSE, col.names=NA, row.names=TRUE)
+            }
         }
         
-        vmessage(c("Save covariates and their effect sizes to ", 
+        vmessage(c("Save confounders and their effect sizes to ", 
                    directory, "/Covs..."), verbose=verbose, sep="")
         if ("rds" %in% format) {
-            saveRDS(phenoComponents$noiseFixed$cov,
+            saveRDS(phenoIntermediate$noiseFixed$cov,
                     paste(directory, "/Covs", outstring, ".rds", sep=""))
-            saveRDS(phenoComponents$noiseFixed$cov_effects,
+            saveRDS(phenoIntermediate$noiseFixed$cov_effect,
                     paste(directory, "/Covs_effect", outstring, ".rds", 
                           sep=""))
         }
         if ("csv" %in% format) {
-            write.table(phenoComponents$noiseFixed$cov, 
+            write.table(phenoIntermediate$noiseFixed$cov, 
                         paste(directory, "/Covs", outstring, ".csv", 
                               sep=""), 
                         sep=",", quote=FALSE, col.names=NA, row.names=TRUE)
-            write.table(phenoComponents$noiseFixed$cov_effect, 
+            write.table(phenoIntermediate$noiseFixed$cov_effect, 
                         paste(directory, "/Covs_effect", outstring,".csv",
                               sep=""), 
                         sep=",", quote=FALSE, col.names=NA, row.names=TRUE)
@@ -655,7 +697,7 @@ savePheno <- function(simulatedData, directory, format=".csv",
     if ("plink" %in% format) {
         plink <- writeStandardOutput(phenotypes=phenoComponents$Y, 
                                      genotypes=rawComponents$genotypes$genotypes,
-                                     covariates=phenoComponents$noiseFixed$cov,
+                                     covariates=phenoIntermediate$noiseFixed$cov,
                                      kinship=rawComponents$kinship,
                                      format="plink", 
                                      standardInput_samples = 
@@ -668,7 +710,7 @@ savePheno <- function(simulatedData, directory, format=".csv",
     if ("snptest" %in% format) {
         snptest <- writeStandardOutput(phenotypes=phenoComponents$Y, 
                                        genotypes=rawComponents$genotypes$genotypes,
-                                       covariates=phenoComponents$noiseFixed$cov,
+                                       covariates=phenoIntermediate$noiseFixed$cov,
                                        kinship=rawComponents$kinship,
                                        format="snptest", 
                                        standardInput_genotypes = 
@@ -683,7 +725,7 @@ savePheno <- function(simulatedData, directory, format=".csv",
     if ("bimbam" %in% format) {
         bimbam <- writeStandardOutput(phenotypes=phenoComponents$Y, 
                                       genotypes=rawComponents$genotypes$genotypes,
-                                      covariates=phenoComponents$noiseFixed$cov,
+                                      covariates=phenoIntermediate$noiseFixed$cov,
                                       kinship=rawComponents$kinship,
                                       format="bimbam", 
                                       standardInput_genotypes = 
@@ -696,7 +738,7 @@ savePheno <- function(simulatedData, directory, format=".csv",
     if ("gemma" %in% format) {
         gemma <- writeStandardOutput(phenotypes=phenoComponents$Y, 
                                      genotypes=rawComponents$genotypes$genotypes,
-                                     covariates=phenoComponents$noiseFixed$cov,
+                                     covariates=phenoIntermediate$noiseFixed$cov,
                                      kinship=rawComponents$kinship,
                                      format="gemma", 
                                      intercept_gemma=intercept_gemma, 

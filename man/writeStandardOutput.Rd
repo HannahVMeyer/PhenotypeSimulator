@@ -8,64 +8,56 @@ writeStandardOutput(directory, genotypes = NULL, phenotypes = NULL,
   covariates = NULL, kinship = NULL, id_samples, id_snps, id_phenos,
   outstring = NULL, standardInput_samples = NULL,
   standardInput_genotypes = NULL, format = NULL, intercept_gemma = FALSE,
-  verbose = TRUE, delimiter = ",")
+  verbose = TRUE)
 }
 \arguments{
-\item{directory}{absolute path (no tilde expansion) to parent directory 
+\item{directory}{Absolute path (no tilde expansion) to parent directory 
 [string] where the data should be saved [needs user writing permission]}
 
-\item{genotypes}{[NrSample x NrSNP] data.frame/matrix of genotypes [integers]
-/[doubles].}
-
-\item{phenotypes}{[NrSample x NrTrait] data.frame/matrix of phenotypes 
-[doubles].}
-
-\item{covariates}{[NrSample x NrCovariates] data.frame/matrix of covariates
+\item{genotypes}{[NrSamples x NrSNP] Data.frame/matrix of genotypes 
 [integers]/[doubles].}
 
-\item{kinship}{[NrSample x NrSamples] data.frame/matrix of kinship estimates
+\item{phenotypes}{[NrSamples x NrTrait] Data.frame/matrix of phenotypes 
 [doubles].}
 
-\item{id_samples}{vector of [NrSamples] sample IDs [string] of simulated 
+\item{covariates}{[NrSamples x NrCovariates] Data.frame/matrix of covariates
+[integers]/[doubles].}
+
+\item{kinship}{[NrSamples x NrSamples] Data.frame/matrix of kinship estimates
+[doubles].}
+
+\item{id_samples}{Vector of [NrSamples] sample IDs [string] of simulated 
 phenotypes, genotypes and covariates.}
 
-\item{id_snps}{vector of [NrSNPs] snp IDs [string] of (simulated) 
+\item{id_snps}{Vector of [NrSNPs] SNP IDs [string] of (simulated) 
 genotypes.}
 
-\item{id_phenos}{vector of [NrTraits] phenotype IDs [string] of 
+\item{id_phenos}{Vector of [NrTraits] phenotype IDs [string] of 
 simulated phenotypes.}
 
-\item{outstring}{optional name [string] of subdirectory (in relation to 
+\item{outstring}{(optional) Name [string] of subdirectory (in relation to 
 directory) to save set-up independent simulation results.}
 
-\item{standardInput_samples}{data.frame of sample information obtained when 
-reading genotypes from plink, oxgen or genome file.}
+\item{standardInput_samples}{(optional) Data.frame of sample information 
+obtained when genotypes were read from plink, oxgen or genome file.}
 
-\item{standardInput_genotypes}{data.frame of genotypes obtained when 
-reading genotypes from plink, oxgen, or genome file.}
+\item{standardInput_genotypes}{(optional) Data.frame of genotypes obtained 
+when reading genotypes from plink, oxgen, or genome file.}
 
-\item{format}{name [string] of genotype file format, options are: "plink", 
-"snptest", "gemma", "bimbam", "delim". For details on the file formats see 
-\emph{External formats}.}
+\item{format}{Vector of name(s) [string] of file formats, options are: 
+"plink", "snptest", "gemma", "bimbam", "delim". For details on the file 
+formats see \emph{External formats}.}
 
 \item{intercept_gemma}{[boolean] When modeling an intercept term in gemma, a 
 column of 1's have to be appended to the covariate files. Set intercept_gemma
 to TRUE to include a column of 1's in the output.}
 
-\item{verbose}{[boolean]; if TRUE, progress info is printed to standard out}
-
-\item{delimiter}{field separator [string] of genotype file}
-}
-\value{
-List of [NrSamples X NrSNPs] genotypes, their [NrSNPs] ID (id_snps), 
-their [NrSamples] IDs (id_samples) and format specific additional files (
-might be used for output writing).
+\item{verbose}{[boolean]; If TRUE, progress info is printed to standard out}
 }
 \description{
 writeStandardOutput can write genotypes and phenotypes as well as possible
-covariates and kinship matrices into a number of formats for standard GWAS: 
-plink, snptest, bimbam, gemma. Alternatively, simple text files (
-with specified delimiter) can be written. For more information on the 
+covariates and kinship matrices into a number of formats for standard GWAS 
+software: plink, snptest, bimbam, gemma. For more information on the 
 different file formats see \emph{External formats}.
 }
 \section{External formats}{
