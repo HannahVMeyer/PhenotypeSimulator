@@ -7,15 +7,15 @@
 standardiseGenotypes(geno)
 }
 \arguments{
-\item{geno}{[N x NrSNP] matrix/dataframe of genotypes}
+\item{geno}{[N x NrSNP] Matrix/dataframe of genotypes [integer]/[double].}
 }
 \value{
-[N x NrSNP] matrix of standardised genotypes
+[N x NrSNP] Matrix of standardised genotypes [double].
 }
 \description{
 Genotypes are standardised as described in Yang et al:
 snp_standardised = (snp - 2 * ref_allele_freq)/
-sqrt(2 * ref_allele_freq * alt_allele_freq)
+sqrt(2 * ref_allele_freq * alt_allele_freq).
 }
 \examples{
 geno <- cbind(rbinom(2000, 2, 0.3), rbinom(2000, 2, 0.4),rbinom(2000, 2, 0.5))
