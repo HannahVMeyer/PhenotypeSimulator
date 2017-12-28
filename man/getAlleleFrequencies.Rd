@@ -7,11 +7,11 @@
 getAlleleFrequencies(snp)
 }
 \arguments{
-\item{snp}{[N x 1] vector of length N samples with genotypes of single SNP 
-encoded as 0,1 and 2}
+\item{snp}{[N x 1] Vector of length [N] samples with genotypes of a single 
+bi-allelic genetic variant/SNP encoded as 0,1 and 2.}
 }
 \value{
-vector with ref (0-encoded) and alt (1-encoded) allele frequency
+Vector with ref (0-encoded) and alt (1-encoded) allele frequencies.
 }
 \description{
 Compute allele frequencies from genotype data.

@@ -8,23 +8,25 @@ simulateGenotypes(N, NrSNP = 5000, frequencies = c(0.1, 0.2, 0.4),
   sampleID = "ID_", snpID = "SNP_", verbose = TRUE)
 }
 \arguments{
-\item{N}{number of samples for which to simulate bi-allelelic genotypes}
+\item{N}{Number of samples for which to simulate bi-allelic genotypes.}
 
-\item{NrSNP}{number of SNPs to simulate}
+\item{NrSNP}{Number of SNPs to simulate.}
 
-\item{frequencies}{vector of allele frequencies [double] from which to sample}
+\item{frequencies}{Vector of allele frequencies [double] from which to 
+sample.}
 
-\item{sampleID}{prefix [string] for naming samples (followed by sample number 
-from 1 to N)}
+\item{sampleID}{Prefix [string] for naming samples (will be followed by 
+sample number from 1 to N when constructing id_samples).}
 
-\item{snpID}{prefix [string] for naming SNPs (followed by SNP number 
-from 1 to NrSNP)}
+\item{snpID}{Prefix [string] for naming SNPs (will be followed by SNP number 
+from 1 to NrSNP when constructing id_snps).}
 
-\item{verbose}{boolean; if TRUE, progress info is printed to standard out}
+\item{verbose}{[boolean] If TRUE, progress info is printed to standard out.}
 }
 \value{
-list of a [N x NrSNP] matrix of simulated genotypes, SNP frequencies 
-and vector of sample IDs.
+Named list with [N x NrSNP] matrix of simulated genotypes 
+(genotypes), their SNP frequencies (freq), a vector of sample IDs 
+(id_samples) and a vector of SNP IDs (id_snps).
 }
 \description{
 Simulate bi-allelic genotypes.
