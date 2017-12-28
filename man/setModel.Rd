@@ -8,51 +8,57 @@ setModel(genVar = NULL, h2s = NULL, theta = 0.8, h2bg = NULL,
   eta = 0.8, noiseVar = NULL, delta = NULL, gamma = 0.8, rho = NULL,
   phi = NULL, alpha = 0.8, pcorr = 0.6, pIndependentConfounders = 0.4,
   pTraitIndependentConfounders = 0.2, pIndependentGenetic = 0.4,
-  pTraitIndependentGenetic = 0.2, v = TRUE)
+  pTraitIndependentGenetic = 0.2, verbose = TRUE)
 }
 \arguments{
-\item{genVar}{Total genetic variance [double]}
+\item{genVar}{Total genetic variance [double].}
 
-\item{h2s}{Proportion [double] of variance of fixed genetic effects}
+\item{h2s}{Proportion [double] of variance of genetic variant effects.}
 
-\item{theta}{Proportion [double] of variance of shared fixed genetic effects}
+\item{theta}{Proportion [double] of variance of shared genetic variant 
+effects.}
 
-\item{h2bg}{Proportion [double] of variance of random genetic effects}
+\item{h2bg}{Proportion [double] of variance of infinitesimal genetic effects
+i.e. correlation introduced by sample kinship).}
 
-\item{eta}{Proportion [double] of variance of shared bg genetic effects}
+\item{eta}{Proportion [double] of variance of shared infinitesimal genetic 
+effects.}
 
-\item{noiseVar}{Total genetic variance [double]}
+\item{noiseVar}{Total noise variance [double].}
 
-\item{delta}{Proportion [double] of fixed noise variance}
+\item{delta}{Proportion [double] of variance of non-genetic covariate effect.}
 
-\item{gamma}{Proportion [double] of variance of shared fixed noise effects}
+\item{gamma}{Proportion [double] of variance of shared non-genetic covariate 
+effects.}
 
-\item{rho}{Proportion [double] of variance of correlated noise effects}
+\item{rho}{Proportion [double] of variance of correlated noise effects.}
 
-\item{phi}{Proportion [double] of variance of background noise effects}
+\item{phi}{Proportion [double] of variance of observational noise effects.}
 
-\item{alpha}{Proportion [double] of Variance of shared bg noise effect}
+\item{alpha}{Proportion [double] of variance of shared observational noise 
+effect.}
 
-\item{pcorr}{Correlation [double] between phenotypes}
+\item{pcorr}{Correlation [double] between phenotypes.}
 
-\item{pIndependentConfounders}{Proportion [double] of noise effects 
-(confounders) to have a trait-independent effect}
+\item{pIndependentConfounders}{Proportion [double] of non-genetic covariate 
+to have a trait-independent effect.}
 
 \item{pTraitIndependentConfounders}{Proportion [double] of traits influenced
-by independent fixed noise effects}
+by independent non-genetic covariate effects.}
 
-\item{pIndependentGenetic}{Proportion [double] of genetic effects (SNPs) to 
-have a trait-independent fixed effect}
+\item{pIndependentGenetic}{Proportion [double] of genetic variant effects to 
+have a trait-independent fixed effect.}
 
 \item{pTraitIndependentGenetic}{Proportion [double] of traits influenced by 
-independent fixed genetic effects}
+independent genetic variant effects.}
 
-\item{v}{[boolean]; if TRUE, progress info is printed to standard out}
+\item{verbose}{[boolean]; If TRUE, progress info is printed to standard out.}
 }
 \value{
-named list containing the genetic model (modelGenetic) and the noise 
-model (modelNoise). Options are:
-modelNoise: "nNoise", "noiseFixedOnly", "noiseBgOnly", "noiseCorrelatedOnly",
+Named list containing the genetic model (modelGenetic), the noise 
+model (modelNoise) and the input parameters (h2s, h2bg, noiseVar, rho, delta, 
+phi, gamma, theta, eta, alpha, pcorr). Model options are:
+modelNoise: "noNoise", "noiseFixedOnly", "noiseBgOnly", "noiseCorrelatedOnly",
  "noiseFixedAndBg","noiseCorrelatedAndBg", "noiseFixedAndCorrelated",
  "noiseFixedAndBgAndCorrelated"
 modelGenetic: "noGenetic","geneticBgOnly", "geneticFixedOnly",
@@ -60,8 +66,8 @@ modelGenetic: "noGenetic","geneticBgOnly", "geneticFixedOnly",
 }
 \description{
 Based on parameters provided, this function sets the name for the phenotype 
-simulation. The model name is needed downstream for phenotype component 
-simulations, but can also be set manually.
+simulation. It carries out compatibiltiy checks of the specifie parameters 
+and checks for any missing information.
 }
 \examples{
 #genetic fixed effects only

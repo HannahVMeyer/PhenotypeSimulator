@@ -7,20 +7,20 @@
 rescaleVariance(component, propvar)
 }
 \arguments{
-\item{component}{numeric [N x P] phenotype matrix where N are the number of 
-observations and P numer of phenotypes}
+\item{component}{[N x P] Phenotype matrix [double] where [N] are the number 
+of samples and P the number of phenotypes}
 
-\item{propvar}{numeric specifying the proportion of variance that should be 
-explained by this phenotype component}
+\item{propvar}{Number [double] specifying the proportion of variance that 
+should be explained by this phenotype component}
 }
 \value{
-component_scaled numeric [N x P] phenotype matrix if propvar != 0 or 
-NULL
+If propvar != 0, a named list with the [N x P] matrix of the scaled 
+component (component) and its scale factor [double] (scale_factor) else 
+returns NULL
 }
 \description{
-The function scales the specified phenotype component such that the average 
-column variance is equal
-to the user-specified proportion of variance.
+The function scales the specified component such that the average column 
+variance is equal to the user-specified proportion of variance.
 }
 \examples{
 x <- matrix(rnorm(100), nc=10)

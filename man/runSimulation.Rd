@@ -5,201 +5,231 @@
 \title{Run phenotype simulation.}
 \usage{
 runSimulation(N = 1000, P = 10, tNrSNP = 5000, cNrSNP = 20,
-  NrConfounders = 10, seed = 219453, pTraitsAffectedGenetics = 1,
-  pTraitsAffectedConfounders = 1, chr = NULL, NrChrCausal = NULL,
-  skipFields = NULL, probabilities = FALSE, oxgen = FALSE,
-  genVar = NULL, h2s = NULL, theta = 0.8, h2bg = NULL, eta = 0.8,
-  noiseVar = NULL, rho = NULL, delta = NULL, gamma = 0.8, phi = NULL,
-  alpha = 0.8, sampleID = "ID_", phenoID = "Trait_", snpID = "SNP_",
+  NrConfounders = 10, seed = 219453, chr = NULL,
+  NrSNPsOnChromosome = NULL, NrChrCausal = NULL, skipFields = NULL,
+  probabilities = FALSE, oxgen = FALSE, genVar = NULL, h2s = NULL,
+  theta = 0.8, h2bg = NULL, eta = 0.8, noiseVar = NULL, rho = NULL,
+  delta = NULL, gamma = 0.8, phi = NULL, alpha = 0.8,
+  sampleID = "ID_", phenoID = "Trait_", snpID = "SNP_",
   genotypefile = NULL, format = NULL, genoFilePrefix = NULL,
   genoFileSuffix = NULL, genoDelimiter = ",", kinshipfile = NULL,
   kinshipHeader = TRUE, kinshipDelimiter = ",", standardise = TRUE,
-  NrFixedEffects = 1, distConfounders = "norm", mConfounders = 0,
-  sdConfounders = 1, catConfounders = NULL, probConfounders = NULL,
-  distBetaConfounders = "norm", mBetaConfounders = 0,
-  sdBetaConfounders = 1, distBetaGenetic = "norm", mBetaGenetic = 0,
-  sdBetaGenetic = 1, pIndependentConfounders = 0.4,
-  pTraitIndependentConfounders = 0.2, pcorr = 0.8, meanNoiseBg = 0,
+  corrmatfile = NULL, NrFixedEffects = 1, distConfounders = "norm",
+  mConfounders = 0, sdConfounders = 1, catConfounders = NULL,
+  probConfounders = NULL, distBetaConfounders = "norm",
+  mBetaConfounders = 0, sdBetaConfounders = 1, distBetaGenetic = "norm",
+  mBetaGenetic = 0, sdBetaGenetic = 1, pTraitsAffectedConfounders = 1,
+  pIndependentConfounders = 0.4, pTraitIndependentConfounders = 0.2,
+  keepSameIndependentConfounders = FALSE, pcorr = 0.8, meanNoiseBg = 0,
   sdNoiseBg = 1, SNPfrequencies = c(0.1, 0.2, 0.4),
-  pIndependentGenetic = 0.4, pTraitIndependentGenetic = 0.2,
+  pTraitsAffectedGenetics = 1, pIndependentGenetic = 0.4,
+  pTraitIndependentGenetic = 0.2, keepSameIndependentSNPs = FALSE,
   verbose = TRUE)
 }
 \arguments{
-\item{N}{number [integer] of samples to simulate}
+\item{N}{Number [integer] of samples to simulate.}
 
-\item{P}{number [integer] of phenotypes to simulate}
+\item{P}{Number [integer] of phenotypes to simulate.}
 
-\item{tNrSNP}{total number [integer] of SNPs to simulate; these SNPs are used
-for kinship estimation}
+\item{tNrSNP}{Total number [integer] of SNPs to simulate; these SNPs are used
+for kinship estimation.}
 
-\item{cNrSNP}{number [integer] of causal SNPs; used as genetic fixed effects}
+\item{cNrSNP}{Number [integer] of causal SNPs; used as genetic variant 
+effects.}
 
-\item{NrConfounders}{number [integer] of confounders; used as noise fixed 
-effects}
+\item{NrConfounders}{Number [integer] of non-genetic covariates; used as 
+non-genetic covariate effects.}
 
-\item{seed}{seed [integer] to initiate random number generation}
+\item{seed}{Seed [integer] to initiate random number generation.}
 
-\item{pTraitsAffectedGenetics}{proportion [double] of traits affected by the 
-genetic effect. For non-integer results of pTraitsAffected*P, the ceiling of  
-the result is used. Allows to simulate for instance different levels of 
-pleiotropy.}
+\item{chr}{Numeric vector of chromosomes [integer] to chose NrCausalSNPs 
+from; only used when external genotype data is sampled i.e. 
+!is.null(genoFilePrefix)}
 
-\item{pTraitsAffectedConfounders}{vector of proportion(s) [double] of traits 
-affected by the confounders. For non-integer results of pTraitsAffected*P, 
-the ceiling of the result is used.}
+\item{NrSNPsOnChromosome}{Specifies the number of SNPs [integer] per entry in 
+chr (see above); has to be the same length as chr. If not provided, lines in 
+genoFilePrefix-genoFileSuffix file will be counted (which can be slow for 
+large files).}
 
-\item{chr}{numeric vector of chromosomes to chose NrCausalSNPs from; only 
-used when external genotype data is provided i.e. is.null(genoFilePrefix) == 
-FALSE}
-
-\item{NrChrCausal}{Number [integer] of causal chromosomes to  chose 
+\item{NrChrCausal}{Number [integer] of causal chromosomes to chose 
 NrCausalSNPs from (as opposed to the actual chromosomes to chose from via chr
-);  only used when external genotype data is provided i.e. 
-is.null(genoFilePrefix) == FALSE.}
+);  only used when external genotype data is sampled i.e. 
+!is.null(genoFilePrefix).}
 
-\item{skipFields}{number [integer] of fields (columns) in to skip in 
-genoFilePrefix-genoFileSuffix. See details.}
+\item{skipFields}{Number [integer] of fields (columns) in to skip in 
+genoFilePrefix-genoFileSuffix-file. See details in \link{getCausalSNPs}.}
 
 \item{probabilities}{[bool]. If set to TRUE, the genotypes in the files 
 described by genoFilePrefix and genoFileSuffix are provided as triplets of 
 probablities (p(AA), p(Aa), p(aa)) and are converted into their expected 
 genotype frequencies by 0*p(AA) + p(Aa) + 2p(aa) via \link{probGen2expGen}.}
 
-\item{oxgen}{[bool] is genoFilePrefix-genoFileSuffix file on oxgen format?
+\item{oxgen}{[bool] Is genoFilePrefix-genoFileSuffix file in oxgen format?
 See \link{readStandardGenotypes} for details.}
 
-\item{genVar}{Proportion [double] of total genetic variance}
+\item{genVar}{Proportion [double] of total genetic variance.}
 
-\item{h2s}{Proportion [double] of gentic variance of fixed effects}
+\item{h2s}{Proportion [double] of genetic variance of genetic variant effects.}
 
-\item{theta}{Proportion [double] of variance of shared fixed genetic effects}
+\item{theta}{Proportion [double] of variance of shared genetic variant 
+effects.}
 
-\item{h2bg}{Proportion [double] of genetic variance of background effects; 
-either h2s or h2bg have to be specified and h2s + h2bg = 1}
+\item{h2bg}{Proportion [double] of genetic variance of infinitesimal genetic 
+effects; either h2s or h2bg have to be specified and h2s + h2bg = 1.}
 
-\item{eta}{Proportion [double] of variance of shared bg genetic effects}
+\item{eta}{Proportion [double] of variance of shared infinitesimal genetic 
+effects.}
 
-\item{noiseVar}{Proportion [double] of total noise variance}
+\item{noiseVar}{Proportion [double] of total noise variance.}
 
 \item{rho}{Proportion [double] of noise variance of correlated effects; sum 
-of rho, delta and phi has to be equal 1}
+of rho, delta and phi has to be equal 1.}
 
-\item{delta}{Proportion [double] of noise variance of fixed effects; sum of 
-rho, delta and phi  has to be equal 1}
+\item{delta}{Proportion [double] of noise variance of non-genetic covariate 
+effects; sum of rho, delta and phi  has to be equal 1.}
 
-\item{gamma}{Proportion [double] of variance of shared fixed noise effects}
+\item{gamma}{Proportion [double] of variance of shared non-genetic covariate 
+effects.}
 
-\item{phi}{Proportion [double] of noise variance of background effects; sum 
-of rho, delta and phi  has to be equal 1}
+\item{phi}{Proportion [double] of noise variance of observational noise 
+effects; sum of rho, delta and phi has to be equal 1.}
 
-\item{alpha}{Variance [double] of shared bg noise effect}
+\item{alpha}{Variance [double] of shared observational noise effect.}
 
-\item{sampleID}{prefix [string] for naming samples (followed by sample number
-from 1 to N)}
+\item{sampleID}{Prefix [string] for naming samples (will be followed by 
+sample number from 1 to N when constructing sample IDs); only used if 
+genotypes/kinship are simulated/do not have sample IDs.}
 
-\item{phenoID}{prefix [string] for naming traits (followed by trait number 
-from 1 to P)}
+\item{phenoID}{Prefix [string] for naming traits (will be followed by 
+phenotypes number from 1 to P when constructing phenotype IDs).}
 
-\item{snpID}{prefix [string] for naming SNPs (followed by SNP number from 1 
-to NrSNP)}
+\item{snpID}{Prefix [string] for naming SNPs (will be followed by 
+SNP number from 1 to NrSNP when constructing SNP IDs).}
 
-\item{genotypefile}{needed when loading entire genotype set into memory, 
-path/to/genotype file [string] in format specified by \link{format}}
+\item{genotypefile}{Needed when reading external genotypes (into memory), 
+path/to/genotype file [string] in format specified by \link{format}.}
 
-\item{format}{needed when loading entire genotype set into memory, specifies 
+\item{format}{Needed when reading external genotypes (into memory), specifies 
 the format of the genotype data; has to be one of  plink, oxgen, genome, 
 bimbam and delim; for details see Details in \link{readStandardGenotypes}}
 
-\item{genoFilePrefix}{full path/to/chromosome-wise-genotype-file-ending-
-before-"chrChromosomeNumber" (no '~' expansion!) [string]}
+\item{genoFilePrefix}{Needed when sampling cuasal SNPs from file, full 
+path/to/chromosome-wise-genotype-file-ending-before-"chrChromosomeNumber" 
+(no '~' expansion!) [string]}
 
-\item{genoFileSuffix}{[string] following chromosome number including 
-.fileformat (e.g. ".csv"); has to be a text format i.e. comma/tab/space
-separated}
+\item{genoFileSuffix}{Needed when sampling causal SNPs from file, 
+following chromosome number including fileformat (e.g. ".csv") [string]}
 
-\item{genoDelimiter}{field separator [string] of genotypefile or genoFile}
+\item{genoDelimiter}{Field separator [string] of genotypefile or genoFile}
 
-\item{kinshipfile}{path/to/kinshipfile [string] to be read; either X or 
-kinshipfile must be provided}
+\item{kinshipfile}{path/to/kinshipfile [string]; if provided, 
+kinship for simulation of genetic backgound effect will be read from file.}
 
-\item{kinshipHeader}{[boolean], if TRUE kinship file has header information}
+\item{kinshipHeader}{[boolean] If TRUE kinship file has header information.}
 
-\item{kinshipDelimiter}{field separator [string] of kinship file}
+\item{kinshipDelimiter}{Field separator [string] of kinship file.}
 
-\item{standardise}{[boolean], if TRUE standardised genotypes will be returned}
+\item{standardise}{[boolean] If TRUE genotypes will be standardised for 
+kinship estimation (recommended).}
 
-\item{NrFixedEffects}{number [integer] of different fixed effects to simulate
-; allows to simulate fixed effects from different distributions or with 
- different parameters}
+\item{corrmatfile}{path/to/corrmatfile [string] with [P x P] numeric [double] 
+correlation matrix; if provided,  correlation matrix for simulation of 
+correlated backgound effect will be read from file; file should NOT contain 
+an index or header column.}
 
-\item{distConfounders}{name [string] of distribution to use to simulate 
-confounders; one of "unif", "norm", "bin", "cat_norm", "cat_unif"}
+\item{NrFixedEffects}{Number [integer] of different non-genetic covariate 
+effects to simulate; allows to simulate non-genetic covariate effects from 
+different distributions or with different parameters.}
 
-\item{mConfounders}{mean/midpoint [double] of normal/uniform distribution for
-confounders}
+\item{distConfounders}{Vector of name(s) [string] of distributions to use to 
+simulate confounders; one of "unif", "norm", "bin", "cat_norm", "cat_unif".}
 
-\item{sdConfounders}{standard deviation/extension from midpoint [double] of 
-normal/uniform distribution for confounders}
+\item{mConfounders}{Vector of mean(s)/midpoint(s) [double] of 
+normal/uniform distribution for confounders.}
 
-\item{catConfounders}{confounder categories [factor]; required if 
-distConfounders "cat_norm" or "cat_unif"}
+\item{sdConfounders}{Vector of standard deviation(s)/extension from 
+midpoint(s) [double] of normal/uniform distribution for confounders.}
 
-\item{probConfounders}{probability [double] of binomial confounders (0/1); 
-required if distConfounders "bin"}
+\item{catConfounders}{Vector of confounder categories [factor]; required if 
+distConfounders "cat_norm" or "cat_unif".}
 
-\item{distBetaConfounders}{name [string] of distribution to use to simulate 
-effect sizes of confounders; one of "unif" or "norm"}
+\item{probConfounders}{Vector of probability(ies) [double] of binomial 
+confounders (0/1); required if distConfounders "bin".}
 
-\item{mBetaConfounders}{mean/midpoint [double] of normal/uniform distribution 
-for effect sizes of confounders}
+\item{distBetaConfounders}{Vector of name(s) [string] of distribution to use 
+to simulate effect sizes of confounders; one of "unif" or "norm".}
 
-\item{sdBetaConfounders}{standard deviation/extension from midpoint [double] 
-of normal/uniform distribution for effect sizes of confounders}
+\item{mBetaConfounders}{Vector of mean(s)/midpoint(s) [double] of 
+normal/uniform distribution for effect sizes of confounders.}
 
-\item{distBetaGenetic}{name [string] of distribution to use to simulate 
-effect sizes of SNPs; one of "unif" or "norm"}
+\item{sdBetaConfounders}{Vector of standard deviation(s)/extension from 
+midpoint(s) [double] of normal/uniform distribution for effect sizes of 
+confounders.}
 
-\item{mBetaGenetic}{mean/midpoint [double] of normal/uniform distribution 
-for effect sizes of SNPs}
+\item{distBetaGenetic}{Name [string] of distribution to use to simulate 
+effect sizes of genetic variants; one of "unif" or "norm".}
 
-\item{sdBetaGenetic}{standard deviation/extension from midpoint [double] 
-of normal/uniform distribution for effect sizes of SNPs}
+\item{mBetaGenetic}{Mean/midpoint [double] of normal/uniform distribution 
+for effect sizes of genetic variants.}
 
-\item{pIndependentConfounders}{Proportion [double] of noise effects 
-(confounders) to have a trait-independent effect}
+\item{sdBetaGenetic}{Standard deviation/extension from midpoint [double] 
+of normal/uniform distribution for effect sizes of genetic variants.}
 
-\item{pTraitIndependentConfounders}{Proportion [double] of traits influenced 
-by independent fixed noise effects}
+\item{pTraitsAffectedConfounders}{Proportion(s) [double] of traits 
+affected by the non-genetic covariates. For non-integer results of 
+pTraitsAffected*P, the ceiling of the result is used.}
 
-\item{pcorr}{Correlation [double] between phenotypes}
+\item{pIndependentConfounders}{Vector of proportion(s) [double] of 
+non-genetic covariate effects to have a trait-independent effect.}
 
-\item{meanNoiseBg}{mean [double] of the normal distribution for noise bg 
-effects}
+\item{pTraitIndependentConfounders}{Vector of proportion(s) [double] of 
+traits influenced by independent non-genetic covariate effects.}
 
-\item{sdNoiseBg}{standard deviation [double] of the normal distribution for 
-noise bg effects}
+\item{keepSameIndependentConfounders}{[boolean] If set to TRUE, the 
+independent confounder effects always influence the same subset of traits.}
 
-\item{SNPfrequencies}{vector of allele frequencies [double] from which to 
-sample}
+\item{pcorr}{Correlation [double] between phenotypes.}
 
-\item{pIndependentGenetic}{Proportion [double] of genetic effects (SNPs) to 
-have a trait-independent fixed effect}
+\item{meanNoiseBg}{Mean [double] of the normal distributions for the 
+simulation observational noise effects.}
+
+\item{sdNoiseBg}{Standard deviation [double] of the normal distributions for 
+the simulations of the observational noise effects.}
+
+\item{SNPfrequencies}{Vector of allele frequencies [double] from which to 
+sample.}
+
+\item{pTraitsAffectedGenetics}{Proportion [double] of traits affected by the 
+genetic variant effect. For non-integer results of pTraitsAffected*P, the 
+ceiling of the result is used. Allows to simulate for instance different 
+levels of pleiotropy.}
+
+\item{pIndependentGenetic}{Proportion [double] of genetic variant effects to 
+have a trait-independent fixed effect.}
 
 \item{pTraitIndependentGenetic}{Proportion [double] of traits influenced by 
-independent fixed genetic effects}
+independent genetic variant effects.}
 
-\item{verbose}{[boolean]; if TRUE, progress info is printed to standard out}
+\item{keepSameIndependentSNPs}{[boolean] If set to TRUE, the 
+independent SNPs effects always influence the same subset of traits.}
+
+\item{verbose}{[boolean]; If TRUE, progress info is printed to standard out}
 }
 \value{
-named list of absolute levels of variance explained by each phenotype 
-component (varComponents), 
-the scaled phenotype components (phenoComponents) and and parameters used for 
-phenotype set-up and labeling (setup)
+Named list of i) dataframe of proportion of variance 
+explained for each component (varComponents), 
+ii) a named list with the final simulated phenotype components 
+(phenoComponentsFinal), iii) a named list with the intermediate simulated 
+phenotype components (phenoComponentsIntermediate), iv) a named list of 
+parameters describing the model setup (setup) and v) a named list of raw 
+components (rawComponents) used for genetic effect simulation (genotypes 
+and/or kinship)
 }
 \description{
-runSimulation wraps around the phenotype component functions (genFixedEffects
-, genBgEffects, noiseBgEffects, noiseFixedEffects and correlatedBgEffects),
-rescales each component and combines them into the final phenotype.
+runSimulation wraps around setModel, the phenotype component functions 
+(genFixedEffects, genBgEffects, noiseBgEffects, noiseFixedEffects and 
+correlatedBgEffects), rescales each component and combines them into the 
+final phenotype. For details to all parameters, see the respective functions.
 }
 \examples{
 # simulate phenotype of 100 samples, 10 traits from genetic and noise 
@@ -207,4 +237,9 @@ rescales each component and combines them into the final phenotype.
 genVar = 0.2
 simulatedPhenotype <- runSimulation(N=100, P=5, cNrSNP=10,
 genVar=genVar, h2s=1, phi=1)
+}
+\seealso{
+\link{setModel}, \link{geneticFixedEffects},
+ \link{geneticBgEffects}, \link{noiseBgEffects}, \link{noiseFixedEffects},
+\link{correlatedBgEffects} and \link{rescaleVariance}.
 }
