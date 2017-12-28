@@ -7,10 +7,10 @@
 expGen2probGen(geno)
 }
 \arguments{
-\item{geno}{vector [numeric] with genotypes}
+\item{geno}{Vector [numeric] with genotypes}
 }
 \value{
-numeric vector of length [length(geno)*3] with the genotype encoded 
+Numeric vector of length [length(geno)*3] with the genotype encoded 
 as probabbilities (p(AA), p(Aa), p(aa)).
 }
 \description{

@@ -7,16 +7,16 @@
 probGen2expGen(probGeno)
 }
 \arguments{
-\item{probGeno}{vector [numeric] with genotype probabilites; has to be a
-multiple of 3}
+\item{probGeno}{Vector [numeric] with genotype probabilites; has to be a
+multiple of 3.}
 }
 \value{
-numeric vector of length [length(probGeno)/3] with the expected 
-genotype value per individual
+Numeric vector of length [length(probGeno)/3] with the expected 
+genotype value per individual.
 }
 \description{
 Convert genotypes encoded as triplets of probablities (p(AA), p(Aa), p(aa))
-into their expected genotype frequencies by 0*p(AA) + p(Aa) + 2p(aa)
+into their expected genotype frequencies by 0*p(AA) + p(Aa) + 2p(aa).
 }
 \examples{
 nrSamples <- 10

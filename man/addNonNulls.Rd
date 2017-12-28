@@ -7,12 +7,12 @@
 addNonNulls(compList)
 }
 \arguments{
-\item{compList}{list of numeric matrices or data.frames of the equal 
-dimensions}
+\item{compList}{List of numeric matrices or data.frames of the equal 
+dimensions.}
 }
 \value{
-matrix or data.frame containing sum of all list elements where 
-\code{is.null} is FALSE
+Matrix or data.frame containing sum of all list elements where 
+\code{is.null} is FALSE.
 }
 \description{
 Add all non-NULL elements of list.

@@ -7,13 +7,13 @@
 vmessage(userinfo, verbose = TRUE, sep = " ")
 }
 \arguments{
-\item{userinfo}{string or vector of string elements and variables}
+\item{userinfo}{Vector of [string] element(s) and variables}
 
-\item{verbose}{[boolean], if TRUE message is displayed on standard out, if 
-FALSE, message is suppressed}
+\item{verbose}{[boolean] If TRUE message is displayed on standard out, if 
+FALSE, message is suppressed.}
 
-\item{sep}{delimiter [string] to separate message elements when userinfo 
-given as vector}
+\item{sep}{Delimiter [string] to separate message elements when userinfo 
+given as vector.}
 }
 \description{
 Wrapper function around \code{\link{message}} that allows to turn the 

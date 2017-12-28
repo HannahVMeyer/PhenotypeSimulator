@@ -8,9 +8,9 @@ simulateDist(x, dist = c("unif", "norm", "bin", "cat_norm", "cat_unif"),
   m = NULL, std = 1, categories = NULL, prob = NULL)
 }
 \arguments{
-\item{x}{the number [integer] of observations to simulate}
+\item{x}{The number [integer] of observations to simulate.}
 
-\item{dist}{name of distribution [string] from which the observations are 
+\item{dist}{Name of distribution [string] from which the observations are 
 drawn. 'norm' is the normal distribution, 'unif' the uniform distribution 
 'bin' the binomial distribution, "cat_norm" samples categorical variables 
 according to a normal distribution and "cat_unif" 
@@ -18,21 +18,21 @@ according to a uniform distribution. For "cat_norm", length(category)/2 is
 used mean for the normal distribution unless
 specified otherwise.}
 
-\item{m}{the mean of the normal distribution [double]/the mean between min 
+\item{m}{Mean of the normal distribution [double]/the mean between min 
 and max for the uniform distribution [double]/ 
-the rank of the category to be used as mean for "cat_norm" [integer]}
+the rank of the category to be used as mean for "cat_norm" [integer].}
 
-\item{std}{the standard deviation of the normal distribution or the distance 
-of min/max from the mean for the uniform distribution [double]}
+\item{std}{Standard deviation of the normal distribution or the distance 
+of min/max from the mean for the uniform distribution [double].}
 
-\item{categories}{number of categories [integer] for simulating categorical 
-variables (for distr="cat_norm" or "cat_unif")}
+\item{categories}{Number of categories [integer] for simulating categorical 
+variables (for distr="cat_norm" or "cat_unif").}
 
-\item{prob}{the probability [double] of success for each trial 
-(for distr="bin")}
+\item{prob}{Probability [double] of success for each trial 
+(for distr="bin").}
 }
 \value{
-numeric vector of length [x] with the sampled values
+Numeric vector of length [x] with the sampled values
 }
 \description{
 Wrapper function to simulate data from different distribution with different 
@@ -47,5 +47,5 @@ binomial <- simulateDist(x=10, dist="bin", prob=0.4)
 }
 \seealso{
 \code{\link{runif}}, \code{\link{rnorm}}, \code{\link{rbinom}} for 
-documentation of the underlying distributions
+documentation of the underlying distributions.
 }

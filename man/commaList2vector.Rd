@@ -7,11 +7,11 @@
 commaList2vector(commastring)
 }
 \arguments{
-\item{commastring}{input character vector containing numbers separated by 
-commas}
+\item{commastring}{Input character vector containing numbers separated by 
+commas.}
 }
 \value{
-numeric vector of values extracted from commastring
+Numeric vector of values extracted from commastring.
 }
 \description{
 Split input of comma-separated string into vector of numeric values.
