@@ -17,7 +17,7 @@
 #' # Rscript -e "PhenotypeSimulator::simulatePhenotypes()" \
 #' #--args \ 
 #' #--NrSamples=100 --NrPhenotypes=15 \
-#' #--tNrSNP=10000 --cNrSNP=30 \
+#' #--tNrSNPs=10000 --cNrSNPs=30 \
 #' #--SNPfrequencies=0.05,0.1,0.3,0.4 \
 #' #--genVar=0.4 --h2s=0.025 --phi=0.6 --delta=0.3 --gamma=1 \
 #' #--pcorr=0.8 \
@@ -26,8 +26,7 @@
 #' #--distConfounders=bin,cat_norm,cat_unif,norm \
 #' #--probConfounders=0.2 \
 #' #--catConfounders=0,3,4,0 \
-#' #--directoryGeno=~/tmp/genotypes \
-#' #--directoryPheno=~/tmp/phenotypes \
+#' #--directory=~/tmp \
 #' #--showProgress \
 
 
@@ -41,19 +40,19 @@ simulatePhenotypes <- function() {
                     simulate [default: %default]"),
         make_option(c("-C", "--NrConfounders"), action="store",
                     dest="NrConfoundersString", default=10, type="character",
-                    help="Number of confounders (fixed noise effects) per set 
-                    (default 1 set of fixedEffects) to simulate 
+                    help="Number of confounders to simulate per set 
+                    (default 1 set of fixedEffects) 
                     [default: %default]"),
         make_option(c("-F", "--NrFixedEffects"), action="store", 
                     dest="NrFixedEffects", default=1, type="integer", 
-                    help="Number of different fixed noise effects to simulate, 
-                    allows to simulate fixed effects from different 
+                    help="Number of different confounder effects to simulate: 
+                    allows to simulate confounder effects from different 
                     distributions or with different parameters 
                     [default: %default]"),
-        make_option(c("-tS", "--tNrSNPs"), action="store", dest="tNrSNPs", 
+        make_option(c("-tS", "--tNrSNP"), action="store", dest="tNrSNP", 
                     default=5000, type="integer", help="Number of total SNPs to 
                     simulate [default: %default]"),
-        make_option(c("-cS", "--cNrSNPs"), action="store", dest="cNrSNPs", 
+        make_option(c("-cS", "--cNrSNP"), action="store", dest="cNrSNP", 
                     default=20, type="integer", help="Number of causal SNPs to 
                     draw from total SNPs [default: %default]"),
         make_option(c("-SNPfrequencies", "--SNPfrequencies"), action="store", 
@@ -61,27 +60,27 @@ simulatePhenotypes <- function() {
                     type="character", help="Comma-separated list of allele 
                     frequencies from which to sample to simulate genotypes 
                     [default: %default]"),
+        make_option(c("-stand", "--standardise"), action="store_true", 
+                    dest="standardise", default=FALSE, type="logical", 
+                    help="Should genotypes be standardised for simulation of 
+                    fixed effects [default: %default]"),
         
-        make_option(c("-psg", "--pIndependentGenetic"), action="store", 
-                    dest="pIndependentGenetic", default=0.4, type="double", 
-                    help="Proportion of variance of fixed genetic effects to 
-                    have a trait-independent effect [default: %default]"),
-        make_option(c("-ptsg", "--pTraitIndependentGenetic"), action="store", 
-                    dest="pTraitIndependentGenetic", default=0.2, type="double", 
-                    help="Proportion of traits influenced by independent fixed 
-                    genetic effects [default: %default]"),
-        
-        make_option(c("-psn", "--pIndependentConfounders"), action="store", 
-                    dest="pIndependentConfounders", default=0.4, 
-                    type="character", 
-                    help="Proportion of variance of fixed noise effects to have 
-                    a trait-independent effect [default: %default]"),
-        make_option(c("-ptsn", "--pTraitIndependentConfounders"),
+        make_option(c("-pIndependentGenetic", "--pIndependentGenetic"), 
                     action="store", 
-                    dest="pTraitIndependentConfounders", default=0.2, 
-                    type="character", help="Proportion of traits influenced by 
-                    independent fixed noise effects [default: %default]"),
-        
+                    dest="pIndependentGenetic", default=0.4, type="double", 
+                    help="Proportion of variance of variant genetic effects to 
+                    have a trait-independent effect [default: %default]"),
+        make_option(c("-pTraitIndependentGenetic", 
+                      "--pTraitIndependentGenetic"), action="store", 
+                    dest="pTraitIndependentGenetic", default=0.2, type="double", 
+                    help="Proportion of traits influenced by independent 
+                    genetic variant effects [default: %default]"),
+        make_option(c("-keepSameIndependentSNPs", "--keepSameIndependentSNPs"), 
+                    action="store_true", dest="keepSameIndependentSNPs", 
+                    default=FALSE, type="logical", help=" If set to TRUE, the 
+                    independent SNPs effects always influence the same subset of 
+                    traits.[default: %default]"),
+         
         make_option(c("-genVar", "--genVar"), action="store", dest="genVar", 
                     default=NULL, type="double", help="Total genetic variance 
                     [default: %default]"),
@@ -89,112 +88,146 @@ simulatePhenotypes <- function() {
                     dest="noiseVar", default=NULL, type="double", 
                     help="Total noise variance [default: %default]"),
         make_option(c("-h2s", "--h2s"), action="store", dest="h2s", default=NULL
-                    , type="double", help="Proportion of genetic variance of 
-                    fixed genetic effects [default: %default]"),
+                    , type="double", help="Proportion of genetic variant effects 
+                    from total genetic variance [default: %default]"),
         make_option(c("-h2bg", "--h2bg"), action="store", dest="h2bg", 
-                    default=NULL, type="double", help="Proportion of genetic 
-                    variance of background genetic effects [default: %default]"),
+                    default=NULL, type="double", help="Proportion of 
+                    infinitesimal genetic effects from total genetic variance 
+                    [default: %default]"),
         make_option(c("-theta", "--theta"), action="store", dest="theta", 
-                    default=0.8, type="double", help="Proportion of genetic 
-                    variance of shared fixed genetic effects [default:
-                    %default]"),
+                    default=0.8, type="double", help="Proportion of shared 
+                    genetic variant effects from total genetic variant variance
+                    [default:%default]"),
         make_option(c("-eta", "--eta"), action="store", dest="eta", default=0.8, 
-                    type="double", help="Proportion of genetic variance of 
-                    shared genetic background effects  [default: %default]"),
+                    type="double", help="Proportion of shared infinitesimal 
+                    genetic effects from total infinitesimal genetic variance  
+                     [default: %default]"),
         make_option(c("-delta", "--delta"), action="store", dest="delta", 
                     default=NULL, type="double", help="Proportion of variance of 
-                    fixed noise effects [default: %default]"),
+                    confounder effects [default: %default]"),
         make_option(c("-gamma", "--gamma"), action="store", dest="gamma", 
-                    default=0.8, type="double", help="Proportion of noise 
-                    variance of shared fixed noise effects [default: %default]"),
-        make_option(c("-alpha", "--alpha"), action="store", dest="alpha", 
-                    default=0.8, type="double", help="Proportion of noise 
-                    variance of shared background noise effect 
+                    default=0.8, type="double", help="Proportion of shared 
+                    confounder variance from total confounder variance 
                     [default: %default]"),
+        make_option(c("-alpha", "--alpha"), action="store", dest="alpha", 
+                    default=0.8, type="double", help="Proportion of shared
+                    obervational noise variance from total observational noise 
+                    variance [default: %default]"),
         make_option(c("-rho", "--rho"), action="store", dest="rho", default=NULL
-                    , type="double", help="Proportion of noise variance of 
-                    correlated noise effects [default: %default]"),
+                    , type="double", help="Proportion of correlated noise 
+                    effects from total noise variance[default: %default]"),
         make_option(c("-phi", "--phi"), action="store", dest="phi", default=NULL
-                    , type="double", help="Proportion of noise variance of 
-                    background noise effects [default: %default]"),
+                    , type="double", help="Proportion of observational noise 
+                    variance from total noise variance [default: %default]"),
+        
         make_option(c("-pcorr", "--pcorr"), action="store", dest="pcorr", 
                     default=0.6, type="double", help="Correlation strength of
                     correlated noise effects [default: %default]"),
+        make_option(c("-corrmatfile", "--corrmatfile"), action="store", 
+                    dest="corrmatfile", default=NULL, type="character", 
+                    help="path/to/corrmatfile.csv [string] with comma-separated
+                    [P x P] numeric [double] correlation matrix; if provided,  
+                    correlation matrix for simulation of correlated backgound 
+                    effect will be read from file; file should NOT contain an 
+                    index or header column [default: %default]"),
         
         make_option(c("--pTraitsAffectedConfounders"), action="store", 
                     dest="pTraitsAffectedConfoundersString", default="1", 
-                    type="character", help="[Proportion(s) of traits affected by 
-                    the confounder; for more than one type of confounders, give
-                    values separated by commas, i.e. '0.2,0.5,1', 
-                    default: %default]"),
+                    type="character", help="Proportion(s) of traits affected by 
+                    the confounder (s); for more than one type of confounders, 
+                    provide values separated by commas, i.e. '0.2,0.5,1', 
+                    [default: %default]"),
+        make_option(c("-pIndependentConfounders", "--pIndependentConfounders"),
+                    action="store", dest="pIndependentConfoundersString", 
+                    default=0.4, type="character", 
+                    help="Proportion(s) of variance of confounder effects to 
+                    have a trait-independent effect; for more than one type of 
+                    confounders, provide values separated by commas, i.e. 
+                    '0.3,0.4,0.8' [default: %default]"),
+        make_option(c("-pTraitIndependentConfounders", 
+                      "--pTraitIndependentConfounders"), action="store", 
+                    dest="pTraitIndependentConfoundersString", default=0.2, 
+                    type="character", help="Proportion(s) of traits influenced 
+                    by independent confounder effects; for more than one type of 
+                    confounders, provide values separated by commas, i.e. 
+                    '0.8,0.5,0.9' [default: %default]"),
+        make_option(c("-keepSameIndependentConfounders", 
+                      "--keepSameIndependentConfounders"), 
+                    action="store", dest="keepSameIndependentConfoundersString", 
+                    default="FALSE", type="character", 
+                    help="Comma-separated list of TRUE and FALSE, specifying if
+                    the independent confounder effects should always influence 
+                    the same subset of traits i.e. 'TRUE,TRUE,FALSE' 
+                    [default: %default]"),
         make_option(c("--distConfounders"), action="store", 
                     dest="distConfoundersString", default="norm", 
-                    type="character", help="[distribution(s) to simulate 
+                    type="character", help="Distribution(s) to simulate 
                     confounders; one of 'unif', 'norm', 'bin', 'cat_norm', 
-                    'cat_unif'; for more than one type of confounders, give
+                    'cat_unif'; for more than one type of confounders, provide
                     values separated by commas, i.e. 'norm,cat_unif', 
-                    default: %default]"),
+                    [default: %default]"),
         make_option(c("--mConfounders"), action="store", 
-                    dest="mConfounderString", default="0", type="character", 
+                    dest="mConfoundersString", default="0", type="character", 
                     help="Mean/midpoint(s) of normal/uniform distribution for 
-                    confounders; for more than one type of confounders, give
+                    confounders; for more than one type of confounders, provide
                     values separated by commas, i.e. '0,2,1', 
                     [default: %default]"),
         make_option(c("--sdConfounders"), action="store", 
-                    dest="sdConfounderString", default="1", type="character", 
-                    help="standard deviation(s)/distance from midpoint(s) of 
+                    dest="sdConfoundersString", default="1", type="character", 
+                    help="Standard deviation(s)/distance from midpoint(s) of 
                     normal/uniform distribution for confounders; for more than
-                    one type of confounders, give values separated by commas, 
+                    one type of confounders, provide values separated by commas, 
                     i.e. '1,2,1', [default: %default]"),
         make_option(c("--catConfounders"), action="store", 
                     dest="catConfoundersString", default=NULL, type="character", 
-                    help="number(s) of confounder categories; required if 
+                    help="Number(s) of confounder categories; required if 
                     distConfounders 'cat_norm' or 'cat_unif'; for more than one 
-                    type of confounders, give values separated by commas, i.e. 
-                    '2,0,5' (second confounder not categorical),
+                    type of confounders, provide values separated by commas, 
+                    i.e. '2,0,5' (second confounder not categorical),
                     [default: %default]"),
         make_option(c("--probConfounders"), action="store", 
                     dest="probConfoundersString", default=0, type="character", 
-                    help="probability(s) of binomial confounders (0/1); required 
+                    help="Probability(s) of binomial confounders (0/1); required 
                     if distConfounders 'bin', for more than one 
-                    type of confounders, give values separated by commas, i.e. 
-                    '0.2,0.6,0' (third confounder not binomial), 
+                    type of confounders, provide values separated by commas, 
+                    i.e. '0.2,0.6,0' (third confounder not binomial), 
                     [default: %default]"),
         make_option(c("--distBetaConfounders"), action="store", 
                     dest="distBetaConfoundersString", default="norm", 
                     type="character", help="Name(s) of distribution to use to 
                     simulate effect sizes of confounders; one of 'unif' or 
-                    'norm'; for more than one type of confounders, give values 
-                    separated by commas, i.e. 'norm,unif', [default: %default]"),
+                    'norm'; for more than one type of confounders, provide 
+                    values separated by commas, i.e. 'norm,unif', 
+                    [default: %default]"),
         make_option(c("--mBetaConfounders"), action="store", 
                     dest="mBetaConfoundersString", 
                     default=0, type="character", help="Mean/midpoint of normal
                     /uniform distribution for effect sizes of confounders;  for 
-                    more than one type of confounders, give values separated by 
-                    commas, i.e. '0,0.5', [default: %default]"),
+                    more than one type of confounders, provide values separated 
+                    by commas, i.e. '0,0.5', [default: %default]"),
         make_option(c("--sdBetaConfounders"), action="store", 
                     dest="sdBetaConfoundersString", 
                     default=1, type="character", help="Standard deviation/
                     distance from midpoint of normal/uniform distribution for 
-                    effect sizes of confounders;  for 
-                    more than one type of confounders, give values separated by 
-                    commas, i.e. '1,2', [default: %default]"),
+                    effect sizes of confounders;  for more than one type of 
+                    confounders, provide values separated by commas, i.e. 
+                    '1,2', [default: %default]"),
         
         make_option(c("--pTraitsAffectedGenetics"), action="store", 
                     dest="pTraitsAffectedGeneticsString", default=1, 
-                    type="integer", help="[Proportion of traits affected by 
-                    the fixed genetic effects; default: %default]"),
+                    type="integer", help="Proportion of traits affected by 
+                    the genetic variant effects; [default: %default]"),
         make_option(c("--distBetaGenetic"), action="store", 
-                    dest="distBetaGeneticString", default="norm", 
-                    type="character", help="Name(s) of distribution to use to 
+                    dest="distBetaGenetic", default="norm", 
+                    type="character", help="Distribution to use to 
                     simulate effect sizes of SNPs; one of 'unif' or 'norm' 
                     [default: %default]"),
         make_option(c("--mBetaGenetic"), action="store", 
-                    dest="mBetaGeneticString", default=0, type="character", 
+                    dest="mBetaGenetic", default=0, type="double", 
                     help="Mean/midpoint of normal/uniform distribution for 
                     effect sizes of SNPs [default: %default]"),
         make_option(c("--sdBetaGenetic"), action="store", 
-                    dest="sdBetaGeneticString", default=1, type="character", 
+                    dest="sdBetaGenetic", default=1, type="double", 
                     help="Standard deviation/distance from midpoint of 
                     normal/uniform distribution for effect sizes of SNPs 
                     [default: %default]"),
@@ -210,25 +243,24 @@ simulatePhenotypes <- function() {
                     default=219453, type="integer", help="Seed to initialise 
                     random number generator [default: %default]"),
         make_option(c("--showProgress"), action="store_true", dest="verbose", 
-                    default=FALSE, type="logical", help=" [default: %default]"),
-        make_option(c("-stand", "--standardise"), action="store_true", 
-                    dest="standardise", default=FALSE, type="logical", 
-                    help="Should genotypes be standardised for simulation of 
-                    fixed effects [default: %default]"),
+                    default=FALSE, type="logical", help="If set, progress 
+                    messages about simulation steps are printed to standard out
+                    [default: %default]"),
+
         
         make_option(c("-d", "--directory"), action="store", 
                     dest="directory", default=NULL, type="character", help=
                     "Absolute path (no tilde expansion) to parent directory
-                    where simulation results should be saved; [needs user 
+                    where simulation results should be saved; needs user 
                     writing permission, [default: %default]"),
         make_option(c("-ds", "--subdirectory"), action="store", dest="outstring"
                     , default=NULL, type="character", help="Name of subdirectory
-                    to be created within dg/dp [default: %default]"),
+                    to be created within directory [default: %default]"),
         
         make_option(c("-kf", "--kinshipfile"), action="store", 
                     dest="kinshipfile", default=NULL, type="character", 
                     help="Path to pre-computed, comma-separated kinshipfile 
-                    (header=sample IDs) [default: %default]"),
+                    [default: %default]"),
         make_option(c("--kinshipfileHasHeader"), action="store_true", 
                     dest="kinshipHeader", default=FALSE, type="logical", 
                     help="Does kinship have a header line (e.g. header=sample 
@@ -238,17 +270,30 @@ simulatePhenotypes <- function() {
                     help="Field separator of kinship file (e.g. `,`) 
                     [default: %default]"),
         
+        make_option(c("--genotypefile"), action="store", 
+                    dest="genotypefile", default=NULL, type="character", 
+                    help="Path to external genotype file (to be fully read into 
+                    memory) in format specified by --format 
+                    [default: %default]"),
+        make_option(c("--format"), action="store", 
+                    dest="format", default=NULL, type="character", 
+                    help="Needed when --genotypefile specified, specifies the 
+                    format of the genotype data; has to be one of plink, oxgen, 
+                    genome, bimbam and delim [default: %default]"),
+        
         make_option(c("--genoFilePrefix"), action="store", 
                     dest="genoFilePrefix", default=NULL, type="character", 
-                    help="Path to and prefix of per-chromosome comma-separated 
-                    genotypes file [default: %default]"),
+                    help="Full path to file (no tilde-expansion) and prefix of 
+                    per-chromosome comma-separated genotypes file e.g. 
+                    '/tmp/genotypes_' [default: %default]"),
         make_option(c("--genoFileSuffix"), action="store", 
                     dest="genoFileSuffix", default="", type="character", 
-                    help="Optional string of genotype file file ending including 
+                    help="Optional string of genotype file ending including 
                     format indication (e.g. '.csv') [default: %default]"),
         make_option(c("--genoFileDelimiter"), action="store", 
                     dest="genoFileDelimiter", default=",", type="character", 
-                    help="Field separator of genotype file [default: %default]"),
+                    help="Field separator of genotype or 
+                    genoFilePrefix-genoFileSuffix file [default: %default]"),
         make_option(c("--oxgenFile"), action="store_true", 
                     dest="oxgen", default=FALSE, type="logical", 
                     help="Is genoFilePrefix-genoFileSuffix file on oxgen format?
@@ -262,7 +307,7 @@ simulatePhenotypes <- function() {
                     [default: %default]"),
         make_option(c("--skipFields"), action="store", 
                     dest="skipFields", default=NULL, type="integer", 
-                    help="Number of fields (columns) to skip in enoFilePrefix-
+                    help="Number of fields (columns) to skip in genoFilePrefix-
                     genoFileSuffix file [default: %default]"),
         
         make_option(c("-chrom", "--chromosomes"), action="store", 
@@ -270,31 +315,36 @@ simulatePhenotypes <- function() {
                     help="Comma-separated list of chromosomes to draw causal 
                     SNPs from [default: %default]"),
         make_option(c("--NrSNPsOnChromosome"), action="store", 
-                    dest="NrSNPsOnChromosomeString", default=NULL, type="string", 
-                    help="Comma-separated list of the number of SNPs per entry 
-                    --chrom (see above); has to be the same length as --chrom. 
-                    If not provided, lines in file will be counted (which can be
-                    slow for large files) [default: %default]"),
+                    dest="NrSNPsOnChromosomeString", default=NULL, 
+                    type="character", help="Comma-separated list of the number 
+                    of SNPs per entry --chrom (see above); has to be the same 
+                    length as --chrom. If not provided, lines in file will be 
+                    counted (which can be slow for large files) [default: 
+                    %default]"),
         make_option(c("--NrCausalChrom"), action="store", 
                     dest="NrChrCausal", default=1, type="integer", 
                     help="Number of chromosomes to draw causal 
                     SNPs from (as opposed to a independent list of chromosomes 
                     to draw from via --chrom) [default: %default]"),
         
-        
-        
         make_option(c("--sampleID"), action="store", dest="sampleID", 
                     default="ID_", type="character", help="Prefix for naming 
-                    simulated samples [default: %default]"),
+                    simulated samples; (will be followed by sample number from 
+                    1 to --N when constructing sample IDs); only used if
+                    genotypes/kinship are simulated or provided data does not 
+                    have sample IDs [default: %default]"),
         make_option(c("--phenoID"), action="store", dest="phenoID", 
                     default="Trait_", type="character", help="Prefix for naming 
                     simulated phenotypes [default: %default]"),
         make_option(c("--snpID"), action="store", dest="snpID", 
                     default="SNP_", type="character", help="Prefix for naming 
-                    simulated snps [default: %default]"),
+                    simulated snps; will be followed by SNP number from 1 to 
+                    --tNrSNPs when constructing SNP IDs[default: %default]"),
         make_option(c("-saveIntermediate", "--saveIntermediate"), 
                     action="store_true", dest="saveIntermediate", default=FALSE, 
-                    type="logical", help="[default: %default]"),
+                    type="logical", help="If TRUE, intermediate phenotype 
+                    components such as shared and independent effects components 
+                    are saved; [default: %default]"),
         make_option(c("-saveTable", "--saveTable"), action="store_true", 
                     dest="saveAsTable", default=FALSE, type="logical", 
                     help="Output format of results: when flag set, output saved 
@@ -305,15 +355,17 @@ simulatePhenotypes <- function() {
                     help="Output format of results: when flag set, output saved 
                     as .rds;  at least one of -saveTable or -saveRDS needs to be 
                     set  [default: %default]"),
-        make_option(c("-savePlink", "--savePlink"), action="store_true", 
-                    dest="saveAsPlink", default=FALSE, type="logical", 
-                    help="When flag is set, simulated genotypes are saved in the 
+        make_option(c("-savePLINK", "--savePLINK"), action="store_true", 
+                    dest="saveAsPLINK", default=FALSE, type="logical", 
+                    help="When flag is set, simulated genotypes are saved in  
                     binary plink format, i.e. .bed, .bim and .fam files. 
                     [default: %default]"),
         make_option(c("-saveGEMMA", "--saveGEMMA"), action="store_true", 
                     dest="saveAsGEMMA", default=FALSE, type="logical", 
-                    help="When flag is set, simulated genotypes are saved in the 
-                    binary plink format, i.e. .bed, .bim and .fam files. 
+                    help="When flag is set, simulated genotypes are saved in
+                    gemma format, i.e. Ysim_gemma.txt (phenotype file), 
+                    Covs_gemma.txt (covariates file), Kinship_gemma.txt 
+                    (kinship file) and genotypes.gemma (genotype file)
                     [default: %default]"),
         make_option(c("-gemmaIntercept", "--gemmaIntercept"), 
                     action="store_true", dest="intercept_gemma", default=FALSE, 
@@ -324,18 +376,45 @@ simulatePhenotypes <- function() {
         make_option(c("-saveBIMBAM", "--saveBIMBAM"), action="store_true", 
                     dest="saveAsBIMBAM", default=FALSE, type="logical", 
                     help="When flag is set, simulated genotypes are saved in the 
-                    binary plink format, i.e. .bed, .bim and .fam files. 
+                    BIMBAM format, i.e. Ysim_bimbam.txt (phenotype file) and 
+                    genotypes.bimbam (genotype file)
                     [default: %default]"),
         make_option(c("-saveSNPTEST", "--saveSNPTEST"), action="store_true", 
                     dest="saveAsSNPTEST", default=FALSE, type="logical", 
-                    help="When flag is set, simulated genotypes are saved in the 
-                    binary plink format, i.e. .bed, .bim and .fam files. 
+                    help="When flag is set, simulated genotypes are saved in  
+                    snptest format, i.e.  Ysim_snptest.sample (phenotype and 
+                    covariate file) and genotypes_snptest.gen (genotype file)
                     [default: %default]")
         )
     args <- parse_args(OptionParser(option_list=option_list))
     if(!args$saveAsRDS && !args$saveAsTable) {
         stop("At least one of --saveRDS or --saveTable need to be set")
     }
+    
+    NrConfounders <- commaList2vector(args$NrConfoundersString)
+    SNPfrequencies <- commaList2vector(args$SNPfrequencyString)
+    pIndependentConfounders <- 
+    commaList2vector(args$pIndependentConfoundersString)
+    pTraitIndependentConfounders <-
+    commaList2vector(args$pTraitIndependentConfoundersString)
+    pTraitsAffectedConfounders <-
+    commaList2vector(args$pTraitsAffectedConfoundersString)
+    keepSameIndependentConfounders <- 
+    commaList2vector(args$keepSameIndependentConfoundersString, 
+                                            type="logical")
+    distConfounders <- commaList2vector(args$distConfoundersString, 
+                                        type="character") 
+    mConfounders <- commaList2vector(args$mConfoundersString)
+    sdConfounders <- commaList2vector(args$sdConfoundersString)
+    catConfounders <- commaList2vector(args$catConfoundersString)
+    probConfounders <- commaList2vector(args$probConfoundersString)
+    distBetaConfounders <- commaList2vector(args$distBetaConfoundersString, 
+                                            type="character") 
+    mBetaConfounders <- commaList2vector(args$mBetaConfoundersString)
+    sdBetaConfounders <- commaList2vector(args$sdBetaConfoundersString)
+    
+    chr <- commaList2vector(args$chr_string)
+    NrSNPsOnChromosome <- commaList2vector(args$NrSNPsOnChromosomeString)
     
     if (args$verbose) {
         message("Output directory: ", args$directory)
@@ -353,36 +432,8 @@ simulatePhenotypes <- function() {
         message("Number of phenotypes: ", args$P)
         message("Number of samples: ", args$N)
         message("Number of causal SNPs: ", args$cNrSNP)
-        message("Number of confounders: ", args$NrConfoundersString)
-        
-        message("Total genetic variance: ", args$genVar)
-        message("Total noise variance: ", 1 - args$genVar)
+        message("Number of confounders: ", sum(NrConfounders))
     }
-    
-    
-    NrConfounders <- commaList2vector(args$NrConfoundersStrings)
-    SNPfrequencies <- commaList2vector(args$SNPfrequencyString)
-    pIndependentConfounders <- commaList2vector(args$pIndependentConfounders)
-    pTraitIndependentConfounders <-
-        commaList2vector(args$pTraitIndependentConfoundersString)
-    pTraitsAffectedConfounders <-
-        commaList2vector(args$pTraitsAffectedConfoundersString)
-
-    mBetaGenetic <- commaList2vector(args$mBetaGeneticString) 
-    sdBetaGenetic <- commaList2vector(args$sdBetaGeneticString)
-    distConfounders <- commaList2vector(args$distConfoundersString) 
-    mConfounders <- commaList2vector(args$mConfoundersString)
-    sdConfounders <- commaList2vector(args$sdConfoundersString)
-    catConfounders <- commaList2vector(args$catConfoundersString)
-    probConfounders <- commaList2vector(args$probConfoundersString)
-    distBetaConfounders <- commaList2vector(args$distBetaConfoundersString)
-    mBetaConfounders <- commaList2vector(args$mBetaConfoundersStrin)
-    sdBetaConfounders <- commaList2vector(args$sdBetaConfoundersString)
-
-    distBetaGenetic <- commaList2vector(args$distBetaGeneticString)
-    
-    chr <- commaList2vector(args$chr_string)
-    NrSNPsOnChromosome <- commaList2vector(args$NrSNPsOnChromosomeString )
     
     format <- NULL
     if (args$saveAsRDS) format <- c(format, "rds")
@@ -410,7 +461,7 @@ simulatePhenotypes <- function() {
                                      phenoID=args$phenoID,
                                      genoFilePrefix=args$genoFilePrefix, 
                                      genoFileSuffix=args$genoFileSuffix, 
-                                     SNPfrequencies=SNPfrequencies ,
+                                     SNPfrequencies=SNPfrequencies,
                                      genoDelimiter=args$genoFileDelimiter,
                                      kinshipfile=args$kinshipfile,
                                      kinshipHeader=args$kinshipHeader,
@@ -425,15 +476,20 @@ simulatePhenotypes <- function() {
                                      alpha=args$alpha,
                                      gamma=args$gamma, 
                                      pcorr=args$pcorr,
+                                     corrmatfile=args$corrmatfile,
                                      pIndependentConfounders=
                                          pIndependentConfounders, 
                                      pTraitIndependentConfounders=
                                         pTraitIndependentConfounders, 
+                                     keepSameIndependentConfounders=
+                                         keepSameIndependentConfounders,
                                      pIndependentGenetic=
                                          args$pIndependentGenetic, 
                                      pTraitIndependentGenetic=
                                          args$pTraitIndependentGenetic, 
-                                     distBetaGenetic=distBetaGenetic,
+                                     keepSameIndependentSNPs=
+                                         args$keepSameIndependentSNPs,
+                                     distBetaGenetic=args$distBetaGenetic,
                                      mBetaGenetic=args$mBetaGenetic, 
                                      sdBetaGenetic=
                                          args$sdBetaGenetic,
@@ -451,7 +507,7 @@ simulatePhenotypes <- function() {
     
     outdir <- savePheno(simulatedPheno, 
                         format=format,
-                        saveIntermediate=saveIntermediate,
+                        saveIntermediate=args$saveIntermediate,
                         intercept_gemma=args$intercept_gemma,
                         outstring=args$outstring, 
                         directory=args$directory, 
