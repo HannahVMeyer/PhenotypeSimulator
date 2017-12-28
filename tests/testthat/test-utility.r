@@ -22,3 +22,26 @@ test_that('simulateDist fails when distr provided is not one of "unif", "norm",
           "bin", "cat_norm" or "cat_unif" ', {
     expect_error(simulateDist(x=10, dist="gamma"),"Unknown distribution")
 })
+
+test_that('commaList2vector fails with unknown type', {
+    expect_error(commaList2vector(type='matrix', commastring="1,2,2,3,4"), 
+                 "Unknown type of comma-separated list elements")
+})
+
+test_that('probGen2expGen and expGen2probGen conversions work',{
+    nrSamples <- 10
+    genotype_prob <- rep(0, 3*nrSamples)
+    genotype_prob[seq(1, nrSamples*3, 3) + sample(0:2, 10, replace=TRUE)] <- 1
+    expect_equal(genotype_prob, expGen2probGen(probGen2expGen(genotype_prob)))
+})
+
+test_that('simulateDist fails with unknown distribution', {
+    expect_error(simulateDist(dist="beta"), "Unknown distribution")
+})
+
+test_that('simulateDist fails with length of distribution argument', {
+    dist=c("unif", "norm", "bin", "cat_norm", "cat_unif")
+    expect_error(simulateDist(), 
+                 paste("Please specify exactly one distribution to sample from,",
+                 "currently ", length(dist), " provided.", sep=""))
+})
