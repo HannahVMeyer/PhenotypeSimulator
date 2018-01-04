@@ -1,0 +1,13 @@
+PLINK v1.90b2i 64-bit (8 Sep 2014) 
+8 arguments: --out genotypes_plink --simulate plink_sim_par.txt --simulate-ncases 0 --simulate-ncontrols 100
+Hostname: ebi-cli-002.ebi.ac.uk
+Working directory: /homes/hannah/PhenotypeSimulator/inst/extdata/genotypes/plink
+Start time: Fri Nov 24 12:47:07 2017
+
+Random number seed: 1511527627
+128733 MB RAM detected; reserving 64366 MB for main workspace.
+Writing --simulate dataset to genotypes_plink.bed + genotypes_plink.bim +
+genotypes_plink.fam ... done.
+Realized simulation parameters saved to genotypes_plink.simfreq.
+
+End time: Fri Nov 24 12:47:07 2017

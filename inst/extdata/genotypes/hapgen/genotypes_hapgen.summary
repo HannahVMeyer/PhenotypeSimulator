@@ -1,0 +1,53 @@
+
+===================================================================
+  Welcome to HAPGEN_v2.2.0 (01/04/2011)
+  Zhan Su, Peter Donnelly, Jonathan Marchini
+===================================================================
+
+Command line input is:
+hapgen2 -m /homes/hannah/data/hmeyer/Supplementary/CEU.0908.impute.files/genetic_map_chr22_combined_b36.txt -l legend_file -h /homes/hannah/data/hmeyer/Supplementary/CEU.0908.impute.files/CEU.0908.chr22.hap -o genotypes_hapgen -n 100 0 -dl 45162 0 0 0 -no_haps_output 
+
+FILE INPUTS
+                                            haplotype file: /homes/hannah/data/hmeyer/Supplementary/CEU.0908.impute.files/CEU.0908.chr22.hap
+                                               legend file: legend_file
+                                          genetic map file: /homes/hannah/data/hmeyer/Supplementary/CEU.0908.impute.files/genetic_map_chr22_combined_b36.txt
+                                             tag snps file: 
+FILE OUTPUTS
+                                               output file: genotypes_hapgen
+                                              summary file: genotypes_hapgen.summary
+PARAMETER INPUTS
+                                  no. controls to simulate: 100
+                                     no. cases to simulate: 0
+                                              disease loci: (1) 45162 
+                                           disease alleles: (1) 0 
+                             heterozygote/homozygote risks: (1) 0.00/0.00 
+                                                     lower: 0
+                                                     upper: 500000000
+                                                        Ne: 11418
+                                                     theta: -1
+
+Reading genetic map file ... done
+                                      number of rates read: 43414
+
+
+Reading haplotype and legend files: looking for SNPs in [0, 500000000] ... done
+                                      number of haplotypes: 112
+                                   number of SNPs in total: 1000
+                                number of SNPs in interval: 1000
+
+
+Random seed set to 0.889133
+theta not set, so setting to a default value of 0.188673
+
+Processing disease loci ... done 
+
+
+Simulating haplotypes ... done
+
+Writing output to files 
+writing output file genotypes_hapgen.controls.gen
+writing output file genotypes_hapgen.cases.gen
+writing output file genotypes_hapgen.controls.sample
+writing output file genotypes_hapgen.cases.sample
+
+HAPGEN took 0 seconds to complete. Have a nice day! 
