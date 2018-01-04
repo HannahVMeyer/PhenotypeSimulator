@@ -31,6 +31,6 @@ command line, the help function can be called via
 #--distConfounders=bin,cat_norm,cat_unif,norm \\
 #--probConfounders=0.2 \\
 #--catConfounders=0,3,4,0 \\
-#--directory=~/tmp \\
+#--directory=/tmp \\
 #--showProgress \\
 }
