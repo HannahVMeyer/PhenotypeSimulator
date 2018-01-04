@@ -19,7 +19,6 @@ knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
 library("PhenotypeSimulator")
 library("reshape2")
 library("ggplot2")
-library("gplots")
 ```
 
 
@@ -179,7 +178,8 @@ simulation <- runSimulation(N = 1000, P = 3, cNrSNP=10, seed=43,
 ```{r, eval=FALSE, echo=FALSE}
 savedir <- paste(system.file("extdata", package="PhenotypeSimulator"), 
                             "/resultsSimulationAndLinearModel", sep="")
-saveRDS(simulation, paste(savedir, "/simulation.rds", sep=""))
+saveRDS(simulation$phenoComponentsFinal, 
+        paste(savedir, "/simulation_phenoComponentsFinal.rds", sep=""))
 ```
 
 Figure \ref{fig:heatmaps} shows heatmaps of the trait-trait correlation (Pearson correlation) of the final phenotype $\mathbf{Y}$ and its five phenotype components: genetic variant effects $\mathbf{XB}$, non-genetic covariate effects $\mathbf{WA}$, relatedness effects $\mathbf{U}$ (infinitesimal genetic effects), non-genetic correlated effects $\mathbf{T}$ and observational noise $\mathbf{\Psi}$.
@@ -187,7 +187,10 @@ Figure \ref{fig:heatmaps} shows heatmaps of the trait-trait correlation (Pearson
 ```{r, echo=FALSE}
 savedir <- paste(system.file("extdata", package="PhenotypeSimulator"), 
                             "/resultsSimulationAndLinearModel", sep="")
-simulation <- readRDS(paste(savedir, "/simulation.rds", sep=""))
+simulation <- list(
+    phenoComponentsFinal=readRDS(paste(savedir, 
+                                       "/simulation_phenoComponentsFinal.rds", 
+                            sep="")))
 ```
 
 ```{r heatmaps, fig.keep='all', fig.height=3, fig.width=7, eval=TRUE, fig.cap="\\label{fig:heatmaps}Heatmaps of the trait-by-trait correlation (Pearson correlation) of the simulated phenotype and its five phenotype components."}
