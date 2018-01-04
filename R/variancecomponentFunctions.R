@@ -811,12 +811,21 @@ noiseBgEffects <- function(N, P, mean=0, sd=1, sampleID="ID_", phenoID="Trait_",
 #' @export
 #' @examples
 #' correlatedBg <- correlatedBgEffects(N=100, P=20, pcorr=0.4)
-correlatedBgEffects <- function(N, P, pcorr, corr_mat=NULL,
+correlatedBgEffects <- function(N, P, pcorr=NULL, corr_mat=NULL,
                                 sampleID="ID_", phenoID="Trait_",
                                 id_samples = paste(sampleID, 1:N, sep=""),
                                 id_phenos = paste(phenoID, 1:P, sep="")) {
-        
+    
+    if(!is.null(corr_mat) && !is.null(pcorr)) {
+        vmessage(c("Both pcorr (", pcorr, ") and corr_mat provided; corr_mat",
+                 "will be used to simulate the correlatedBgEffects"), 
+                 verbose=verbose)
+    }
     if(is.null(corr_mat)) {
+        if (is.null(pcorr)) {
+            stop("At least one of pcorr or corr_mat have to be provided to", 
+                 " simulated the correlatedBgEffects")
+        }
         corr_vec <- cumprod(rep(pcorr, P - 1))
         tri_corr_vec <- unlist(sapply(0:(length(corr_vec) -1), function(pos) {
             return(corr_vec[1:(length(corr_vec) - pos)])
