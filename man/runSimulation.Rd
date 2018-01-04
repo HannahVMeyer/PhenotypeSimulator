@@ -132,10 +132,10 @@ kinship for simulation of genetic backgound effect will be read from file.}
 \item{standardise}{[boolean] If TRUE genotypes will be standardised for 
 kinship estimation (recommended).}
 
-\item{corrmatfile}{path/to/corrmatfile [string] with [P x P] numeric [double] 
-correlation matrix; if provided,  correlation matrix for simulation of 
-correlated backgound effect will be read from file; file should NOT contain 
-an index or header column.}
+\item{corrmatfile}{path/to/corrmatfile.csv [string] with comma-separated 
+[P x P] numeric [double] correlation matrix; if provided,  correlation matrix 
+for simulation of correlated backgound effect will be read from file; 
+file should NOT contain an index or header column.}
 
 \item{NrFixedEffects}{Number [integer] of different non-genetic covariate 
 effects to simulate; allows to simulate non-genetic covariate effects from 

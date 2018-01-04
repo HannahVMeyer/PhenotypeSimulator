@@ -22,7 +22,7 @@ command line, the help function can be called via
 # Rscript -e "PhenotypeSimulator::simulatePhenotypes()" \\
 #--args \\ 
 #--NrSamples=100 --NrPhenotypes=15 \\
-#--tNrSNP=10000 --cNrSNP=30 \\
+#--tNrSNPs=10000 --cNrSNPs=30 \\
 #--SNPfrequencies=0.05,0.1,0.3,0.4 \\
 #--genVar=0.4 --h2s=0.025 --phi=0.6 --delta=0.3 --gamma=1 \\
 #--pcorr=0.8 \\
@@ -31,7 +31,6 @@ command line, the help function can be called via
 #--distConfounders=bin,cat_norm,cat_unif,norm \\
 #--probConfounders=0.2 \\
 #--catConfounders=0,3,4,0 \\
-#--directoryGeno=~/tmp/genotypes \\
-#--directoryPheno=~/tmp/phenotypes \\
+#--directory=~/tmp \\
 #--showProgress \\
 }

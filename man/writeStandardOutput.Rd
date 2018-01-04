@@ -81,7 +81,8 @@ in dataset), v) sex code ('1' = male, '2' = female, '0' = unknown), vi)
 Phenotype value ('1' = control, '2' = case, '-9'/'0'/non-numeric = missing 
 data if case/control)
 \item snptest format: consists of two files, the genotype file ending in .gen 
-and the sample file ending in .sample. From
+(genotypes_snptest.gen) and the sample file ending in .sample 
+(Ysim_snptest.sample). From
  \url{http://www.stats.ox.ac.uk/~marchini/software/gwas/file_format.html}:
 The genotype file stores data on a one-line-per-SNP format. The first 5 
 entries of each line should be the SNP ID, RS ID of the SNP, base-pair 
@@ -113,18 +114,19 @@ covariates, P for Continuous Phenotype, B for Binary Phenotype (0 = Controls,
 containing the information specified by the entries of the header line.
 Entries of the sample file are separated by spaces.
 \item bimbam format: consists of a) a simple, tab-separated phenotype file 
-without sample or phenotype header/index and b) the mean genotype file format 
-which is a single file, without information on individuals. From 
-\url{http://www.haplotype.org/bimbam.html}: The first column of the mean 
-genotype files is the SNP ID, the second and third columns are allele types 
-with minor allele first. The rest columns are the mean genotypes of different 
-individuals – numbers between 0 and 2 that represents the (posterior) mean 
-genotype, or dosage of the minor allele.
+without sample or phenotype header/index (Ysim_bimbam.txt) and b) the mean 
+genotype file format which is a single file, without information on individuals: 
+(genotypes.bimbam). From \url{http://www.haplotype.org/bimbam.html}: 
+The first column of the mean genotype files is the SNP ID, the second and 
+third columns are allele types with minor allele first. The rest columns are 
+the mean genotypes of different individuals – numbers between 0 and 2 that 
+represents the (posterior) mean genotype, or dosage of the minor allele.
 \item gemma format: consists of a) a simple, tab-separated phenotype file 
-without sample or phenotype header/index and b) the mean genotype file format 
-which is a single file, without information on individuals (both the same as 
-above for bimbam format). In addition and if applicable, c) a kinship file 
-and d) covariate file. From 
+without sample or phenotype header/index (Ysim_gemma.txt) and b) the mean 
+genotype file format which is a single file, without information on 
+individuals(genotypes.gemma); a) and b) both the same as above for bimbam 
+format). In addition and if applicable, c) a kinship file (Kinship_gemma.txt)
+and d) covariate file (Covs_gemma.txt). From 
 \url{http://www.xzlab.org/software/GEMMAmanual.pdf}: The kinship file 
 contains a NrSample × NrSample matrix, where each row and each column 
 corresponds to individuals in the same order as in the mean genotype file, 

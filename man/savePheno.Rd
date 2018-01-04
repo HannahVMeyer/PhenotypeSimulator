@@ -34,7 +34,7 @@ set to NULL, subdirectory named by NrSamples, NrSNPs, genetic Model and
 noise Model and genVar is created.}
 
 \item{saveIntermediate}{[bool] If TRUE, intermediate phenotype components
-such as shared and independent genetic and noise fixed effects are saved.}
+such as shared and independent effect components are saved.}
 
 \item{intercept_gemma}{[boolean] When modeling an intercept term in gemma, a 
 column of 1's have to be appended to the covariate files. Set intercept_gemma
