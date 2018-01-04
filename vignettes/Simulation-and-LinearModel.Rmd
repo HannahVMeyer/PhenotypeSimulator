@@ -142,7 +142,7 @@ indir <- "/homes/hannah/data/hmeyer/Supplementary/CEU.0908.impute.files"
 # specify directory to save data; if it doesn't exist yet, create i.e. needs 
 # writing permissions
 datadir <- '/homes/hannah/tmp/phenotypeSimulator'
-if (!dir.exists(datadirectory)) dir.create(datadirectory, recursive=TRUE)
+if (!dir.exists(datadir)) dir.create(datadir, recursive=TRUE)
 
 # specify filenames and parameters 
 totalGeneticVar <- 0.4
