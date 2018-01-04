@@ -4,15 +4,19 @@
 \alias{commaList2vector}
 \title{Comma-separated string to numeric vector.}
 \usage{
-commaList2vector(commastring)
+commaList2vector(commastring = NULL, type = "numeric")
 }
 \arguments{
-\item{commastring}{Input character vector containing numbers separated by 
+\item{commastring}{Input [character] vector containing numbers separated by 
 commas.}
+
+\item{type}{Name [string] of the type of input variables; one of numeric, 
+logical or character}
 }
 \value{
 Numeric vector of values extracted from commastring.
 }
 \description{
-Split input of comma-separated string into vector of numeric values.
+Split input of comma-separated string into vector of numeric, logical or 
+character values.
 }

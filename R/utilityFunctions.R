@@ -18,10 +18,13 @@ vmessage <- function(userinfo, verbose=TRUE, sep=" ") {
 
 #' Comma-separated string to numeric vector.
 #'
-#' Split input of comma-separated string into vector of numeric values.
+#' Split input of comma-separated string into vector of numeric, logical or 
+#' character values.
 #'
-#' @param commastring Input character vector containing numbers separated by 
+#' @param commastring Input [character] vector containing numbers separated by 
 #' commas.
+#' @param type Name [string] of the type of input variables; one of numeric, 
+#' logical or character
 #' @return Numeric vector of values extracted from commastring.
 commaList2vector <- function(commastring=NULL, type="numeric") {
     if (is.null(commastring)) {
