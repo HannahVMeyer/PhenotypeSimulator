@@ -254,7 +254,7 @@ p_corr <- p_corr + geom_tile() +
 print(p_corr)
 ```
 
-```{r, echo=FALSE, eval=FALSE}
+```{r, echo=FALSE, eval=TRUE}
 ggsave(plot=p_corr,
         filename=paste(savedir, "/correlation_phenotype.pdf", sep=""),
         units="mm", width=86, height=60)
