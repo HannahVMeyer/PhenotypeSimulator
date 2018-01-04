@@ -8,7 +8,8 @@
 #' @importFrom stats median pnorm rbinom rnorm runif sd var na.omit rexp
 #' @importFrom utils read.table write.table 
 #' @importFrom optparse make_option parse_args OptionParser
-#' @importFrom plyr l_ply
+#' @importFrom dplyr filter
+#' @importFrom reshape2 melt
 #' @importFrom snpStats write.plink
 #' @importClassesFrom snpStats SnpMatrix
 #' @importFrom R.utils countLines
