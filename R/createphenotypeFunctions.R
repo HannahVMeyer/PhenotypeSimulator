@@ -394,12 +394,30 @@ setModel <- function(genVar=NULL, h2s=NULL, theta=0.8, h2bg=NULL, eta=0.8,
 #'
 #' @param P Number [integer] of phenotypes to simulate. 
 #' @param N Number [integer] of samples to simulate.
+#' @param genVar Proportion [double] of total genetic variance.
+#' @param h2s Proportion [double] of genetic variance of genetic variant effects. 
+#' @param h2bg Proportion [double] of genetic variance of infinitesimal genetic 
+#' effects; either h2s or h2bg have to be specified and h2s + h2bg = 1.
+#' @param theta Proportion [double] of variance of shared genetic variant 
+#' effects.
+#' @param eta Proportion [double] of variance of shared infinitesimal genetic 
+#' effects.
+#' @param noiseVar Proportion [double] of total noise variance.
+#' @param rho Proportion [double] of noise variance of correlated effects; sum 
+#' of rho, delta and phi has to be equal 1.
+#' @param delta Proportion [double] of noise variance of non-genetic covariate 
+#' effects; sum of rho, delta and phi  has to be equal 1.
+#' @param gamma Proportion [double] of variance of shared non-genetic covariate 
+#' effects.
+#' @param phi Proportion [double] of noise variance of observational noise 
+#' effects; sum of rho, delta and phi has to be equal 1.
+#' @param alpha Variance [double] of shared observational noise effect.
 #' @param tNrSNP Total number [integer] of SNPs to simulate; these SNPs are used
 #' for kinship estimation.
-#' @param SNPfrequencies Vector of allele frequencies [double] from which to 
-#' sample.
 #' @param cNrSNP Number [integer] of causal SNPs; used as genetic variant 
 #' effects.
+#' @param SNPfrequencies Vector of allele frequencies [double] from which to 
+#' sample.
 #' @param genotypefile Needed when reading external genotypes (into memory), 
 #' path/to/genotype file [string] in format specified by \link{format}.
 #' @param format Needed when reading external genotypes (into memory), specifies 
@@ -410,6 +428,7 @@ setModel <- function(genVar=NULL, h2s=NULL, theta=0.8, h2bg=NULL, eta=0.8,
 #' (no '~' expansion!) [string]
 #' @param genoFileSuffix Needed when sampling causal SNPs from file, 
 #' following chromosome number including fileformat (e.g. ".csv") [string]
+#' @param genoDelimiter Field separator [string] of genotypefile or genoFile 
 #' @param skipFields Number [integer] of fields (columns) in to skip in 
 #' genoFilePrefix-genoFileSuffix-file. See details in \link{getCausalSNPs}.
 #' @param probabilities [bool]. If set to TRUE, the genotypes in the files 
@@ -418,7 +437,6 @@ setModel <- function(genVar=NULL, h2s=NULL, theta=0.8, h2bg=NULL, eta=0.8,
 #' genotype frequencies by 0*p(AA) + p(Aa) + 2p(aa) via \link{probGen2expGen}.
 #' @param oxgen [bool] Is genoFilePrefix-genoFileSuffix file in oxgen format?
 #' See \link{readStandardGenotypes} for details.
-#' @param genoDelimiter Field separator [string] of genotypefile or genoFile 
 #' @param chr Numeric vector of chromosomes [integer] to chose NrCausalSNPs 
 #' from; only used when external genotype data is sampled i.e. 
 #' !is.null(genoFilePrefix) 
@@ -432,19 +450,31 @@ setModel <- function(genVar=NULL, h2s=NULL, theta=0.8, h2bg=NULL, eta=0.8,
 #' !is.null(genoFilePrefix).
 #' @param kinshipfile path/to/kinshipfile [string]; if provided, 
 #' kinship for simulation of genetic backgound effect will be read from file.
-#' @param kinshipDelimiter Field separator [string] of kinship file. 
 #' @param kinshipHeader [boolean] If TRUE kinship file has header information. 
+#' @param kinshipDelimiter Field separator [string] of kinship file. 
 #' @param standardise [boolean] If TRUE genotypes will be standardised for 
 #' kinship estimation (recommended).
-#' @param corrmatfile path/to/corrmatfile.csv [string] with comma-separated 
-#' [P x P] numeric [double] correlation matrix; if provided,  correlation matrix 
-#' for simulation of correlated backgound effect will be read from file; 
-#' file should NOT contain an index or header column.
-#' @param NrConfounders Number [integer] of non-genetic covariates; used as 
-#' non-genetic covariate effects.
+#' @param distBetaGenetic Name [string] of distribution to use to simulate 
+#' effect sizes of genetic variants; one of "unif" or "norm".
+#' @param mBetaGenetic Mean/midpoint [double] of normal/uniform distribution 
+#' for effect sizes of genetic variants.
+#' @param sdBetaGenetic Standard deviation/extension from midpoint [double] 
+#' of normal/uniform distribution for effect sizes of genetic variants.
+#' @param pIndependentGenetic Proportion [double] of genetic variant effects to 
+#' have a trait-independent fixed effect.
+#' @param pTraitIndependentGenetic Proportion [double] of traits influenced by 
+#' independent genetic variant effects.
+#' @param keepSameIndependentSNPs [boolean] If set to TRUE, the 
+#' independent SNPs effects always influence the same subset of traits.
+#' @param pTraitsAffectedGenetics Proportion [double] of traits affected by the 
+#' genetic variant effect. For non-integer results of pTraitsAffected*P, the 
+#' ceiling of the result is used. Allows to simulate for instance different 
+#' levels of pleiotropy.
 #' @param NrFixedEffects Number [integer] of different non-genetic covariate 
 #' effects to simulate; allows to simulate non-genetic covariate effects from 
 #' different distributions or with different parameters.
+#' @param NrConfounders Number [integer] of non-genetic covariates; used as 
+#' non-genetic covariate effects.
 #' @param distConfounders Vector of name(s) [string] of distributions to use to 
 #' simulate confounders; one of "unif", "norm", "bin", "cat_norm", "cat_unif".
 #' @param mConfounders Vector of mean(s)/midpoint(s) [double] of 
@@ -475,22 +505,11 @@ setModel <- function(genVar=NULL, h2s=NULL, theta=0.8, h2bg=NULL, eta=0.8,
 #' simulation observational noise effects.
 #' @param sdNoiseBg Standard deviation [double] of the normal distributions for 
 #' the simulations of the observational noise effects.
-#' @param distBetaGenetic Name [string] of distribution to use to simulate 
-#' effect sizes of genetic variants; one of "unif" or "norm".
-#' @param mBetaGenetic Mean/midpoint [double] of normal/uniform distribution 
-#' for effect sizes of genetic variants.
-#' @param sdBetaGenetic Standard deviation/extension from midpoint [double] 
-#' of normal/uniform distribution for effect sizes of genetic variants.
-#' @param pIndependentGenetic Proportion [double] of genetic variant effects to 
-#' have a trait-independent fixed effect.
-#' @param pTraitIndependentGenetic Proportion [double] of traits influenced by 
-#' independent genetic variant effects.
-#' @param keepSameIndependentSNPs [boolean] If set to TRUE, the 
-#' independent SNPs effects always influence the same subset of traits.
-#' @param pTraitsAffectedGenetics Proportion [double] of traits affected by the 
-#' genetic variant effect. For non-integer results of pTraitsAffected*P, the 
-#' ceiling of the result is used. Allows to simulate for instance different 
-#' levels of pleiotropy.
+#' @param pcorr Correlation [double] between phenotypes.
+#' @param corrmatfile path/to/corrmatfile.csv [string] with comma-separated 
+#' [P x P] numeric [double] correlation matrix; if provided,  correlation matrix 
+#' for simulation of correlated backgound effect will be read from file; 
+#' file should NOT contain an index or header column.
 #' @param sampleID Prefix [string] for naming samples (will be followed by 
 #' sample number from 1 to N when constructing sample IDs); only used if 
 #' genotypes/kinship are simulated/do not have sample IDs.
@@ -498,25 +517,6 @@ setModel <- function(genVar=NULL, h2s=NULL, theta=0.8, h2bg=NULL, eta=0.8,
 #' phenotypes number from 1 to P when constructing phenotype IDs).
 #' @param snpID Prefix [string] for naming SNPs (will be followed by 
 #' SNP number from 1 to NrSNP when constructing SNP IDs).
-#' @param genVar Proportion [double] of total genetic variance.
-#' @param h2s Proportion [double] of genetic variance of genetic variant effects. 
-#' @param h2bg Proportion [double] of genetic variance of infinitesimal genetic 
-#' effects; either h2s or h2bg have to be specified and h2s + h2bg = 1.
-#' @param theta Proportion [double] of variance of shared genetic variant 
-#' effects.
-#' @param eta Proportion [double] of variance of shared infinitesimal genetic 
-#' effects.
-#' @param noiseVar Proportion [double] of total noise variance.
-#' @param rho Proportion [double] of noise variance of correlated effects; sum 
-#' of rho, delta and phi has to be equal 1.
-#' @param pcorr Correlation [double] between phenotypes.
-#' @param delta Proportion [double] of noise variance of non-genetic covariate 
-#' effects; sum of rho, delta and phi  has to be equal 1.
-#' @param gamma Proportion [double] of variance of shared non-genetic covariate 
-#' effects.
-#' @param phi Proportion [double] of noise variance of observational noise 
-#' effects; sum of rho, delta and phi has to be equal 1.
-#' @param alpha Variance [double] of shared observational noise effect.
 #' @param seed Seed [integer] to initiate random number generation.
 #' @param verbose [boolean]; If TRUE, progress info is printed to standard out
 #' @return Named list of i) dataframe of proportion of variance 
@@ -537,37 +537,38 @@ setModel <- function(genVar=NULL, h2s=NULL, theta=0.8, h2bg=NULL, eta=0.8,
 #' genVar = 0.2
 #' simulatedPhenotype <- runSimulation(N=100, P=5, cNrSNP=10,
 #' genVar=genVar, h2s=1, phi=1)
-runSimulation <- function(N=1000, P=10, tNrSNP=5000, cNrSNP=20, 
-                          NrConfounders=10, seed=219453, 
-                          chr=NULL, NrSNPsOnChromosome=NULL, NrChrCausal=NULL,
-                          skipFields=NULL, probabilities=FALSE, oxgen=FALSE,
+runSimulation <- function(N, P, 
                           genVar=NULL, h2s=NULL, theta=0.8, h2bg=NULL, eta=0.8, 
                           noiseVar=NULL, rho=NULL, delta=NULL, gamma=0.8, 
                           phi=NULL, alpha=0.8, 
-                          sampleID="ID_", phenoID="Trait_", snpID="SNP_",
+                          tNrSNP=5000, cNrSNP=20, 
+                          SNPfrequencies=c(0.1, 0.2, 0.4), 
                           genotypefile=NULL, format=NULL,
                           genoFilePrefix=NULL, genoFileSuffix=NULL, 
-                          genoDelimiter=",", kinshipfile=NULL, 
-                          kinshipHeader=TRUE, kinshipDelimiter=",", 
+                          genoDelimiter=",", skipFields=NULL, 
+                          probabilities=FALSE, oxgen=FALSE,
+                          chr=NULL, NrSNPsOnChromosome=NULL, 
+                          NrChrCausal=NULL,
+                          kinshipfile=NULL, 
+                          kinshipHeader=FALSE, kinshipDelimiter=",", 
                           standardise=TRUE,
-                          corrmatfile=NULL,
-                          NrFixedEffects=1, distConfounders="norm",
-                          mConfounders=0, sdConfounders=1,
-                          catConfounders=NULL, probConfounders=NULL,
-                          distBetaConfounders="norm", mBetaConfounders=0, 
-                          sdBetaConfounders=1,
                           distBetaGenetic="norm", mBetaGenetic=0, 
-                          sdBetaGenetic=1,
+                          sdBetaGenetic=1,pTraitsAffectedGenetics=1,
+                          pIndependentGenetic=0.4, pTraitIndependentGenetic=0.2,
+                          keepSameIndependentSNPs=FALSE,
+                          NrFixedEffects=1, NrConfounders=10, 
+                          distConfounders="norm", mConfounders=0, 
+                          sdConfounders=1,catConfounders=NULL, 
+                          probConfounders=NULL, distBetaConfounders="norm", 
+                          mBetaConfounders=0, sdBetaConfounders=1,
                           pTraitsAffectedConfounders=1,
                           pIndependentConfounders=0.4, 
                           pTraitIndependentConfounders=0.2,
                           keepSameIndependentConfounders=FALSE,
-                          pcorr=0.8, meanNoiseBg=0, sdNoiseBg=1, 
-                          SNPfrequencies=c(0.1, 0.2, 0.4),                            
-                          pTraitsAffectedGenetics=1,
-                          pIndependentGenetic=0.4, pTraitIndependentGenetic=0.2,
-                          keepSameIndependentSNPs=FALSE,
-                          verbose=TRUE) {
+                          pcorr=0.8, corrmatfile=NULL,
+                          meanNoiseBg=0, sdNoiseBg=1, 
+                          sampleID="ID_", phenoID="Trait_", snpID="SNP_",
+                          seed=219453, verbose=FALSE) {
 
     vmessage(c("Set seed:", seed), verbose=verbose)
     set.seed(seed)
@@ -581,8 +582,8 @@ runSimulation <- function(N=1000, P=10, tNrSNP=5000, cNrSNP=20,
                       pTraitIndependentGenetic=pTraitIndependentGenetic, 
                       verbose=verbose)
     id_snps <- NULL
+    id_samples <- NULL
     id_phenos <- paste(phenoID, 1:P, sep="")
-    id_samples <- paste(sampleID, 1:N, sep="")
 
     ### create simulated phenotypes
     # 1. Simulate genetic terms
@@ -632,6 +633,9 @@ runSimulation <- function(N=1000, P=10, tNrSNP=5000, cNrSNP=20,
                                     verbose=verbose)
         if (is.null(id_snps)) {
             id_snps <- colnames(causalSNPs)
+        }
+        if (is.null(id_samples)) {
+            id_samples <- rownames(causalSNPs)
         }
         vmessage("Simulate genetic variant effects", verbose=verbose)
         genFixed <- geneticFixedEffects(X_causal=causalSNPs, N=N, P=P, 
