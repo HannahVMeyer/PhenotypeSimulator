@@ -26,133 +26,211 @@
 #' #--distConfounders=bin,cat_norm,cat_unif,norm \
 #' #--probConfounders=0.2 \
 #' #--catConfounders=0,3,4,0 \
-#' #--directory=~/tmp \
+#' #--directory=/tmp \
 #' #--showProgress \
 
 
 simulatePhenotypes <- function() {
     option_list <- list(
-        make_option(c("-P", "--NrPhenotypes"), action="store", dest="P", 
-                    default=10, type="integer", help="Number of phenotypes to 
+        make_option(c("--NrSamples"), action="store", dest="NrSamples", 
+                    type="integer", help="Number of samples to 
                     simulate [default: %default]"),
-        make_option(c("-N", "--NrSamples"), action="store", dest="N", 
-                    default=1000, type="integer", help="Number of samples to 
+        make_option(c("--NrPhenotypes"), action="store", dest="NrPhenotypes", 
+                    type="integer", help="Number of phenotypes to 
                     simulate [default: %default]"),
-        make_option(c("-C", "--NrConfounders"), action="store",
-                    dest="NrConfoundersString", default=10, type="character",
-                    help="Number of confounders to simulate per set 
-                    (default 1 set of fixedEffects) 
+        
+        make_option(c("--genVar"), action="store", dest="genVar", 
+                    default=NULL, type="double", help="Total genetic variance 
                     [default: %default]"),
-        make_option(c("-F", "--NrFixedEffects"), action="store", 
-                    dest="NrFixedEffects", default=1, type="integer", 
-                    help="Number of different confounder effects to simulate: 
-                    allows to simulate confounder effects from different 
-                    distributions or with different parameters 
+        make_option(c("--noiseVar"), action="store", 
+                    dest="noiseVar", default=NULL, type="double", 
+                    help="Total noise variance [default: %default]"),
+        make_option(c("--h2s"), action="store", dest="h2s", default=NULL
+                    , type="double", help="Proportion of genetic variant effects 
+                    from total genetic variance [default: %default]"),
+        make_option(c("--h2bg"), action="store", dest="h2bg", 
+                    default=NULL, type="double", help="Proportion of 
+                    infinitesimal genetic effects from total genetic variance 
                     [default: %default]"),
-        make_option(c("-tS", "--tNrSNP"), action="store", dest="tNrSNP", 
+        make_option(c("--theta"), action="store", dest="theta", 
+                    default=0.8, type="double", help="Proportion of shared 
+                    genetic variant effects from total genetic variant variance
+                    [default:%default]"),
+        make_option(c("--eta"), action="store", dest="eta", default=0.8, 
+                    type="double", help="Proportion of shared infinitesimal 
+                    genetic effects from total infinitesimal genetic variance  
+                    [default: %default]"),
+        make_option(c("--delta"), action="store", dest="delta", 
+                    default=NULL, type="double", help="Proportion of variance of 
+                    confounder effects [default: %default]"),
+        make_option(c("--gamma"), action="store", dest="gamma", 
+                    default=0.8, type="double", help="Proportion of shared 
+                    confounder variance from total confounder variance 
+                    [default: %default]"),
+        make_option(c("--alpha"), action="store", dest="alpha", 
+                    default=0.8, type="double", help="Proportion of shared
+                    obervational noise variance from total observational noise 
+                    variance [default: %default]"),
+        make_option(c("--rho"), action="store", dest="rho", default=NULL
+                    , type="double", help="Proportion of correlated noise 
+                    effects from total noise variance[default: %default]"),
+        make_option(c("--phi"), action="store", dest="phi", default=NULL
+                    , type="double", help="Proportion of observational noise 
+                    variance from total noise variance [default: %default]"),
+        
+        make_option(c("--tNrSNP"), action="store", dest="tNrSNP", 
                     default=5000, type="integer", help="Number of total SNPs to 
                     simulate [default: %default]"),
-        make_option(c("-cS", "--cNrSNP"), action="store", dest="cNrSNP", 
+        make_option(c("--cNrSNP"), action="store", dest="cNrSNP", 
                     default=20, type="integer", help="Number of causal SNPs to 
                     draw from total SNPs [default: %default]"),
-        make_option(c("-SNPfrequencies", "--SNPfrequencies"), action="store", 
+        make_option(c("--SNPfrequencies"), action="store", 
                     dest="SNPfrequencyString", default="0.1,0.2,0.4", 
                     type="character", help="Comma-separated list of allele 
                     frequencies from which to sample to simulate genotypes 
                     [default: %default]"),
-        make_option(c("-stand", "--standardise"), action="store_true", 
-                    dest="standardise", default=FALSE, type="logical", 
-                    help="Should genotypes be standardised for simulation of 
-                    fixed effects [default: %default]"),
         
-        make_option(c("-pIndependentGenetic", "--pIndependentGenetic"), 
+        make_option(c("--genotypefile"), action="store", 
+                    dest="genotypefile", default=NULL, type="character", 
+                    help="Path to external genotype file (to be fully read into 
+                    memory) in format specified by --format 
+                    [default: %default]"),
+        make_option(c("--format"), action="store", 
+                    dest="format", default=NULL, type="character", 
+                    help="Needed when --genotypefile specified, specifies the 
+                    format of the genotype data; has to be one of plink, oxgen, 
+                    genome, bimbam and delim [default: %default]"),
+        
+        make_option(c("--genoFilePrefix"), action="store", 
+                    dest="genoFilePrefix", default=NULL, type="character", 
+                    help="Full path to file (no tilde-expansion) and prefix of 
+                    per-chromosome comma-separated genotypes file e.g. 
+                    '/tmp/genotypes_' [default: %default]"),
+        make_option(c("--genoFileSuffix"), action="store", 
+                    dest="genoFileSuffix", default=NULL, type="character", 
+                    help="Optional string of genotype file ending including 
+                    format indication (e.g. '.csv') [default: %default]"),
+        make_option(c("--genoFileDelimiter"), action="store", 
+                    dest="genoFileDelimiter", default=",", type="character", 
+                    help="Field separator of genotype or 
+                    genoFilePrefix-genoFileSuffix file; if file is 
+                    tab-separated, please specify 'tab' [default: %default]"),
+        make_option(c("--oxgen"), action="store_true", 
+                    dest="oxgen", default=FALSE, type="logical", 
+                    help="Is genoFilePrefix-genoFileSuffix file on oxgen format?
+                    [default: %default]"),
+        make_option(c("--probabilities"), action="store_true", 
+                    dest="probabilities", default=FALSE, type="logical", 
+                    help=" If set to TRUE, the genotypes in genoFilePrefix-
+                    genoFileSuffix are provided as triplets of probablities 
+                    (p(AA), p(Aa), p(aa)) and will be converted into their 
+                    expected genotype frequencies by 0*p(AA) + p(Aa) + 2*p(aa) 
+                    [default: %default]"),
+        make_option(c("--skipFields"), action="store", 
+                    dest="skipFields", default=NULL, type="integer", 
+                    help="Number of fields (columns) to skip in genoFilePrefix-
+                    genoFileSuffix file [default: %default]"),
+        
+        make_option(c("--chr"), action="store", 
+                    dest="chr_string", default=NULL, type="character", 
+                    help="Comma-separated list of chromosomes to draw causal 
+                    SNPs from [default: %default]"),
+        make_option(c("--NrSNPsOnChromosome"), action="store", 
+                    dest="NrSNPsOnChromosomeString", default=NULL, 
+                    type="character", help="Comma-separated list of the number 
+                    of SNPs per entry --chr (see above); has to be the same 
+                    length as --chr. If not provided, lines in file will be 
+                    counted (which can be slow for large files) [default: 
+                    %default]"),
+        make_option(c("--NrChrCausal"), action="store", 
+                    dest="NrChrCausal", default=NULL, type="integer", 
+                    help="Number of chromosomes to draw causal 
+                    SNPs from (as opposed to a independent list of chromosomes 
+                    to draw from via --chr) [default: %default]"),
+        
+        make_option(c("--kinshipFile"), action="store", 
+                    dest="kinshipfile", default=NULL, type="character", 
+                    help="Path to pre-computed, comma-separated kinshipfile 
+                    [default: %default]"),
+        make_option(c("--kinshipFileHasNoHeader"), action="store_false", 
+                    dest="kinshipHeader", default=TRUE, type="logical", 
+                    help="Set to specify that kinship file does not have a 
+                    header line (e.g. header=sample IDs)? [default: %default]"),
+        make_option(c("--kinshipFileDelimiter"), action="store", 
+                    dest="kinshipFileDelimiter", default=",", type="character", 
+                    help="Field separator of kinship file (e.g. `,`); if 
+                    kinship file is tab-separated, please specify 'tab'
+                    [default: %default]"),
+        make_option(c("--noStandardise"), action="store_false", 
+                    dest="standardise", default=TRUE, type="logical", 
+                    help="If set, genotypes will not be standardised for 
+                    kinship estimation (standardissation is recommended). 
+                    [default: %default]"),
+        make_option(c("--pIndependentGenetic"), 
                     action="store", 
                     dest="pIndependentGenetic", default=0.4, type="double", 
                     help="Proportion of variance of variant genetic effects to 
                     have a trait-independent effect [default: %default]"),
-        make_option(c("-pTraitIndependentGenetic", 
-                      "--pTraitIndependentGenetic"), action="store", 
+        make_option(c("--pTraitIndependentGenetic"), action="store", 
                     dest="pTraitIndependentGenetic", default=0.2, type="double", 
                     help="Proportion of traits influenced by independent 
                     genetic variant effects [default: %default]"),
-        make_option(c("-keepSameIndependentSNPs", "--keepSameIndependentSNPs"), 
+        make_option(c("--keepSameIndependentSNPs"), 
                     action="store_true", dest="keepSameIndependentSNPs", 
                     default=FALSE, type="logical", help=" If set to TRUE, the 
                     independent SNPs effects always influence the same subset of 
                     traits.[default: %default]"),
-         
-        make_option(c("-genVar", "--genVar"), action="store", dest="genVar", 
-                    default=NULL, type="double", help="Total genetic variance 
+        make_option(c("--pTraitsAffectedGenetics"), action="store", 
+                    dest="pTraitsAffectedGeneticsString", default=1, 
+                    type="integer", help="Proportion of traits affected by 
+                    the genetic variant effects; [default: %default]"),
+        make_option(c("--distBetaGenetic"), action="store", 
+                    dest="distBetaGenetic", default="norm", 
+                    type="character", help="Distribution to use to 
+                    simulate effect sizes of SNPs; one of 'unif' or 'norm' 
                     [default: %default]"),
-        make_option(c("-noiseVar", "--noiseVar"), action="store", 
-                    dest="noiseVar", default=NULL, type="double", 
-                    help="Total noise variance [default: %default]"),
-        make_option(c("-h2s", "--h2s"), action="store", dest="h2s", default=NULL
-                    , type="double", help="Proportion of genetic variant effects 
-                    from total genetic variance [default: %default]"),
-        make_option(c("-h2bg", "--h2bg"), action="store", dest="h2bg", 
-                    default=NULL, type="double", help="Proportion of 
-                    infinitesimal genetic effects from total genetic variance 
+        make_option(c("--mBetaGenetic"), action="store", 
+                    dest="mBetaGenetic", default=0, type="double", 
+                    help="Mean/midpoint of normal/uniform distribution for 
+                    effect sizes of SNPs [default: %default]"),
+        make_option(c("--sdBetaGenetic"), action="store", 
+                    dest="sdBetaGenetic", default=1, type="double", 
+                    help="Standard deviation/distance from midpoint of 
+                    normal/uniform distribution for effect sizes of SNPs 
                     [default: %default]"),
-        make_option(c("-theta", "--theta"), action="store", dest="theta", 
-                    default=0.8, type="double", help="Proportion of shared 
-                    genetic variant effects from total genetic variant variance
-                    [default:%default]"),
-        make_option(c("-eta", "--eta"), action="store", dest="eta", default=0.8, 
-                    type="double", help="Proportion of shared infinitesimal 
-                    genetic effects from total infinitesimal genetic variance  
-                     [default: %default]"),
-        make_option(c("-delta", "--delta"), action="store", dest="delta", 
-                    default=NULL, type="double", help="Proportion of variance of 
-                    confounder effects [default: %default]"),
-        make_option(c("-gamma", "--gamma"), action="store", dest="gamma", 
-                    default=0.8, type="double", help="Proportion of shared 
-                    confounder variance from total confounder variance 
-                    [default: %default]"),
-        make_option(c("-alpha", "--alpha"), action="store", dest="alpha", 
-                    default=0.8, type="double", help="Proportion of shared
-                    obervational noise variance from total observational noise 
-                    variance [default: %default]"),
-        make_option(c("-rho", "--rho"), action="store", dest="rho", default=NULL
-                    , type="double", help="Proportion of correlated noise 
-                    effects from total noise variance[default: %default]"),
-        make_option(c("-phi", "--phi"), action="store", dest="phi", default=NULL
-                    , type="double", help="Proportion of observational noise 
-                    variance from total noise variance [default: %default]"),
         
-        make_option(c("-pcorr", "--pcorr"), action="store", dest="pcorr", 
-                    default=0.6, type="double", help="Correlation strength of
-                    correlated noise effects [default: %default]"),
-        make_option(c("-corrmatfile", "--corrmatfile"), action="store", 
-                    dest="corrmatfile", default=NULL, type="character", 
-                    help="path/to/corrmatfile.csv [string] with comma-separated
-                    [P x P] numeric [double] correlation matrix; if provided,  
-                    correlation matrix for simulation of correlated backgound 
-                    effect will be read from file; file should NOT contain an 
-                    index or header column [default: %default]"),
-        
+        make_option(c("--NrFixedEffects"), action="store", 
+                    dest="NrFixedEffects", default=1, type="integer", 
+                    help="Number of different confounder effects to simulate: 
+                    allows to simulate confounder effects from different 
+                    distributions or with different parameters 
+                    [default: %default]"),        
+        make_option(c("--NrConfounders"), action="store",
+                    dest="NrConfoundersString", default=10, type="character",
+                    help="Number of confounders to simulate per set 
+                    (default 1 set of fixedEffects) 
+                    [default: %default]"),
+
         make_option(c("--pTraitsAffectedConfounders"), action="store", 
                     dest="pTraitsAffectedConfoundersString", default="1", 
                     type="character", help="Proportion(s) of traits affected by 
                     the confounder (s); for more than one type of confounders, 
                     provide values separated by commas, i.e. '0.2,0.5,1', 
                     [default: %default]"),
-        make_option(c("-pIndependentConfounders", "--pIndependentConfounders"),
+        make_option(c("--pIndependentConfounders"),
                     action="store", dest="pIndependentConfoundersString", 
                     default=0.4, type="character", 
                     help="Proportion(s) of variance of confounder effects to 
                     have a trait-independent effect; for more than one type of 
                     confounders, provide values separated by commas, i.e. 
                     '0.3,0.4,0.8' [default: %default]"),
-        make_option(c("-pTraitIndependentConfounders", 
-                      "--pTraitIndependentConfounders"), action="store", 
+        make_option(c("--pTraitIndependentConfounders"), action="store", 
                     dest="pTraitIndependentConfoundersString", default=0.2, 
                     type="character", help="Proportion(s) of traits influenced 
                     by independent confounder effects; for more than one type of 
                     confounders, provide values separated by commas, i.e. 
                     '0.8,0.5,0.9' [default: %default]"),
-        make_option(c("-keepSameIndependentConfounders", 
-                      "--keepSameIndependentConfounders"), 
+        make_option(c("--keepSameIndependentConfounders"), 
                     action="store", dest="keepSameIndependentConfoundersString", 
                     default="FALSE", type="character", 
                     help="Comma-separated list of TRUE and FALSE, specifying if
@@ -186,7 +264,7 @@ simulatePhenotypes <- function() {
                     i.e. '2,0,5' (second confounder not categorical),
                     [default: %default]"),
         make_option(c("--probConfounders"), action="store", 
-                    dest="probConfoundersString", default=0, type="character", 
+                    dest="probConfoundersString", default=NULL, type="character", 
                     help="Probability(s) of binomial confounders (0/1); required 
                     if distConfounders 'bin', for more than one 
                     type of confounders, provide values separated by commas, 
@@ -213,24 +291,16 @@ simulatePhenotypes <- function() {
                     confounders, provide values separated by commas, i.e. 
                     '1,2', [default: %default]"),
         
-        make_option(c("--pTraitsAffectedGenetics"), action="store", 
-                    dest="pTraitsAffectedGeneticsString", default=1, 
-                    type="integer", help="Proportion of traits affected by 
-                    the genetic variant effects; [default: %default]"),
-        make_option(c("--distBetaGenetic"), action="store", 
-                    dest="distBetaGenetic", default="norm", 
-                    type="character", help="Distribution to use to 
-                    simulate effect sizes of SNPs; one of 'unif' or 'norm' 
-                    [default: %default]"),
-        make_option(c("--mBetaGenetic"), action="store", 
-                    dest="mBetaGenetic", default=0, type="double", 
-                    help="Mean/midpoint of normal/uniform distribution for 
-                    effect sizes of SNPs [default: %default]"),
-        make_option(c("--sdBetaGenetic"), action="store", 
-                    dest="sdBetaGenetic", default=1, type="double", 
-                    help="Standard deviation/distance from midpoint of 
-                    normal/uniform distribution for effect sizes of SNPs 
-                    [default: %default]"),
+        make_option(c("--pcorr"), action="store", dest="pcorr", 
+                    default=0.8, type="double", help="Correlation strength of
+                    correlated noise effects [default: %default]"),
+        make_option(c("--corrmatFile"), action="store", 
+                    dest="corrmatfile", default=NULL, type="character", 
+                    help="path/to/corrmatfile.csv [string] with comma-separated
+                    [P x P] numeric [double] correlation matrix; if provided,  
+                    correlation matrix for simulation of correlated backgound 
+                    effect will be read from file; file should NOT contain an 
+                    index or header column [default: %default]"),
         
         make_option(c("--meanNoiseBg"), action="store", dest="meanNoiseBg", 
                     default=0, type="double", help="Mean of the normal 
@@ -238,94 +308,6 @@ simulatePhenotypes <- function() {
         make_option(c("--sdNoiseBg"), action="store", dest="sdNoiseBg", 
                     default=1, type="double", help="Standard deviation of the 
                     normal distribution [default: %default]"),
-        
-        make_option(c("--seed"), action="store", dest="seed", 
-                    default=219453, type="integer", help="Seed to initialise 
-                    random number generator [default: %default]"),
-        make_option(c("--showProgress"), action="store_true", dest="verbose", 
-                    default=FALSE, type="logical", help="If set, progress 
-                    messages about simulation steps are printed to standard out
-                    [default: %default]"),
-
-        
-        make_option(c("-d", "--directory"), action="store", 
-                    dest="directory", default=NULL, type="character", help=
-                    "Absolute path (no tilde expansion) to parent directory
-                    where simulation results should be saved; needs user 
-                    writing permission, [default: %default]"),
-        make_option(c("-ds", "--subdirectory"), action="store", dest="outstring"
-                    , default=NULL, type="character", help="Name of subdirectory
-                    to be created within directory [default: %default]"),
-        
-        make_option(c("-kf", "--kinshipfile"), action="store", 
-                    dest="kinshipfile", default=NULL, type="character", 
-                    help="Path to pre-computed, comma-separated kinshipfile 
-                    [default: %default]"),
-        make_option(c("--kinshipfileHasHeader"), action="store_true", 
-                    dest="kinshipHeader", default=FALSE, type="logical", 
-                    help="Does kinship have a header line (e.g. header=sample 
-                    IDs)? [default: %default]"),
-        make_option(c("--kinshipfileDelimiter"), action="store", 
-                    dest="kinshipDelimiter", default=",", type="character", 
-                    help="Field separator of kinship file (e.g. `,`) 
-                    [default: %default]"),
-        
-        make_option(c("--genotypefile"), action="store", 
-                    dest="genotypefile", default=NULL, type="character", 
-                    help="Path to external genotype file (to be fully read into 
-                    memory) in format specified by --format 
-                    [default: %default]"),
-        make_option(c("--format"), action="store", 
-                    dest="format", default=NULL, type="character", 
-                    help="Needed when --genotypefile specified, specifies the 
-                    format of the genotype data; has to be one of plink, oxgen, 
-                    genome, bimbam and delim [default: %default]"),
-        
-        make_option(c("--genoFilePrefix"), action="store", 
-                    dest="genoFilePrefix", default=NULL, type="character", 
-                    help="Full path to file (no tilde-expansion) and prefix of 
-                    per-chromosome comma-separated genotypes file e.g. 
-                    '/tmp/genotypes_' [default: %default]"),
-        make_option(c("--genoFileSuffix"), action="store", 
-                    dest="genoFileSuffix", default="", type="character", 
-                    help="Optional string of genotype file ending including 
-                    format indication (e.g. '.csv') [default: %default]"),
-        make_option(c("--genoFileDelimiter"), action="store", 
-                    dest="genoFileDelimiter", default=",", type="character", 
-                    help="Field separator of genotype or 
-                    genoFilePrefix-genoFileSuffix file [default: %default]"),
-        make_option(c("--oxgenFile"), action="store_true", 
-                    dest="oxgen", default=FALSE, type="logical", 
-                    help="Is genoFilePrefix-genoFileSuffix file on oxgen format?
-                    [default: %default]"),
-        make_option(c("--probabilitiesFile"), action="store_true", 
-                    dest="probabilities", default=FALSE, type="logical", 
-                    help=" If set to TRUE, the genotypes in genoFilePrefix-
-                    genoFileSuffix are provided as triplets of probablities 
-                    (p(AA), p(Aa), p(aa)) and will be converted into their 
-                    expected genotype frequencies by 0*p(AA) + p(Aa) + 2*p(aa) 
-                    [default: %default]"),
-        make_option(c("--skipFields"), action="store", 
-                    dest="skipFields", default=NULL, type="integer", 
-                    help="Number of fields (columns) to skip in genoFilePrefix-
-                    genoFileSuffix file [default: %default]"),
-        
-        make_option(c("-chrom", "--chromosomes"), action="store", 
-                    dest="chr_string", default=NULL, type="character", 
-                    help="Comma-separated list of chromosomes to draw causal 
-                    SNPs from [default: %default]"),
-        make_option(c("--NrSNPsOnChromosome"), action="store", 
-                    dest="NrSNPsOnChromosomeString", default=NULL, 
-                    type="character", help="Comma-separated list of the number 
-                    of SNPs per entry --chrom (see above); has to be the same 
-                    length as --chrom. If not provided, lines in file will be 
-                    counted (which can be slow for large files) [default: 
-                    %default]"),
-        make_option(c("--NrCausalChrom"), action="store", 
-                    dest="NrChrCausal", default=1, type="integer", 
-                    help="Number of chromosomes to draw causal 
-                    SNPs from (as opposed to a independent list of chromosomes 
-                    to draw from via --chrom) [default: %default]"),
         
         make_option(c("--sampleID"), action="store", dest="sampleID", 
                     default="ID_", type="character", help="Prefix for naming 
@@ -340,53 +322,77 @@ simulatePhenotypes <- function() {
                     default="SNP_", type="character", help="Prefix for naming 
                     simulated snps; will be followed by SNP number from 1 to 
                     --tNrSNPs when constructing SNP IDs[default: %default]"),
-        make_option(c("-saveIntermediate", "--saveIntermediate"), 
-                    action="store_true", dest="saveIntermediate", default=FALSE, 
-                    type="logical", help="If TRUE, intermediate phenotype 
-                    components such as shared and independent effects components 
-                    are saved; [default: %default]"),
-        make_option(c("-saveTable", "--saveTable"), action="store_true", 
+        
+        make_option(c("--seed"), action="store", dest="seed", 
+                    default=219453, type="integer", help="Seed to initialise 
+                    random number generator [default: %default]"),
+        make_option(c("--showProgress"), action="store_true", dest="verbose", 
+                    default=FALSE, type="logical", help="If set, progress 
+                    messages about simulation steps are printed to standard out
+                    [default: %default]"),
+        
+        make_option(c("--directory"), action="store", 
+                    dest="directory", default=NULL, type="character", help=
+                    "Absolute path (no tilde expansion) to parent directory
+                    where simulation results should be saved; needs user 
+                    writing permission, [default: %default]"),
+        make_option(c("--subdirectory"), action="store", dest="outstring"
+                    , default=NULL, type="character", help="Name of subdirectory
+                    to be created within directory [default: %default]"),
+
+        make_option(c("--saveTable"), action="store_true", 
                     dest="saveAsTable", default=FALSE, type="logical", 
                     help="Output format of results: when flag set, output saved 
                     as .csv; at least one of -saveTable or -saveRDS needs to be 
                     set [default: %default]"),
-        make_option(c("-saveRDS", "--saveRDS"), action="store_true", 
+        make_option(c("--saveRDS"), action="store_true", 
                     dest="saveAsRDS", default=FALSE, type="logical", 
                     help="Output format of results: when flag set, output saved 
                     as .rds;  at least one of -saveTable or -saveRDS needs to be 
                     set  [default: %default]"),
-        make_option(c("-savePLINK", "--savePLINK"), action="store_true", 
+        make_option(c("--savePLINK"), action="store_true", 
                     dest="saveAsPLINK", default=FALSE, type="logical", 
                     help="When flag is set, simulated genotypes are saved in  
                     binary plink format, i.e. .bed, .bim and .fam files. 
                     [default: %default]"),
-        make_option(c("-saveGEMMA", "--saveGEMMA"), action="store_true", 
+        make_option(c("--saveGEMMA"), action="store_true", 
                     dest="saveAsGEMMA", default=FALSE, type="logical", 
                     help="When flag is set, simulated genotypes are saved in
                     gemma format, i.e. Ysim_gemma.txt (phenotype file), 
                     Covs_gemma.txt (covariates file), Kinship_gemma.txt 
                     (kinship file) and genotypes.gemma (genotype file)
                     [default: %default]"),
-        make_option(c("-gemmaIntercept", "--gemmaIntercept"), 
-                    action="store_true", dest="intercept_gemma", default=FALSE, 
+        make_option(c("--noGemmaIntercept"), 
+                    action="store_false", dest="intercept_gemma", default=TRUE, 
                     type="logical", help ="if saveGEMMA: when modeling an 
                     intercept term in gemma, a column of 1's have to be appended 
-                    to the covariate files. Set gemmaIntercept to TRUE to 
-                    include a column of 1's in the output"),
-        make_option(c("-saveBIMBAM", "--saveBIMBAM"), action="store_true", 
+                    to the covariate files. Set noGemmaIntercept when appending 
+                    a column of 1's is not desired"),
+        make_option(c("--saveBIMBAM"), action="store_true", 
                     dest="saveAsBIMBAM", default=FALSE, type="logical", 
                     help="When flag is set, simulated genotypes are saved in the 
                     BIMBAM format, i.e. Ysim_bimbam.txt (phenotype file) and 
                     genotypes.bimbam (genotype file)
                     [default: %default]"),
-        make_option(c("-saveSNPTEST", "--saveSNPTEST"), action="store_true", 
+        make_option(c("--saveSNPTEST"), action="store_true", 
                     dest="saveAsSNPTEST", default=FALSE, type="logical", 
                     help="When flag is set, simulated genotypes are saved in  
                     snptest format, i.e.  Ysim_snptest.sample (phenotype and 
                     covariate file) and genotypes_snptest.gen (genotype file)
-                    [default: %default]")
+                    [default: %default]"),
+        make_option(c("--dontSaveIntermediate"), 
+                    action="store_false", dest="saveIntermediate", 
+                    default=TRUE, 
+                    type="logical", help="Set to specify that intermediate 
+                    phenotype components such as shared and independent effects 
+                    components should not be saved; [default: %default]")
         )
     args <- parse_args(OptionParser(option_list=option_list))
+    if(!args$NrSamples || !args$NrPhenotypes) {
+        stop("Number of samples and number of phenotypes have to be specified 
+             via --NrSamples and --NrPhenotypes; 
+             if you just want usage information please use the --help flag")
+    }
     if(!args$saveAsRDS && !args$saveAsTable) {
         stop("At least one of --saveRDS or --saveTable need to be set")
     }
@@ -429,8 +435,8 @@ simulatePhenotypes <- function() {
             message(paste("Number of SNPs to simulate (for kinship estimation",
                           "and drawing of causal SNPs): "), args$tNrSNP)
         }
-        message("Number of phenotypes: ", args$P)
-        message("Number of samples: ", args$N)
+        message("Number of phenotypes: ", args$NrPhenotypes)
+        message("Number of samples: ", args$NrSamples)
         message("Number of causal SNPs: ", args$cNrSNP)
         message("Number of confounders: ", sum(NrConfounders))
     }
@@ -443,7 +449,14 @@ simulatePhenotypes <- function() {
     if (args$saveAsBIMBAM) format <- c(format, "bimbam")
     if (args$saveAsSNPTEST) format <- c(format, "snptest")
     
-    simulatedPheno <- runSimulation( N=args$N, P=args$P, seed=args$seed,
+    if(tolower(args$kinshipFileDelimiter) == "tab") {
+        args$kinshipFileDelimiter="\t"
+    }
+    if(tolower(args$genoFileDelimiter) == "tab") {
+        args$genoFileDelimiter="\t"
+    }
+    simulatedPheno <- runSimulation( N=args$NrSamples, P=args$NrPhenotypes, 
+                                     seed=args$seed,
                                      tNrSNP=args$tNrSNP, cNrSNP=args$cNrSNP,
                                      pTraitsAffectedGenetics=
                                          args$pTraitsAffectedGenetics,
@@ -465,7 +478,7 @@ simulatePhenotypes <- function() {
                                      genoDelimiter=args$genoFileDelimiter,
                                      kinshipfile=args$kinshipfile,
                                      kinshipHeader=args$kinshipHeader,
-                                     kinshipDelimiter=args$kinshipDelimiter,
+                                     kinshipDelimiter=args$kinshipFileDelimiter,
                                      standardise=args$standardise, 
                                      genVar=args$genVar, 
                                      h2s=args$h2s, h2bg=args$h2bg,
