@@ -794,6 +794,7 @@ noiseBgEffects <- function(N, P, mean=0, sd=1, sampleID="ID_", phenoID="Trait_",
 #' constructed by paste(sampleID, 1:N, sep="").
 #' @param id_phenos Vector of [NrTraits] phenotype IDs [string]; if not provided
 #' constructed by paste(phenoID, 1:P, sep="").
+#' @param verbose [boolean] If TRUE, progress info is printed to standard out.
 #' @return Named list with [N x P] matrix of correlated background effects (
 #' correlatedBg) and the correlation matrix (cov_correlated). If corr_mat 
 #' provided corr_mat == cov_correlated.
@@ -814,7 +815,8 @@ noiseBgEffects <- function(N, P, mean=0, sd=1, sampleID="ID_", phenoID="Trait_",
 correlatedBgEffects <- function(N, P, pcorr=NULL, corr_mat=NULL,
                                 sampleID="ID_", phenoID="Trait_",
                                 id_samples = paste(sampleID, 1:N, sep=""),
-                                id_phenos = paste(phenoID, 1:P, sep="")) {
+                                id_phenos = paste(phenoID, 1:P, sep=""),
+                                verbose=FALSE) {
     
     if(!is.null(corr_mat) && !is.null(pcorr)) {
         vmessage(c("Both pcorr (", pcorr, ") and corr_mat provided; corr_mat",

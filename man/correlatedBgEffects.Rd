@@ -4,7 +4,7 @@
 \alias{correlatedBgEffects}
 \title{Simulate correlated background effects.}
 \usage{
-correlatedBgEffects(N, P, pcorr, corr_mat = NULL, sampleID = "ID_",
+correlatedBgEffects(N, P, pcorr = NULL, corr_mat = NULL, sampleID = "ID_",
   phenoID = "Trait_", id_samples = paste(sampleID, 1:N, sep = ""),
   id_phenos = paste(phenoID, 1:P, sep = ""))
 }
