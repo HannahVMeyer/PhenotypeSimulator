@@ -30,6 +30,7 @@ commaList2vector <- function(commastring=NULL, type="numeric") {
     if (is.null(commastring)) {
         return(NULL)
     }
+    commastring <- gsub(" ", "", commastring)
     if (type == "numeric") {
         tmp <- as.numeric(unlist(strsplit(commastring, ",")))
     } else if (type == "logical") {
