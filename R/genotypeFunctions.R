@@ -595,6 +595,13 @@ getKinship <- function(N, sampleID="ID_", X=NULL, kinshipfile=NULL,
             }
         }
         
+        if (!header) {
+            vmessage(c("Kinship does not have column names, sample names", 
+                       "created by paste(sampleID, 1:N, sep='')"), verbose=
+                         verbose)
+            colnames(kinship) <- paste(sampleID, 1:ncol(kinship), sep='')
+        }
+        
         NrKinshipSamples <- ncol(kinship)
         if (N > NrKinshipSamples) {
             stop("Number of samples specifid is greater than number of ",
@@ -604,11 +611,7 @@ getKinship <- function(N, sampleID="ID_", X=NULL, kinshipfile=NULL,
             vmessage(c("Number of samples specifid is smaller than number of",
                        "samples in kinship matrix"), verbose=verbose)
             if (length(id_samples) == N) {
-                if (is.null(colnames(kinship))) {
-                    stop("Kinship does not have column names, sampling based ",
-                         "on provided id_samples not possible")
-                }
-                else if (all(id_samples %in% colnames(kinship))) {
+                if (all(id_samples %in% colnames(kinship))) {
                     vmessage(c("Extract kinship samples based on provided", 
                                "id_samples"), verbose=verbose)
                     kinship <- kinship[which(colnames(kinship) %in% id_samples),
@@ -631,9 +634,6 @@ getKinship <- function(N, sampleID="ID_", X=NULL, kinshipfile=NULL,
                     NrKinshipSamples , ") nor the specified sample number (", 
                     N, "). Please check dimensions and/or names of kinship")
             }
-        }
-        if (!header) {
-            colnames(kinship) <- id_samples
         }
     } else {
         stop ("Either X or kinshipfile must be provided")
