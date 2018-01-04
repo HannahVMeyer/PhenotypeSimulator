@@ -96,7 +96,7 @@ setModel <- function(genVar=NULL, h2s=NULL, theta=0.8, h2bg=NULL, eta=0.8,
                              pTraitIndependentConfounders, 
                          pIndependentGenetic=pIndependentGenetic, 
                          pTraitIndependentGenetic=pTraitIndependentGenetic)
-    if (any(all_proportions < 0 || all_proportions > 1)) {
+    if (any(all_proportions < 0) || any(all_proportions > 1)) {
         outOfRange <- union(which(all_proportions < 0), 
                             which(all_proportions > 1))
         stop("Proportions have to be specified between 0 and 1: ", 
@@ -136,8 +136,8 @@ setModel <- function(genVar=NULL, h2s=NULL, theta=0.8, h2bg=NULL, eta=0.8,
         vmessage(c("The noise model is:", modelNoise), verbose=verbose)
     } else {
         if (all(c(is.null(delta), is.null(rho), is.null(phi)))) {
-            stop(paste("Neither delta (non-genetic covariate effect variance) 
-                       nor rho (correlated noise effect variance) or phi", 
+            stop(paste("Neither delta (non-genetic covariate effect variance)", 
+                       "nor rho (correlated noise effect variance) or phi", 
                        "(observational noise effect variance) are provided, at", 
                        "least one is required")
             )
