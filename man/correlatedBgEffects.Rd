@@ -6,7 +6,7 @@
 \usage{
 correlatedBgEffects(N, P, pcorr = NULL, corr_mat = NULL, sampleID = "ID_",
   phenoID = "Trait_", id_samples = paste(sampleID, 1:N, sep = ""),
-  id_phenos = paste(phenoID, 1:P, sep = ""))
+  id_phenos = paste(phenoID, 1:P, sep = ""), verbose = FALSE)
 }
 \arguments{
 \item{N}{Number [integer] of samples to simulate.}
@@ -29,6 +29,8 @@ constructed by paste(sampleID, 1:N, sep="").}
 
 \item{id_phenos}{Vector of [NrTraits] phenotype IDs [string]; if not provided
 constructed by paste(phenoID, 1:P, sep="").}
+
+\item{verbose}{[boolean] If TRUE, progress info is printed to standard out.}
 }
 \value{
 Named list with [N x P] matrix of correlated background effects (
