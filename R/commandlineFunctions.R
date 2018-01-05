@@ -347,7 +347,7 @@ simulatePhenotypes <- function() {
                     dependent simulation results; if not specified, subdirectory 
                     named by NrSamples, NrSNPs, genetic Model, noise Model and 
                     genVar is created; if no subdirectory is required specify
-                    "" [default: %default]."),
+                    '' [default: %default]."),
 
         make_option(c("--saveTable"), action="store_true", 
                     dest="saveAsTable", default=FALSE, type="logical", 
