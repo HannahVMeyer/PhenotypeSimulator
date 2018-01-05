@@ -8,16 +8,22 @@ Authors@R: c(
 URL: https://github.com/HannahVMeyer/PhenotypeSimulator
 BugReports: https://github.com/HannahVMeyer/PhenotypeSimulator/issues
 Description: Phenotype simulator allows for the flexible simulation of 
-    phenotypes under different models, including fixed and background genetic 
-    effects as well as correlated, fixed and background noise effects. Different 
-    phenotypic effects can be combined into a final phenotype while controling 
-    for the proportion of variance explained by each of the components. For each 
-    component, the number of variables, their distribution and the design of 
-    their effect across traits can be customised. The final simulated phenotypes
-    and its components can be automatically saved into .rds or .csv files. In
-    addition, for simulated genotypes, export into plink format is possible. 
+    phenotypes under different models, including genetic variant and  
+    infinitesimal genetic effects (reflecting population structure) as well as 
+    non-genetic covariate effects, observational noise and additional 
+    correlation effects. The different phenotype components are combined into a 
+    final phenotype while controlling for the proportion of variance explained 
+    by each of the components. For each effect component, the number of 
+    variables, their distribution and the design of their effect across traits 
+    can be customised. For the simulation of the genetic effects, external 
+    genotype data from a number of standard softwares (plink, hapgen2/impute2, 
+    genome, bimbam, simple text files) can be imported. The final simulated 
+    phenotypes and its components can be automatically saved into .rds or .csv 
+    files. In addition, they can be saved in formats compatible with commonly 
+    used genetic association software (gemma, bimbam, plink, snptest). 
 Depends:
     R (>= 3.3.2)
+biocViews:
 LinkingTo:
     Rcpp
 Imports:

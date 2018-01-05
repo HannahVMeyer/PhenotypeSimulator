@@ -7,13 +7,13 @@ In quantitative genetics, genotype to phenotype mapping is commonly realised by 
 
 The current CRAN version of *PhenotypeSimulator* is: 0.1.3
 
-An update of version 0.1.3 will be submitted to CRAN soon and can already be downloaded from this github repository via
+An update of version 0.1.3 has been submitted to CRAN (awaiting approval) and can already be downloaded from this github repository via
 ```{r}
 install.packages("devtools")
 devtools::install_github("HannahVMeyer/PhenotypeSimulator")
 ```
 
-## Major changes from version 	0.1.3 to the current github version 0.2.0:
+## Major changes from version 0.1.3 to the current github version 0.2.0:
 
 **Input**
 1. *PhenotypeSimulator* now includes readStandardGenotypes which can read externally simulated or user-provided genotypes in plink, genome, oxgen (hapgen/impute2), bimbam or simple delimited format.
