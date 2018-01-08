@@ -118,13 +118,13 @@
 #' 
 #' \dontrun{
 #' # Save in plink format (.bed, .bim, .fam, Y_sim_plink.txt)
-#' writeStandardOutput(directory="/path/to/output", 
+#' writeStandardOutput(directory=tempdir(), 
 #' genotypes=genotypes$genotypes, phenotypes=phenotypes, 
 #' id_samples = genotypes$id_samples, id_snps = genotypes$id_snps, 
 #' id_phenos = colnames(phenotypes), format="plink")
 #' 
 #' # Save in gemma and snptest format
-#' writeStandardOutput(directory="/path/to/output", 
+#' writeStandardOutput(directory=tempdir(), 
 #' genotypes=genotypes$genotypes, phenotypes=phenotypes, 
 #' id_samples = genotypes$id_samples, id_snps = genotypes$id_snps, 
 #' id_phenos = colnames(phenotypes), kinship=kinship, 
@@ -148,6 +148,13 @@ writeStandardOutput <- function(directory,
         vmessage(c("No genotypes provided. Remaining data still saved in ", 
                    paste(format, collapse=","), " format."), verbose=verbose)
     }
+    if (grepl("~", directory)) {
+        stop("directory contains ~: path expansion not guaranteed on 
+             every platform (see path.expand{base}), please provide full file
+             path to the directory")
+    }
+    if (!dir.exists(directory)) dir.create(directory, recursive=TRUE)
+    
     if ("plink" %in% format) {
         if (!is.null(phenotypes)) {
             vmessage(c("Save phenotypes in PLINK format"), verbose=verbose)
@@ -362,7 +369,7 @@ writeStandardOutput <- function(directory,
 #' simulatedPhenotype <- runSimulation(N=100, P=5, cNrSNP=10,
 #' genVar=0.2, h2s=0.2, phi=1)
 #' \dontrun{
-#' outputdir <- savePheno(simulatedPhenotype, directory="/path/to/dir/",  
+#' outputdir <- savePheno(simulatedPhenotype, directory=tempdir(),  
 #' outstring="Data_simulation", format=c("csv", "plink"))}
 savePheno <- function(simulatedData, directory, format=".csv",
                       outstring="", saveIntermediate=TRUE, 
