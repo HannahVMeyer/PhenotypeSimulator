@@ -11,6 +11,9 @@
 #' given as vector.
 #' @seealso \code{\link{message}} which this function wraps
 vmessage <- function(userinfo, verbose=TRUE, sep=" ") {
+    if (!is.character(sep)) {
+        stop("Separator passed to vmessage must be of type character")
+    }
     if (verbose) {
         message(paste(userinfo, collapse=sep))
     }
@@ -50,6 +53,9 @@ commaList2vector <- function(commastring=NULL, type="numeric") {
 #' @return Matrix or data.frame containing sum of all list elements where 
 #' \code{is.null} is FALSE.
 addNonNulls <- function(compList) {
+            if (!is.list(compList)) {
+                stop("addNonNulls expects input of type list")
+            }
             nonNulls <- compList[!sapply(compList, is.null)]
             if (length(nonNulls) == 0) return(NULL)
             if (length(unique(sapply(nonNulls, ncol))) != 1) {
@@ -96,6 +102,10 @@ addNonNulls <- function(compList) {
 simulateDist <- function(x, 
                          dist=c("unif", "norm", "bin", "cat_norm", "cat_unif"), 
                          m=NULL, std=1, categories=NULL, prob=NULL) {
+    if (x < 0) {
+        stop(paste("The number of observations to simulate (", x, ") has ",
+                   "to be greater than 0"))
+    }
     if (length(dist) > 1) {
         stop("Please specify exactly one distribution to sample from,",
              "currently ", length(dist), " provided.")
@@ -106,9 +116,17 @@ simulateDist <- function(x,
     }
     else if (dist == "norm") {
         if (is.null(m)) m <- 0
+        if (std < 0) {
+            stop(paste("Simulating normal distribution: standard deviation ",
+                       "to be greater than 0"))
+        }
         d <- rnorm(n=x, mean=m, sd=std)
     }
     else if (dist == "bin") {
+        if (is.null(prob)) {
+            stop(paste("Simulating binomial distribution: Probability has to ",
+                       "be specified"))
+        }
         if (prob < 0) {
             stop(paste("Simulating binomial distribution: Probability has to",
                 "be between 0 and 1"))
@@ -116,6 +134,14 @@ simulateDist <- function(x,
         d <- rbinom(n=x, size=1, prob=prob)
     }
     else if (grepl("cat", dist)) {
+        if (is.null(categories)) {
+            stop(paste("Simulating categorical distribution: number of ",
+                       "categories has to be specified"))
+        }
+        if (categories <= 0) {
+            stop(paste("Simulating categorical distribution: number of ",
+                       "categories has to be greater than 0"))
+        }
         if (dist == "cat_norm") {
             # generate probabilities for categories
             if (is.null(m)) m <- median(1:categories)
@@ -124,6 +150,8 @@ simulateDist <- function(x,
         }
         else if (dist == "cat_unif") {
             prob=rep(1/categories, categories)
+        } else {
+            stop("Unknown distribution")
         }
         d = sample(1:categories, x, replace=TRUE, prob=prob)
         d <- as.numeric(d)
@@ -193,6 +221,19 @@ probGen2expGen <- function(probGeno) {
 #' geno <- rbinom(nrSamples, 2, p=0.2)
 #' geno_prob<- expGen2probGen(geno)
 expGen2probGen <- function(geno) {
+    if (is.list(geno)) {
+        stop("expGen2probGen takes a vector of genotypes as input,
+             but list provided.")
+    } 
+    if (length(geno) <= 1) {
+        if (!is.na(geno) && !is.numeric(geno) ) {
+            stop("expGen2probGen takes a vector of genotypes as input,
+             but ",  typeof(geno), " provided.")
+        }
+    } else if (!is.vector(geno, mode="numeric")) {
+        stop("expGen2probGen takes a vector of genotypes as input,
+             but ",  typeof(geno), " provided.")
+    }
     unlist(lapply(geno, function(g) {
         if (is.na(g)) return( c(NA,NA,NA))
         else if (g == 0) return( c(1,0,0))
