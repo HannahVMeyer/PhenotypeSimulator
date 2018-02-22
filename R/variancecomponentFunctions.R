@@ -737,7 +737,7 @@ geneticBgEffects <- function(P, N, kinship, phenoID="Trait_",
     if (N != ncol(kinship)) {
         stop ("The number of samples specified (", N, ") and the number of ",
               "samples in the kinship matrix (", ncol(kinship), 
-              "are different.")
+              ") are different.")
     }
     if (length(id_samples) !=  N) {
         stop("Length of id_samples (", length(id_samples), ") is different ",
@@ -925,9 +925,9 @@ noiseBgEffects <- function(N, P, mean=0, sd=1, sampleID="ID_", phenoID="Trait_",
 #' a simple correlation structure based on the distance of the traits will be 
 #' constructed. Traits of distance d=1 (adjacent columns) will have correlation 
 #' cor=\eqn{pcorr^1}{pcorr^1}, traits with d=2 have cor=\eqn{pcorr^2}{pcorr^2} 
-#' up to traits with d=(P-1) cor=\eqn{pcorr^{(P-1)}}{pcorr^{(P-1)}}. The 
-#' correlated background effect correlated is simulated based on this 
-#' correlation structure C: 
+#' up to traits with d=(P-1) cor=\eqn{pcorr^{(P-1)}}{pcorr^{(P-1)}} and 
+#' 0 < pcorr < 1. The correlated background effect correlated is simulated based 
+#' on this correlation structure C: 
 #' \eqn{correlated ~ N_{NP}(0,C)}{correlated ~ N_{NP}(0,C)}.  
 #' @export
 #' @examples
@@ -967,6 +967,12 @@ correlatedBgEffects <- function(N, P, pcorr=NULL, corr_mat=NULL,
             stop("At least one of pcorr or corr_mat have to be provided to", 
                  " simulated the correlatedBgEffects")
         }
+        if (!is.numeric(pcorr)) {
+            stop("pcorr has to be of type numeric")
+        }
+        if (pcorr <= 0 || pcorr >= 1) {
+            stop("pcorr has to be greater than zero and less than 1")
+        }
         corr_vec <- cumprod(rep(pcorr, P - 1))
         tri_corr_vec <- unlist(sapply(0:(length(corr_vec) -1), function(pos) {
             return(corr_vec[1:(length(corr_vec) - pos)])
@@ -977,7 +983,7 @@ correlatedBgEffects <- function(N, P, pcorr=NULL, corr_mat=NULL,
         corr_mat <- corr_mat + t(corr_mat) - diag(P)
     } else {
         corr_mat <- as.matrix(corr_mat)
-        if (diff(dim(corr_mat)) !=0) {
+        if (diff(dim(corr_mat)) != 0) {
             stop(paste("Correlation matrix needs to be a square matrix,",
                        "however it has", nrow(corr_mat), "rows and", 
                        ncol(corr_mat), "columns"))

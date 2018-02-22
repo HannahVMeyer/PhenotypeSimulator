@@ -310,12 +310,78 @@ test_that("noiseFixedEffects fails with categorical distribution error", {
 })
 
 context('Test geneticBgEffects')
+test_that('geneticBgEffects fails with sample input error', {
+    X <- rnorm(10)
+    kinship <- tcrossprod(X)
+    colnames(kinship) <- paste("ID_", 1:10, sep="")
+    expect_error(geneticBgEffects(P=10, N="all", kinship),
+                 "N is/are not numeric")
+})
+test_that('geneticBgEffects fails with pheno input error', {
+    X <- rnorm(10)
+    kinship <- tcrossprod(X)
+    diag(kinship) <- diag(kinship) + 1e-4
+    colnames(kinship) <- paste("ID_", 1:10, sep="")
+    expect_error(geneticBgEffects(P=2.5, N=10, kinship),
+                 "P has/have to be integers")
+})
 test_that('geneticBgEffects fails with dimension error', {
     X <- rnorm(10)
     kinship <- tcrossprod(X)
     expect_error(geneticBgEffects(P=10, N=10, kinship[,-1]),
                  "Kinship matrix needs to be a square matrix")
-                 
+})
+
+test_that('geneticBgEffects fails with sample dimension error', {
+    X <- rnorm(10)
+    kinship <- tcrossprod(X)
+    diag(kinship) <- diag(kinship) + 1e-4
+    colnames(kinship) <- paste("ID_", 1:10, sep="")
+    expect_error(geneticBgEffects(P=5, N=50, kinship, shared = TRUE,
+                                  independent = FALSE),
+                 "The number of samples specified")
+})
+
+test_that('geneticBgEffects fails with missing colnames', {
+    X <- rnorm(10)
+    kinship <- tcrossprod(X)
+    diag(kinship) <- diag(kinship) + 1e-4
+    expect_error(geneticBgEffects(P=5, N=10, kinship, shared = TRUE,
+                                  independent = FALSE),
+                 "Length of id_samples")
+})
+
+test_that('geneticBgEffects fails with id_samples dimension', {
+    X <- rnorm(10)
+    kinship <- tcrossprod(X)
+    diag(kinship) <- diag(kinship) + 1e-4
+    expect_error(geneticBgEffects(P=5, N=10, kinship, shared = TRUE,
+                                  independent=FALSE,
+                                  id_samples=paste("ID_", 1:20, sep="")),
+                 "Length of id_samples")
+})
+
+
+test_that('geneticBgEffects fails with id_phenos dimension', {
+    X <- rnorm(10)
+    kinship <- tcrossprod(X)
+    diag(kinship) <- diag(kinship) + 1e-4
+    colnames(kinship) <- paste("ID_", 1:10, sep="")
+    expect_error(geneticBgEffects(P=5, N=10, kinship, shared = TRUE,
+                                  independent = FALSE,
+                                  id_phenos=paste("P_", 1:2, sep="")),
+                 "Length of id_phenos")
+})
+
+test_that('geneticBgEffects fails with phenoID type', {
+    X <- rnorm(10)
+    kinship <- tcrossprod(X)
+    diag(kinship) <- diag(kinship) + 1e-4
+    colnames(kinship) <- paste("ID_", 1:10, sep="")
+    expect_error(geneticBgEffects(P=5, N=10, kinship, shared = TRUE,
+                                  independent = FALSE,
+                                  phenoID=5),
+                 "phenoID has to be of length")
 })
 test_that('geneticBgEffects fails with positive semi-definite error', {
     X <- rnorm(10)
@@ -336,18 +402,9 @@ test_that('geneticBgEffects fails with input error', {
     expect_error(geneticBgEffects(P=10, N=10, kinship, shared = FALSE,
                                   independent = FALSE),
                  "At least one geneticBgEffect has to be specified")
-    
 })
 
-test_that('geneticBgEffects fails with dimension', {
-    X <- rnorm(10)
-    kinship <- tcrossprod(X)
-    diag(kinship) <- diag(kinship) + 1e-4
-    expect_error(geneticBgEffects(P=5, N=50, kinship, shared = TRUE,
-                                  independent = FALSE),
-                 "The number of samples specified")
-    
-})
+
 
 
 test_that('geneticBgEffects returns correct dimensions', {
@@ -365,6 +422,42 @@ test_that('geneticBgEffects returns correct dimensions', {
 })
 
 context('Test noiseBgEffects')
+test_that('noiseBgEffects fails with sample input error', {
+    expect_error(noiseBgEffects(P=10, N="cohort"),
+                 "N is/are not numeric")
+})
+test_that('noiseBgEffects fails with pheno input error', {
+    expect_error(geneticBgEffects(P=-3, N=10),
+                 "P has/have to be greater")
+})
+test_that('noiseBgEffects fails with id_samples dimension', {
+    expect_error(noiseBgEffects(P=5, N=10, shared = TRUE,
+                                  independent=FALSE,
+                                  id_samples=paste("ID_", 1:20, sep="")),
+                 "Length of id_samples")
+})
+
+
+test_that('noiseBgEffects fails with id_phenos dimension', {
+    expect_error(noiseBgEffects(P=5, N=10, shared = TRUE,
+                                  independent = FALSE,
+                                  id_phenos=paste("P_", 1:7, sep="")),
+                 "Length of id_phenos")
+})
+
+test_that('noiseBgEffects fails with phenoID type', {
+    expect_error(noiseBgEffects(P=5, N=10, shared = TRUE,
+                                  independent = FALSE,
+                                  phenoID=5),
+                 "phenoID has to be of length")
+})
+
+test_that('noiseBgEffects fails with sampleID type', {
+    expect_error(noiseBgEffects(P=5, N=10, shared = TRUE,
+                                independent = FALSE,
+                                sampleID=paste("ID", 1:10, sep="")),
+                 "sampleID has to be of length")
+})
 test_that('noiseBgEffects fails with input error', {
     expect_error(noiseBgEffects(P=10, N=10, shared = FALSE,
                                   independent = FALSE),
@@ -383,6 +476,46 @@ test_that('noiseBgEffects returns correct dimensions', {
 })
 
 context('Test correlatedBgEffects')
+test_that('correlatedBgEffects fails with sample input error', {
+    expect_error(correlatedBgEffects(P=10, N="all", pcorr=0.9),
+                 "N is/are not numeric")
+})
+test_that('correlatedBgEffects fails with pheno input error', {
+    expect_error(correlatedBgEffects(P=0, N=10, pcorr=0.9),
+                 "P has/have to be greater")
+})
+test_that('correlatedBgEffects fails with id_samples dimension', {
+    expect_error(correlatedBgEffects(P=5, N=10, pcorr=0.8,
+                                id_samples=paste("ID_", 1:20, sep="")),
+                 "Length of id_samples")
+})
+
+
+test_that('correlatedBgEffects fails with id_phenos dimension', {
+    expect_error(correlatedBgEffects(P=5, N=10, pcorr=0.7,
+                                id_phenos=paste("P_", 1:7, sep="")),
+                 "Length of id_phenos")
+})
+
+test_that('correlatedBgEffects fails with phenoID type', {
+    expect_error(correlatedBgEffects(P=5, N=10, pcorr=-0.8,
+                                phenoID=5),
+                 "phenoID has to be of length")
+})
+
+test_that('correlatedBgEffects fails with sampleID type', {
+    expect_error(correlatedBgEffects(P=5, N=10, pcorr=0.1,
+                                sampleID=paste("ID", 1:10, sep="")),
+                 "sampleID has to be of length")
+})
+
+test_that('correlatedBgEffects fails with pcorr range error', {
+    expect_error(correlatedBgEffects(P=5, N=10, pcorr=1),
+                 "pcorr has to be greater than zero and less than 1")
+    expect_error(correlatedBgEffects(P=5, N=10, pcorr=0),
+                 "pcorr has to be greater than zero and less than 1")
+})
+
 test_that("correlatedBgEffects fails with not square matrix error",{
     X <- rnorm(20)
     corr_mat <- tcrossprod(X)
