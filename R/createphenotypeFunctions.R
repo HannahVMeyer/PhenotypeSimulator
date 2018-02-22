@@ -15,6 +15,15 @@
 #' x <- matrix(rnorm(100), nc=10)
 #' x_scaled <- rescaleVariance(x, propvar=0.4)
 rescaleVariance <- function(component, propvar) {
+    if (!is.numeric(propvar)) {
+        stop("propvar needs to be numeric")
+    }
+    if (propvar < 0 || propvar > 1) {
+        stop("propvar cannot be less than 0 and or greater than 1")
+    }
+    if (!is.matrix(component)){
+        stop("component needs to be a matrix")
+    }
     if (propvar != 0) {
         var_component <- var(component)
         mean_var <- mean(diag(var_component))
@@ -28,7 +37,6 @@ rescaleVariance <- function(component, propvar) {
         return(NULL)
     }
 }
-
 
 #' Set simulation model.
 #'
@@ -88,7 +96,15 @@ setModel <- function(genVar=NULL, h2s=NULL, theta=0.8, h2bg=NULL, eta=0.8,
     if (is.null(c(genVar, noiseVar, h2bg, h2s, delta, rho, phi))) {
         stop("No variance components specified")
     }
-    all_proportions <- c(genVar=genVar, h2s=h2s, h2bg=h2bg, theta=theta,
+    numbers <- list(genVar=genVar, h2s=h2s, h2bg=h2bg, theta=theta,
+                        eta=eta, noiseVar=noiseVar, delta=delta, gamma=gamma, 
+                        rho=rho, phi=phi, alpha=alpha, pcorr=pcorr, 
+                        pIndependentConfounders=pIndependentConfounders, 
+                        pTraitIndependentConfounders=
+                            pTraitIndependentConfounders, 
+                        pIndependentGenetic=pIndependentGenetic, 
+                        pTraitIndependentGenetic=pTraitIndependentGenetic)
+    proportions <- list(genVar=genVar, h2s=h2s, h2bg=h2bg, theta=theta,
                          eta=eta, noiseVar=noiseVar, delta=delta, gamma=gamma, 
                          rho=rho, phi=phi, alpha=alpha, pcorr=pcorr, 
                          pIndependentConfounders=pIndependentConfounders, 
@@ -96,14 +112,7 @@ setModel <- function(genVar=NULL, h2s=NULL, theta=0.8, h2bg=NULL, eta=0.8,
                              pTraitIndependentConfounders, 
                          pIndependentGenetic=pIndependentGenetic, 
                          pTraitIndependentGenetic=pTraitIndependentGenetic)
-    if (any(all_proportions < 0) || any(all_proportions > 1)) {
-        outOfRange <- union(which(all_proportions < 0), 
-                            which(all_proportions > 1))
-        stop("Proportions have to be specified between 0 and 1: ", 
-             paste(names(all_proportions)[outOfRange], collapse=","), 
-             " are outside of this range (",  
-             paste(all_proportions[outOfRange], collapse=","), ")", sep="")
-    }
+    testNumerics(numbers=numbers, proportions=proportions)
     if (is.null(genVar)) {
         if (is.null(noiseVar)) {
             stop(paste("Neither genVar nor noiseVar are provided, thus",
@@ -572,7 +581,6 @@ runSimulation <- function(N, P,
 
     vmessage(c("Set seed:", seed), verbose=verbose)
     set.seed(seed)
-       # find model
     model <- setModel(genVar=genVar, h2s=h2s, h2bg=h2bg, theta=theta, eta=eta, 
                       noiseVar=noiseVar, rho=rho, delta=delta, gamma=gamma, 
                       phi=phi, alpha=alpha, pcorr=pcorr, 
