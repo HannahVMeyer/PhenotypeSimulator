@@ -84,22 +84,22 @@ simulation <- list(
                             sep="")))
 
 ## ----heatmaps, fig.keep='all', fig.height=3, fig.width=7, eval=TRUE, fig.cap="\\label{fig:heatmaps}Heatmaps of the trait-by-trait correlation (Pearson correlation) of the simulated phenotype and its five phenotype components."----
-cor_phenotype <- melt(cor(simulation$phenoComponentsFinal$Y))
+cor_phenotype <- reshape2::melt(cor(simulation$phenoComponentsFinal$Y))
 cor_phenotype$type <- "Y" 
 
-cor_genBg <- melt(cor(simulation$phenoComponentsFinal$Y_genBg))
+cor_genBg <- reshape2::melt(cor(simulation$phenoComponentsFinal$Y_genBg))
 cor_genBg$type <- "U" 
 
-cor_genFixed <- melt(cor(simulation$phenoComponentsFinal$Y_genFixed))          
+cor_genFixed <- reshape2::melt(cor(simulation$phenoComponentsFinal$Y_genFixed))          
 cor_genFixed$type <- "XB" 
 
-cor_noiseFixed <- melt(cor(simulation$phenoComponentsFinal$Y_noiseFixed))          
+cor_noiseFixed <- reshape2::melt(cor(simulation$phenoComponentsFinal$Y_noiseFixed))          
 cor_noiseFixed$type <- "WA" 
 
-cor_noiseBg <- melt(cor(simulation$phenoComponentsFinal$Y_noiseBg))          
+cor_noiseBg <- reshape2::melt(cor(simulation$phenoComponentsFinal$Y_noiseBg))          
 cor_noiseBg$type <- "Psi" 
 
-cor_correlatedBg <- melt(cor(simulation$phenoComponentsFinal$Y_correlatedBg))          
+cor_correlatedBg <- reshape2::melt(cor(simulation$phenoComponentsFinal$Y_correlatedBg))          
 cor_correlatedBg$type <- "T" 
 
 cor_components <- rbind(cor_phenotype, cor_genBg, cor_genFixed, cor_noiseBg, 
@@ -144,10 +144,10 @@ p_corr <- p_corr + geom_tile() +
             strip.text  =element_text(size=8))
 print(p_corr)
 
-## ---- echo=FALSE, eval=TRUE----------------------------------------------
-ggsave(plot=p_corr,
-        filename=paste(savedir, "/correlation_phenotype.pdf", sep=""),
-        units="mm", width=86, height=60)
+## ---- echo=FALSE, eval=FALSE---------------------------------------------
+#  ggsave(plot=p_corr,
+#          filename=paste(savedir, "/correlation_phenotype.pdf", sep=""),
+#          units="mm", width=86, height=60)
 
 ## ---- eval=FALSE---------------------------------------------------------
 #  # Save phenotypes, kinship and non-genetic covariates in csv and

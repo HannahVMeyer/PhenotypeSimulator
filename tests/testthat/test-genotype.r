@@ -99,7 +99,7 @@ test_that('readStandardGenotypes returns correctly formated genotypes HAPGEN2', 
     expect_identical(data_hapgen$id_snps[1:2], c("rs10399749", "rs4030303"))
     expect_identical(data_hapgen$id_samples[1:3], c("id1_0", "id1_1","id1_2"))
     expect_false(is.null(data_hapgen$format_files))
-    expect_true(all(data_plink$genotypes %in% c(0,1,2)))
+    expect_true(all(data_hapgen$genotypes %in% c(0,1,2)))
 })
 
 test_that('readStandardGenotypes fails with sample error', {
@@ -219,18 +219,18 @@ test_that('getCausalSNPs returns correct output dimensions', {
 
 test_that('getKinship fails if neither kinshipfile nor genotype matrix are 
           provided',{
-    expect_error(getKinship(N=100), "Either X or kinshipfile must be provided")
-})
+              expect_error(getKinship(N=100), "Either X or kinshipfile must be provided")
+          })
 
 test_that('getKinship fails with non-existing kinship file',{
-              expect_error(getKinship(N=100, kinshipfile="~/test/kinship"), 
-                           "does not exist")
-          })
+    expect_error(getKinship(N=100, kinshipfile="~/test/kinship"), 
+                 "does not exist")
+})
 
 
 test_that('getKinship returns positive semi-definite matrix',{
     geno <- simulateGenotypes(N=100, NrSNP=10, verbose=FALSE)
-    kin <- getKinship(X=geno$genotypes, verbose=FALSE)
+    kin <- getKinship(N=100, X=geno$genotypes, verbose=FALSE)
     kin_eigen <- as.complex(eigen(kin, only.values = TRUE)$values)
     expect_true(all(Re(kin_eigen) > 0))
 })

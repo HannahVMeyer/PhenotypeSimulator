@@ -56,6 +56,6 @@ simulatedData list which is the output of \link{runSimulation}.
 simulatedPhenotype <- runSimulation(N=100, P=5, cNrSNP=10,
 genVar=0.2, h2s=0.2, phi=1)
 \dontrun{
-outputdir <- savePheno(simulatedPhenotype, directory="/path/to/dir/",  
+outputdir <- savePheno(simulatedPhenotype, directory=tempdir(),  
 outstring="Data_simulation", format=c("csv", "plink"))}
 }

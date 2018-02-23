@@ -6,7 +6,7 @@ output: pdf_document
 bibliography: genotype-simulation.bib
 csl: plos-genetics.csl
 vignette: >
-  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteIndexEntry{Supported Genotype Simulation}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

@@ -6,8 +6,7 @@
 \usage{
 noiseBgEffects(N, P, mean = 0, sd = 1, sampleID = "ID_",
   phenoID = "Trait_", shared = TRUE, independent = TRUE,
-  id_samples = paste(sampleID, 1:N, sep = ""), id_phenos = paste(phenoID,
-  1:P, sep = ""))
+  id_samples = NULL, id_phenos = NULL)
 }
 \arguments{
 \item{N}{Number [integer] of samples to simulate.}

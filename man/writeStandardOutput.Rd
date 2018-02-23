@@ -145,13 +145,13 @@ phenotypes <- simulation$phenoComponents$Y
 
 \dontrun{
 # Save in plink format (.bed, .bim, .fam, Y_sim_plink.txt)
-writeStandardOutput(directory="/path/to/output", 
+writeStandardOutput(directory=tempdir(), 
 genotypes=genotypes$genotypes, phenotypes=phenotypes, 
 id_samples = genotypes$id_samples, id_snps = genotypes$id_snps, 
 id_phenos = colnames(phenotypes), format="plink")
 
 # Save in gemma and snptest format
-writeStandardOutput(directory="/path/to/output", 
+writeStandardOutput(directory=tempdir(), 
 genotypes=genotypes$genotypes, phenotypes=phenotypes, 
 id_samples = genotypes$id_samples, id_snps = genotypes$id_snps, 
 id_phenos = colnames(phenotypes), kinship=kinship, 

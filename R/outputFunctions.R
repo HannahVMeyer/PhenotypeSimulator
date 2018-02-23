@@ -204,6 +204,10 @@ writeStandardOutput <- function(directory,
                                            "_plink.txt", sep=""), 
                         sep="\t", quote=FALSE, col.names=TRUE, row.names=FALSE)
         }
+        if (!is.null(kinship)) {
+            vmessage(c("PLINK format does not support a kinship, supplied ",
+                       "kinship ignored"), verbose=verbose)
+        }
     }
     if ("bimbam" %in% format) {
         if (!is.null(phenotypes)) {
@@ -226,7 +230,14 @@ writeStandardOutput <- function(directory,
                               sep=""),
                         sep=",", col.names=FALSE, row.names=FALSE, quote=FALSE)
         }
-        
+        if (!is.null(covariates)) {
+            vmessage(c("BIMBAM format does not support covariates, supplied ",
+                       "covariates ignored"), verbose=verbose)
+        }
+        if (!is.null(kinship)) {
+            vmessage(c("BIMBAM format does not support a kinship, supplied ",
+                       "kinship ignored"), verbose=verbose)
+        }
     }
     if ("gemma" %in% format) {
         if (!is.null(phenotypes)) {
@@ -324,8 +335,11 @@ writeStandardOutput <- function(directory,
                               sep=""),
                         sep=" ", col.names=TRUE, row.names=FALSE, quote=FALSE)
         }
+        if (!is.null(kinship)) {
+            vmessage(c("SNPTESTformat does not support a kinship, supplied ",
+                       "kinship ignored"), verbose=verbose)
+        }
     }
-    return(TRUE)
 }
         
 #' Save final phenotype and phenotype components.
@@ -426,7 +440,7 @@ savePheno <- function(simulatedData, directory, format=".csv",
             saveRDS(phenoComponents$Y_genBg, 
                     paste(directory, "/Y_genBg", outstring,".rds",sep=""))
             saveRDS(phenoComponents$cov_genBg, 
-                    paste(directory, "/cov_Y_genBg", outstring,".rds", 
+                    paste(directory, "/cov_genBg", outstring,".rds", 
                           sep=""))
             if (saveIntermediate){
                 saveRDS(phenoIntermediate$Y_genBg_shared, 
@@ -449,7 +463,7 @@ savePheno <- function(simulatedData, directory, format=".csv",
                               sep=""),
                         sep=",",quote=FALSE, col.names=NA, row.names=TRUE)
             write.table(phenoComponents$cov_Y_genBg, 
-                        paste(directory, "/cov_Y_genBg", outstring,".csv", 
+                        paste(directory, "/cov_genBg", outstring,".csv", 
                               sep=""), 
                         sep=",", quote=FALSE, col.names=FALSE, row.names=FALSE)
             if (saveIntermediate){
@@ -476,7 +490,7 @@ savePheno <- function(simulatedData, directory, format=".csv",
         vmessage(c("Save kinship to", directory), verbose=verbose)
         if ("rds" %in% format) {
             saveRDS(rawComponents$kinship, 
-                    paste(directory, "/kinship",outstring,".csv", sep="")) 
+                    paste(directory, "/kinship",outstring,".rds", sep="")) 
         }
         if ("csv" %in% format) {
             write.table(rawComponents$kinship, 
@@ -587,7 +601,7 @@ savePheno <- function(simulatedData, directory, format=".csv",
             saveRDS(phenoComponents$Y_noiseBg, 
                     paste(directory, "/Y_noiseBg", outstring,".rds", 
                           sep=""))
-            saveRDS(phenoComponents$cov_Y_noiseBg, 
+            saveRDS(phenoComponents$cov_noiseBg, 
                     paste(directory, "/cov_noiseBg", outstring,".rds", 
                           sep=""))
             if (saveIntermediate){

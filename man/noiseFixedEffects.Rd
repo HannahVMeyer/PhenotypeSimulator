@@ -4,10 +4,9 @@
 \alias{noiseFixedEffects}
 \title{Simulate noise fixed effects.}
 \usage{
-noiseFixedEffects(N, P, sampleID = "ID_", phenoID = "Trait_",
-  id_samples = paste(sampleID, 1:N, sep = ""), id_phenos = paste(phenoID,
-  1:P, sep = ""), pTraitsAffected = 1, NrFixedEffects = 1,
-  NrConfounders = 10, pIndependentConfounders = 0.4,
+noiseFixedEffects(N, P, NrConfounders = 10, sampleID = "ID_",
+  phenoID = "Trait_", id_samples = NULL, id_phenos = NULL,
+  pTraitsAffected = 1, NrFixedEffects = 1, pIndependentConfounders = 0.4,
   pTraitIndependentConfounders = 0.2, keepSameIndependent = FALSE,
   distConfounders = "norm", mConfounders = 0, sdConfounders = 1,
   catConfounders = NULL, probConfounders = NULL, distBeta = "norm",
@@ -17,6 +16,9 @@ noiseFixedEffects(N, P, sampleID = "ID_", phenoID = "Trait_",
 \item{N}{Number [integer] of samples to simulate.}
 
 \item{P}{Number [integer] of phenotypes to simulate.}
+
+\item{NrConfounders}{Vector of number(s) [integer] of confounders from a 
+specified distribution to simulate.}
 
 \item{sampleID}{Prefix [string] for naming samples.}
 
@@ -37,9 +39,6 @@ simulate; allows to simulate fixed effects from different distributions or
 with different parameters; if only one type of confounder distribution is 
 wanted, set NrFixedEffects=1 and choose the number of confounders with eg 
 NrConfounders=10.}
-
-\item{NrConfounders}{Vector of number(s) [integer] of confounders from a 
-specified distribution to simulate.}
 
 \item{pIndependentConfounders}{Vector of proportion(s) [double] of 
 confounders to have a trait-independent effect.}

@@ -409,7 +409,7 @@ getCausalSNPs <- function(N, NrCausalSNPs=20,  genotypes=NULL,
                           delimiter=",", skipFields=NULL, probabilities=FALSE, 
                           sampleID="ID_", verbose=TRUE) {
     if (! is.null(genotypes)) {
-        if (!is.matrix(genotypes) || !is.data.frame(genotypes)) {
+        if (!(is.matrix(genotypes) || is.data.frame(genotypes))) {
             stop("Genotypes have to be provided as a [NrSamples x NrSNP] matrix",
                  " or data.frame but are provided as ", typeof(genotypes))
         }
@@ -566,8 +566,19 @@ getCausalSNPs <- function(N, NrCausalSNPs=20,  genotypes=NULL,
 #' package = "PhenotypeSimulator")
 #' K_fromFile <- getKinship(N=50, kinshipfile=kinshipfile)
 getKinship <- function(N, sampleID="ID_", X=NULL, kinshipfile=NULL, 
-                       id_samples=paste(sampleID, 1:N, sep=""), 
+                       id_samples=NULL, 
                        standardise=FALSE, sep=",", header=TRUE, verbose=TRUE) {
+    numbers <- list(N=N)
+    positives <- list(N=N)
+    integers <- list(N=N)
+    testNumerics(numbers=numbers, positives=positives, integers=integers)
+    
+    if(is.null(id_samples)) {
+        if (!(is.character(sampleID) && length(sampleID) == 1)) {
+            stop("sampleID has to be of length 1 and of type character")
+        }
+        id_samples <- paste(sampleID, 1:N, sep="")
+    }
     if (!is.null(X)) {
         N <- nrow(X)
         NrSNP <- ncol(X)
@@ -579,11 +590,11 @@ getKinship <- function(N, sampleID="ID_", X=NULL, kinshipfile=NULL,
         vmessage(c("Estimating kinship from", NrSNP, "SNPs provided"), 
                  verbose=verbose)
         kinship <- tcrossprod(X)
-        colnames(kinship) <- id_samples
         vmessage("Normalising kinship", verbose=verbose)
         kinship <- kinship/mean(diag(kinship))
         # Make numerically stable
         diag(kinship) <- diag(kinship) + 1e-4
+        colnames(kinship) <- id_samples
     } else if (!is.null(kinshipfile)) {
         if (!file.exists(kinshipfile)) {
             stop(kinshipfile , " does not exist.") 
@@ -596,13 +607,13 @@ getKinship <- function(N, sampleID="ID_", X=NULL, kinshipfile=NULL,
         if (diff(dim(kinship)) !=0) {
             if (abs(diff(dim(kinship))) == 1) {
                 stop ("Kinship matrix needs to be a square matrix,",
-                "however it has ", nrow(kinship), " rows and ", ncol(kinship), 
-                " columns, did you specify the kinship header information",
-                "correctly?")
+                      "however it has ", nrow(kinship), " rows and ", ncol(kinship), 
+                      " columns, did you specify the kinship header information",
+                      "correctly?")
             } else {
                 stop ("Kinship matrix needs to be a square matrix ,",
-                "however it has ", nrow(kinship), " rows and ", ncol(kinship), 
-                " columns")
+                      "however it has ", nrow(kinship), " rows and ", ncol(kinship), 
+                      " columns")
             }
         }
         
@@ -642,8 +653,8 @@ getKinship <- function(N, sampleID="ID_", X=NULL, kinshipfile=NULL,
             } else {
                 stop("Length of id_samples (", length(id_samples), ") matches 
                     neither the number of samples in the kinship (", 
-                    NrKinshipSamples , ") nor the specified sample number (", 
-                    N, "). Please check dimensions and/or names of kinship")
+                     NrKinshipSamples , ") nor the specified sample number (", 
+                     N, "). Please check dimensions and/or names of kinship")
             }
         }
     } else {

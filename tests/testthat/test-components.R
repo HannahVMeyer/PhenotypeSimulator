@@ -37,60 +37,60 @@ test_that('geneticFixedEffects throws sample error',{
 })
 
 test_that('geneticFixedEffects throws length error',{
-    expect_error(geneticFixedEffects(X_causal=causalSNPs, N=100, P=2, 
+    expect_error(geneticFixedEffects(X_causal=geno$genotypes, N=10, P=2, 
                                      phenoID=c("a", "b")),
                  "phenoID has to be of length 1 and of type character")
 })
 
 test_that('geneticFixedEffects throws type error',{
-    expect_error(geneticFixedEffects(X_causal=causalSNPs, N=100, P=2, 
+    expect_error(geneticFixedEffects(X_causal=geno$genotypes, N=10, P=2, 
                                      phenoID=2),
                 "phenoID has to be of length 1 and of type character")
 })
 
 test_that('geneticFixedEffects throws pTraitAffected proportion error',{
-    expect_error(geneticFixedEffects(X_causal=causalSNPs, N=100, P=2, 
+    expect_error(geneticFixedEffects(X_causal=geno$genotypes, N=10, P=2, 
                                      pTraitsAffected = 4),
                  "Proportions have to be specified between 0 and 1:")
 })
 
 test_that('geneticFixedEffects throws pTraitAffected type error',{
-    expect_error(geneticFixedEffects(X_causal=causalSNPs, N=100, P=2, 
+    expect_error(geneticFixedEffects(X_causal=geno$genotypes, N=10, P=2, 
                                      pTraitsAffected = "all"),
                 "pTraitsAffected is/are not numeric")
 })
 
 test_that('geneticFixedEffects throws pIndependentGenetic type error',{
-    expect_error(geneticFixedEffects(X_causal=causalSNPs, N=100, P=2, 
+    expect_error(geneticFixedEffects(X_causal=geno$genotypes, N=10, P=2, 
                                      pIndependentGenetic = "all"),
                 "pIndependentGenetic is/are not numeric")
 })
 
 test_that('geneticFixedEffects throws pIndependentGenetic proportion error',{
-    expect_error(geneticFixedEffects(X_causal=causalSNPs, N=100, P=2, 
+    expect_error(geneticFixedEffects(X_causal=geno$genotypes, N=10, P=2, 
                                      pIndependentGenetic = -0.2),
                  "Proportions have to be specified between 0 and 1")
 })
 
 test_that('geneticFixedEffects throws pTraitIndependentGenetic proportion error',{
-    expect_error(geneticFixedEffects(X_causal=causalSNPs, N=100, P=2, 
+    expect_error(geneticFixedEffects(X_causal=geno$genotypes, N=10, P=2, 
                                      pTraitIndependentGenetic = 1.1), 
                 "Proportions have to be specified between 0 and 1")
 })
 
 test_that('geneticFixedEffects throws pTraitIndependentGenetic type error',{
-    expect_error(geneticFixedEffects(X_causal=causalSNPs, N=100, P=2, 
+    expect_error(geneticFixedEffects(X_causal=geno$genotypes, N=10, P=2, 
                                      pTraitIndependentGenetic = "none"),
                  "pTraitIndependentGenetic is/are not numeric")
 })
 
 test_that('geneticFixedEffects throws type error',{
-    expect_error(geneticFixedEffects(X_causal=causalSNPs, N='a', P='b'),
+    expect_error(geneticFixedEffects(X_causal=geno$genotypes, N='a', P='b'),
                  "P,N is/are not numeric")
 })
 
 test_that('geneticFixedEffects throws sdBeta out of range error',{
-    expect_error(geneticFixedEffects(X_causal=causalSNPs, N=100, P=2, 
+    expect_error(geneticFixedEffects(X_causal=geno$genotypes, N=10, P=2, 
                                      sdBeta=-.05),
                 "sdBeta has/have to be greater than zero")
 })

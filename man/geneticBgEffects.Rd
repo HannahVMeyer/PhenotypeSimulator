@@ -6,7 +6,7 @@
 \usage{
 geneticBgEffects(P, N, kinship, phenoID = "Trait_",
   id_samples = colnames(kinship), shared = TRUE, independent = TRUE,
-  id_phenos = paste(phenoID, 1:P, sep = ""))
+  id_phenos = NULL)
 }
 \arguments{
 \item{P}{Number [integer] of phenotypes to simulate .}

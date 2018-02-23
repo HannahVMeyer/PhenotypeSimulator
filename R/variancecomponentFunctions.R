@@ -55,15 +55,15 @@ geneticFixedEffects <- function(X_causal, P, N, phenoID="Trait_",
                                 distBeta="norm", mBeta=0, sdBeta=1, 
                                 verbose=FALSE) {
     numbers <- list(P=P, N=N, mBeta=mBeta, sdBeta=sdBeta,
-                          pIndependentGenetic=pIndependentGenetic, 
-                          pTraitIndependentGenetic=pTraitIndependentGenetic, 
-                          pTraitsAffected=pTraitsAffected)
+                    pIndependentGenetic=pIndependentGenetic, 
+                    pTraitIndependentGenetic=pTraitIndependentGenetic, 
+                    pTraitsAffected=pTraitsAffected)
     positives <- list(P=P, N=N, sdBeta=sdBeta)
     proportions <- list(pIndependentGenetic=pIndependentGenetic, 
-                     pTraitIndependentGenetic=pTraitIndependentGenetic, 
-                     pTraitsAffected=pTraitsAffected)
+                        pTraitIndependentGenetic=pTraitIndependentGenetic, 
+                        pTraitsAffected=pTraitsAffected)
     testNumerics(numbers=numbers, positives=positives, proportions=proportions)
-    if(nrow(X_causal) != N){
+    if (nrow(X_causal) != N){
         stop("Number of samples in SNP matrix (", nrow(X_causal), ") is 
              different from number of samples to be simulated")
     }
@@ -80,7 +80,7 @@ geneticFixedEffects <- function(X_causal, P, N, phenoID="Trait_",
         stop("Length of id_phenos (", length(id_phenos), ") is different ",
              "from P (", P, ")")
     }
-    id_phenos <- paste(phenoID, 1:P, sep="")
+    if (is.null(id_phenos)) id_phenos <- paste(phenoID, 1:P, sep="")
     NrCausalSNPs <- ncol(X_causal)
     traitsAffected <- ceiling(P*pTraitsAffected)
     
@@ -343,8 +343,9 @@ noiseFixedEffects <- function(N, P, NrConfounders=10, sampleID="ID_",
     if (!(is.character(sampleID) && length(sampleID) == 1)) {
         stop("sampleID has to be of length 1 and of type character")
     }
-    id_samples <- paste(sampleID, 1:N, sep="")
-    id_phenos <- paste(phenoID, 1:P, sep="")
+    if (is.null(id_samples)) id_samples <- paste(sampleID, 1:N, sep="")
+    if (is.null(id_phenos)) id_phenos <- paste(phenoID, 1:P, sep="")
+    
     
     oneFixedEffectComponent <- function(N, P, NrOfEffect, NrConfounders, 
                                         pTraitsAffected,
@@ -751,7 +752,7 @@ geneticBgEffects <- function(P, N, kinship, phenoID="Trait_",
     if (!(is.character(phenoID) && length(phenoID) == 1)) {
         stop("phenoID has to be of length 1 and of type character")
     }
-    id_phenos <- paste(phenoID, 1:P, sep="")
+    if (is.null(id_phenos)) id_phenos <- paste(phenoID, 1:P, sep="")
     
     kin_eigen <- as.complex(eigen(kinship, only.values = TRUE)$values)
     if (any(Re(kin_eigen) <= 0)) {
@@ -854,8 +855,8 @@ noiseBgEffects <- function(N, P, mean=0, sd=1, sampleID="ID_", phenoID="Trait_",
     if (!(is.character(sampleID) && length(sampleID) == 1)) {
         stop("sampleID has to be of length 1 and of type character")
     }
-    id_samples <- paste(sampleID, 1:N, sep="")
-    id_phenos <- paste(phenoID, 1:P, sep="")
+    if (is.null(id_samples)) id_samples <- paste(sampleID, 1:N, sep="")
+    if (is.null(id_phenos)) id_phenos <- paste(phenoID, 1:P, sep="")
     
     if (!shared && !independent) {
         stop("At least one noiseBgEffect has to be specified; set either ", 
@@ -954,8 +955,8 @@ correlatedBgEffects <- function(N, P, pcorr=NULL, corr_mat=NULL,
     if (!(is.character(sampleID) && length(sampleID) == 1)) {
         stop("sampleID has to be of length 1 and of type character")
     }
-    id_samples <- paste(sampleID, 1:N, sep="")
-    id_phenos <- paste(phenoID, 1:P, sep="")
+    if (is.null(id_samples)) id_samples <- paste(sampleID, 1:N, sep="")
+    if (is.null(id_phenos)) id_phenos <- paste(phenoID, 1:P, sep="")
     
     if(!is.null(corr_mat) && !is.null(pcorr)) {
         vmessage(c("Both pcorr (", pcorr, ") and corr_mat provided; corr_mat",

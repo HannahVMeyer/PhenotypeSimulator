@@ -15,7 +15,7 @@ genotypes <- simulateGenotypes(N = 100, NrSNP = 10000,
                                frequencies = c(0.05, 0.1, 0.3, 0.4), 
                                verbose = FALSE)
 genotypes_sd <- standardiseGenotypes(genotypes$genotypes)
-kinship <- getKinship(N=N, X=genotypes_sd, verbose = FALSE)
+kinship <- getKinship(N=100, X=genotypes_sd, verbose = FALSE)
 
 # simulate phenotype components
 genBg <- geneticBgEffects(N = 100, kinship = kinship, P = 15)
@@ -91,7 +91,7 @@ noiseFixed <- noiseFixedEffects(N = 100, P = 15, NrFixedEffects = 4,
                                 distConfounders = c("bin", "cat_norm", 
                                                     "cat_unif", "norm"),
                                 probConfounders = 0.2, 
-                                catConfounders = c(0, 3, 4, 0))
+                                catConfounders = c(3, 4))
 
 # simulate correlated effects with max correlation of 0.8
 correlatedBg <- correlatedBgEffects(N = 100, P = 15, pcorr = 0.8)
@@ -161,7 +161,7 @@ phenotype <- runSimulation(N = 100, P = 15, genotypefile=genotypefile,
                            distConfounders = c("bin", "cat_norm", 
                                                "cat_unif", "norm"), 
                            probConfounders = 0.2, 
-                           catConfounders = c(0, 3, 4, 0),
+                           catConfounders = c(3, 4),
                            pcorr = 0.8,
                            verbose = TRUE )
 
