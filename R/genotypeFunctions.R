@@ -25,7 +25,6 @@ getAlleleFrequencies <- function(snp) {
     return(c(p, 1-p))
 }
 
-
 #' Standardise genotypes 
 #'
 #' Genotypes are standardised as described in Yang et al:
@@ -72,15 +71,24 @@ standardiseGenotypes <- function(geno) {
 #' frequencies=c(0.2,0.3,0.4))
 simulateGenotypes <- function(N, NrSNP=5000, frequencies=c(0.1, 0.2, 0.4), 
                               sampleID="ID_", snpID="SNP_", verbose=TRUE) {
+    numbers <- list(N=N, NrSNP=NrSNP, frequencies=frequencies)
+    integers <- list(N=N, NrSNP=NrSNP)
+    testNumerics(numbers=numbers, integers=integers)
     if (any(frequencies < 0) || any(frequencies > 1)) {
         stop ("Allele frequencies must be between 0 and 1")
+    }
+    if (!(is.character(snpID) && length(snpID) == 1)) {
+        stop("snpID has to be of length 1 and of type character")
+    }
+    if (!(is.character(sampleID) && length(sampleID) == 1)) {
+        stop("sampleID has to be of length 1 and of type character")
     }
     samples <-paste(sampleID, 1:N, sep="")
     snps <- paste(snpID, 1:NrSNP, sep="")
     vmessage(c("Simulate", NrSNP, "SNPs..."), verbose=verbose)
     freq <- sample(frequencies, NrSNP, replace=TRUE)
     X <- sapply(1:NrSNP, function(x) rbinom(N, 2, freq[x]))
-    colnames(X) <- paste(snpID, 1:ncol(X), sep="")
+    colnames(X) <- snps
     rownames(X) <- samples
     return(list(genotypes=X, freq = freq, id_snps=snps, id_samples=samples))
 }
@@ -250,11 +258,11 @@ readStandardGenotypes <- function(N, filename, format = NULL,
                                                 data.table=FALSE, sep=delimiter)
         id_samples <- paste(sampleID, nrow(genotypes), sep="")
         id_snps <- genotypes_raw[,1]
-        format_files <- list(bimbam_snp_postion = bimbam_snp_postion,
-                             bimbam_snp_info = bimbam_snp_info)
+        format_files <- list(bimbam_snp_postion=bimbam_snp_postion,
+                             bimbam_snp_info=bimbam_snp_info)
     } else if (format == "oxgen") {
         genotypes_raw <- data.table::fread(paste(filename, ".gen", sep=""), 
-                                       data.table=FALSE)
+                                           data.table=FALSE)
         samples<- data.table::fread(paste(filename, ".sample", sep=""), 
                                     data.table=FALSE)
         genotypes <- apply(genotypes_raw[, -c(1:5)], 1, probGen2expGen)
@@ -269,7 +277,7 @@ readStandardGenotypes <- function(N, filename, format = NULL,
             samples <- samples[c(1,(Nsamples+1)),]
             
             Nsamples_oxgen <- 5 + sort(c(Nsamples*3, (Nsamples*3)-1, 
-                                     (Nsamples*3)-2))
+                                         (Nsamples*3)-2))
             genotypes_raw <- genotypes_raw[ ,c(1:5, Nsamples_oxgen)]
         }
         id_samples <- samples$ID_1[-1]
@@ -278,7 +286,7 @@ readStandardGenotypes <- function(N, filename, format = NULL,
                              oxgen_genotypes=genotypes_raw)
     } else if (format == "genome") {
         data <- data.table::fread(filename, skip="Samples:", data.table=FALSE, 
-                                sep=" ", colClasses="character")
+                                  sep=" ", colClasses="character")
         genotypes <- matrix(as.numeric(unlist(strsplit(data$V2, split=""))), 
                             nrow= nrow(data), byrow=TRUE)
         if (N > nrow(genotypes)) {
@@ -310,7 +318,7 @@ readStandardGenotypes <- function(N, filename, format = NULL,
         format_files <- NULL
     } else {
         stop(format, " is not a supported genotype format. Supported",
-                 "formats are plink, oxgen, genome, bimbam and delim (where the 
+             "formats are plink, oxgen, genome, bimbam and delim (where the 
                  delimiter is specified via 'delimiter=') ")
     }
     colnames(genotypes) <- id_snps
@@ -400,84 +408,84 @@ getCausalSNPs <- function(N, NrCausalSNPs=20,  genotypes=NULL,
                           genoFileSuffix=NULL, oxgen=FALSE,
                           delimiter=",", skipFields=NULL, probabilities=FALSE, 
                           sampleID="ID_", verbose=TRUE) {
-	if (! is.null(genotypes)) {
-	    if (!is.matrix(genotypes) || is.data.frame(genotypes)) {
-	        stop("Genotypes have to be provided as a [NrSamples x NrSNP] matrix",
-	             " or data.frame but are provided as ", typeof(genotypes))
-	    }
+    if (! is.null(genotypes)) {
+        if (!is.matrix(genotypes) || !is.data.frame(genotypes)) {
+            stop("Genotypes have to be provided as a [NrSamples x NrSNP] matrix",
+                 " or data.frame but are provided as ", typeof(genotypes))
+        }
         if ( ncol(genotypes) < NrCausalSNPs) {
             stop(paste("Number of genotypes is less than number of causal SNPs." 
-                 , "Increase number of simulated genotypes in simulateGenotypes"
-                 , "or decrease number of causal SNPs"))
+                       , "Increase number of simulated genotypes in simulateGenotypes"
+                       , "or decrease number of causal SNPs"))
         }
-		causalSNPs <- genotypes[,sort(sample(ncol(genotypes), NrCausalSNPs))]
-	} else if (! is.null( genoFilePrefix)) {
-	    if (grepl("~", genoFilePrefix)) {
-	        stop(paste("genoFilePrefix contains ~: path expansion not", 
-	                   "guaranteed on every platform (see path.expand{base}),",
-	                   "please provide full file path to genotype files"))
-	    }
-	    if (all(c(is.null(chr), is.null(NrChrCausal)))) {
-	        stop(paste("No information about chromosomes to sample from", 
-	                   "provided; please specify either chr or", 
+        causalSNPs <- genotypes[,sort(sample(ncol(genotypes), NrCausalSNPs))]
+    } else if (! is.null( genoFilePrefix)) {
+        if (grepl("~", genoFilePrefix)) {
+            stop(paste("genoFilePrefix contains ~: path expansion not", 
+                       "guaranteed on every platform (see path.expand{base}),",
+                       "please provide full file path to genotype files"))
+        }
+        if (all(c(is.null(chr), is.null(NrChrCausal)))) {
+            stop(paste("No information about chromosomes to sample from", 
+                       "provided; please specify either chr or", 
                        "NrChrCausal"))
-	    }
-	    if (all(c( !is.null(NrChrCausal), !is.null(chr)))) {
-	        stop(paste("Too much information for sampling chromosomes provided,"
-	                   , "please specifiy only either chr or",
-                        "NrChrCausal"))
-	    }
-		if (! is.null(chr)) {
-			ChrCausal <- chr
-		} else {
-			ChrCausal <- sample(1:22, NrChrCausal)
-		}
-		NrChrCausal <- length(ChrCausal)
-		vmessage(c("Draw", NrCausalSNPs, "causal SNPs from", NrChrCausal, 
-		           "chromosomes..."), verbose=verbose)
-		NrCausalSNPsChr <- rep(floor(NrCausalSNPs/NrChrCausal), NrChrCausal)
-		if ( NrCausalSNPs %% NrChrCausal != 0) {
-			addSNP <- sample(NrChrCausal, NrCausalSNPs %% NrChrCausal)
-			NrCausalSNPsChr[addSNP] <- NrCausalSNPsChr[addSNP] + 1
-		}
-		vmessage(c("Causal chromosomes:", ChrCausal), verbose=verbose)
-		if (!is.null(NrSNPsOnChromosome ) && 
-		    length(ChrCausal) != length(NrSNPsOnChromosome)) {
-		    stop("Not enough information about numbers of SNPs per chromosome 
+        }
+        if (all(c( !is.null(NrChrCausal), !is.null(chr)))) {
+            stop(paste("Too much information for sampling chromosomes provided,"
+                       , "please specifiy only either chr or",
+                       "NrChrCausal"))
+        }
+        if (! is.null(chr)) {
+            ChrCausal <- chr
+        } else {
+            ChrCausal <- sample(1:22, NrChrCausal)
+        }
+        NrChrCausal <- length(ChrCausal)
+        vmessage(c("Draw", NrCausalSNPs, "causal SNPs from", NrChrCausal, 
+                   "chromosomes..."), verbose=verbose)
+        NrCausalSNPsChr <- rep(floor(NrCausalSNPs/NrChrCausal), NrChrCausal)
+        if ( NrCausalSNPs %% NrChrCausal != 0) {
+            addSNP <- sample(NrChrCausal, NrCausalSNPs %% NrChrCausal)
+            NrCausalSNPsChr[addSNP] <- NrCausalSNPsChr[addSNP] + 1
+        }
+        vmessage(c("Causal chromosomes:", ChrCausal), verbose=verbose)
+        if (!is.null(NrSNPsOnChromosome ) && 
+            length(ChrCausal) != length(NrSNPsOnChromosome)) {
+            stop("Not enough information about numbers of SNPs per chromosome 
 		         provided. Number of causal chromosomes: ", length(ChrCausal),
-		         ", Information about SNPs on these chromosomes given for ",
-		         length(NrSNPsOnChromosome), ".")
-		}
-		vmessage(c("Get causal SNPs from chromsome-wide SNP files (", 
-		           genoFilePrefix, "...)", sep=""), verbose=verbose)
-		
-		causalSNPs <- lapply(seq_along(ChrCausal), function(chrom) {
-		    vmessage(c("Get", NrCausalSNPsChr[chrom], 
-		               "causal SNPs from chromsome", ChrCausal[chrom], "..."), 
-		             verbose=verbose)
-			chromosomefile <- paste(genoFilePrefix, "chr", ChrCausal[chrom], 
-			                        genoFileSuffix, sep="")
-			if (!file.exists(chromosomefile)) {
-			    stop(chromosomefile , " does not exist, did you specify the
+                 ", Information about SNPs on these chromosomes given for ",
+                 length(NrSNPsOnChromosome), ".")
+        }
+        vmessage(c("Get causal SNPs from chromsome-wide SNP files (", 
+                   genoFilePrefix, "...)", sep=""), verbose=verbose)
+        
+        causalSNPs <- lapply(seq_along(ChrCausal), function(chrom) {
+            vmessage(c("Get", NrCausalSNPsChr[chrom], 
+                       "causal SNPs from chromsome", ChrCausal[chrom], "..."), 
+                     verbose=verbose)
+            chromosomefile <- paste(genoFilePrefix, "chr", ChrCausal[chrom], 
+                                    genoFileSuffix, sep="")
+            if (!file.exists(chromosomefile)) {
+                stop(chromosomefile , " does not exist, did you specify the
                     correct genoFilePrefix and genoFileSuffix?") 
-			}
-		    if(is.null(NrSNPsOnChromosome)) {
-    			vmessage(c("Count number of SNPs on chromosome", 
-    			           ChrCausal[chrom], "...", sep=""), verbose=verbose)
-    			SNPsOnChromosome <- R.utils::countLines(chromosomefile) - 1
-		    } else {
-		        SNPsOnChromosome <- NrSNPsOnChromosome[chrom]
-		    }
-			if (SNPsOnChromosome <  NrCausalSNPsChr[chrom]) {
-			    stop(paste("Number of causal SNPs to be chosen from chromosome", 
-			                ChrCausal[chrom], "is larger than actual number of 
+            }
+            if(is.null(NrSNPsOnChromosome)) {
+                vmessage(c("Count number of SNPs on chromosome", 
+                           ChrCausal[chrom], "...", sep=""), verbose=verbose)
+                SNPsOnChromosome <- R.utils::countLines(chromosomefile) - 1
+            } else {
+                SNPsOnChromosome <- NrSNPsOnChromosome[chrom]
+            }
+            if (SNPsOnChromosome <  NrCausalSNPsChr[chrom]) {
+                stop(paste("Number of causal SNPs to be chosen from chromosome", 
+                           ChrCausal[chrom], "is larger than actual number of 
 			                SNPs provided In chromosome file"))
-			}
-			
-		    vmessage(c("Sample SNPs on chromosome", ChrCausal[chrom], "..."), 
-		             verbose=verbose)
-			randomSNPindex <- sample(1:SNPsOnChromosome, 
-			                         NrCausalSNPsChr[chrom])
+            }
+            
+            vmessage(c("Sample SNPs on chromosome", ChrCausal[chrom], "..."), 
+                     verbose=verbose)
+            randomSNPindex <- sample(1:SNPsOnChromosome, 
+                                     NrCausalSNPsChr[chrom])
             randomSNPindex <- randomSNPindex[order(randomSNPindex, 
                                                    decreasing=FALSE)]
             text <- read_lines(chromosomefile, randomSNPindex, sep="\n")
@@ -486,29 +494,29 @@ getCausalSNPs <- function(N, NrCausalSNPs=20,  genotypes=NULL,
                      delimiter, ") cannot be found in file. Did you specify the
                      correct delimiter?")
             }
- 			causalSNPsChr <- read.table(text=text, sep=delimiter, row.names=1)
- 			if (oxgen) {
- 			    rownames(causalSNPsChr) <- causalSNPsChr[,1]
- 			    skipFields <- 4
- 			    probabilities <- TRUE
- 			}
- 			if (!is.null(skipFields)) {
- 			    causalSNPsChr <- causalSNPsChr[,-c(1:skipFields)] 
- 			}
- 			if (probabilities) {
- 			    causalSNPsChr <- t(apply(causalSNPsChr, 1, probGen2expGen))
- 			}
- 			return(causalSNPsChr)
-		})
-		causalSNPs <- t(do.call(rbind, causalSNPs))
+            causalSNPsChr <- read.table(text=text, sep=delimiter, row.names=1)
+            if (oxgen) {
+                rownames(causalSNPsChr) <- causalSNPsChr[,1]
+                skipFields <- 4
+                probabilities <- TRUE
+            }
+            if (!is.null(skipFields)) {
+                causalSNPsChr <- causalSNPsChr[,-c(1:skipFields)] 
+            }
+            if (probabilities) {
+                causalSNPsChr <- t(apply(causalSNPsChr, 1, probGen2expGen))
+            }
+            return(causalSNPsChr)
+        })
+        causalSNPs <- t(do.call(rbind, causalSNPs))
         rownames(causalSNPs) <- paste(sampleID, 1:nrow(causalSNPs), sep="")
-	} else {
-	    stop(paste("No genotype information provided, please specify either", 
-	               "genotypefile to read genotypes from file, or",
-	               "genoFilePrefix and genoFileSuffix to sample lines from",
-	               "file or directly provide [N x S] matrix of [S] genotypes", 
-	               "from [N] samples"))
-	}
+    } else {
+        stop(paste("No genotype information provided, please specify either", 
+                   "genotypefile to read genotypes from file, or",
+                   "genoFilePrefix and genoFileSuffix to sample lines from",
+                   "file or directly provide [N x S] matrix of [S] genotypes", 
+                   "from [N] samples"))
+    }
     NrGenotypeSamples <- nrow(causalSNPs) 
     if (N > NrGenotypeSamples) {
         stop("Sample number specified exceeds number of genotypes provided")
@@ -519,7 +527,7 @@ getCausalSNPs <- function(N, NrCausalSNPs=20,  genotypes=NULL,
         Nsamples <- sort(sample(NrGenotypeSamples, N))
         causalSNPs <- causalSNPs[Nsamples,]
     }
-	return(causalSNPs)
+    return(causalSNPs)
 }
 
 
@@ -577,6 +585,9 @@ getKinship <- function(N, sampleID="ID_", X=NULL, kinshipfile=NULL,
         # Make numerically stable
         diag(kinship) <- diag(kinship) + 1e-4
     } else if (!is.null(kinshipfile)) {
+        if (!file.exists(kinshipfile)) {
+            stop(kinshipfile , " does not exist.") 
+        }
         vmessage(c("Reading kinship file from", kinshipfile), verbose=verbose)
         kinship <- as.matrix(data.table::fread(kinshipfile, sep=sep, 
                                                header=header, 
