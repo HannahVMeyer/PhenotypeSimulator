@@ -92,18 +92,18 @@ geneticFixedEffects <- function(X_causal, P, N, phenoID="Trait_",
     NrSharedSNPs <- NrCausalSNPs - NrIndependentSNPs
     
     vmessage(c("Out of", P, "total phenotypes,", traitsAffected, "traits will",
-                "be affected by bbb genetic variant effects"), verbose=verbose)
+               "be affected by bbb genetic variant effects"), verbose=verbose)
     
     if (NrIndependentSNPs != 0) {
         vmessage(c("Out of the these affected traits (", traitsAffected, "), ", 
-                ceiling(pTraitIndependentGenetic * traitsAffected), " trait(s)",
-                " will have independent genetic variant effects"), sep="",
-                verbose=verbose)
+                   ceiling(pTraitIndependentGenetic * traitsAffected), " trait(s)",
+                   " will have independent genetic variant effects"), sep="",
+                 verbose=verbose)
     }
     
     Gshared <- NULL
     Gindependent <- NULL
-   
+    
     if (NrSharedSNPs != 0) {
         if (NrIndependentSNPs != 0) {
             shared <- sample(c(rep(TRUE, NrSharedSNPs), 
@@ -126,9 +126,9 @@ geneticFixedEffects <- function(X_causal, P, N, phenoID="Trait_",
         }
         if (distBeta == "norm") {
             betaX_shared <- simulateDist(NrSharedSNPs,  dist=distBeta, 
-                                        m=mBeta, std=sdBeta) %*% 
+                                         m=mBeta, std=sdBeta) %*% 
                 t(abs(simulateDist(traitsAffected, dist=distBeta, m=0, 
-                               std=1)))
+                                   std=1)))
         }
         
         if (P != traitsAffected) {
@@ -137,7 +137,7 @@ geneticFixedEffects <- function(X_causal, P, N, phenoID="Trait_",
                                          nrow=NrSharedSNPs))
         }
         rownames(betaX_shared) <- paste("sharedEffect", 
-                                             1:nrow(betaX_shared), sep="")
+                                        1:nrow(betaX_shared), sep="")
         
         cov <- data.frame(X_shared)
         colnames(cov) <- snpIDshared
@@ -152,7 +152,7 @@ geneticFixedEffects <- function(X_causal, P, N, phenoID="Trait_",
         colnames(Gshared) <- id_phenos
         rownames(Gshared) <- id_samples
     }
-   
+    
     if (NrIndependentSNPs != 0) {
         if (NrSharedSNPs != 0) {
             independent <- !shared
@@ -162,7 +162,7 @@ geneticFixedEffects <- function(X_causal, P, N, phenoID="Trait_",
             X_independent <- X_causal
             snpIDindependent <- colnames(X_causal)
         }
-
+        
         betaX_independent <- matrix(simulateDist(traitsAffected * 
                                                      NrIndependentSNPs, 
                                                  dist=distBeta,
@@ -181,8 +181,8 @@ geneticFixedEffects <- function(X_causal, P, N, phenoID="Trait_",
         } else {
             p_nongenetic <- t(sapply(1:ncol(X_independent), function(x) {
                 sample(c(rep(FALSE, TraitIndependentGenetic), 
-                  rep(TRUE, (traitsAffected - TraitIndependentGenetic))), 
-                  replace=FALSE)
+                         rep(TRUE, (traitsAffected - TraitIndependentGenetic))), 
+                       replace=FALSE)
             }))
         }
         
@@ -217,7 +217,7 @@ geneticFixedEffects <- function(X_causal, P, N, phenoID="Trait_",
                                       colnames(cov), sep="")
         rownames(cov_effect) <- id_phenos
     }
-        
+    
     return(list(shared=Gshared, 
                 independent=Gindependent, 
                 cov=cov, 
@@ -327,7 +327,7 @@ noiseFixedEffects <- function(N, P, NrConfounders=10, sampleID="ID_",
     positives <- list(P=P, N=N, NrFixedEffects=NrFixedEffects, 
                       NrConfounders=NrConfounders)
     integers <- list(P=P, N=N, NrFixedEffects=NrFixedEffects, 
-                                      NrConfounders=NrConfounders)
+                     NrConfounders=NrConfounders)
     testNumerics(numbers=numbers, positives=positives, integers=integers)
     if (!is.null(id_samples) && length(id_samples) !=  N) {
         stop("Length of id_samples (", length(id_samples), ") is different ",
@@ -356,29 +356,29 @@ noiseFixedEffects <- function(N, P, NrConfounders=10, sampleID="ID_",
                                         probConfounders, distBeta, mBeta, 
                                         sdBeta) {
         numbers <- list(mConfounders=mConfounders,
-                              sdConfounders=sdConfounders, mBeta=mBeta, 
-                              sdBeta=sdBeta,
-                              pIndependentConfounders=pIndependentConfounders, 
-                              pTraitIndependentConfounders=
-                                  pTraitIndependentConfounders, 
-                              probConfounders=probConfounders,
-                              pTraitsAffected=pTraitsAffected)
+                        sdConfounders=sdConfounders, mBeta=mBeta, 
+                        sdBeta=sdBeta,
+                        pIndependentConfounders=pIndependentConfounders, 
+                        pTraitIndependentConfounders=
+                            pTraitIndependentConfounders, 
+                        probConfounders=probConfounders,
+                        pTraitsAffected=pTraitsAffected)
         positives <- list(sdBeta=sdBeta, sdConfounders=sdConfounders)
         proportions <- list(pIndependentConfounders=pIndependentConfounders, 
-                         pTraitIndependentConfounders=
-                             pTraitIndependentConfounders, 
-                         probConfounders=probConfounders,
-                         pTraitsAffected=pTraitsAffected)
+                            pTraitIndependentConfounders=
+                                pTraitIndependentConfounders, 
+                            probConfounders=probConfounders,
+                            pTraitsAffected=pTraitsAffected)
         testNumerics(numbers=numbers, positives=positives, 
                      proportions=proportions)
         
         if (is.null(catConfounders) && grepl("cat", distConfounders)) {
             stop("Confounder distribution set to ", distConfounders, " but ",
-                       "no categories provided")
+                 "no categories provided")
         }
         if (is.null(probConfounders) && grepl("bin", distConfounders)) {
             stop("Confounder distribution set to ", distConfounders, " but ",
-                       "no probabilities provided")
+                 "no probabilities provided")
         }
         
         traitsAffected <- ceiling(P*pTraitsAffected)
@@ -395,15 +395,15 @@ noiseFixedEffects <- function(N, P, NrConfounders=10, sampleID="ID_",
         
         if (NrSharedConfounders != 0) {
             shared <- matrix(simulateDist(N * NrSharedConfounders, 
-                                        dist=distConfounders, m=mConfounders, 
-                                        std=sdConfounders, 
-                                        categories=catConfounders, 
-                                        prob=probConfounders), 
-                           ncol=NrSharedConfounders)
+                                          dist=distConfounders, m=mConfounders, 
+                                          std=sdConfounders, 
+                                          categories=catConfounders, 
+                                          prob=probConfounders), 
+                             ncol=NrSharedConfounders)
             colnames(shared) <- paste("sharedConfounder", NrOfEffect, "_", 
                                       distConfounders, 
                                       seq(1, NrSharedConfounders, 1), sep="")
-        
+            
             if (distBeta == "unif") {
                 beta_exp <- rexp(NrSharedConfounders) %*% t(rexp(traitsAffected))
                 ## transfrom to uniform with mean=m, with m*x=0.5
@@ -416,17 +416,17 @@ noiseFixedEffects <- function(N, P, NrConfounders=10, sampleID="ID_",
                 beta_shared <- simulateDist(NrSharedConfounders,  dist=distBeta, 
                                             m=mBeta, std=sdBeta) %*% 
                     t(abs(simulateDist(traitsAffected, dist=distBeta, m=0, 
-                                   std=1)))
+                                       std=1)))
             }
             rownames(beta_shared) <- paste("sharedConfounder", NrOfEffect, "_", 
                                            distConfounders,
-                                        "_Beta_", distBeta, 
-                                         seq(1, NrSharedConfounders, 1), sep="")
+                                           "_Beta_", distBeta, 
+                                           seq(1, NrSharedConfounders, 1), sep="")
             
             if (P != traitsAffected) {
                 beta_shared <- cbind(beta_shared, 
-                                      matrix(0, ncol=P-traitsAffected, 
-                                             nrow=NrSharedConfounders))
+                                     matrix(0, ncol=P-traitsAffected, 
+                                            nrow=NrSharedConfounders))
             }
             
             Cshared <- shared %*% beta_shared
@@ -440,19 +440,19 @@ noiseFixedEffects <- function(N, P, NrConfounders=10, sampleID="ID_",
         } 
         if (NrIndependentConfounders != 0) {
             independent <- matrix(simulateDist(N * NrIndependentConfounders, 
-                                        dist=distConfounders, m=mConfounders, 
-                                        std=sdConfounders, 
-                                        categories=catConfounders, 
-                                        prob=probConfounders), 
-                           ncol=NrIndependentConfounders)
+                                               dist=distConfounders, m=mConfounders, 
+                                               std=sdConfounders, 
+                                               categories=catConfounders, 
+                                               prob=probConfounders), 
+                                  ncol=NrIndependentConfounders)
             colnames(independent) <- paste("independentConfounder", NrOfEffect, 
                                            "_", distConfounders, 
                                            seq(1, NrIndependentConfounders, 1), 
                                            sep="")
             beta_independent <- matrix(simulateDist(traitsAffected * 
                                                         NrIndependentConfounders, 
-                                             dist=distBeta, m=mBeta, 
-                                             std=sdBeta), ncol=traitsAffected)
+                                                    dist=distBeta, m=mBeta, 
+                                                    std=sdBeta), ncol=traitsAffected)
             rownames(beta_independent) <- paste("independentConfounder", 
                                                 NrOfEffect, "_", 
                                                 distConfounders,
@@ -462,7 +462,7 @@ noiseFixedEffects <- function(N, P, NrConfounders=10, sampleID="ID_",
                                                 sep="")
             
             TraitIndependentConfounders <- ceiling(pTraitIndependentConfounders* 
-                                                   traitsAffected)
+                                                       traitsAffected)
             if (keepSameIndependent) {
                 p_nonconfounders <- sample(
                     c(rep(FALSE, TraitIndependentConfounders), 
@@ -470,14 +470,14 @@ noiseFixedEffects <- function(N, P, NrConfounders=10, sampleID="ID_",
                     replace=FALSE)
                 p_nonconfounders <- matrix(rep(p_nonconfounders, 
                                                NrIndependentConfounders), 
-                                       NrIndependentConfounders, byrow = TRUE)
+                                           NrIndependentConfounders, byrow = TRUE)
             } else {
                 p_nonconfounders <- t(sapply(1:ncol(independent), function(x) {
                     sample(c(rep(FALSE, TraitIndependentConfounders), 
                              rep(TRUE, 
                                  (traitsAffected - TraitIndependentConfounders))
-                             ), 
-                           replace=FALSE)
+                    ), 
+                    replace=FALSE)
                 }))
             }
             
@@ -525,27 +525,27 @@ noiseFixedEffects <- function(N, P, NrConfounders=10, sampleID="ID_",
                       sdBeta=length(sdBeta))
     
     common <- c(pTraitsAffected=length(pTraitsAffected), 
-                           pIndependentConfounders=
-                               length(pIndependentConfounders),
-                           pTraitIndependentConfounders=
-                               length(pTraitIndependentConfounders),
-                           keepSameIndependent=length(keepSameIndependent),
-                           distConfounders=length(distConfounders),
-                           distBeta=length(distBeta),
-                           mBeta=length(mBeta),
-                           sdBeta=length(sdBeta))
+                pIndependentConfounders=
+                    length(pIndependentConfounders),
+                pTraitIndependentConfounders=
+                    length(pTraitIndependentConfounders),
+                keepSameIndependent=length(keepSameIndependent),
+                distConfounders=length(distConfounders),
+                distBeta=length(distBeta),
+                mBeta=length(mBeta),
+                sdBeta=length(sdBeta))
     
     norm_unif <- c(mConfounders=length(mConfounders),
                    sdConfounders=length(sdConfounders))
     norm_unif_dist <- length(which(grepl("^unif", distConfounders))) + 
-                            length(which(grepl("^norm",distConfounders)))
-                           
+        length(which(grepl("^norm",distConfounders)))
+    
     bin <- c(probConfounders=length(probConfounders))
     bin_dist <- length(which(grepl("bin", distConfounders)))
-                             
+    
     categ <- c(catConfounders=length(catConfounders))
     categ_dist <- length(which(grepl("cat", distConfounders)))
-                           
+    
     if (NrFixedEffects != 1 && all(param_length <= 1)) {
         stop("NrFixedEffects specified to greater than 1 (i.e. more than one ",
              "type of fixed effects), but not enough parameters specified for ",
@@ -599,7 +599,7 @@ noiseFixedEffects <- function(N, P, NrConfounders=10, sampleID="ID_",
         
         if (length(pTraitsAffected) == 1) {
             pTraitsAffected <- rep(pTraitsAffected, 
-                                           NrFixedEffects)
+                                   NrFixedEffects)
         }
         if (length(pIndependentConfounders) == 1) {
             pIndependentConfounders <- rep(pIndependentConfounders, 
@@ -607,7 +607,7 @@ noiseFixedEffects <- function(N, P, NrConfounders=10, sampleID="ID_",
         }
         if (length(pTraitIndependentConfounders) == 1) {
             pTraitIndependentConfounders <- rep(pTraitIndependentConfounders, 
-                                             NrFixedEffects)
+                                                NrFixedEffects)
         }
         if (length(keepSameIndependent) == 1) {
             keepSameIndependent <- rep(keepSameIndependent, NrFixedEffects)
@@ -759,7 +759,7 @@ geneticBgEffects <- function(P, N, kinship, phenoID="Trait_",
     }
     kinship_chol <- t(chol(kinship))
     N <- ncol(kinship)
-   
+    
     if (!shared && !independent) {
         stop("At least one geneticBgEffect has to be specified; set either ", 
              "shared or independent or both to TRUE")
@@ -779,7 +779,7 @@ geneticBgEffects <- function(P, N, kinship, phenoID="Trait_",
         genBgShared <- NULL
         cov_shared <- NULL
     }
-        
+    
     # independent effect
     if (independent) {
         D <- matrix(rnorm(N * P), ncol=P)
@@ -959,7 +959,7 @@ correlatedBgEffects <- function(N, P, pcorr=NULL, corr_mat=NULL,
     
     if(!is.null(corr_mat) && !is.null(pcorr)) {
         vmessage(c("Both pcorr (", pcorr, ") and corr_mat provided; corr_mat",
-                 "will be used to simulate the correlatedBgEffects"), 
+                   "will be used to simulate the correlatedBgEffects"), 
                  verbose=verbose)
     }
     if(is.null(corr_mat)) {
