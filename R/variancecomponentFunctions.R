@@ -971,6 +971,9 @@ correlatedBgEffects <- function(N, P, pcorr=NULL, corr_mat=NULL,
         if (!is.numeric(pcorr)) {
             stop("pcorr has to be of type numeric")
         }
+        if (length(pcorr) > 1) {
+            stop("only a single pcorr value (double) can be specified")
+        }
         if (pcorr <= 0 || pcorr >= 1) {
             stop("pcorr has to be greater than zero and less than 1")
         }
