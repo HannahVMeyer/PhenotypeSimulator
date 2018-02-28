@@ -7,10 +7,10 @@ In quantitative genetics, genotype to phenotype mapping is commonly realised by 
 
 The current github version of *PhenotypeSimulator* is: 0.2.1 and can be
 installed via
-`{bash}
+```bash
 library(devtools)
 install_github("HannahVMeyer/PhenotypeSimulator")
-`
+```
 The current CRAN version of *PhenotypeSimulator* is: 0.2.0
 
 ## Minor changes from version 0.2.0 to version 0.2.1:
