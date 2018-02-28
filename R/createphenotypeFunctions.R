@@ -21,10 +21,10 @@ rescaleVariance <- function(component, propvar) {
     if (propvar < 0 || propvar > 1) {
         stop("propvar cannot be less than 0 and or greater than 1")
     }
-    if (!is.matrix(component)){
+    if (!is.null(component) && !is.matrix(component)){
         stop("component needs to be a matrix")
     }
-    if (propvar != 0) {
+    if (!is.null(component) && propvar != 0) {
         var_component <- var(component)
         mean_var <- mean(diag(var_component))
         scale_factor <- sqrt(propvar/mean_var)
@@ -142,6 +142,9 @@ setModel <- function(genVar=NULL, h2s=NULL, theta=0.8, h2bg=NULL, eta=0.8,
              verbose=verbose)
     if ((noiseVar) == 0 ) {
         modelNoise="noNoise"
+        delta <- 0 
+        rho <- 0
+        phi <- 0
         vmessage(c("The noise model is:", modelNoise), verbose=verbose)
     } else {
         if (all(c(is.null(delta), is.null(rho), is.null(phi)))) {
@@ -309,6 +312,8 @@ setModel <- function(genVar=NULL, h2s=NULL, theta=0.8, h2bg=NULL, eta=0.8,
              verbose=verbose)
     if ( genVar == 0 ) {
         modelGenetic="noGenetic"
+        h2s <- 0
+        h2bg <- 0
         vmessage(c("The genetic model is:", modelGenetic), verbose=verbose)
     } else {   
         if (all(c(is.null(h2bg), is.null(h2s)))) {
@@ -838,10 +843,10 @@ runSimulation <- function(N, P,
         
         cov_noiseBg_independent <- noiseBg$cov_independent
         cov_noiseBg_independent_rescaled <- cov_noiseBg_independent * 
-                                    noiseBg_independent_rescaled$scale_factor^2
+            noiseBg_independent_rescaled$scale_factor^2
         
         cov_noiseBg <- cov_noiseBg_shared_rescaled + 
-                        cov_noiseBg_independent_rescaled
+            cov_noiseBg_independent_rescaled
         
     } else {
         noiseBg <- NULL
@@ -892,7 +897,7 @@ runSimulation <- function(N, P,
             var_noiseFixed_independent)
         
         Y_noiseFixed <- addNonNulls(list(noiseFixed_shared_rescaled$component, 
-                                    noiseFixed_independent_rescaled$component))
+                                         noiseFixed_independent_rescaled$component))
     } else {
         noiseFixed <- NULL
         noiseFixed_shared_rescaled <- NULL
@@ -901,7 +906,7 @@ runSimulation <- function(N, P,
         var_noiseFixed_independent <- 0
         Y_noiseFixed <- NULL
     }
-
+    
     
     # 3. Construct final simulated phenotype 
     vmessage("Construct final simulated phenotype"
@@ -911,7 +916,7 @@ runSimulation <- function(N, P,
                        Y_correlatedBg)
     Y <-  addNonNulls(components)
     Y <- scale(Y)
-  
+    
     varComponents <- data.frame(genVar=model$genVar, h2s=model$h2s, 
                                 h2bg=model$h2bg, 
                                 var_genFixed_shared=var_genFixed_shared, 
@@ -927,41 +932,41 @@ runSimulation <- function(N, P,
                                 var_noiseBg_independent=var_noiseBg_independent, 
                                 var_noiseCorrelated=var_noiseCorrelated)
     phenoComponentsFinal <- list(Y=Y, Y_genFixed=Y_genFixed, Y_genBg=Y_genBg, 
-                            Y_noiseFixed=Y_noiseFixed, Y_noiseBg=Y_noiseBg, 
-                            Y_correlatedBg=Y_correlatedBg, 
-                            cov_genBg=cov_genBg, 
-                            cov_noiseBg=cov_noiseBg,
-                            cov_correlatedBg = cov_correlatedBg)
+                                 Y_noiseFixed=Y_noiseFixed, Y_noiseBg=Y_noiseBg, 
+                                 Y_correlatedBg=Y_correlatedBg, 
+                                 cov_genBg=cov_genBg, 
+                                 cov_noiseBg=cov_noiseBg,
+                                 cov_correlatedBg = cov_correlatedBg)
     phenoComponentsIntermediate <- list(
-                                 Y_genFixed_shared=
-                                     genFixed_shared_rescaled$component,
-                                 Y_genFixed_independent=
-                                     genFixed_independent_rescaled$component,
-                                 Y_noiseFixed_shared=
-                                     noiseFixed_shared_rescaled$component,
-                                 Y_noiseFixed_independent=
-                                     noiseFixed_independent_rescaled$component,
-                                 Y_genBg_shared=
-                                     genBg_shared_rescaled$component,
-                                 Y_genBg_independent=
-                                     genBg_independent_rescaled$component,
-                                 Y_noiseBg_shared=
-                                     noiseBg_shared_rescaled$component,
-                                 Y_noiseBg_independent=
-                                     noiseBg_independent_rescaled$component,
-                                 cov_genBg_shared=cov_genBg_shared, 
-                                 cov_genBg_independent=cov_genBg_independent, 
-                                 cov_noiseBg_shared=cov_noiseBg_shared,
-                                 cov_noiseBg_independent=cov_noiseBg_independent, 
-                                 genFixed=genFixed, 
-                                 noiseFixed=noiseFixed)
+        Y_genFixed_shared=
+            genFixed_shared_rescaled$component,
+        Y_genFixed_independent=
+            genFixed_independent_rescaled$component,
+        Y_noiseFixed_shared=
+            noiseFixed_shared_rescaled$component,
+        Y_noiseFixed_independent=
+            noiseFixed_independent_rescaled$component,
+        Y_genBg_shared=
+            genBg_shared_rescaled$component,
+        Y_genBg_independent=
+            genBg_independent_rescaled$component,
+        Y_noiseBg_shared=
+            noiseBg_shared_rescaled$component,
+        Y_noiseBg_independent=
+            noiseBg_independent_rescaled$component,
+        cov_genBg_shared=cov_genBg_shared, 
+        cov_genBg_independent=cov_genBg_independent, 
+        cov_noiseBg_shared=cov_noiseBg_shared,
+        cov_noiseBg_independent=cov_noiseBg_independent, 
+        genFixed=genFixed, 
+        noiseFixed=noiseFixed)
     
     setup <- list(P=P, N=N, NrCausalSNPs=cNrSNP, 
                   modelGenetic=model$modelGenetic, 
                   modelNoise=model$modelNoise, 
                   id_samples=id_samples, id_phenos=id_phenos, id_snps=id_snps)
     rawComponents <- list(kinship=kinship, genotypes=genotypes)
-
+    
     return(list(varComponents=varComponents, 
                 phenoComponentsFinal=phenoComponentsFinal, 
                 phenoComponentsIntermediate=phenoComponentsIntermediate, 
