@@ -665,7 +665,8 @@ runSimulation <- function(N, P,
                                         sdBeta=sdBetaGenetic,
                                         id_phenos=id_phenos,
                                         id_samples=id_samples,
-                                        phenoID=phenoID)
+                                        phenoID=phenoID,
+                                        verbose=verbose)
         
         var_genFixed_shared <- model$theta * model$h2s * model$genVar
         var_genFixed_independent <- (1 - model$theta) * model$h2s * model$genVar
@@ -883,7 +884,8 @@ runSimulation <- function(N, P,
                                         id_phenos=id_phenos,
                                         id_samples=id_samples,
                                         sampleID=sampleID,
-                                        phenoID=phenoID)
+                                        phenoID=phenoID,
+                                        verbose=verbose)
         
         
         var_noiseFixed_shared <- model$gamma * model$delta * model$noiseVar

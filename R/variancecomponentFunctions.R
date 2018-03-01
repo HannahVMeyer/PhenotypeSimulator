@@ -84,19 +84,23 @@ geneticFixedEffects <- function(X_causal, P, N, phenoID="Trait_",
     NrCausalSNPs <- ncol(X_causal)
     traitsAffected <- ceiling(P*pTraitsAffected)
     
-    if (traitsAffected == 1) {
-        NrIndependentSNPs <- NrCausalSNPs
-    } else {
-        NrIndependentSNPs <- round(pIndependentGenetic * NrCausalSNPs)
-    }
+    NrIndependentSNPs <- round(pIndependentGenetic * NrCausalSNPs)
     NrSharedSNPs <- NrCausalSNPs - NrIndependentSNPs
     
     vmessage(c("Out of", P, "total phenotypes,", traitsAffected, "traits will",
-               "be affected by bbb genetic variant effects"), verbose=verbose)
+               "be affected by genetic variant effects"), verbose=verbose)
+    
+    if (traitsAffected == 1 && NrIndependentSNPs != 0) {
+        vmessage(c("The total number of traits affected by genetic variant",
+                 "effects is 1, so pTraitIndependentGenetic",
+                 " will automatically be set to 1."), verbose=verbose)
+        pTraitIndependentGenetic <- 1
+    }
     
     if (NrIndependentSNPs != 0) {
-        vmessage(c("Out of the these affected traits (", traitsAffected, "), ", 
-                   ceiling(pTraitIndependentGenetic * traitsAffected), " trait(s)",
+        vmessage(c("Out of these affected traits (", traitsAffected, "), ", 
+                   ceiling(pTraitIndependentGenetic * traitsAffected), 
+                   " trait(s)",
                    " will have independent genetic variant effects"), sep="",
                  verbose=verbose)
     }
@@ -277,6 +281,7 @@ geneticFixedEffects <- function(X_causal, P, N, phenoID="Trait_",
 #' for effect sizes of confounders.
 #' @param sdBeta Vector of standard deviation/distance from midpoint [double] 
 #' of normal/uniform distribution for effect sizes of confounders.
+#' @param verbose [boolean] If TRUE, progress info is printed to standard out
 #' @return Named list of shared confounder effects (shared: [N x P] matrix), 
 #' independent confoudner effects (independent: [N x P] matrix), 
 #' the confounders labeled as shared or independent effect 
@@ -321,7 +326,8 @@ noiseFixedEffects <- function(N, P, NrConfounders=10, sampleID="ID_",
                               distConfounders="norm", mConfounders=0, 
                               sdConfounders=1, catConfounders=NULL, 
                               probConfounders=NULL, distBeta="norm", mBeta=0, 
-                              sdBeta=1) {
+                              sdBeta=1,
+                              verbose=FALSE) {
     numbers <- list(N=N, P=P, NrFixedEffects=NrFixedEffects, 
                     NrConfounders=NrConfounders)
     positives <- list(P=P, N=N, NrFixedEffects=NrFixedEffects, 
@@ -384,15 +390,39 @@ noiseFixedEffects <- function(N, P, NrConfounders=10, sampleID="ID_",
         
         traitsAffected <- ceiling(P*pTraitsAffected)
         
+        if(is.null(NrOfEffect)) {
+            vmessage(c("Out of", P, "total phenotypes,", traitsAffected, 
+                       "trait(s) will",
+                       "be affected by the covariate effect"), 
+                     verbose=verbose)
+        } else {
+            vmessage(c("Out of", P, "total phenotypes,", traitsAffected, 
+                       "trait(s) will",
+                       "be affected by the ", NrOfEffect ," covariate effect"), 
+                     verbose=verbose)
+        }
+        
+        NrIndependentConfounders <- round(pIndependentConfounders * 
+                                              NrConfounders)
+        NrSharedConfounders <- NrConfounders - NrIndependentConfounders
+        
+        if (traitsAffected == 1 && NrIndependentConfounders != 0) {
+            vmessage(c("The total number of traits affected by covariate ",
+                     "effects is 1, so pTraitIndependentConfounders",
+                     " will automatically be set to 1."), verbose=verbose)
+            pTraitIndependentConfounders <- 1
+        }
+        
+        if (NrIndependentConfounders != 0) {
+            vmessage(c("Out of these affected traits (", traitsAffected, "), ", 
+                       ceiling(pTraitIndependentConfounders * traitsAffected), 
+                       " trait(s)",
+                       " will have independent covariate effects"), sep="",
+                     verbose=verbose)
+        }
+        
         Cshared <- NULL
         Cindependent <- NULL
-        if (P == 1) {
-            NrIndependentConfounders <- 0
-        } else {
-            NrIndependentConfounders <- round(pIndependentConfounders * 
-                                                  NrConfounders)
-        }
-        NrSharedConfounders <- NrConfounders - NrIndependentConfounders
         
         if (NrSharedConfounders != 0) {
             shared <- matrix(simulateDist(N * NrSharedConfounders, 
@@ -441,7 +471,8 @@ noiseFixedEffects <- function(N, P, NrConfounders=10, sampleID="ID_",
         } 
         if (NrIndependentConfounders != 0) {
             independent <- matrix(simulateDist(N * NrIndependentConfounders, 
-                                               dist=distConfounders, m=mConfounders, 
+                                               dist=distConfounders, 
+                                               m=mConfounders, 
                                                std=sdConfounders, 
                                                categories=catConfounders, 
                                                prob=probConfounders), 
@@ -453,7 +484,8 @@ noiseFixedEffects <- function(N, P, NrConfounders=10, sampleID="ID_",
             beta_independent <- matrix(simulateDist(traitsAffected * 
                                                         NrIndependentConfounders, 
                                                     dist=distBeta, m=mBeta, 
-                                                    std=sdBeta), ncol=traitsAffected)
+                                                    std=sdBeta), 
+                                       ncol=traitsAffected)
             rownames(beta_independent) <- paste("independentConfounder", 
                                                 NrOfEffect, "_", 
                                                 distConfounders,
@@ -471,7 +503,8 @@ noiseFixedEffects <- function(N, P, NrConfounders=10, sampleID="ID_",
                     replace=FALSE)
                 p_nonconfounders <- matrix(rep(p_nonconfounders, 
                                                NrIndependentConfounders), 
-                                           NrIndependentConfounders, byrow = TRUE)
+                                           NrIndependentConfounders, 
+                                           byrow = TRUE)
             } else {
                 p_nonconfounders <- t(sapply(1:ncol(independent), function(x) {
                     sample(c(rep(FALSE, TraitIndependentConfounders), 
