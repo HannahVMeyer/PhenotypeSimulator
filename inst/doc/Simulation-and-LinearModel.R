@@ -127,10 +127,13 @@ p_corr <- p_corr + geom_tile() +
     facet_grid(~ type, labeller = label_parsed) +
     scale_x_discrete(expand = c(0,0)) +
     scale_y_discrete(expand = c(0,0)) +
-    scale_fill_gradient(limits = c(-1,1), 
-                        guide=guide_colorbar(direction = "horizontal",
-                                             title.position="top",
-                                             title.hjust =0.5)) +
+    scale_fill_gradient2(low="#F2AD00", high="#5BBCD6" , mid="white",
+                    limits = c(-1,1), 
+                    breaks = c(-1, -0.5, 0, 0.5, 1),
+                    labels = c(-1, -0.5, 0, 0.5, 1),
+                    guide=guide_colorbar(direction = "horizontal",
+                                         title.position="top",
+                                         title.hjust =0.5)) + 
     xlab(" ") +
     ylab(" ") +
     theme_bw() +

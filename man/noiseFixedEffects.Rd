@@ -10,7 +10,7 @@ noiseFixedEffects(N, P, NrConfounders = 10, sampleID = "ID_",
   pTraitIndependentConfounders = 0.2, keepSameIndependent = FALSE,
   distConfounders = "norm", mConfounders = 0, sdConfounders = 1,
   catConfounders = NULL, probConfounders = NULL, distBeta = "norm",
-  mBeta = 0, sdBeta = 1)
+  mBeta = 0, sdBeta = 1, verbose = FALSE)
 }
 \arguments{
 \item{N}{Number [integer] of samples to simulate.}
@@ -72,6 +72,8 @@ for effect sizes of confounders.}
 
 \item{sdBeta}{Vector of standard deviation/distance from midpoint [double] 
 of normal/uniform distribution for effect sizes of confounders.}
+
+\item{verbose}{[boolean] If TRUE, progress info is printed to standard out}
 }
 \value{
 Named list of shared confounder effects (shared: [N x P] matrix), 

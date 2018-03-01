@@ -294,12 +294,12 @@ Rscript -e "PhenotypeSimulator::simulatePhenotypes()" \
 --pIndependentConfounders=0,1,1,0.5 \
 --distConfounders=bin,cat_norm,cat_unif,norm \
 --probConfounders=0.2 \
---catConfounders=0,3,4,0 \
+--catConfounders=3,4 \
 --directory=/tmp \
 --subdirectory=test_simulation \
 --showProgress \
 --saveTable \
---savePlink
+--savePLINK
 ```
 
 # Phenotype component functions
