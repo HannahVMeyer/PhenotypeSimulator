@@ -285,8 +285,8 @@ readStandardGenotypes <- function(N, filename, format = NULL,
         format_files <- list(oxgen_samples = samples, 
                              oxgen_genotypes=genotypes_raw)
     } else if (format == "genome") {
-        data <- data.table::fread(filename, skip="Samples:", data.table=FALSE, 
-                                  sep=" ", colClasses="character")
+        data <- data.table::fread( filename, skip="POP1:", sep=" ", 
+                                   colClasses="character", header=FALSE)
         genotypes <- matrix(as.numeric(unlist(strsplit(data$V2, split=""))), 
                             nrow= nrow(data), byrow=TRUE)
         if (N > nrow(genotypes)) {
