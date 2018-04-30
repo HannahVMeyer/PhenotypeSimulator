@@ -581,7 +581,7 @@ simulated_withEffect$freq <- rep(minor[which(SNPnames %in% effects$rsID)], each=
 # plot association p-values in relation to the absolute value of the simulated 
 # effect sizes and the SNPs allele frequencies
 p <- ggplot(dplyr::filter(simulated_withEffect, trait != "all"))
-p + geom_point(aes(x=freq, y=-log10(observed), color=abs(beta), shape=trait)) +
+p <- p + geom_point(aes(x=freq, y=-log10(observed), color=abs(beta), shape=trait)) +
     geom_hline(yintercept=-log10(5*10^(-8)), color="darkgrey") +
     scale_color_gradientn(colours=c('#f0f9e8','#ccebc5','#a8ddb5','#7bccc4',
                                     '#4eb3d3','#2b8cbe','#08589e'),
@@ -590,6 +590,13 @@ p + geom_point(aes(x=freq, y=-log10(observed), color=abs(beta), shape=trait)) +
     xlab("Allele frequencies") +
     ylab(expression(-log[10](p-value))) +
     theme_bw()
+print(p)
 ```
+```{r echo=FALSE, eval=FALSE, out.width='100%'}
+ggsave(plot=p, 
+		filename=paste(savedir, "/effectsizes-freq-pvalues.pdf", sep=""), 
+		units="mm", width=150, height=120)
+```
+
 
 ## References
