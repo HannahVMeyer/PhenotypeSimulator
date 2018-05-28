@@ -182,7 +182,7 @@ simulatePhenotypes <- function() {
                     same subset of traits [default: %default]."),
         make_option(c("--pTraitsAffectedGenetics"), action="store", 
                     dest="pTraitsAffectedGeneticsString", default=1, 
-                    type="integer", help="Proportion of traits affected by 
+                    type="double", help="Proportion of traits affected by 
                     the genetic variant effects [default: %default]."),
         make_option(c("--distBetaGenetic"), action="store", 
                     dest="distBetaGenetic", default="norm", 
