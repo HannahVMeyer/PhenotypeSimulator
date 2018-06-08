@@ -38,6 +38,38 @@ rescaleVariance <- function(component, propvar) {
     }
 }
 
+
+#' Phenotype transformation
+#' 
+#' Non-linear transformation of components
+#' 
+#' @param component [N x P] Phenotype matrix [double] where [N] are the number 
+#' of samples and P the number of phenotypes 
+#' @param method [string]
+#' @param alpha [double]
+#' @return [N x P] transformed phenotype matrix [double]
+#' 
+#' @export
+transformNonlinear <- function(x, alpha, method, base=10) {
+    nonlinear <- function(x, method, base) {
+        if (method == "exp") y <- exp(x)
+        if (method == "log") y <- log(x, base=base)
+        if (method == "sqrt") {
+            if (any(x < 0)) {
+                stop("For transformation square root, all values have to 
+                     be greater or equal to zero")
+            }
+            Y <- sqrt(x)
+        } else {
+            stop("Transformation method not known")
+        }
+        return(y)
+    }
+    x_trans <- (1 - alpha)*x + alpha*nonlinear(x, method=method, 
+                                                       base=base)
+    return(x_trans)
+}
+
 #' Set simulation model.
 #'
 #' Based on parameters provided, this function sets the name for the phenotype 
@@ -524,6 +556,13 @@ setModel <- function(genVar=NULL, h2s=NULL, theta=0.8, h2bg=NULL, eta=0.8,
 #' [P x P] numeric [double] correlation matrix; if provided,  correlation matrix 
 #' for simulation of correlated backgound effect will be read from file; 
 #' file should NOT contain an index or header column.
+#' @param nonlinear nonlinear transformation method [string]; one of exp, log,
+#' or sqrt; if log, base can be specified; non-linear transformation is
+#' optional, default is NULL ie no transformation (see details)
+#' @param base [int] base of logarithm for non-linear phenotype transformation
+#' (see details)
+#' @param proportionNonlinear [double] proportion of the phenotype to be non-
+#' linear (see details)
 #' @param sampleID Prefix [string] for naming samples (will be followed by 
 #' sample number from 1 to N when constructing sample IDs); only used if 
 #' genotypes/kinship are simulated/do not have sample IDs.
@@ -541,6 +580,15 @@ setModel <- function(genVar=NULL, h2s=NULL, theta=0.8, h2bg=NULL, eta=0.8,
 #' parameters describing the model setup (setup) and v) a named list of raw 
 #' components (rawComponents) used for genetic effect simulation (genotypes 
 #' and/or kinship)
+#' @details Phenotypes are modeled under a linear additive model where
+#' Y = WA + BX + G + C + Phi, with WA the non-genetic covariates, BX the genetic
+#' variant effects, G the infinitesimal genetic effects, C the correlated 
+#' background effects and the Phi the observational noise. For more information
+#' on these components look at the respective function descriptions (see also)
+#' Optionally the phenotypes can be non-linearly transformed via:
+#' Y_trans = (1-alpha) x Y + alpha x f(Y). Alpha is the proportion of non-
+#' linearity of the phenotype and f is a non-linear transformation, and one of
+#' exp. log or sqrt.  
 #' @export
 #' @seealso \link{setModel}, \link{geneticFixedEffects},
 #'  \link{geneticBgEffects}, \link{noiseBgEffects}, \link{noiseFixedEffects},
@@ -581,6 +629,7 @@ runSimulation <- function(N, P,
                           keepSameIndependentConfounders=FALSE,
                           pcorr=0.8, corrmatfile=NULL,
                           meanNoiseBg=0, sdNoiseBg=1, 
+                          nonlinear=NULL, base=10, proportionNonlinear=0,
                           sampleID="ID_", phenoID="Trait_", snpID="SNP_",
                           seed=219453, verbose=FALSE) {
     
@@ -909,14 +958,18 @@ runSimulation <- function(N, P,
         Y_noiseFixed <- NULL
     }
     
-    
     # 3. Construct final simulated phenotype 
     vmessage("Construct final simulated phenotype"
              , verbose=verbose)
-    
     components <- list(Y_genFixed, Y_genBg, Y_noiseFixed, Y_noiseBg, 
                        Y_correlatedBg)
     Y <-  addNonNulls(components)
+    
+    # 4. Transformation
+    if (!is.null(nonlinear)) {
+        Y <- transformNonlinear(Y, method=nonlinear, alpha=proportionNonlinear,
+                                base=base)
+    }
     Y <- scale(Y)
     
     varComponents <- data.frame(genVar=model$genVar, h2s=model$h2s, 
