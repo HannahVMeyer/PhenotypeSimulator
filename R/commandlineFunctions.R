@@ -386,6 +386,13 @@ simulatePhenotypes <- function() {
                     help="Output format of results: when flag set, output saved 
                     as .rds;  at least one of -saveTable or -saveRDS needs to be 
                     set [default: %default]."),
+        make_option(c("--saveLIMMBO"), action="store_true", 
+                    dest="saveAsLIMMBO", default=FALSE, type="logical",
+                    help="When flag is set, simulated data is saved in
+                    LiMMBo format, i.e. Ysim_limmbo.csv (phenotype file),
+                    Covs_limmbo.csv (covariates file), Kinship_limmbo.csv
+                    (kinship file) and genotypes_limmbo.csv (genotype file)
+                    [default: %default]."),
         make_option(c("--savePLINK"), action="store_true", 
                     dest="saveAsPLINK", default=FALSE, type="logical", 
                     help="When flag is set, simulated data is saved in  
@@ -399,7 +406,7 @@ simulatePhenotypes <- function() {
                     Covs_gemma.txt (covariates file), Kinship_gemma.txt 
                     (kinship file) and genotypes.gemma (genotype file)
                     [default: %default]."),
-        make_option(c("--noGemmaIntercept"), 
+        make_option(c("--noGemmaIntercept"),
                     action="store_false", dest="intercept_gemma", default=TRUE, 
                     type="logical", help ="if --saveGEMMA: when modeling an 
                     intercept term in gemma, a column of 1's has to be appended 
@@ -484,6 +491,7 @@ simulatePhenotypes <- function() {
     if (args$saveAsGEMMA) format <- c(format, "gemma")
     if (args$saveAsBIMBAM) format <- c(format, "bimbam")
     if (args$saveAsSNPTEST) format <- c(format, "snptest")
+    if (args$saveAsLIMMBO) format <- c(format, "limmbo")
 
     if(tolower(args$kinshipFileDelimiter) == "tab") {
         args$kinshipFileDelimiter="\t"
@@ -491,68 +499,68 @@ simulatePhenotypes <- function() {
     if(tolower(args$genoFileDelimiter) == "tab") {
         args$genoFileDelimiter="\t"
     }
-    simulatedPheno <- runSimulation( N=args$NrSamples, P=args$NrPhenotypes, 
+    simulatedPheno <- runSimulation( N=args$NrSamples, P=args$NrPhenotypes,
                                      seed=args$seed,
                                      tNrSNP=args$tNrSNP, cNrSNP=args$cNrSNP,
                                      pTraitsAffectedGenetics=
                                          args$pTraitsAffectedGenetics,
                                      pTraitsAffectedConfounders=
                                          pTraitsAffectedConfounders,
-                                     NrConfounders=NrConfounders, 
+                                     NrConfounders=NrConfounders,
                                      NrFixedEffects=args$NrFixedEffects,
-                                     chr=chr, 
+                                     chr=chr,
                                      NrChrCausal=args$NrChrCausal,
                                      NrSNPsOnChromosome=NrSNPsOnChromosome,
                                      probabilities = args$probabilities,
                                      oxgen=args$oxgen,
                                      skipFields=args$skipFields,
-                                     sampleID=args$sampleID, 
+                                     sampleID=args$sampleID,
                                      phenoID=args$phenoID,
-                                     genoFilePrefix=args$genoFilePrefix, 
-                                     genoFileSuffix=args$genoFileSuffix, 
+                                     genoFilePrefix=args$genoFilePrefix,
+                                     genoFileSuffix=args$genoFileSuffix,
                                      SNPfrequencies=SNPfrequencies,
                                      genoDelimiter=args$genoFileDelimiter,
                                      kinshipfile=args$kinshipfile,
                                      kinshipHeader=args$kinshipHeader,
                                      kinshipDelimiter=args$kinshipFileDelimiter,
-                                     standardise=args$standardise, 
-                                     genVar=args$genVar, 
+                                     standardise=args$standardise,
+                                     genVar=args$genVar,
                                      h2s=args$h2s, h2bg=args$h2bg,
                                      theta=args$theta, eta=args$eta,
-                                     noiseVar=args$noiseVar, 
-                                     delta=args$delta, rho=args$rho, 
+                                     noiseVar=args$noiseVar,
+                                     delta=args$delta, rho=args$rho,
                                      phi=args$phi,
                                      alpha=args$alpha,
-                                     gamma=args$gamma, 
+                                     gamma=args$gamma,
                                      pcorr=args$pcorr,
                                      corrmatfile=args$corrmatfile,
                                      pIndependentConfounders=
-                                         pIndependentConfounders, 
+                                         pIndependentConfounders,
                                      pTraitIndependentConfounders=
-                                        pTraitIndependentConfounders, 
+                                        pTraitIndependentConfounders,
                                      keepSameIndependentConfounders=
                                          keepSameIndependentConfounders,
                                      pIndependentGenetic=
-                                         args$pIndependentGenetic, 
+                                         args$pIndependentGenetic,
                                      pTraitIndependentGenetic=
-                                         args$pTraitIndependentGenetic, 
+                                         args$pTraitIndependentGenetic,
                                      keepSameIndependentSNPs=
                                          args$keepSameIndependentSNPs,
                                      distBetaGenetic=args$distBetaGenetic,
-                                     mBetaGenetic=args$mBetaGenetic, 
+                                     mBetaGenetic=args$mBetaGenetic,
                                      sdBetaGenetic=
                                          args$sdBetaGenetic,
-                                     distConfounders=distConfounders, 
-                                     mConfounders=mConfounders, 
+                                     distConfounders=distConfounders,
+                                     mConfounders=mConfounders,
                                      sdConfounders=sdConfounders,
                                      catConfounders=catConfounders,
                                      probConfounders=probConfounders,
                                      distBetaConfounders=distBetaConfounders,
-                                     mBetaConfounders=mBetaConfounders, 
+                                     mBetaConfounders=mBetaConfounders,
                                      sdBetaConfounders=sdBetaConfounders,
-                                     meanNoiseBg=args$meanNoiseBg, 
+                                     meanNoiseBg=args$meanNoiseBg,
                                      sdNoiseBg=args$sdNoiseBg,
-                                     nonlinear=args$nonlinear, 
+                                     nonlinear=args$nonlinear,
                                      logbase=args$logbase,
                                      expbase=args$expbase,
                                      power=args$power,
@@ -562,11 +570,11 @@ simulatePhenotypes <- function() {
                                          args$proportionNonlinear,
                                      verbose=args$verbose)
 
-    outdir <- savePheno(simulatedPheno, 
+    outdir <- savePheno(simulatedPheno,
                         format=format,
                         saveIntermediate=args$saveIntermediate,
                         intercept_gemma=args$intercept_gemma,
-                        outstring=args$outstring, 
-                        directory=args$directory, 
+                        outstring=args$outstring,
+                        directory=args$directory,
                         verbose=args$verbose)
 }

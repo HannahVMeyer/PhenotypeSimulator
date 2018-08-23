@@ -4,27 +4,37 @@
 \alias{writeStandardOutput}
 \title{Write simulated data into formats used by standard GWAS software}
 \usage{
-writeStandardOutput(directory, genotypes = NULL, phenotypes = NULL,
-  covariates = NULL, kinship = NULL, id_samples, id_snps, id_phenos,
+writeStandardOutput(directory, phenotypes, genotypes = NULL,
+  additionalPhenotypes = NULL, covariates = NULL, kinship = NULL,
+  eval_kinship = NULL, evec_kinship = NULL, id_samples, id_snps, id_phenos,
   outstring = NULL, standardInput_samples = NULL,
   standardInput_genotypes = NULL, format = NULL, intercept_gemma = FALSE,
-  verbose = TRUE)
+  nameAdditional = "_nonLinear", verbose = TRUE)
 }
 \arguments{
 \item{directory}{Absolute path (no tilde expansion) to parent directory 
 [string] where the data should be saved [needs user writing permission]}
 
+\item{phenotypes}{[NrSamples x NrTrait] Data.frame/matrix of phenotypes 
+[doubles].}
+
 \item{genotypes}{[NrSamples x NrSNP] Data.frame/matrix of genotypes 
 [integers]/[doubles].}
 
-\item{phenotypes}{[NrSamples x NrTrait] Data.frame/matrix of phenotypes 
-[doubles].}
+\item{additionalPhenotypes}{[NrSamples x NrTrait] Data.frame/matrix of 
+additional phenotypes (for instance non-linearly tranformed orginal}
 
 \item{covariates}{[NrSamples x NrCovariates] Data.frame/matrix of covariates
 [integers]/[doubles].}
 
 \item{kinship}{[NrSamples x NrSamples] Data.frame/matrix of kinship estimates
 [doubles].}
+
+\item{eval_kinship}{[NrSamples] vector with eigenvalues of kinship matrix
+[doubles].}
+
+\item{evec_kinship}{[NrSamples x NrSamples] Data.frame/matrix with
+eigenvectors of kinship matrix [doubles].}
 
 \item{id_samples}{Vector of [NrSamples] sample IDs [string] of simulated 
 phenotypes, genotypes and covariates.}
@@ -52,12 +62,15 @@ formats see \emph{External formats}.}
 column of 1's have to be appended to the covariate files. Set intercept_gemma
 to TRUE to include a column of 1's in the output.}
 
+\item{nameAdditional}{name [string] of additonal phenotypes to be appended to 
+filename.}
+
 \item{verbose}{[boolean]; If TRUE, progress info is printed to standard out}
 }
 \description{
 writeStandardOutput can write genotypes and phenotypes as well as possible
 covariates and kinship matrices into a number of formats for standard GWAS 
-software: plink, snptest, bimbam, gemma. For more information on the 
+software: plink, snptest, bimbam, gemma, limmbo. For more information on the 
 different file formats see \emph{External formats}.
 }
 \section{External formats}{
@@ -125,7 +138,7 @@ represents the (posterior) mean genotype, or dosage of the minor allele.
 without sample or phenotype header/index (Ysim_gemma.txt) and b) the mean 
 genotype file format which is a single file, without information on 
 individuals(genotypes.gemma); a) and b) both the same as above for bimbam 
-format). In addition and if applicable, c) a kinship file (Kinship_gemma.txt)
+format). In addition and if applicable, c) a kinship file (kinship_gemma.txt)
 and d) covariate file (Covs_gemma.txt). From 
 \url{http://www.xzlab.org/software/GEMMAmanual.pdf}: The kinship file 
 contains a NrSample × NrSample matrix, where each row and each column 
@@ -134,6 +147,14 @@ and ith row and jth column is a number indicating the relatedness value
 between ith and jth individuals. The covariates file has the same format as 
 the phenotype file dsecribed above and must contain a column of 1’s if one 
 wants to include an intercept term (set parameter intercept_gemma=TRUE).
+\item limmbo format: consists of a) a comma-separated phenotype file 
+without sample IDs as index and phenotype IDs as header (Ysim_limmbo.csv),
+b) the mean genotype file format with one genetic variant per line. The
+first column contains the variant ID, column 2-N+1 contain the genotype code
+(numbers between 0 and 2 that represent the (posterior) mean genotype/dosage
+of the minor allele) for N samples, c)  a kinship file (kinship_limmbo.csv)
+and d) covariate file (covs_limmbo.csv). From
+
 }
 }
 
