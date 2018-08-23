@@ -23,7 +23,8 @@ runSimulation(N, P, genVar = NULL, h2s = NULL, theta = 0.8, h2bg = NULL,
   pTraitIndependentConfounders = 0.2,
   keepSameIndependentConfounders = FALSE, pcorr = 0.8, corrmatfile = NULL,
   meanNoiseBg = 0, sdNoiseBg = 1, nonlinear = NULL, logbase = 10,
-  expbase = NULL, proportionNonlinear = 0, sampleID = "ID_",
+  expbase = NULL, power = NULL, customTransform = NULL,
+  transformNeg = "abs", proportionNonlinear = 0, sampleID = "ID_",
   phenoID = "Trait_", snpID = "SNP_", seed = 219453, verbose = FALSE)
 }
 \arguments{
@@ -201,15 +202,29 @@ simulation observational noise effects.}
 \item{sdNoiseBg}{Standard deviation [double] of the normal distributions for 
 the simulations of the observational noise effects.}
 
-\item{nonlinear}{nonlinear transformation method [string]; one of exp, log,
-or sqrt; if log, base can be specified; non-linear transformation is
-optional, default is NULL ie no transformation (see details)}
+\item{nonlinear}{nonlinear transformation method [string]; one exp 
+(exponential), log (logarithm), poly (polynomial), sqrt (squareroot) or 
+custom (user-supplied function); if log or exp, base can be specified; if 
+poly, power can be specified; if custom, a custom function (see for details). 
+Non-linear transformation is optional, default is NULL ie no transformation (see 
+details).}
 
 \item{logbase}{[int] base of logarithm for non-linear phenotype 
-transformation (see details)}
+transformation (see details).}
 
-\item{expbase}{[int] base of exponantial function for non-linear phenotype 
-transformation (see details)}
+\item{expbase}{[int] base of exponential function for non-linear phenotype 
+transformation (see details).}
+
+\item{power}{[double] power of polynomial function for non-linear phenotype 
+transformation.}
+
+\item{customTransform}{[function] custom transformation function accepting 
+a single argument.}
+
+\item{transformNeg}{[string] transformation method for negative values in non
+linear phenotype transformation. One of abs (absolute value) or set0 (set all 
+negative values to zero). If nonlinear==log and transformNeg==set0, negative
+values set to 1e-5}
 
 \item{proportionNonlinear}{[double] proportion of the phenotype to be non-
 linear (see details)}
