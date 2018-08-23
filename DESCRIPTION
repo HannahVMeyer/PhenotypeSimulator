@@ -1,6 +1,6 @@
 Package: PhenotypeSimulator
 Title: Flexible Phenotype Simulation from Different Genetic and Noise Models
-Version: 0.2.2
+Version: 0.2.4
 Authors@R: c(
   person("Hannah", "Meyer", email = "hannah@ebi.ac.uk", role = c("aut", "cre")),
   person("Konrad", "Rudolph", email = "konrad.rudolph@gmail.com", role = "ctb")

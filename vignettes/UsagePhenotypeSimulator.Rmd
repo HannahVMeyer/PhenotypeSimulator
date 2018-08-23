@@ -13,8 +13,7 @@ vignette: >
 ---
 ```{r, echo = FALSE, message=FALSE}
 knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
-devtools::load_all()
-#library("PhenotypeSimulator")
+library("PhenotypeSimulator")
 ```
 
 # Introduction
