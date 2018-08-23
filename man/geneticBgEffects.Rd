@@ -34,8 +34,9 @@ constructed by paste(phenoID, 1:P, sep="").}
 Named list of shared infinitesimal genetic effects (shared: [N x P] 
 matrix) and independent infinitesimal genetic effects (independent: [N x P] 
 matrix), the covariance term of the shared effect (cov_shared: [P x P] 
-matrix) and the covariance term of the independent effect (cov_independent: 
-[P x P] matrix).
+matrix), the covariance term of the independent effect (cov_independent: 
+[P x P] matrix), the eigenvectors (eigenvec_kinship: [N x N]) and eigenvalues
+ (eigenval_kinship: [N]) of the kinship matrix.
 }
 \description{
 geneticBgEffects simulates an infinitesimal genetic effects with a proportion 

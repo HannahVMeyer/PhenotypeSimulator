@@ -336,6 +336,24 @@ simulatePhenotypes <- function() {
                     messages about simulation steps are printed to standard out
                     [default: %default]."),
         
+        make_option(c("--nonlinear"), action="store", dest="nonlinear", 
+                    default=NULL, type="character", 
+                    help="Nonlinear transformation method; one of exp, log, or 
+                    sqrt; if log, base can be specified; non-linear 
+                    transformation is optional, default is NULL ie no 
+                    transformation"),
+        make_option(c("--logbase"), action="store", dest="logbase", default=10, 
+                    type="int", help="Base of logarithm for non-linear phenotype 
+                    transformation"),
+        make_option(c("--logbase"), action="store", dest="expbase", 
+                    default=NULL, 
+                    type="double", help="Base of exponential function for 
+                    non-linear phenotype transformation; if non given, Euler's
+                    number is used (exp)"),
+        make_option(c("--proportionNonlinear"), action="store", 
+                    dest="proportionNonlinear", type="double", help="proportion 
+                    of the phenotype to be non-linear"),
+        
         make_option(c("--directory"), action="store", 
                     dest="directory", default=NULL, type="character", help=
                     "Absolute path (no tilde expansion) to parent directory
@@ -525,6 +543,10 @@ simulatePhenotypes <- function() {
                                      sdBetaConfounders=sdBetaConfounders,
                                      meanNoiseBg=args$meanNoiseBg, 
                                      sdNoiseBg=args$sdNoiseBg,
+                                     nonlinear=args$nonlinear, 
+                                     logbase=args$logbase, expbase=args$expbase, 
+                                     proportionNonlinear=
+                                         args$proportionNonlinear,
                                      verbose=args$verbose)
     
     outdir <- savePheno(simulatedPheno, 

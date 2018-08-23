@@ -41,33 +41,88 @@ rescaleVariance <- function(component, propvar) {
 
 #' Phenotype transformation
 #' 
-#' Non-linear transformation of components
+#' Transformation of phenotype component by applying a user-specified 
+#' non-linear transformation to the phenotype component.
 #' 
 #' @param component [N x P] Phenotype matrix [double] where [N] are the number 
 #' of samples and P the number of phenotypes 
-#' @param method [string]
-#' @param alpha [double]
+#' @param method [string] one of exp (exponential), log (logarithm), poly
+#' (polynomial), sqrt (squareroot) or custom (user-supplied function)
+#' @param transformNeg [string] one of abs (absolute value) or set0 (set all 
+#' negative values to zero). If method==log and transformNeg==set0, negative
+#' values set to 1e-5
+#' @param alpha [double] weighting scalar for non-linearity: alpha==0 fully
+#' linear phenotype, alpha==1 fully non-linear phenotype. See @details.
+#' @param logbase [int] when method==log, sets the log base for transformation
+#' @param expbase [double] when method==exp, sets the exp base for
+#' transformation.
+#' @param power [double] when method==poly, sets the power to raise to.
+#' @param f [function] function accepting component as a single argument.
+#' @details transformNonlinear takes a phenotype component as input and 
+#' transforms it according to the specified transformation method. The user can 
+#' choose how strongly non-linear the resulting phenotype component should be, 
+#' by specifying the weighting parameter alpha:
+#' component_transformed = (1 - alpha) \* component + 
+#' alpha \* transformfunction(component)
 #' @return [N x P] transformed phenotype matrix [double]
-#' 
 #' @export
-transformNonlinear <- function(x, alpha, method, base=10) {
-    nonlinear <- function(x, method, base) {
-        if (method == "exp") y <- exp(x)
-        if (method == "log") y <- log(x, base=base)
-        if (method == "sqrt") {
-            if (any(x < 0)) {
-                stop("For transformation square root, all values have to 
-                     be greater or equal to zero")
+#' @examples 
+#' # Simulate non-genetic covariate effects 
+#' cov_effects <- noiseFixedEffects(N=100, P=5)
+#' # Transform logarithmically
+#' covs_log <- transformNonlinear(cov_effects$shared, alpha=0.5, method="log",
+#' transformNeg="abs")
+#' # Transform custom
+#' f_custom <- function(x) {x^2 + 3*x}
+#' covs_custom <- transformNonlinear(cov_effects$shared, alpha=0.5, 
+#' method="custom", f=f_custom)
+
+transformNonlinear <- function(component, alpha, method, logbase=10, power=2, 
+                               expbase=NULL, transformNeg="abs", f=NULL) {
+    testNumerics(numbers=c(alpha, expbase, logbase), proportions=alpha, 
+                 positives=logbase)
+    nonlinear <- function(x, method, expbase, logbase, power, f) {
+        if (!is.null(transformNeg)) {
+            if (transformNeg == "abs") {
+                x <- abs(x)
+            } else if (transformNeg == "set0") {
+                if (method == "log") {
+                    x[x < 0] <- 1e-5
+                } else {
+                    x[x < 0] <- 0
+                }
+            } else {
+                stop("Negative transformation method not known")
             }
-            Y <- sqrt(x)
+        }
+        if (method == "exp") {
+            if (is.null(expbase)) y <- exp(x)
+            if (!is.null(expbase)) y <- expbase^x
+        } else if (method == "log") {
+            if (any(x <= 0)) {
+                stop(paste("For transformation log, all values have to", 
+                     " be greater than zero"))
+            }
+            y <- log(x, base=logbase)
+        } else if (method == "poly") {
+            y <- x^power
+        } else if (method == "sqrt") {
+            if (any(x < 0)) {
+                stop(paste("For transformation square root, all values have to", 
+                     "be greater or equal to zero"))
+            }
+            y <- sqrt(x)
+        } else if (method == "custom") {
+            y <- f(x)
         } else {
             stop("Transformation method not known")
         }
         return(y)
     }
-    x_trans <- (1 - alpha)*x + alpha*nonlinear(x, method=method, 
-                                                       base=base)
-    return(x_trans)
+    component_trans <- (1 - alpha) * component + 
+        alpha * nonlinear(component, method=method, logbase=logbase, 
+                          expbase=expbase, power=power, f=f)
+    return(component_trans)
 }
 
 #' Set simulation model.
@@ -101,13 +156,15 @@ transformNonlinear <- function(x, alpha, method, base=10) {
 #' have a trait-independent fixed effect.
 #' @param pTraitIndependentGenetic Proportion [double] of traits influenced by 
 #' independent genetic variant effects.
+#' @param proportionNonlinear [double] proportion of the phenotype to be non-
+#' linear
 #' @param verbose [boolean]; If TRUE, progress info is printed to standard out.
 #' @return Named list containing the genetic model (modelGenetic), the noise 
 #' model (modelNoise) and the input parameters (h2s, h2bg, noiseVar, rho, delta, 
-#' phi, gamma, theta, eta, alpha, pcorr). Model options are:
-#' modelNoise: "noNoise", "noiseFixedOnly", "noiseBgOnly", "noiseCorrelatedOnly",
-#'  "noiseFixedAndBg","noiseCorrelatedAndBg", "noiseFixedAndCorrelated",
-#'  "noiseFixedAndBgAndCorrelated"
+#' phi, gamma, theta, eta, alpha, pcorr, proportionNonlinear). Model options 
+#' are: modelNoise: "noNoise", "noiseFixedOnly", "noiseBgOnly", 
+#' "noiseCorrelatedOnly", "noiseFixedAndBg","noiseCorrelatedAndBg", 
+#' "noiseFixedAndCorrelated", "noiseFixedAndBgAndCorrelated"
 #' modelGenetic: "noGenetic","geneticBgOnly", "geneticFixedOnly",
 #' "geneticFixedAndBg"
 #' @export
@@ -124,7 +181,8 @@ setModel <- function(genVar=NULL, h2s=NULL, theta=0.8, h2bg=NULL, eta=0.8,
                      noiseVar=NULL, delta=NULL, gamma=0.8, rho=NULL, phi=NULL, 
                      alpha=0.8, pcorr=0.6, pIndependentConfounders=0.4,  
                      pTraitIndependentConfounders=0.2,  pIndependentGenetic=0.4, 
-                     pTraitIndependentGenetic=0.2, verbose=TRUE)  {
+                     pTraitIndependentGenetic=0.2, proportionNonlinear=0,
+                     verbose=TRUE)  {
     if (is.null(c(genVar, noiseVar, h2bg, h2s, delta, rho, phi))) {
         stop("No variance components specified")
     }
@@ -135,7 +193,8 @@ setModel <- function(genVar=NULL, h2s=NULL, theta=0.8, h2bg=NULL, eta=0.8,
                     pTraitIndependentConfounders=
                         pTraitIndependentConfounders, 
                     pIndependentGenetic=pIndependentGenetic, 
-                    pTraitIndependentGenetic=pTraitIndependentGenetic)
+                    pTraitIndependentGenetic=pTraitIndependentGenetic,
+                    proportionNonlinear=proportionNonlinear)
     proportions <- list(genVar=genVar, h2s=h2s, h2bg=h2bg, theta=theta,
                         eta=eta, noiseVar=noiseVar, delta=delta, gamma=gamma, 
                         rho=rho, phi=phi, alpha=alpha, pcorr=pcorr, 
@@ -143,7 +202,8 @@ setModel <- function(genVar=NULL, h2s=NULL, theta=0.8, h2bg=NULL, eta=0.8,
                         pTraitIndependentConfounders=
                             pTraitIndependentConfounders, 
                         pIndependentGenetic=pIndependentGenetic, 
-                        pTraitIndependentGenetic=pTraitIndependentGenetic)
+                        pTraitIndependentGenetic=pTraitIndependentGenetic,
+                        proportionNonlinear=proportionNonlinear)
     testNumerics(numbers=numbers, proportions=proportions)
     if (is.null(genVar)) {
         if (is.null(noiseVar)) {
@@ -417,6 +477,9 @@ setModel <- function(genVar=NULL, h2s=NULL, theta=0.8, h2bg=NULL, eta=0.8,
             vmessage(c("Proportion of variance of shared infinitesimal genetic",
                        "effects (eta):", eta), verbose=verbose)
         }
+        vmessage(c("Proportion of non-linear phenotype transformation",
+                   "(proportionNonlinear):", proportionNonlinear), 
+                 verbose=verbose)
         vmessage("\n", verbose=verbose)
     }
     return(list(modelGenetic=modelGenetic, modelNoise=modelNoise,
@@ -426,7 +489,8 @@ setModel <- function(genVar=NULL, h2s=NULL, theta=0.8, h2bg=NULL, eta=0.8,
                 pTraitIndependentGenetic=pTraitIndependentGenetic,
                 pIndependentGenetic=pIndependentGenetic,
                 pTraitIndependentConfounders=pTraitIndependentConfounders,
-                pIndependentConfounders=pIndependentConfounders
+                pIndependentConfounders=pIndependentConfounders,
+                proportionNonlinear=proportionNonlinear
     ))
 }
 
@@ -556,11 +620,24 @@ setModel <- function(genVar=NULL, h2s=NULL, theta=0.8, h2bg=NULL, eta=0.8,
 #' [P x P] numeric [double] correlation matrix; if provided,  correlation matrix 
 #' for simulation of correlated backgound effect will be read from file; 
 #' file should NOT contain an index or header column.
-#' @param nonlinear nonlinear transformation method [string]; one of exp, log,
-#' or sqrt; if log, base can be specified; non-linear transformation is
-#' optional, default is NULL ie no transformation (see details)
-#' @param base [int] base of logarithm for non-linear phenotype transformation
-#' (see details)
+#' @param nonlinear nonlinear transformation method [string]; one exp 
+#' (exponential), log (logarithm), poly (polynomial), sqrt (squareroot) or 
+#' custom (user-supplied function); if log or exp, base can be specified; if 
+#' poly, power can be specified; if custom, a custom function (see for details). 
+#' Non-linear transformation is optional, default is NULL ie no transformation (see 
+#' details).
+#' @param logbase [int] base of logarithm for non-linear phenotype 
+#' transformation (see details).
+#' @param expbase [int] base of exponential function for non-linear phenotype 
+#' transformation (see details).
+#' @param power [double] power of polynomial function for non-linear phenotype 
+#' transformation.
+#' @param transformNeg [string] transformation method for negative values in non
+#' linear phenotype transformation. One of abs (absolute value) or set0 (set all 
+#' negative values to zero). If nonlinear==log and transformNeg==set0, negative
+#' values set to 1e-5
+#' @param customTransform [function] custom transformation function accepting 
+#' a single argument.
 #' @param proportionNonlinear [double] proportion of the phenotype to be non-
 #' linear (see details)
 #' @param sampleID Prefix [string] for naming samples (will be followed by 
@@ -579,7 +656,7 @@ setModel <- function(genVar=NULL, h2s=NULL, theta=0.8, h2bg=NULL, eta=0.8,
 #' phenotype components (phenoComponentsIntermediate), iv) a named list of 
 #' parameters describing the model setup (setup) and v) a named list of raw 
 #' components (rawComponents) used for genetic effect simulation (genotypes 
-#' and/or kinship)
+#' and/or kinship, eigenvalues and eigenvectors of kinship)
 #' @details Phenotypes are modeled under a linear additive model where
 #' Y = WA + BX + G + C + Phi, with WA the non-genetic covariates, BX the genetic
 #' variant effects, G the infinitesimal genetic effects, C the correlated 
@@ -588,7 +665,7 @@ setModel <- function(genVar=NULL, h2s=NULL, theta=0.8, h2bg=NULL, eta=0.8,
 #' Optionally the phenotypes can be non-linearly transformed via:
 #' Y_trans = (1-alpha) x Y + alpha x f(Y). Alpha is the proportion of non-
 #' linearity of the phenotype and f is a non-linear transformation, and one of
-#' exp. log or sqrt.  
+#' exp, log or sqrt. 
 #' @export
 #' @seealso \link{setModel}, \link{geneticFixedEffects},
 #'  \link{geneticBgEffects}, \link{noiseBgEffects}, \link{noiseFixedEffects},
@@ -629,7 +706,9 @@ runSimulation <- function(N, P,
                           keepSameIndependentConfounders=FALSE,
                           pcorr=0.8, corrmatfile=NULL,
                           meanNoiseBg=0, sdNoiseBg=1, 
-                          nonlinear=NULL, base=10, proportionNonlinear=0,
+                          nonlinear=NULL, logbase=10, expbase=NULL, power=NULL,
+                          customTransform=NULL, transformNeg="abs",
+                          proportionNonlinear=0,
                           sampleID="ID_", phenoID="Trait_", snpID="SNP_",
                           seed=219453, verbose=FALSE) {
     
@@ -642,6 +721,7 @@ runSimulation <- function(N, P,
                       pTraitIndependentConfounders=pTraitIndependentConfounders, 
                       pIndependentGenetic=pIndependentGenetic, 
                       pTraitIndependentGenetic=pTraitIndependentGenetic, 
+                      proportionNonlinear=proportionNonlinear,
                       verbose=verbose)
     id_snps <- NULL
     id_samples <- NULL
@@ -876,6 +956,9 @@ runSimulation <- function(N, P,
                                   id_phenos=id_phenos, id_samples=id_samples,
                                   sampleID=sampleID, phenoID=phenoID)
         
+        eval_kinship <- noiseBg$eval_kinship
+        evec_kinship <- noiseBg$evec_kinship
+        
         var_noiseBg_shared <- model$alpha * model$phi * model$noiseVar
         var_noiseBg_independent <- (1 - model$alpha) * model$phi * model$noiseVar
         
@@ -908,6 +991,8 @@ runSimulation <- function(N, P,
         cov_noiseBg <- NULL
         cov_noiseBg_shared <- NULL
         cov_noiseBg_independent <- NULL
+        eval_kinship <- NULL
+        evec_kinship <- NULL
     }
     if (grepl('Fixed', model$modelNoise)) {
         vmessage("Simulate confounder effects", verbose=verbose)
@@ -947,8 +1032,9 @@ runSimulation <- function(N, P,
             noiseFixed$independent, 
             var_noiseFixed_independent)
         
-        Y_noiseFixed <- addNonNulls(list(noiseFixed_shared_rescaled$component, 
-                                         noiseFixed_independent_rescaled$component))
+        Y_noiseFixed <- 
+            addNonNulls(list(noiseFixed_shared_rescaled$component, 
+                            noiseFixed_independent_rescaled$component))
     } else {
         noiseFixed <- NULL
         noiseFixed_shared_rescaled <- NULL
@@ -967,13 +1053,20 @@ runSimulation <- function(N, P,
     
     # 4. Transformation
     if (!is.null(nonlinear)) {
-        Y <- transformNonlinear(Y, method=nonlinear, alpha=proportionNonlinear,
-                                base=base)
+        Y_transformed <- transformNonlinear(Y, method=nonlinear, 
+                                          alpha=proportionNonlinear, 
+                                          logbase=logbase, expbase=expbase,
+                                          power=power, f=customTransform,
+                                          transformNeg=transformNeg)
+        Y_transformed <- scale(Y_transformed)
+    } else {
+        Y_transformed <- NULL
     }
     Y <- scale(Y)
     
     varComponents <- data.frame(genVar=model$genVar, h2s=model$h2s, 
                                 h2bg=model$h2bg, 
+                                proportionNonlinear=model$proportionNonlinear,
                                 var_genFixed_shared=var_genFixed_shared, 
                                 var_genFixed_independent=
                                     var_genFixed_independent, 
@@ -989,6 +1082,7 @@ runSimulation <- function(N, P,
     phenoComponentsFinal <- list(Y=Y, Y_genFixed=Y_genFixed, Y_genBg=Y_genBg, 
                                  Y_noiseFixed=Y_noiseFixed, Y_noiseBg=Y_noiseBg, 
                                  Y_correlatedBg=Y_correlatedBg, 
+                                 Y_transformed=Y_transformed,
                                  cov_genBg=cov_genBg, 
                                  cov_noiseBg=cov_noiseBg,
                                  cov_correlatedBg = cov_correlatedBg)
@@ -1020,7 +1114,8 @@ runSimulation <- function(N, P,
                   modelGenetic=model$modelGenetic, 
                   modelNoise=model$modelNoise, 
                   id_samples=id_samples, id_phenos=id_phenos, id_snps=id_snps)
-    rawComponents <- list(kinship=kinship, genotypes=genotypes)
+    rawComponents <- list(kinship=kinship, genotypes=genotypes,
+                          eval_kinship=eval_kinship, evec_kinship=evec_kinship)
     
     return(list(varComponents=varComponents, 
                 phenoComponentsFinal=phenoComponentsFinal, 

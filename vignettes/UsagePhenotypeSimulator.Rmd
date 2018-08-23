@@ -13,8 +13,8 @@ vignette: >
 ---
 ```{r, echo = FALSE, message=FALSE}
 knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
-##devtools::load_all()
-library("PhenotypeSimulator")
+devtools::load_all()
+#library("PhenotypeSimulator")
 ```
 
 # Introduction
@@ -81,6 +81,9 @@ total == 1
 # combine components into final phenotype
 Y <- scale(genBg_shared_scaled$component + noiseBg_shared_scaled$component +
     genBg_independent_scaled$component + noiseBg_independent_scaled$component)
+
+# transform phenotype non-linearly
+Y_nl <- transformNonlinear(Y, alpha=0.7, method="exp")
 ```
 
     
@@ -96,7 +99,8 @@ genVar <- 0.4
 phenotype <- runSimulation(N = 100, P = 15,  tNrSNP = 10000, 
                            SNPfrequencies = c(0.05, 0.1,0.3,0.4), 
                            genVar = 0.4, h2bg = 1, phi = 1, 
-                           verbose = TRUE)
+                           verbose = TRUE, nonlinear="exp", 
+                           proportionNonlinear = 0.7)
 ```
 
 ## Example 2: Creating a phenotype composed of five components

@@ -22,8 +22,9 @@ runSimulation(N, P, genVar = NULL, h2s = NULL, theta = 0.8, h2bg = NULL,
   pTraitsAffectedConfounders = 1, pIndependentConfounders = 0.4,
   pTraitIndependentConfounders = 0.2,
   keepSameIndependentConfounders = FALSE, pcorr = 0.8, corrmatfile = NULL,
-  meanNoiseBg = 0, sdNoiseBg = 1, sampleID = "ID_", phenoID = "Trait_",
-  snpID = "SNP_", seed = 219453, verbose = FALSE)
+  meanNoiseBg = 0, sdNoiseBg = 1, nonlinear = NULL, logbase = 10,
+  expbase = NULL, proportionNonlinear = 0, sampleID = "ID_",
+  phenoID = "Trait_", snpID = "SNP_", seed = 219453, verbose = FALSE)
 }
 \arguments{
 \item{N}{Number [integer] of samples to simulate.}
@@ -200,6 +201,19 @@ simulation observational noise effects.}
 \item{sdNoiseBg}{Standard deviation [double] of the normal distributions for 
 the simulations of the observational noise effects.}
 
+\item{nonlinear}{nonlinear transformation method [string]; one of exp, log,
+or sqrt; if log, base can be specified; non-linear transformation is
+optional, default is NULL ie no transformation (see details)}
+
+\item{logbase}{[int] base of logarithm for non-linear phenotype 
+transformation (see details)}
+
+\item{expbase}{[int] base of exponantial function for non-linear phenotype 
+transformation (see details)}
+
+\item{proportionNonlinear}{[double] proportion of the phenotype to be non-
+linear (see details)}
+
 \item{sampleID}{Prefix [string] for naming samples (will be followed by 
 sample number from 1 to N when constructing sample IDs); only used if 
 genotypes/kinship are simulated/do not have sample IDs.}
@@ -222,13 +236,24 @@ ii) a named list with the final simulated phenotype components
 phenotype components (phenoComponentsIntermediate), iv) a named list of 
 parameters describing the model setup (setup) and v) a named list of raw 
 components (rawComponents) used for genetic effect simulation (genotypes 
-and/or kinship)
+and/or kinship, eigenvalues and eigenvectors of kinship)
 }
 \description{
 runSimulation wraps around setModel, the phenotype component functions 
 (genFixedEffects, genBgEffects, noiseBgEffects, noiseFixedEffects and 
 correlatedBgEffects), rescales each component and combines them into the 
 final phenotype. For details to all parameters, see the respective functions.
+}
+\details{
+Phenotypes are modeled under a linear additive model where
+Y = WA + BX + G + C + Phi, with WA the non-genetic covariates, BX the genetic
+variant effects, G the infinitesimal genetic effects, C the correlated 
+background effects and the Phi the observational noise. For more information
+on these components look at the respective function descriptions (see also)
+Optionally the phenotypes can be non-linearly transformed via:
+Y_trans = (1-alpha) x Y + alpha x f(Y). Alpha is the proportion of non-
+linearity of the phenotype and f is a non-linear transformation, and one of
+exp, log or sqrt.
 }
 \examples{
 # simulate phenotype of 100 samples, 10 traits from genetic and noise 

@@ -739,8 +739,9 @@ noiseFixedEffects <- function(N, P, NrConfounders=10, sampleID="ID_",
 #' @return Named list of shared infinitesimal genetic effects (shared: [N x P] 
 #' matrix) and independent infinitesimal genetic effects (independent: [N x P] 
 #' matrix), the covariance term of the shared effect (cov_shared: [P x P] 
-#' matrix) and the covariance term of the independent effect (cov_independent: 
-#' [P x P] matrix).
+#' matrix), the covariance term of the independent effect (cov_independent: 
+#' [P x P] matrix), the eigenvectors (eigenvec_kinship: [N x N]) and eigenvalues
+#'  (eigenval_kinship: [N]) of the kinship matrix.
 #' @details For the simulation of the infinitesimal genetic effects, three 
 #' matrix components are used: i) the kinship matrix K [N x N] which is treated 
 #' as the sample design matrix, ii) matrix B [N x P] with vec(B) drawn from a 
@@ -787,8 +788,8 @@ geneticBgEffects <- function(P, N, kinship, phenoID="Trait_",
     }
     if (is.null(id_phenos)) id_phenos <- paste(phenoID, 1:P, sep="")
     
-    kin_eigen <- as.complex(eigen(kinship, only.values = TRUE)$values)
-    if (any(Re(kin_eigen) <= 0)) {
+    kin_eigen <- eigen(kinship, symmetric=TRUE)
+    if (any(Re(as.complex(kin_eigen$values)) <= 0)) {
         stop("Kinship matrix is not positive semi-definite")
     }
     kinship_chol <- t(chol(kinship))
@@ -830,7 +831,9 @@ geneticBgEffects <- function(P, N, kinship, phenoID="Trait_",
         cov_independent <- NULL
     }
     return(list(shared=genBgShared, independent=genBgIndependent, 
-                cov_shared=cov_shared, cov_independent=cov_independent))
+                cov_shared=cov_shared, cov_independent=cov_independent,
+                eigenvec_kinship=kin_eigen$vectors,
+                eigenval_kinship=kin_eigen$values))
 }
 
 #' Simulate observational noise effects.

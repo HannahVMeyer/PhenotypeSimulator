@@ -8,7 +8,7 @@ setModel(genVar = NULL, h2s = NULL, theta = 0.8, h2bg = NULL,
   eta = 0.8, noiseVar = NULL, delta = NULL, gamma = 0.8, rho = NULL,
   phi = NULL, alpha = 0.8, pcorr = 0.6, pIndependentConfounders = 0.4,
   pTraitIndependentConfounders = 0.2, pIndependentGenetic = 0.4,
-  pTraitIndependentGenetic = 0.2, verbose = TRUE)
+  pTraitIndependentGenetic = 0.2, proportionNonlinear = 0, verbose = TRUE)
 }
 \arguments{
 \item{genVar}{Total genetic variance [double].}
@@ -52,15 +52,18 @@ have a trait-independent fixed effect.}
 \item{pTraitIndependentGenetic}{Proportion [double] of traits influenced by 
 independent genetic variant effects.}
 
+\item{proportionNonlinear}{[double] proportion of the phenotype to be non-
+linear}
+
 \item{verbose}{[boolean]; If TRUE, progress info is printed to standard out.}
 }
 \value{
 Named list containing the genetic model (modelGenetic), the noise 
 model (modelNoise) and the input parameters (h2s, h2bg, noiseVar, rho, delta, 
-phi, gamma, theta, eta, alpha, pcorr). Model options are:
-modelNoise: "noNoise", "noiseFixedOnly", "noiseBgOnly", "noiseCorrelatedOnly",
- "noiseFixedAndBg","noiseCorrelatedAndBg", "noiseFixedAndCorrelated",
- "noiseFixedAndBgAndCorrelated"
+phi, gamma, theta, eta, alpha, pcorr, proportionNonlinear). Model options 
+are: modelNoise: "noNoise", "noiseFixedOnly", "noiseBgOnly", 
+"noiseCorrelatedOnly", "noiseFixedAndBg","noiseCorrelatedAndBg", 
+"noiseFixedAndCorrelated", "noiseFixedAndBgAndCorrelated"
 modelGenetic: "noGenetic","geneticBgOnly", "geneticFixedOnly",
 "geneticFixedAndBg"
 }
