@@ -440,6 +440,11 @@ simulatePhenotypes <- function() {
         stop("At least one of --saveRDS or --saveTable need to be set")
     }
 
+    if (grepl("~", args$directory)) {
+        stop("directory contains ~: path expansion not guaranteed on 
+             every platform (see path.expand{base}), please provide full file
+             path to the output directory")
+    }
     NrConfounders <- commaList2vector(args$NrConfoundersString)
     SNPfrequencies <- commaList2vector(args$SNPfrequencyString)
     pIndependentConfounders <- 
@@ -564,7 +569,7 @@ simulatePhenotypes <- function() {
                                      logbase=args$logbase,
                                      expbase=args$expbase,
                                      power=args$power,
-                                     transformNegNonlinear=
+                                     transformNeg=
                                          args$transformNegNonlinear,
                                      proportionNonlinear=
                                          args$proportionNonlinear,
