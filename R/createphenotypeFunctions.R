@@ -158,6 +158,10 @@ transformNonlinear <- function(component, alpha, method, logbase=10, power=2,
 #' independent genetic variant effects.
 #' @param proportionNonlinear [double] proportion of the phenotype to be non-
 #' linear
+#' @param cNrSNP Number [integer] of causal SNPs; used as genetic variant 
+#' effects.
+#' @param NrConfounders Number [integer] of non-genetic covariates; used as 
+#' non-genetic covariate effects.
 #' @param verbose [boolean]; If TRUE, progress info is printed to standard out.
 #' @return Named list containing the genetic model (modelGenetic), the noise 
 #' model (modelNoise) and the input parameters (h2s, h2bg, noiseVar, rho, delta, 
@@ -182,9 +186,14 @@ setModel <- function(genVar=NULL, h2s=NULL, theta=0.8, h2bg=NULL, eta=0.8,
                      alpha=0.8, pcorr=0.6, pIndependentConfounders=0.4,  
                      pTraitIndependentConfounders=0.2,  pIndependentGenetic=0.4, 
                      pTraitIndependentGenetic=0.2, proportionNonlinear=0,
+                     cNrSNP=NULL, NrConfounders=10,
                      verbose=TRUE)  {
     if (is.null(c(genVar, noiseVar, h2bg, h2s, delta, rho, phi))) {
         stop("No variance components specified")
+    }
+    if (!is.null(NrConfounders) && all(NrConfounders != 0)) {
+        # for testing purposes set to anything other integer than 0
+        NrConfounders=10
     }
     numbers <- list(genVar=genVar, h2s=h2s, h2bg=h2bg, theta=theta,
                     eta=eta, noiseVar=noiseVar, delta=delta, gamma=gamma, 
@@ -194,7 +203,8 @@ setModel <- function(genVar=NULL, h2s=NULL, theta=0.8, h2bg=NULL, eta=0.8,
                         pTraitIndependentConfounders, 
                     pIndependentGenetic=pIndependentGenetic, 
                     pTraitIndependentGenetic=pTraitIndependentGenetic,
-                    proportionNonlinear=proportionNonlinear)
+                    proportionNonlinear=proportionNonlinear,
+                    cNrSNP=cNrSNP, NrConfounders=NrConfounders)
     proportions <- list(genVar=genVar, h2s=h2s, h2bg=h2bg, theta=theta,
                         eta=eta, noiseVar=noiseVar, delta=delta, gamma=gamma, 
                         rho=rho, phi=phi, alpha=alpha, pcorr=pcorr, 
@@ -292,6 +302,11 @@ setModel <- function(genVar=NULL, h2s=NULL, theta=0.8, h2bg=NULL, eta=0.8,
                        "needs to be set to 1; otherwise, the proportions of",
                        "variance of at least 2 components need to be specified")
             )
+        }
+        if (delta != 0 && NrConfounders == 0) {
+            stop(paste("Proportion of of non-genetic covariate variance ",
+                       "(delta) is", delta, "but number of",
+                       "NrConfounder is set to zero"))
         }
         if (gamma == 1) {
             pIndependentConfounders=0
@@ -426,7 +441,13 @@ setModel <- function(genVar=NULL, h2s=NULL, theta=0.8, h2bg=NULL, eta=0.8,
         } else {
             h2bg <- 1 - h2s
         }
-
+        if (!is.null(cNrSNP)) {
+            if (h2s != 0 && cNrSNP == 0) {
+                stop(paste("Proportion of variants of genetic variant effects ",
+                           "(h2s) is", h2s, "but number of",
+                           "cNrSNP is set to zero"))
+            }
+        }
         if (theta == 1) {
             pIndependentGenetic=0
             pTraitIndependentGenetic=0
@@ -722,6 +743,7 @@ runSimulation <- function(N, P,
                       pIndependentGenetic=pIndependentGenetic, 
                       pTraitIndependentGenetic=pTraitIndependentGenetic, 
                       proportionNonlinear=proportionNonlinear,
+                      cNrSNP=cNrSNP, NrConfounders=NrConfounders,
                       verbose=verbose)
     id_snps <- NULL
     id_samples <- NULL
