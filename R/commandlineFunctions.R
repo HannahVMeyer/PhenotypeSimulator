@@ -343,7 +343,7 @@ simulatePhenotypes <- function() {
                     transformation is optional, default is NULL ie no 
                     transformation"),
         make_option(c("--logbase"), action="store", dest="logbase", default=10,
-                    type="int", help="Base of logarithm for non-linear phenotype
+                    type="integer", help="Base of logarithm for non-linear phenotype
                     transformation"),
         make_option(c("--expbase"), action="store", dest="expbase", 
                     default=NULL,
