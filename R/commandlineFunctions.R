@@ -448,13 +448,13 @@ simulatePhenotypes <- function() {
     NrConfounders <- commaList2vector(args$NrConfoundersString)
     SNPfrequencies <- commaList2vector(args$SNPfrequencyString)
     pIndependentConfounders <- 
-    commaList2vector(args$pIndependentConfoundersString)
+        commaList2vector(args$pIndependentConfoundersString)
     pTraitIndependentConfounders <-
-    commaList2vector(args$pTraitIndependentConfoundersString)
+        commaList2vector(args$pTraitIndependentConfoundersString)
     pTraitsAffectedConfounders <-
-    commaList2vector(args$pTraitsAffectedConfoundersString)
+        commaList2vector(args$pTraitsAffectedConfoundersString)
     keepSameIndependentConfounders <-
-    commaList2vector(args$keepSameIndependentConfoundersString,
+        commaList2vector(args$keepSameIndependentConfoundersString,
                                             type="logical")
     distConfounders <- commaList2vector(args$distConfoundersString,
                                         type="character")
