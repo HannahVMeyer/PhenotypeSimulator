@@ -669,7 +669,7 @@ savePheno <- function(simulatedData, directory, format=".csv",
                                             "/Kinship_eigenvec", outstring,
                                             ".csv", sep=""),
                         sep=",", quote=FALSE,
-                        col.names=names(rawComponents$kinship), 
+                        col.names=colnames(rawComponents$kinship), 
                         row.names=FALSE)
             write.table(rawComponents$eval_kinship, paste(directory, 
                                             "/Kinship_eigenval", outstring,
