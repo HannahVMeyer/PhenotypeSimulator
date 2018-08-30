@@ -217,7 +217,7 @@ writeStandardOutput <- function(directory, phenotypes=NULL,
                                     "PHENOTYPE")
             }
             plink.out <- snpStats::write.plink(file.base=paste(directory,
-                                                               "/genotypes", 
+                                                               "/Genotypes", 
                                                                outstring, 
                                                                sep=""), 
                                          snps=as(genotypes, "SnpMatrix"), 
@@ -272,7 +272,7 @@ writeStandardOutput <- function(directory, phenotypes=NULL,
                 geno_format <- standardInput_genotypes
             }
             write.table(geno_format, 
-                        paste(directory, "/genotypes", outstring, "_bimbam.csv", 
+                        paste(directory, "/Genotypes", outstring, "_bimbam.csv", 
                               sep=""),
                         sep=",", col.names=FALSE, row.names=FALSE, quote=FALSE)
         }
@@ -312,7 +312,7 @@ writeStandardOutput <- function(directory, phenotypes=NULL,
                 geno_format <- standardInput_genotypes
             }
             write.table(geno_format,
-                        paste(directory, "/genotypes", outstring, "_gemma.txt", 
+                        paste(directory, "/Genotypes", outstring, "_gemma.txt", 
                               sep=""),
                         sep=",", col.names=FALSE, row.names=FALSE, quote=FALSE)
 
@@ -364,7 +364,7 @@ writeStandardOutput <- function(directory, phenotypes=NULL,
             vmessage(c("Save genotypes in LiMMBo format"), verbose=verbose)
             geno_format <- cbind(id_snps, t(genotypes))
             write.table(geno_format,
-                        paste(directory, "/genotypes", outstring, "_limmbo.csv", 
+                        paste(directory, "/Genotypes", outstring, "_limmbo.csv", 
                               sep=""),
                         sep=",", col.names=TRUE, row.names=FALSE, quote=FALSE)
 
@@ -457,8 +457,8 @@ writeStandardOutput <- function(directory, phenotypes=NULL,
                 geno_format <- standardInput_genotypes
             }
             write.table(geno_format, 
-                        paste(directory, "/genotypes", outstring, "_snptest.gen", 
-                              sep=""),
+                        paste(directory, "/Genotypes", outstring,
+                              "_snptest.gen", sep=""),
                         col.names=FALSE, row.names=FALSE, quote=FALSE)
         }
         if (!is.null(covariates) && !is.null(phenotypes)) {
