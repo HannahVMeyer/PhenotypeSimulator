@@ -58,6 +58,7 @@ rescaleVariance <- function(component, propvar) {
 #' transformation.
 #' @param power [double] when method==poly, sets the power to raise to.
 #' @param f [function] function accepting component as a single argument.
+#' @param verbose [boolean]; If TRUE, progress info is printed to standard out.
 #' @details transformNonlinear takes a phenotype component as input and 
 #' transforms it according to the specified transformation method. The user can 
 #' choose how strongly non-linear the resulting phenotype component should be, 
@@ -78,7 +79,8 @@ rescaleVariance <- function(component, propvar) {
 #' method="custom", f=f_custom)
 
 transformNonlinear <- function(component, alpha, method, logbase=10, power=2, 
-                               expbase=NULL, transformNeg="abs", f=NULL) {
+                               expbase=NULL, transformNeg="abs", f=NULL,
+                               verbose=TRUE) {
     testNumerics(numbers=c(alpha, expbase, logbase), proportions=alpha, 
                  positives=logbase)
     nonlinear <- function(x, method, expbase, logbase, power, f) {
@@ -95,6 +97,7 @@ transformNonlinear <- function(component, alpha, method, logbase=10, power=2,
                 stop("Negative transformation method not known")
             }
         }
+        vmessage(c("Use", method, "as transformation method"), verbose=verbose)
         if (method == "exp") {
             if (is.null(expbase)) y <- exp(x)
             if (!is.null(expbase)) y <- expbase^x
@@ -1073,6 +1076,8 @@ runSimulation <- function(N, P,
 
     # 4. Transformation
     if (!is.null(nonlinear)) {
+        vmessage("Transform phenotypes", verbose=verbose)
+        
         Y_transformed <- transformNonlinear(Y, method=nonlinear, 
                                           alpha=proportionNonlinear, 
                                           logbase=logbase, expbase=expbase,
