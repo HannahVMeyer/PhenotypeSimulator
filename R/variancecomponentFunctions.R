@@ -832,8 +832,8 @@ geneticBgEffects <- function(P, N, kinship, phenoID="Trait_",
     }
     return(list(shared=genBgShared, independent=genBgIndependent, 
                 cov_shared=cov_shared, cov_independent=cov_independent,
-                eigenvec_kinship=kin_eigen$vectors,
-                eigenval_kinship=kin_eigen$values))
+                evec_kinship=kin_eigen$vectors,
+                eval_kinship=kin_eigen$values))
 }
 
 #' Simulate observational noise effects.

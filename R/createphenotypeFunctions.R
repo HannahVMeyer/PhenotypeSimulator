@@ -894,7 +894,9 @@ runSimulation <- function(N, P,
                                   shared=genBgShared, 
                                   independent=genBgIndependent,
                                   id_phenos=id_phenos)
-
+        eval_kinship <- genBg$eval_kinship
+        evec_kinship <- genBg$evec_kinship
+        
         var_genBg_shared <- model$eta * model$h2bg * model$genVar
         var_genBg_independent <- (1 - model$eta) * model$h2bg * model$genVar
 
@@ -925,6 +927,8 @@ runSimulation <- function(N, P,
         cov_genBg <- NULL
         cov_genBg_shared <- NULL
         cov_genBg_independent <- NULL
+        eval_kinship <- NULL
+        evec_kinship <- NULL
     }
     # 1. Simulate noise terms
     vmessage(c("Simulate noise terms (noise model: ", model$modelNoise, ")"),
@@ -978,9 +982,6 @@ runSimulation <- function(N, P,
                                   id_phenos=id_phenos, id_samples=id_samples,
                                   sampleID=sampleID, phenoID=phenoID)
 
-        eval_kinship <- noiseBg$eval_kinship
-        evec_kinship <- noiseBg$evec_kinship
-
         var_noiseBg_shared <- model$alpha * model$phi * model$noiseVar
         var_noiseBg_independent <- (1 - model$alpha) * model$phi * model$noiseVar
 
@@ -1013,8 +1014,6 @@ runSimulation <- function(N, P,
         cov_noiseBg <- NULL
         cov_noiseBg_shared <- NULL
         cov_noiseBg_independent <- NULL
-        eval_kinship <- NULL
-        evec_kinship <- NULL
     }
     if (grepl('Fixed', model$modelNoise)) {
         vmessage("Simulate confounder effects", verbose=verbose)
