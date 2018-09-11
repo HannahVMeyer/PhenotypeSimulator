@@ -44,9 +44,9 @@ test_that('writeStandardOutput writes relevant plink files', {
     expect_true(file.exists(paste(tmp, "/Ysim_plink.txt", sep="")))
     expect_true(file.exists(paste(tmp, "/Covs_plink.txt", sep="")))
     expect_false(file.exists(paste(tmp, "/Kinship_plink.txt", sep="")))
-    expect_true(file.exists(paste(tmp, "/genotypes.fam", sep="")))
-    expect_true(file.exists(paste(tmp, "/genotypes.bim", sep="")))
-    expect_true(file.exists(paste(tmp, "/genotypes.bed", sep="")))
+    expect_true(file.exists(paste(tmp, "/Genotypes.fam", sep="")))
+    expect_true(file.exists(paste(tmp, "/Genotypes.bim", sep="")))
+    expect_true(file.exists(paste(tmp, "/Genotypes.bed", sep="")))
 })
 
 test_that('writeStandardOutput writes relevant oxgen files', {
@@ -60,7 +60,7 @@ test_that('writeStandardOutput writes relevant oxgen files', {
                                      covariates=covariates,
                                      format="snptest", verbose=FALSE)
     expect_true(file.exists(paste(tmp, "/Ysim_snptest.sample", sep="")))
-    expect_true(file.exists(paste(tmp, "/genotypes_snptest.gen", sep="")))
+    expect_true(file.exists(paste(tmp, "/Genotypes_snptest.gen", sep="")))
     expect_false(file.exists(paste(tmp, "/Kinship_snptest.txt", sep="")))
 })
 
@@ -78,7 +78,7 @@ test_that('writeStandardOutput writes relevant gemma files', {
     expect_true(file.exists(paste(tmp, "/Ysim_gemma.txt", sep="")))
     expect_true(file.exists(paste(tmp, "/Kinship_gemma.txt", sep="")))
     expect_true(file.exists(paste(tmp, "/Covs_gemma.txt", sep="")))
-    expect_true(file.exists(paste(tmp, "/genotypes.gemma", sep="")))
+    expect_true(file.exists(paste(tmp, "/Genotypes_gemma.txt", sep="")))
 })
 
 
@@ -95,7 +95,7 @@ test_that('writeStandardOutput writes relevant bimbam files', {
     expect_true(file.exists(paste(tmp, "/Ysim_bimbam.txt", sep="")))
     expect_false(file.exists(paste(tmp, "/Covs_bimbam.txt", sep="")))
     expect_false(file.exists(paste(tmp, "/Kinship_bimbam.txt", sep="")))
-    expect_true(file.exists(paste(tmp, "/genotypes.bimbam", sep="")))
+    expect_true(file.exists(paste(tmp, "/Genotypes_bimbam.csv", sep="")))
 })
 
 context('Test savePheno')

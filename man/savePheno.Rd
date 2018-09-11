@@ -23,10 +23,10 @@ permission]}
 
 \item{format}{Vector of format name(s) [string] specifying the output format;
 multiple output formats can be requested. Options are: plink, bimbam, 
-snptest, gemma, csv or rds. For information on format see details. In order
-to save intermediate phenotype components, at least one of csv or rds need to 
-be specified. plink/bimbam/snptest will only save final phenotype/genotype, 
-kinship and covariate data.}
+snptest, gemma, limmbo, csv or rds. For information on format see details. In
+orde to save intermediate phenotype components, at least one of csv or rds
+need to be specified. plink/bimbam/snptest will only save final
+phenotype/genotype, kinship and covariate data.}
 
 \item{outstring}{Optional name [string] of subdirectory (in relation to 
 directory) to save set-up dependent simulation results; if
