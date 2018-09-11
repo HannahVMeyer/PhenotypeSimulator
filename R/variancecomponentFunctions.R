@@ -63,6 +63,12 @@ geneticFixedEffects <- function(X_causal, P, N, phenoID="Trait_",
                         pTraitIndependentGenetic=pTraitIndependentGenetic, 
                         pTraitsAffected=pTraitsAffected)
     testNumerics(numbers=numbers, positives=positives, proportions=proportions)
+    if (!is.numeric(X_causal)) {
+        stop("Genetic variant matrix to simulate genetic variant effects from is
+              not numeric. Check your genotype simulation or the parameters
+             specified for reading the genotypes from file. Did you provide the
+             correct format information?")
+    }
     if (nrow(X_causal) != N){
         stop("Number of samples in SNP matrix (", nrow(X_causal), ") is 
              different from number of samples to be simulated")
