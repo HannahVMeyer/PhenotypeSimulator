@@ -9,7 +9,7 @@ runSimulation(N, P, genVar = NULL, h2s = NULL, theta = 0.8, h2bg = NULL,
   phi = NULL, alpha = 0.8, tNrSNP = 5000, cNrSNP = 20,
   SNPfrequencies = c(0.1, 0.2, 0.4), genotypefile = NULL, format = NULL,
   genoFilePrefix = NULL, genoFileSuffix = NULL, genoDelimiter = ",",
-  skipFields = NULL, probabilities = FALSE, oxgen = FALSE, chr = NULL,
+  skipFields = NULL, probabilities = FALSE, chr = NULL,
   NrSNPsOnChromosome = NULL, NrChrCausal = NULL, kinshipfile = NULL,
   kinshipHeader = FALSE, kinshipDelimiter = ",", standardise = TRUE,
   distBetaGenetic = "norm", mBetaGenetic = 0, sdBetaGenetic = 1,
@@ -73,9 +73,11 @@ sample.}
 \item{genotypefile}{Needed when reading external genotypes (into memory), 
 path/to/genotype file [string] in format specified by \link{format}.}
 
-\item{format}{Needed when reading external genotypes (into memory), specifies 
-the format of the genotype data; has to be one of  plink, oxgen, genome, 
-bimbam and delim; for details see Details in \link{readStandardGenotypes}}
+\item{format}{Needed when reading external genotypes, specifies 
+the format of the genotype data; has to be one of plink, oxgen, genome, 
+bimbam and delim when reading files into memory, or one of oxgen, bimbam or
+delim if sampling genetic variants from file; for details see
+\link{readStandardGenotypes} and \link{getCausalSNPs}.}
 
 \item{genoFilePrefix}{Needed when sampling cuasal SNPs from file, full 
 path/to/chromosome-wise-genotype-file-ending-before-"chrChromosomeNumber" 
@@ -84,18 +86,17 @@ path/to/chromosome-wise-genotype-file-ending-before-"chrChromosomeNumber"
 \item{genoFileSuffix}{Needed when sampling causal SNPs from file, 
 following chromosome number including fileformat (e.g. ".csv") [string]}
 
-\item{genoDelimiter}{Field separator [string] of genotypefile or genoFile}
+\item{genoDelimiter}{Field separator [string] of genotypefile or genoFile if
+format == delim.}
 
 \item{skipFields}{Number [integer] of fields (columns) in to skip in 
-genoFilePrefix-genoFileSuffix-file. See details in \link{getCausalSNPs}.}
+genoFilePrefix-genoFileSuffix-file. See details in \link{getCausalSNPs} if
+format == delim.}
 
 \item{probabilities}{[bool]. If set to TRUE, the genotypes in the files 
 described by genoFilePrefix and genoFileSuffix are provided as triplets of 
 probablities (p(AA), p(Aa), p(aa)) and are converted into their expected 
 genotype frequencies by 0*p(AA) + p(Aa) + 2p(aa) via \link{probGen2expGen}.}
-
-\item{oxgen}{[bool] Is genoFilePrefix-genoFileSuffix file in oxgen format?
-See \link{readStandardGenotypes} for details.}
 
 \item{chr}{Numeric vector of chromosomes [integer] to chose NrCausalSNPs 
 from; only used when external genotype data is sampled i.e. 

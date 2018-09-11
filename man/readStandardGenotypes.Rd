@@ -71,10 +71,11 @@ father isn't in dataset, iv) within-family ID of mother ('0' if mother isn't
 in dataset), v) sex code ('1' = male, '2' = female, '0' = unknown), vi) 
 Phenotype value ('1' = control, '2' = case, '-9'/'0'/non-numeric = missing 
 data if case/control)
-\item oxgen: consists of two files: the genotype file ending in .gen 
-and the sample file ending in .sample. When specifying the filepath, only
-the core of the name without the ending should be specified (i.e. for 
-geno.gen and geno.sample, geno should be specified). From
+\item oxgen: consists of two files: the space-separated genotype file ending
+in .gen and the space-separated sample file ending in .sample. When
+specifying the filepath, only the core of the name without the ending should
+be specified (i.e. for geno.gen and geno.sample, geno should be specified).
+From
  \url{http://www.stats.ox.ac.uk/~marchini/software/gwas/file_format.html}:
 The genotype file stores data on a one-line-per-SNP format. The first five 
 entries of each line should be the SNP ID, RS ID of the SNP, base-pair 
@@ -94,8 +95,8 @@ sample file visit the above url or see \link{writeStandardOutput}.
 outputfile`. The /path/to/outputfile should be provided and this function
 extracts the relevant genotype information from this output file.
 \url{http://csg.sph.umich.edu/liang/genome}
-\item bimbam: Mean genotype file format of bimbam which is a single file, 
-without information on individuals. From 
+\item bimbam: Mean genotype file format of bimbam which is a single, comma-
+separated file, without information on individuals. From 
 \url{http://www.haplotype.org/bimbam.html}: the first column of the mean 
 genotype files is the SNP ID, the second and third columns are allele types 
 with minor allele first. The rest columns are the mean genotypes of different 

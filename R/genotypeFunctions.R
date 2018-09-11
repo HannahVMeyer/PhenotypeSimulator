@@ -146,10 +146,11 @@ simulateGenotypes <- function(N, NrSNP=5000, frequencies=c(0.1, 0.2, 0.4),
 #' in dataset), v) sex code ('1' = male, '2' = female, '0' = unknown), vi) 
 #' Phenotype value ('1' = control, '2' = case, '-9'/'0'/non-numeric = missing 
 #' data if case/control)
-#' \item oxgen: consists of two files: the genotype file ending in .gen 
-#' and the sample file ending in .sample. When specifying the filepath, only
-#' the core of the name without the ending should be specified (i.e. for 
-#' geno.gen and geno.sample, geno should be specified). From
+#' \item oxgen: consists of two files: the space-separated genotype file ending
+#' in .gen and the space-separated sample file ending in .sample. When
+#' specifying the filepath, only the core of the name without the ending should
+#' be specified (i.e. for geno.gen and geno.sample, geno should be specified).
+#' From
 #'  \url{http://www.stats.ox.ac.uk/~marchini/software/gwas/file_format.html}:
 #' The genotype file stores data on a one-line-per-SNP format. The first five 
 #' entries of each line should be the SNP ID, RS ID of the SNP, base-pair 
@@ -169,8 +170,8 @@ simulateGenotypes <- function(N, NrSNP=5000, frequencies=c(0.1, 0.2, 0.4),
 #' outputfile`. The /path/to/outputfile should be provided and this function
 #' extracts the relevant genotype information from this output file.
 #' \url{http://csg.sph.umich.edu/liang/genome}
-#' \item bimbam: Mean genotype file format of bimbam which is a single file, 
-#' without information on individuals. From 
+#' \item bimbam: Mean genotype file format of bimbam which is a single, comma-
+#' separated file, without information on individuals. From 
 #' \url{http://www.haplotype.org/bimbam.html}: the first column of the mean 
 #' genotype files is the SNP ID, the second and third columns are allele types 
 #' with minor allele first. The rest columns are the mean genotypes of different 
@@ -332,7 +333,9 @@ readStandardGenotypes <- function(N, filename, format = NULL,
 #' Draw random SNPs from genotypes provided or external genotype files.
 #' When drawing from external genotype files, only lines of randomly
 #' chosen SNPs are read, which is recommended for large genotype files. See 
-#' details for more information.
+#' details for more information. The latter option currently supports file in
+#' simple delim-formats (with specified delimiter and optional number of fields
+#' to skip) and the bimbam and the oxgen format.
 #'
 #' @param N Number [integer] of samples to simulate.
 #' @param NrCausalSNPs Number [integer] of SNPs to chose at random.
@@ -352,16 +355,16 @@ readStandardGenotypes <- function(N, filename, format = NULL,
 #' @param genoFileSuffix [string] Following chromosome number including 
 #' .fileformat (e.g. ".csv"); File described by genoFilePrefix-genoFileSuffix
 #' has to be a text format i.e. comma/tab/space separated.
+#' @param format Name [string] of genotype file format. Options are:
+#' "oxgen", "bimbam" or "delim". See \link{readStandardGenotypes} for details.
 #' @param delimiter Field separator [string] of genotypefile or 
-#' genoFilePrefix-genoFileSuffix file.
+#' genoFilePrefix-genoFileSuffix file if format == 'delim'.
 #' @param skipFields Number [integer] of fields (columns) to skip in 
-#' genoFilePrefix-genoFileSuffix file. See details.
+#' genoFilePrefix-genoFileSuffix file if format == 'delim'. See details.
 #' @param probabilities [boolean]. If set to TRUE, the genotypes in the files 
 #' described by genoFilePrefix-genoFileSuffix are provided as triplets of 
 #' probabilities (p(AA), p(Aa), p(aa)) and are converted into their expected 
 #' genotype frequencies by 0*p(AA) + p(Aa) + 2p(aa) via \link{probGen2expGen}.
-#' @param oxgen [boolean] Is genoFilePrefix-genoFileSuffix file in oxgen format?
-#' See \link{readStandardGenotypes} for details.
 #' @param sampleID Prefix [string] for naming samples (will be followed by 
 #' sample number from 1 to N when constructing id_samples)
 #' @param verbose [boolean] If TRUE, progress info is printed to standard out
@@ -373,12 +376,15 @@ readStandardGenotypes <- function(N, filename, format = NULL,
 #' chr22) in the file name (e.g. /path/to/dir/related_nopopstructure_chr22.csv).  
 #' All genotype files need to be saved in the same directory. genoFilePrefix 
 #' (/path/to/dir/related_nopopstructure_) and genoFileSuffix (.csv) specify the 
-#' strings leading and following the "chrChromosomenumber". The first column in 
-#' each file needs to be the SNP_ID and files cannot contain a header. 
-#' Subsequent columns containing additional SNP information can be skipped by 
-#' setting skipFields. getCausalSNPs generates a vector of chromosomes from 
-#' which to sample the SNPs. For each of the chromosomes, it counts the number 
-#' of SNPs in the chromosome file and creates vectors of random numbers ranging 
+#' strings leading and following the "chrChromosomenumber". If format== delim,
+#' the first column in each file needs to be the SNP_ID and files cannot contain
+#' a header. Subsequent columns containing additional SNP information can be 
+#' skipped by setting skipFields. If format==oxgen or bimbam, files need to be
+#' in the oxgen or bimbam format (see \link{readStandardGenotypes} for details)
+#' and no additional informatiob about delim or skipFields have to be provided.
+#' getCausalSNPs generates a vector of chromosomes from which to sample the
+#' SNPs. For each of the chromosomes, it counts the number of SNPs in the
+#' chromosome file and creates vectors of random numbers ranging 
 #' from 1:NrSNPSinFile. Only the lines corresponding to these numbers are then
 #' read into R. The example data provided for chromosome 22 contains genotypes 
 #' (50 samples) of the first 500 SNPs on chromosome 22 with a minor allele 
@@ -405,7 +411,7 @@ readStandardGenotypes <- function(N, filename, format = NULL,
 getCausalSNPs <- function(N, NrCausalSNPs=20,  genotypes=NULL,
                           chr=NULL, NrSNPsOnChromosome=NULL, 
                           NrChrCausal=NULL, genoFilePrefix=NULL, 
-                          genoFileSuffix=NULL, oxgen=FALSE,
+                          genoFileSuffix=NULL, format='delim',
                           delimiter=",", skipFields=NULL, probabilities=FALSE, 
                           sampleID="ID_", verbose=TRUE) {
     if (! is.null(genotypes)) {
@@ -415,8 +421,8 @@ getCausalSNPs <- function(N, NrCausalSNPs=20,  genotypes=NULL,
         }
         if ( ncol(genotypes) < NrCausalSNPs) {
             stop(paste("Number of genotypes is less than number of causal SNPs." 
-                       , "Increase number of simulated genotypes in simulateGenotypes"
-                       , "or decrease number of causal SNPs"))
+                       , "Increase number of simulated genotypes in", 
+                       "simulateGenotypes or decrease number of causal SNPs"))
         }
         causalSNPs <- genotypes[,sort(sample(ncol(genotypes), NrCausalSNPs))]
     } else if (! is.null( genoFilePrefix)) {
@@ -489,16 +495,30 @@ getCausalSNPs <- function(N, NrCausalSNPs=20,  genotypes=NULL,
             randomSNPindex <- randomSNPindex[order(randomSNPindex, 
                                                    decreasing=FALSE)]
             text <- read_lines(chromosomefile, randomSNPindex, sep="\n")
+            if (format == "bimbam") delimiter <- ","
+            if (format == "oxgen") delimiter <- " "
             if (! grepl(delimiter, text[1])) {
                 stop("Delimiter specified for genoFilePrefix-genoFileSuffix (",
                      delimiter, ") cannot be found in file. Did you specify the
-                     correct delimiter?")
+                     correct delimiter and/or file format?")
             }
-            causalSNPsChr <- read.table(text=text, sep=delimiter, row.names=1)
-            if (oxgen) {
-                rownames(causalSNPsChr) <- causalSNPsChr[,1]
-                skipFields <- 4
+            causalSNPsChr <- read.table(text=text, sep=delimiter)
+            if (format == "oxgen") {
+                rownames(causalSNPsChr) <- paste(causalSNPsChr[,1:5],
+                                                 collapse= "-")
+                skipFields <- 5
                 probabilities <- TRUE
+            } else if (format == "bimbam") {
+                rownames(causalSNPsChr) <- paste(causalSNPsChr[,1:3],
+                                                 collapse= "-")
+                skipFields <- 3
+                probabilities <- FALSE
+            } else if (format == "delim") {
+                rownames(causalSNPsChr) <- causalSNPsChr[,1]
+                skipFields <- 1
+            } else {
+                stop("Format: ", format, "not supported for sampling genotypes
+                     from file.")
             }
             if (!is.null(skipFields)) {
                 causalSNPsChr <- causalSNPsChr[,-c(1:skipFields)] 
@@ -607,13 +627,13 @@ getKinship <- function(N, sampleID="ID_", X=NULL, kinshipfile=NULL,
         if (diff(dim(kinship)) !=0) {
             if (abs(diff(dim(kinship))) == 1) {
                 stop ("Kinship matrix needs to be a square matrix,",
-                      "however it has ", nrow(kinship), " rows and ", ncol(kinship), 
-                      " columns, did you specify the kinship header information",
-                      "correctly?")
+                      "however it has ", nrow(kinship), " rows and ",
+                      ncol(kinship), " columns, did you specify the kinship ",
+                      "header information correctly?")
             } else {
                 stop ("Kinship matrix needs to be a square matrix ,",
-                      "however it has ", nrow(kinship), " rows and ", ncol(kinship), 
-                      " columns")
+                      "however it has ", nrow(kinship), " rows and ",
+                      ncol(kinship), " columns")
             }
         }
         

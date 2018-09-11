@@ -156,7 +156,7 @@ genoFileSuffix <- "_hapgen.controls.gen"
 # simulate phenotype with three phenotype components
 simulation <- runSimulation(N = 1000, P = 3, cNrSNP=10, seed=43,
                            kinshipfile = kinshipfile,
-                           oxgen = TRUE,
+                           format = "oxgen",
                            genoFilePrefix = genoFilePrefix,
                            genoFileSuffix = genoFileSuffix,
                            chr = c(5,7,11),

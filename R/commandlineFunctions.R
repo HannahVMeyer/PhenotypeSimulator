@@ -97,9 +97,12 @@ simulatePhenotypes <- function() {
                     [default: %default]."),
         make_option(c("--format"), action="store", 
                     dest="format", default=NULL, type="character", 
-                    help="Needed when --genotypefile specified, specifies the 
-                    format of the genotype data; has to be one of plink, oxgen, 
-                    genome, bimbam and delim [default: %default]"),
+                    help="Needed when --genotypefile or
+                    --genoFilePrefix/--genoFileSuffix are specified; specifies  
+                    format of the genotype data; if --genotypefile: has to be 
+                    one of plink, oxgen, genome, bimbam or delim, if 
+                    --genoFilePrefix/--genoFileSuffix has to be 
+                    one of oxgen, bimbam or delim [default: %default]"),
 
         make_option(c("--genoFilePrefix"), action="store", 
                     dest="genoFilePrefix", default=NULL, type="character", 
@@ -112,13 +115,9 @@ simulatePhenotypes <- function() {
                     format indication (e.g. '.csv') [default: %default]."),
         make_option(c("--genoFileDelimiter"), action="store", 
                     dest="genoFileDelimiter", default=",", type="character", 
-                    help="Field separator of genotype or 
-                    genoFilePrefix-genoFileSuffix file; if file is 
+                    help="Field separator of --genotypefile or
+                    --genoFilePrefix/--genoFileSuffix; if file is 
                     tab-separated, please specify 'tab' [default: %default]."),
-        make_option(c("--oxgen"), action="store_true", 
-                    dest="oxgen", default=FALSE, type="logical", 
-                    help="Set this flag if genoFilePrefix-genoFileSuffix file is
-                    in oxgen format [default: %default]."),
         make_option(c("--probabilities"), action="store_true", 
                     dest="probabilities", default=FALSE, type="logical", 
                     help="Set this flag if the genotypes in genoFilePrefix-
@@ -517,7 +516,6 @@ simulatePhenotypes <- function() {
                                      NrChrCausal=args$NrChrCausal,
                                      NrSNPsOnChromosome=NrSNPsOnChromosome,
                                      probabilities = args$probabilities,
-                                     oxgen=args$oxgen,
                                      skipFields=args$skipFields,
                                      sampleID=args$sampleID,
                                      phenoID=args$phenoID,

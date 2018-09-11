@@ -554,23 +554,25 @@ setModel <- function(genVar=NULL, h2s=NULL, theta=0.8, h2bg=NULL, eta=0.8,
 #' sample.
 #' @param genotypefile Needed when reading external genotypes (into memory), 
 #' path/to/genotype file [string] in format specified by \link{format}.
-#' @param format Needed when reading external genotypes (into memory), specifies 
-#' the format of the genotype data; has to be one of  plink, oxgen, genome, 
-#' bimbam and delim; for details see Details in \link{readStandardGenotypes}
+#' @param format Needed when reading external genotypes, specifies 
+#' the format of the genotype data; has to be one of plink, oxgen, genome, 
+#' bimbam and delim when reading files into memory, or one of oxgen, bimbam or
+#' delim if sampling genetic variants from file; for details see
+#' \link{readStandardGenotypes} and \link{getCausalSNPs}.
 #' @param genoFilePrefix Needed when sampling cuasal SNPs from file, full 
 #' path/to/chromosome-wise-genotype-file-ending-before-"chrChromosomeNumber" 
 #' (no '~' expansion!) [string]
 #' @param genoFileSuffix Needed when sampling causal SNPs from file, 
 #' following chromosome number including fileformat (e.g. ".csv") [string]
-#' @param genoDelimiter Field separator [string] of genotypefile or genoFile 
+#' @param genoDelimiter Field separator [string] of genotypefile or genoFile if
+#' format == delim. 
 #' @param skipFields Number [integer] of fields (columns) in to skip in 
-#' genoFilePrefix-genoFileSuffix-file. See details in \link{getCausalSNPs}.
+#' genoFilePrefix-genoFileSuffix-file. See details in \link{getCausalSNPs} if
+#' format == delim. 
 #' @param probabilities [bool]. If set to TRUE, the genotypes in the files 
 #' described by genoFilePrefix and genoFileSuffix are provided as triplets of 
 #' probablities (p(AA), p(Aa), p(aa)) and are converted into their expected 
 #' genotype frequencies by 0*p(AA) + p(Aa) + 2p(aa) via \link{probGen2expGen}.
-#' @param oxgen [bool] Is genoFilePrefix-genoFileSuffix file in oxgen format?
-#' See \link{readStandardGenotypes} for details.
 #' @param chr Numeric vector of chromosomes [integer] to chose NrCausalSNPs 
 #' from; only used when external genotype data is sampled i.e. 
 #' !is.null(genoFilePrefix) 
@@ -709,7 +711,7 @@ runSimulation <- function(N, P,
                           genotypefile=NULL, format=NULL,
                           genoFilePrefix=NULL, genoFileSuffix=NULL, 
                           genoDelimiter=",", skipFields=NULL, 
-                          probabilities=FALSE, oxgen=FALSE,
+                          probabilities=FALSE,
                           chr=NULL, NrSNPsOnChromosome=NULL, 
                           NrChrCausal=NULL,
                           kinshipfile=NULL, 
@@ -778,9 +780,9 @@ runSimulation <- function(N, P,
             genotypes <- readStandardGenotypes(N=N, filename=genotypefile, 
                                                format=format,
                                                verbose=verbose, 
-                                               sampleID = sampleID, 
-                                               snpID = snpID, 
-                                               delimiter = genoDelimiter)
+                                               sampleID=sampleID, 
+                                               snpID=snpID, 
+                                               delimiter=genoDelimiter)
             id_samples <- genotypes$id_samples
             id_snps <- genotypes$id_snps
         } else {
@@ -792,9 +794,9 @@ runSimulation <- function(N, P,
                                     genotypes=genotypes$genotypes,
                                     genoFilePrefix=genoFilePrefix, 
                                     genoFileSuffix=genoFileSuffix, 
-                                    oxgen=oxgen,
-                                    probabilities = probabilities,
-                                    skipFields = skipFields,
+                                    format=format,
+                                    probabilities=probabilities,
+                                    skipFields=skipFields,
                                     delimiter=genoDelimiter, 
                                     sampleID=sampleID, 
                                     verbose=verbose)
@@ -827,8 +829,8 @@ runSimulation <- function(N, P,
 
         genFixed_shared_rescaled <- rescaleVariance(genFixed$shared, 
                                                     var_genFixed_shared)
-        genFixed_independent_rescaled <- rescaleVariance(genFixed$independent, 
-                                                         var_genFixed_independent)
+        genFixed_independent_rescaled <- 
+            rescaleVariance(genFixed$independent, var_genFixed_independent)
 
         Y_genFixed <- addNonNulls(list(genFixed_shared_rescaled$component, 
                                        genFixed_independent_rescaled$component))
