@@ -4,7 +4,7 @@
 \alias{writeStandardOutput}
 \title{Write simulated data into formats used by standard GWAS software}
 \usage{
-writeStandardOutput(directory, phenotypes, genotypes = NULL,
+writeStandardOutput(directory, phenotypes = NULL, genotypes = NULL,
   additionalPhenotypes = NULL, covariates = NULL, kinship = NULL,
   eval_kinship = NULL, evec_kinship = NULL, id_samples, id_snps, id_phenos,
   outstring = NULL, standardInput_samples = NULL,

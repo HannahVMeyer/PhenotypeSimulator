@@ -5,7 +5,7 @@
 \title{Phenotype transformation}
 \usage{
 transformNonlinear(component, alpha, method, logbase = 10, power = 2,
-  expbase = NULL, transformNeg = "abs", f = NULL)
+  expbase = NULL, transformNeg = "abs", f = NULL, verbose = TRUE)
 }
 \arguments{
 \item{component}{[N x P] Phenotype matrix [double] where [N] are the number 
@@ -29,6 +29,8 @@ negative values to zero). If method==log and transformNeg==set0, negative
 values set to 1e-5}
 
 \item{f}{[function] function accepting component as a single argument.}
+
+\item{verbose}{[boolean]; If TRUE, progress info is printed to standard out.}
 }
 \value{
 [N x P] transformed phenotype matrix [double]
