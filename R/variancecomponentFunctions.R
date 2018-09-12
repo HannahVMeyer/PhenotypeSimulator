@@ -230,8 +230,8 @@ geneticFixedEffects <- function(X_causal, P, N, phenoID="Trait_",
     
     return(list(shared=Gshared, 
                 independent=Gindependent, 
-                cov=cov, 
-                cov_effect=cov_effect))
+                cov=as.matrix(cov),
+                cov_effect=as.matrix(cov_effect)))
 }
 
 #' Simulate noise fixed effects.
