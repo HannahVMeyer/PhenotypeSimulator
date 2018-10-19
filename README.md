@@ -5,13 +5,29 @@ In quantitative genetics, genotype to phenotype mapping is commonly realised by 
 
 *PhenotypeSimulator* allows for the simulation of complex phenotypes under different models, including genetic variant effects and infinitesimal genetic effects (reflecting population structure) as well as correlated, non-genetic covariates and observational noise effects. Different phenotypic effects can be combined into a final phenotype while controlling for the proportion of variance explained by each of the components. For each component, the number of variables, their distribution and the design of their effect across traits can be customised.
 
-The current github version of *PhenotypeSimulator* is: 0.2.2 and can be
+The current github version of *PhenotypeSimulator* is: 0.3 and can be
 installed via
 ```bash
 library(devtools)
 install_github("HannahVMeyer/PhenotypeSimulator")
 ```
 The current CRAN version of *PhenotypeSimulator* is: 0.2.2
+
+## Major changes from version 0.2.2 to version 0.3:
+1. Add option for non-linear transformation of simulated
+   phenotypes. Both transformed and original phenotypes
+   are returned.
+1. Replace parameter 'oxgen' in readStandardGenotypes and
+   getCausalSNPs with 'format' - ensures proper specification
+   of genotype format for all cases.
+
+## Minor changes from version 0.2.2 to version 0.3
+1. In addition to full kinship, savePheno and writeStandardOutput
+   write eigenvalues and eigenvalues of kinship matrix.
+1. Output file names have been made more consistent in savePheno
+   and writeStandardOutput.
+1. Causal SNPs are now also saved in specified standard output format.
+1. LiMMBo has been addded as output format [LiMMBo format](https://limmbo.readthedocs.io/en/latest/)
 
 ## Minor changes from version 0.2.1 to version 0.2.2:
 1. Update readStandardGenotypes to be compatible with latest
