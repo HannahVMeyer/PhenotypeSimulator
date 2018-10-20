@@ -5,15 +5,18 @@ In quantitative genetics, genotype to phenotype mapping is commonly realised by 
 
 *PhenotypeSimulator* allows for the simulation of complex phenotypes under different models, including genetic variant effects and infinitesimal genetic effects (reflecting population structure) as well as correlated, non-genetic covariates and observational noise effects. Different phenotypic effects can be combined into a final phenotype while controlling for the proportion of variance explained by each of the components. For each component, the number of variables, their distribution and the design of their effect across traits can be customised.
 
-The current github version of *PhenotypeSimulator* is: 0.3 and can be
+Find the publication at: Meyer, HV & Birney E (2018) [PhenotypeSimulator: A comprehensive framework for simulating multi-trait, multi-locus genotype to phenotype relationships](https://doi.org/10.1093/bioinformatics/bty197), *Bioinformatics*, 34(17):2951–2956
+
+The current github version of *PhenotypeSimulator* is: 0.3.1 and can be
 installed via
 ```bash
 library(devtools)
 install_github("HannahVMeyer/PhenotypeSimulator")
 ```
-The current CRAN version of *PhenotypeSimulator* is: 0.2.2
+The current CRAN version of *PhenotypeSimulator* is: 0.2.2 (soon to be updated!)
 
 A log of version changes can be found [here](https://github.com/HannahVMeyer/PhenotypeSimulator/blob/master/LOG.md).
+
 
 
 

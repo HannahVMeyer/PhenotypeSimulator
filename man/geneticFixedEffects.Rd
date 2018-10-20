@@ -5,10 +5,10 @@
 \title{Simulate genetic variant effects.}
 \usage{
 geneticFixedEffects(X_causal, P, N, phenoID = "Trait_",
-  id_samples = rownames(X_causal), id_phenos = NULL, pTraitsAffected = 1,
-  pIndependentGenetic = 0.4, pTraitIndependentGenetic = 0.2,
-  keepSameIndependent = FALSE, distBeta = "norm", mBeta = 0, sdBeta = 1,
-  verbose = FALSE)
+  id_samples = rownames(X_causal), id_phenos = NULL,
+  pTraitsAffected = 1, pIndependentGenetic = 0.4,
+  pTraitIndependentGenetic = 0.2, keepSameIndependent = FALSE,
+  distBeta = "norm", mBeta = 0, sdBeta = 1, verbose = FALSE)
 }
 \arguments{
 \item{X_causal}{[N x NrCausalSNPs] Matrix of [NrCausalSNPs] SNPs from [N] 

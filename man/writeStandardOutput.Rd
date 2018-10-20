@@ -6,10 +6,11 @@
 \usage{
 writeStandardOutput(directory, phenotypes = NULL, genotypes = NULL,
   additionalPhenotypes = NULL, covariates = NULL, kinship = NULL,
-  eval_kinship = NULL, evec_kinship = NULL, id_samples, id_snps, id_phenos,
-  outstring = NULL, standardInput_samples = NULL,
-  standardInput_genotypes = NULL, format = NULL, intercept_gemma = FALSE,
-  nameAdditional = "_nonLinear", verbose = TRUE)
+  eval_kinship = NULL, evec_kinship = NULL, id_samples, id_snps,
+  id_phenos, outstring = NULL, standardInput_samples = NULL,
+  standardInput_genotypes = NULL, format = NULL,
+  intercept_gemma = FALSE, nameAdditional = "_nonLinear",
+  verbose = TRUE)
 }
 \arguments{
 \item{directory}{Absolute path (no tilde expansion) to parent directory 
