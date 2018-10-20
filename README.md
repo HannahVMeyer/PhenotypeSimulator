@@ -15,7 +15,9 @@ install_github("HannahVMeyer/PhenotypeSimulator")
 ```
 The current CRAN version of *PhenotypeSimulator* is: 0.2.2 (soon to be updated!)
 
-A log of version changes can be found [here](https://github.com/HannahVMeyer/PhenotypeSimulator/blob/master/LOG.md).
+Full documentation is available at http://HannahVMeyer.github.io/PhenotypeSimulator/
+
+A log of version changes can be found [here](https://github.com/HannahVMeyer/PhenotypeSimulator/blob/master/NEWS.md).
 
 
 
