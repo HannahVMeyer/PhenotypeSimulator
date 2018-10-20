@@ -1,26 +1,29 @@
-# Major changes from version 0.2.2 to version 0.3:
+# PhenotypeSimulator 0.3.0
+## Major changes
 1. Add option for non-linear transformation of simulated phenotypes: function (transformNonlinear)[https://github.com/HannahVMeyer/PhenotypeSimulator/blob/master/R/createphenotypeFunctions.R], accessible from [runSimulation](https://github.com/HannahVMeyer/PhenotypeSimulator/blob/master/R/createphenotypeFunctions.R). Both transformed and original phenotypes are automatically returned with [savePheno](https://github.com/HannahVMeyer/PhenotypeSimulator/blob/master/R/outputFunctions.R)
 1. Replace parameter 'oxgen' in [readStandardGenotypes](https://github.com/HannahVMeyer/PhenotypeSimulator/blob/master/R/genotypeFunctions.R) and [getCausalSNPs](https://github.com/HannahVMeyer/PhenotypeSimulator/blob/master/R/genotypeFunctions.R) with 'format' - ensures proper 
     specification of genotype format for all cases.
-# Minor changes from version 0.2.2 to version 0.3
+## Minor changes
 1. In addition to full kinship, [savePheno](https://github.com/HannahVMeyer/PhenotypeSimulator/blob/master/R/outputFunctions.R) and  [writeStandardOutput](https://github.com/HannahVMeyer/PhenotypeSimulator/blob/master/R/outputFunctions.R) write eigenvalues and eigenvalues of  kinship matrix.
 1. Output file names have been made more consistent in [savePheno](https://github.com/HannahVMeyer/PhenotypeSimulator/blob/master/R/outputFunctions.R) and  [writeStandardOutput](https://github.com/HannahVMeyer/PhenotypeSimulator/blob/master/R/outputFunctions.R).
 1. Causal SNPs are now also saved in specified standard output format.
 1. LiMMBo has been added as output format in [savePheno](https://github.com/HannahVMeyer/PhenotypeSimulator/blob/master/R/outputFunctions.R) and  [writeStandardOutput](https://github.com/HannahVMeyer/PhenotypeSimulator/blob/master/R/outputFunctions.R)([LiMMBo format](https://limmbo.readthedocs.io/en/latest/))
 
-## Minor changes from version 0.2.1 to version 0.2.2:
+# PhenotypeSimulator 0.2.2
+## Minor changes
 1. Update readStandardGenotypes to be compatible with latest
    release of data.table (v1.11.2), see
    [here](https://github.com/HannahVMeyer/PhenotypeSimulator/issues/7)
 
-## Minor changes from version 0.2.0 to version 0.2.1:
+# PhenotypeSimulator 0.2.1
+## Minor changes
 1. Additional tests for compatibility of input parameters with variance
    components functions, genotype functions and output functions.
 1. Bug fix in output function: savePheno now properly saves kinship matrix as
    .rds.
 
-## Major changes from version 0.1.3 to version 0.2.0:
-
+# PhenotypeSimulator 0.2.0
+## Major changes
 **Input**
 1. *PhenotypeSimulator* now includes readStandardGenotypes which can read externally simulated or user-provided genotypes in plink, genome, oxgen (hapgen/impute2), bimbam or simple delimited format.
 1. A user-specified correlation matrix can be provided for the simulation of the correlatedBdEffects.
