@@ -2,8 +2,10 @@ Package: PhenotypeSimulator
 Title: Flexible Phenotype Simulation from Different Genetic and Noise Models
 Version: 0.3.0
 Authors@R: c(
-  person("Hannah", "Meyer", email = "hannah@ebi.ac.uk", role = c("aut", "cre")),
-  person("Konrad", "Rudolph", email = "konrad.rudolph@gmail.com", role = "ctb")
+  person("Hannah", "Meyer", email = "hannah@ebi.ac.uk", role = c("aut", "cre"),
+    comment = c(ORCID = "0000-0003-4564-0899")),
+  person("Konrad", "Rudolph", email = "konrad.rudolph@gmail.com", role = "ctb",
+    comment = c(ORCID = "0000-0002-9866-7051"))
   )
 URL: https://github.com/HannahVMeyer/PhenotypeSimulator
 BugReports: https://github.com/HannahVMeyer/PhenotypeSimulator/issues
