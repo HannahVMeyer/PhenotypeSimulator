@@ -45,15 +45,12 @@ variables, their distribution and the design of their effect across traits can
 be customised.
 
 
-```{r, echo = FALSE}
+```{r, echo = FALSE, out.width='100%'}
 knitr::include_graphics("docs/simulatedPhenotypes.png")
 ```
 
 
 ## <i class="fa fa-cog" aria-hidden="true"></i> Getting Started
-
-Full documentation of **PhenotypeSimulator** is available at
-http://HannahVMeyer.github.io/PhenotypeSimulator/.
 
 The current github version of *PhenotypeSimulator* is: 0.3.1 and can be
 installed via

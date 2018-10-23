@@ -124,12 +124,11 @@
 <p><strong>PhenotypeSimulator</strong> allows for the flexible simulation of phenotypes from different genetic and non-genetic (noise) components.</p>
 <p>In quantitative genetics, genotype to phenotype mapping is commonly realised by fitting a linear model to the genotype as the explanatory variable and the phenotype as the response variable. Other explanatory variable such as additional sample measures (e.g. age, height, weight) or batch effects can also be included. For linear mixed models, in addition to the fixed effects of the genotype and the covariates, different random effect components can be included, accounting for population structure in the study cohort or environmental effects. The application of linear and linear mixed models in quantitative genetics ranges from genetic studies in model organism such as yeast and <em>Arabidopsis thaliana</em> to human molecular, morphological or imaging derived traits. Developing new methods for increasing numbers of sample cohorts, phenotypic measurements or complexity of phenotypes to analyse, often requires the simulation of datasets with a specific underlying phenotype structure.</p>
 <p><strong>PhenotypeSimulator</strong> allows for the simulation of complex phenotypes under different models, including genetic variant effects and infinitesimal genetic effects (reflecting population structure) as well as correlated, non-genetic covariates and observational noise effects. Different phenotypic effects can be combined into a final phenotype while controlling for the proportion of variance explained by each of the components. For each component, the number of variables, their distribution and the design of their effect across traits can be customised.</p>
-<p><img src="simulatedPhenotypes.png"><!-- --></p>
+<p><img src="simulatedPhenotypes.png" width="100%"></p>
 </div>
 <div id="getting-started" class="section level2">
 <h2 class="hasAnchor">
 <a href="#getting-started" class="anchor"></a><i class="fa fa-cog" aria-hidden="true"></i> Getting Started</h2>
-<p>Full documentation of <strong>PhenotypeSimulator</strong> is available at <a href="http://HannahVMeyer.github.io/PhenotypeSimulator/" class="uri">http://HannahVMeyer.github.io/PhenotypeSimulator/</a>.</p>
 <p>The current github version of <em>PhenotypeSimulator</em> is: 0.3.1 and can be installed via</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(devtools)
 <span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(<span class="st">"HannahVMeyer/PhenotypeSimulator"</span>)</code></pre></div>
