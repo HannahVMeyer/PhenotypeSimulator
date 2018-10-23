@@ -2,7 +2,7 @@
 % Please edit documentation in R/createphenotypeFunctions.R
 \name{transformNonlinear}
 \alias{transformNonlinear}
-\title{Phenotype transformation}
+\title{Phenotype transformation.}
 \usage{
 transformNonlinear(component, alpha, method, logbase = 10, power = 2,
   expbase = NULL, transformNeg = "abs", f = NULL, verbose = TRUE)

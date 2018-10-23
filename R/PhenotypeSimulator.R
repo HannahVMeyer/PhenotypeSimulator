@@ -14,4 +14,5 @@
 #' @importFrom snpStats write.plink
 #' @importClassesFrom snpStats SnpMatrix
 #' @importFrom R.utils countLines
+#' @keywords internal
 NULL

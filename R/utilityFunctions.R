@@ -270,7 +270,7 @@ expGen2probGen <- function(geno) {
         }
     }))
 }
-#' Test lists for different properties of numerics
+#' Test lists for different properties of numerics.
 #' 
 #' Test all elements of a list if they are numeric, positive numbers, integers
 #' or proportions (range 0-1)

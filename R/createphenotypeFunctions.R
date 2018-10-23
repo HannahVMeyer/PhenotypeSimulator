@@ -39,7 +39,7 @@ rescaleVariance <- function(component, propvar) {
 }
 
 
-#' Phenotype transformation
+#' Phenotype transformation.
 #' 
 #' Transformation of phenotype component by applying a user-specified 
 #' non-linear transformation to the phenotype component.

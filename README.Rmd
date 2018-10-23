@@ -4,7 +4,13 @@ output: github_document
 <!-- rmarkdown v1 -->
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-
+```{r, echo = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "README-"
+)
+```
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/PhenotypeSimulator)](https://cran.r-project.org/package=PhenotypeSimulator)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Downloads](http://cranlogs.r-pkg.org/badges/grand-total/PhenotypeSimulator?color=red)](http://cran.rstudio.com/web/packages/PhenotypeSimulator/index.html)
@@ -44,8 +50,7 @@ http://HannahVMeyer.github.io/PhenotypeSimulator/.
 
 The current github version of *PhenotypeSimulator* is: 0.3.1 and can be
 installed via
-
-```r
+```{r, eval=FALSE}
 library(devtools)
 install_github("HannahVMeyer/PhenotypeSimulator")
 ```

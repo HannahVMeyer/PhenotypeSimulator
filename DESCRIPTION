@@ -7,7 +7,8 @@ Authors@R: c(
   person("Konrad", "Rudolph", email = "konrad.rudolph@gmail.com", role = "ctb",
     comment = c(ORCID = "0000-0002-9866-7051"))
   )
-URL: https://github.com/HannahVMeyer/PhenotypeSimulator
+URL: c(https://github.com/HannahVMeyer/PhenotypeSimulator,
+    https://hannahvmeyer.github.io/PhenotypeSimulator)
 BugReports: https://github.com/HannahVMeyer/PhenotypeSimulator/issues
 Description: Simulation is a critical part of method development and assessment
     in quantitative genetics. 'PhenotypeSimulator' allows for the flexible 

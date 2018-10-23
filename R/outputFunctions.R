@@ -1,4 +1,4 @@
-#' Write simulated data into formats used by standard GWAS software  
+#' Write simulated data into formats used by standard GWAS software. 
 #'
 #' writeStandardOutput can write genotypes and phenotypes as well as possible
 #' covariates and kinship matrices into a number of formats for standard GWAS 

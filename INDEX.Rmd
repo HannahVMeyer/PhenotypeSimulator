@@ -1,15 +1,22 @@
 ---
 output: github_document
 ---
-<!-- rmarkdown v1 -->
+
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-
+```{r, echo = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "README-"
+)
+```
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/PhenotypeSimulator)](https://cran.r-project.org/package=PhenotypeSimulator)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Downloads](http://cranlogs.r-pkg.org/badges/grand-total/PhenotypeSimulator?color=red)](http://cran.rstudio.com/web/packages/PhenotypeSimulator/index.html)
 
-## <i class="fa fa-map" aria-hidden="true"></i> PhenotypeSimulator
+
+## <i class="fa fa-cubes" aria-hidden="true"></i> PhenotypeSimulator
 
 **PhenotypeSimulator** allows for the flexible simulation of phenotypes from
 different genetic and non-genetic (noise) components. 
@@ -37,6 +44,12 @@ explained by each of the components. For each component, the number of
 variables, their distribution and the design of their effect across traits can
 be customised.
 
+
+```{r, echo = FALSE}
+knitr::include_graphics("docs/simulatedPhenotypes.png")
+```
+
+
 ## <i class="fa fa-cog" aria-hidden="true"></i> Getting Started
 
 Full documentation of **PhenotypeSimulator** is available at
@@ -44,8 +57,7 @@ http://HannahVMeyer.github.io/PhenotypeSimulator/.
 
 The current github version of *PhenotypeSimulator* is: 0.3.1 and can be
 installed via
-
-```r
+```{r, eval=FALSE}
 library(devtools)
 install_github("HannahVMeyer/PhenotypeSimulator")
 ```
@@ -54,6 +66,7 @@ The current CRAN version of *PhenotypeSimulator* is: 0.2.2 (soon to be updated!)
 A log of version changes can be found [here](https://github.com/HannahVMeyer/PhenotypeSimulator/blob/master/NEWS.md).
 
 ## <i class="fa fa-pencil" aria-hidden="true"></i> Citation
+
 Meyer, HV & Birney E (2018) [PhenotypeSimulator: A comprehensive framework for simulating multi-trait, multi-locus genotype to phenotype relationships](https://doi.org/10.1093/bioinformatics/bty197), *Bioinformatics*, 34(17):2951–2956
 
 

@@ -50,7 +50,7 @@
   <body>
     <div class="container template-reference-index">
       <header>
-      <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+      <div class="navbar navbar-standard navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
       <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false">
@@ -69,41 +69,52 @@
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fa fa-home fa-lg"></span>
+    <span class="fa fa-home"></span>
      
   </a>
 </li>
-<li>
-  <a href="../articles/PhenotypeSimulator.html">Get started</a>
-</li>
-<li>
-  <a href="../reference/index.html">Reference</a>
-</li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Articles
+    <span class="fa fa-file"></span>
+     
+    documentation
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/Sample-scripts-external-genotype-simulation.html">Genotype simulation supported by *PhenotypeSimulator*</a>
+      <a href="../articles/PhenotypeSimulator.html">Step-by-step phenotype simulation</a>
     </li>
     <li>
       <a href="../articles/Simulation-and-LinearModel.html">Application of PhenotypeSimulator for a power analysis study</a>
     </li>
+    <li>
+      <a href="../articles/Sample-scripts-external-genotype-simulation.html">Genotype simulation supported by PhenotypeSimulator</a>
+    </li>
   </ul>
-</li>
-<li>
-  <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
       
       <ul class="nav navbar-nav navbar-right">
         <li>
+  <a href="../news/index.html">
+    <span class="fa fa-newspaper-o"></span>
+     
+    news
+  </a>
+</li>
+<li>
+  <a href="../reference/index.html">
+    <span class="fa fa-code"></span>
+     
+    functions
+  </a>
+</li>
+<li>
   <a href="https://github.com/HannahVMeyer/PhenotypeSimulator">
     <span class="fa fa-github fa-lg"></span>
      
+    github
   </a>
 </li>
       </ul>
@@ -132,41 +143,36 @@
     <tbody>
       <tr>
         <th colspan="2">
-          <h2 id="section-all-functions" class="hasAnchor"><a href="#section-all-functions" class="anchor"></a>All functions</h2>
+          <h2 id="section-main-functions" class="hasAnchor"><a href="#section-main-functions" class="anchor"></a>Main functions</h2>
           <p class="section-desc"></p>
         </th>
       </tr>
       <tr>
         
         <td>
-          <p><code><a href="PhenotypeSimulator.html">PhenotypeSimulator</a></code> </p>
+          <p><code><a href="runSimulation.html">runSimulation()</a></code> </p>
         </td>
-        <td><p>PhenotypeSimulator: A package for simulating phenotypes from different
-genetic and noise components</p></td>
+        <td><p>Run phenotype simulation.</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="addNonNulls.html">addNonNulls()</a></code> </p>
+          <p><code><a href="simulatePhenotypes.html">simulatePhenotypes()</a></code> </p>
         </td>
-        <td><p>Add all non-NULL elements of list.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="commaList2vector.html">commaList2vector()</a></code> </p>
-        </td>
-        <td><p>Comma-separated string to numeric vector.</p></td>
-      </tr><tr>
+        <td><p>Command line execution for PhenotypeSimulator.</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-phenotype-functions" class="hasAnchor"><a href="#section-phenotype-functions" class="anchor"></a>Phenotype functions</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      <tr>
         
         <td>
           <p><code><a href="correlatedBgEffects.html">correlatedBgEffects()</a></code> </p>
         </td>
         <td><p>Simulate correlated background effects.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="expGen2probGen.html">expGen2probGen()</a></code> </p>
-        </td>
-        <td><p>Rewrite expected genotypes into genotype probabilities.</p></td>
       </tr><tr>
         
         <td>
@@ -182,6 +188,32 @@ genetic and noise components</p></td>
       </tr><tr>
         
         <td>
+          <p><code><a href="noiseBgEffects.html">noiseBgEffects()</a></code> </p>
+        </td>
+        <td><p>Simulate observational noise effects.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="noiseFixedEffects.html">noiseFixedEffects()</a></code> </p>
+        </td>
+        <td><p>Simulate noise fixed effects.</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-genotype-functions" class="hasAnchor"><a href="#section-genotype-functions" class="anchor"></a>Genotype functions</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      <tr>
+        
+        <td>
+          <p><code><a href="expGen2probGen.html">expGen2probGen()</a></code> </p>
+        </td>
+        <td><p>Rewrite expected genotypes into genotype probabilities.</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="getAlleleFrequencies.html">getAlleleFrequencies()</a></code> </p>
         </td>
         <td><p>Compute allele frequencies from genotype data.</p></td>
@@ -194,69 +226,15 @@ genetic and noise components</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="getKinship.html">getKinship()</a></code> </p>
-        </td>
-        <td><p>Get genetic kinship.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="noiseBgEffects.html">noiseBgEffects()</a></code> </p>
-        </td>
-        <td><p>Simulate observational noise effects.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="noiseFixedEffects.html">noiseFixedEffects()</a></code> </p>
-        </td>
-        <td><p>Simulate noise fixed effects.</p></td>
-      </tr><tr>
-        
-        <td>
           <p><code><a href="probGen2expGen.html">probGen2expGen()</a></code> </p>
         </td>
         <td><p>Compute expected genotypes from genotype probabilities.</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="readStandardGenotypes.html">readStandardGenotypes()</a></code> </p>
-        </td>
-        <td><p>Read genotypes from file.</p></td>
-      </tr><tr>
-        
-        <td>
           <p><code><a href="read_lines.html">read_lines()</a></code> </p>
         </td>
-        <td><p>Scan file for specific line numbers</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="rescaleVariance.html">rescaleVariance()</a></code> </p>
-        </td>
-        <td><p>Scale phenotype component.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="runSimulation.html">runSimulation()</a></code> </p>
-        </td>
-        <td><p>Run phenotype simulation.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="savePheno.html">savePheno()</a></code> </p>
-        </td>
-        <td><p>Save final phenotype and phenotype components.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="setModel.html">setModel()</a></code> </p>
-        </td>
-        <td><p>Set simulation model.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="simulateDist.html">simulateDist()</a></code> </p>
-        </td>
-        <td><p>Data simulation for different distributions.</p></td>
+        <td><p>Scan file for specific line numbers.</p></td>
       </tr><tr>
         
         <td>
@@ -266,39 +244,113 @@ genetic and noise components</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="simulatePhenotypes.html">simulatePhenotypes()</a></code> </p>
+          <p><code><a href="standardiseGenotypes.html">standardiseGenotypes()</a></code> </p>
         </td>
-        <td><p>Command line execution for PhenotypeSimulator</p></td>
+        <td><p>Standardise genotypes.</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-input-functions" class="hasAnchor"><a href="#section-input-functions" class="anchor"></a>Input functions</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      <tr>
+        
+        <td>
+          <p><code><a href="getKinship.html">getKinship()</a></code> </p>
+        </td>
+        <td><p>Get genetic kinship.</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="standardiseGenotypes.html">standardiseGenotypes()</a></code> </p>
+          <p><code><a href="readStandardGenotypes.html">readStandardGenotypes()</a></code> </p>
         </td>
-        <td><p>Standardise genotypes</p></td>
+        <td><p>Read genotypes from file.</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-output-functions" class="hasAnchor"><a href="#section-output-functions" class="anchor"></a>Output functions</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      <tr>
+        
+        <td>
+          <p><code><a href="savePheno.html">savePheno()</a></code> </p>
+        </td>
+        <td><p>Save final phenotype and phenotype components.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="writeStandardOutput.html">writeStandardOutput()</a></code> </p>
+        </td>
+        <td><p>Write simulated data into formats used by standard GWAS software.</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-simulation-helper-functions" class="hasAnchor"><a href="#section-simulation-helper-functions" class="anchor"></a>Simulation helper functions</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      <tr>
+        
+        <td>
+          <p><code><a href="setModel.html">setModel()</a></code> </p>
+        </td>
+        <td><p>Set simulation model.</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-general-helper-functions" class="hasAnchor"><a href="#section-general-helper-functions" class="anchor"></a>General helper functions</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      <tr>
+        
+        <td>
+          <p><code><a href="addNonNulls.html">addNonNulls()</a></code> </p>
+        </td>
+        <td><p>Add all non-NULL elements of list.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="commaList2vector.html">commaList2vector()</a></code> </p>
+        </td>
+        <td><p>Comma-separated string to numeric vector.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="rescaleVariance.html">rescaleVariance()</a></code> </p>
+        </td>
+        <td><p>Scale phenotype component.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="simulateDist.html">simulateDist()</a></code> </p>
+        </td>
+        <td><p>Data simulation for different distributions.</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="testNumerics.html">testNumerics()</a></code> </p>
         </td>
-        <td><p>Test lists for different properties of numerics</p></td>
+        <td><p>Test lists for different properties of numerics.</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="transformNonlinear.html">transformNonlinear()</a></code> </p>
         </td>
-        <td><p>Phenotype transformation</p></td>
+        <td><p>Phenotype transformation.</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="vmessage.html">vmessage()</a></code> </p>
         </td>
         <td><p>Print userinfo.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="writeStandardOutput.html">writeStandardOutput()</a></code> </p>
-        </td>
-        <td><p>Write simulated data into formats used by standard GWAS software</p></td>
       </tr>
     </tbody>
     </table>
@@ -307,7 +359,13 @@ genetic and noise components</p></td>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
-      <li><a href="#section-all-functions">All functions</a></li>
+      <li><a href="#section-main-functions">Main functions</a></li>
+      <li><a href="#section-phenotype-functions">Phenotype functions</a></li>
+      <li><a href="#section-genotype-functions">Genotype functions</a></li>
+      <li><a href="#section-input-functions">Input functions</a></li>
+      <li><a href="#section-output-functions">Output functions</a></li>
+      <li><a href="#section-simulation-helper-functions">Simulation helper functions</a></li>
+      <li><a href="#section-general-helper-functions">General helper functions</a></li>
     </ul>
   </div>
 </div>

@@ -2,7 +2,7 @@
 % Please edit documentation in R/outputFunctions.R
 \name{writeStandardOutput}
 \alias{writeStandardOutput}
-\title{Write simulated data into formats used by standard GWAS software}
+\title{Write simulated data into formats used by standard GWAS software.}
 \usage{
 writeStandardOutput(directory, phenotypes = NULL, genotypes = NULL,
   additionalPhenotypes = NULL, covariates = NULL, kinship = NULL,

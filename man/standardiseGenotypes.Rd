@@ -2,7 +2,7 @@
 % Please edit documentation in R/genotypeFunctions.R
 \name{standardiseGenotypes}
 \alias{standardiseGenotypes}
-\title{Standardise genotypes}
+\title{Standardise genotypes.}
 \usage{
 standardiseGenotypes(geno)
 }

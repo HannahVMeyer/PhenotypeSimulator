@@ -2,7 +2,7 @@
 % Please edit documentation in R/utilityFunctions.R
 \name{testNumerics}
 \alias{testNumerics}
-\title{Test lists for different properties of numerics}
+\title{Test lists for different properties of numerics.}
 \usage{
 testNumerics(numbers, positives = NULL, integers = NULL,
   proportions = NULL)
