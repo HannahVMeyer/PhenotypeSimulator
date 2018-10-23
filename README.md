@@ -55,11 +55,3 @@ A log of version changes can be found [here](https://github.com/HannahVMeyer/Phe
 
 ## <i class="fa fa-pencil" aria-hidden="true"></i> Citation
 Meyer, HV & Birney E (2018) [PhenotypeSimulator: A comprehensive framework for simulating multi-trait, multi-locus genotype to phenotype relationships](https://doi.org/10.1093/bioinformatics/bty197), *Bioinformatics*, 34(17):2951–2956
-
-
-
-
-
-
-
-
