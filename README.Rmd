@@ -50,21 +50,15 @@ http://HannahVMeyer.github.io/PhenotypeSimulator/.
 
 The current github version of *PhenotypeSimulator* is: 0.3.1 and can be
 installed via
-```{r, eval=FALSE}
-library(devtools)
-install_github("HannahVMeyer/PhenotypeSimulator")
+
+```{r gh-installation, eval = FALSE}
+# install.packages("devtools")
+devtools::install_github("HannahVMeyer/PhenotypeSimulator")
 ```
+
 The current CRAN version of *PhenotypeSimulator* is: 0.2.2 (soon to be updated!)
 
 A log of version changes can be found [here](https://github.com/HannahVMeyer/PhenotypeSimulator/blob/master/NEWS.md).
 
 ## <i class="fa fa-pencil" aria-hidden="true"></i> Citation
 Meyer, HV & Birney E (2018) [PhenotypeSimulator: A comprehensive framework for simulating multi-trait, multi-locus genotype to phenotype relationships](https://doi.org/10.1093/bioinformatics/bty197), *Bioinformatics*, 34(17):2951–2956
-
-
-
-
-
-
-
-
