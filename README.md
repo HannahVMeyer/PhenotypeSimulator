@@ -5,6 +5,7 @@ output: github_document
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
 
+
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/PhenotypeSimulator)](https://cran.r-project.org/package=PhenotypeSimulator)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Downloads](http://cranlogs.r-pkg.org/badges/grand-total/PhenotypeSimulator?color=red)](http://cran.rstudio.com/web/packages/PhenotypeSimulator/index.html)
@@ -55,3 +56,11 @@ A log of version changes can be found [here](https://github.com/HannahVMeyer/Phe
 
 ## <i class="fa fa-pencil" aria-hidden="true"></i> Citation
 Meyer, HV & Birney E (2018) [PhenotypeSimulator: A comprehensive framework for simulating multi-trait, multi-locus genotype to phenotype relationships](https://doi.org/10.1093/bioinformatics/bty197), *Bioinformatics*, 34(17):2951–2956
+
+
+
+
+
+
+
+
