@@ -11,7 +11,7 @@ In quantitative genetics, genotype to phenotype mapping is commonly realised by 
 
 **PhenotypeSimulator** allows for the simulation of complex phenotypes under different models, including genetic variant effects and infinitesimal genetic effects (reflecting population structure) as well as correlated, non-genetic covariates and observational noise effects. Different phenotypic effects can be combined into a final phenotype while controlling for the proportion of variance explained by each of the components. For each component, the number of variables, their distribution and the design of their effect across traits can be customised.
 
-<i class="fa fa-cog" aria-hidden="true"></i> Getting Started
+<i class="fa fa-rocket" aria-hidden="true"></i> Installation
 ------------------------------------------------------------
 
 Full documentation of **PhenotypeSimulator** is available at <http://HannahVMeyer.github.io/PhenotypeSimulator/>.
