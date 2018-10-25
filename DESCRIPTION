@@ -7,8 +7,7 @@ Authors@R: c(
   person("Konrad", "Rudolph", email = "konrad.rudolph@gmail.com", role = "ctb",
     comment = c(ORCID = "0000-0002-9866-7051"))
   )
-URL: c(https://github.com/HannahVMeyer/PhenotypeSimulator,
-    https://hannahvmeyer.github.io/PhenotypeSimulator)
+URL: https://github.com/HannahVMeyer/PhenotypeSimulator
 BugReports: https://github.com/HannahVMeyer/PhenotypeSimulator/issues
 Description: Simulation is a critical part of method development and assessment
     in quantitative genetics. 'PhenotypeSimulator' allows for the flexible 
@@ -25,7 +24,7 @@ Description: Simulation is a critical part of method development and assessment
     simulated phenotypes and its components can be automatically saved into .rds 
     or .csv files. In addition, they can be saved in formats compatible with 
     commonly used genetic association software ('gemma', 'bimbam', 'plink', 
-    'snptest'). 
+    'snptest', 'LiMMBo'). 
 Depends:
     R (>= 3.3.0)
 biocViews:
