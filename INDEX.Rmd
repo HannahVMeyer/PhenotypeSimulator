@@ -52,13 +52,17 @@ knitr::include_graphics("docs/simulatedPhenotypes.png")
 
 ## <i class="fa fa-rocket" aria-hidden="true"></i> Installation
 
-The current github version of *PhenotypeSimulator* is: 0.3.1 and can be
-installed via
+The current github version of *PhenotypeSimulator* is 0.3.1 and can be
+installed via:
 ```{r, eval=FALSE}
 library(devtools)
 install_github("HannahVMeyer/PhenotypeSimulator")
 ```
-The current CRAN version of *PhenotypeSimulator* is: 0.2.2 (soon to be updated!)
+The current CRAN version of *PhenotypeSimulator* is 0.3.1 and can be installed
+via:
+```{r, eval=FALSE}
+install.packages("PhenotypeSimulator")
+```
 
 A log of version changes can be found [here](https://github.com/HannahVMeyer/PhenotypeSimulator/blob/master/NEWS.md).
 

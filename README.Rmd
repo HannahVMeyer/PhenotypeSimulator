@@ -12,6 +12,10 @@ knitr::opts_chunk$set(
 )
 ```
 
+[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/PhenotypeSimulator)](https://cran.r-project.org/package=PhenotypeSimulator)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Downloads](http://cranlogs.r-pkg.org/badges/grand-total/PhenotypeSimulator?color=red)](http://cran.rstudio.com/web/packages/PhenotypeSimulator/index.html)
+
 ## <i class="fa fa-map" aria-hidden="true"></i> PhenotypeSimulator
 
 **PhenotypeSimulator** allows for the flexible simulation of phenotypes from
@@ -45,7 +49,7 @@ be customised.
 Full documentation of **PhenotypeSimulator** is available at
 http://HannahVMeyer.github.io/PhenotypeSimulator/.
 
-The current github version of *PhenotypeSimulator* is: 0.3.1 and can be
+The current github version of *PhenotypeSimulator* is 0.3.1 and can be
 installed via
 
 ```{r gh-installation, eval = FALSE}
@@ -53,7 +57,11 @@ installed via
 devtools::install_github("HannahVMeyer/PhenotypeSimulator")
 ```
 
-The current CRAN version of *PhenotypeSimulator* is: 0.2.2 (soon to be updated!)
+The current CRAN version of *PhenotypeSimulator* is 0.3.1 and can be installed
+via:
+```{r, eval=FALSE}
+install.packages("PhenotypeSimulator")
+```
 
 A log of version changes can be found [here](https://github.com/HannahVMeyer/PhenotypeSimulator/blob/master/NEWS.md).
 

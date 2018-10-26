@@ -2,8 +2,8 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/PhenotypeSimulator)](https://cran.r-project.org/package=PhenotypeSimulator) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![Downloads](http://cranlogs.r-pkg.org/badges/grand-total/PhenotypeSimulator?color=red)](http://cran.rstudio.com/web/packages/PhenotypeSimulator/index.html)
 
-<i class="fa fa-map" aria-hidden="true"></i> PhenotypeSimulator
----------------------------------------------------------------
+<i class="fa fa-cubes" aria-hidden="true"></i> PhenotypeSimulator
+-----------------------------------------------------------------
 
 **PhenotypeSimulator** allows for the flexible simulation of phenotypes from different genetic and non-genetic (noise) components.
 
@@ -11,16 +11,16 @@ In quantitative genetics, genotype to phenotype mapping is commonly realised by 
 
 **PhenotypeSimulator** allows for the simulation of complex phenotypes under different models, including genetic variant effects and infinitesimal genetic effects (reflecting population structure) as well as correlated, non-genetic covariates and observational noise effects. Different phenotypic effects can be combined into a final phenotype while controlling for the proportion of variance explained by each of the components. For each component, the number of variables, their distribution and the design of their effect across traits can be customised.
 
+<img src="docs/simulatedPhenotypes.png" width="100%" />
+
 <i class="fa fa-rocket" aria-hidden="true"></i> Installation
 ------------------------------------------------------------
 
-Full documentation of **PhenotypeSimulator** is available at <http://HannahVMeyer.github.io/PhenotypeSimulator/>.
-
-The current github version of *PhenotypeSimulator* is 0.3.1 and can be installed via
+The current github version of *PhenotypeSimulator* is 0.3.1 and can be installed via:
 
 ``` r
-# install.packages("devtools")
-devtools::install_github("HannahVMeyer/PhenotypeSimulator")
+library(devtools)
+install_github("HannahVMeyer/PhenotypeSimulator")
 ```
 
 The current CRAN version of *PhenotypeSimulator* is 0.3.1 and can be installed via:

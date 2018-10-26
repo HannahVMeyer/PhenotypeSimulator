@@ -2,7 +2,7 @@
 % Please edit documentation in R/RcppExports.R
 \name{read_lines}
 \alias{read_lines}
-\title{Scan file for specific line numbers.}
+\title{Scan file for specific line numbers}
 \usage{
 read_lines(filename, lines, sep = "\\n")
 }
@@ -14,5 +14,5 @@ read_lines(filename, lines, sep = "\\n")
 \item{sep}{[string] end-of-line delimiter}
 }
 \description{
-Scan file for specific line numbers.
+Scan file for specific line numbers
 }
