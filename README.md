@@ -1,6 +1,6 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-[![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/PhenotypeSimulator)](https://cran.r-project.org/package=PhenotypeSimulator) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![Downloads](http://cranlogs.r-pkg.org/badges/grand-total/PhenotypeSimulator?color=red)](http://cran.rstudio.com/web/packages/PhenotypeSimulator/index.html)
+[![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/PhenotypeSimulator)](https://cran.r-project.org/package=PhenotypeSimulator) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![Downloads](http://cranlogs.r-pkg.org/badges/grand-total/PhenotypeSimulator?color=blue)](http://cran.rstudio.com/web/packages/PhenotypeSimulator/index.html)
 
 <i class="fa fa-map" aria-hidden="true"></i> PhenotypeSimulator
 ---------------------------------------------------------------
