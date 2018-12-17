@@ -96,7 +96,7 @@ simulatePhenotypes <- function() {
                     memory) in format specified by --format 
                     [default: %default]."),
         make_option(c("--format"), action="store", 
-                    dest="format", default=NULL, type="character", 
+                    dest="format", default='delim', type="character", 
                     help="Needed when --genotypefile or
                     --genoFilePrefix/--genoFileSuffix are specified; specifies  
                     format of the genotype data; if --genotypefile: has to be 
