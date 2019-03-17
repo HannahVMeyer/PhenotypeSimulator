@@ -477,7 +477,7 @@ getCausalSNPs <- function(N, NrCausalSNPs=20,  genotypes=NULL,
             skipFields <- 3
             probabilities <- FALSE
         } else if (format == "delim") {
-            skipFields <- 1
+            if (is.null(skipFields)) skipFields <- 1
         } else {
             stop("Format: ", format, "not supported for sampling genotypes
                      from file.")
@@ -564,7 +564,7 @@ getCausalSNPs <- function(N, NrCausalSNPs=20,  genotypes=NULL,
         causalSNPs <- t(do.call(rbind, causalSNPs))
         if (!is.numeric(causalSNPs)) {
             stop(paste("Sampled genotypes are not numeric. Did you specify the",
-                       "correct number of skipFields?"))
+                       "correct format and/or number of skipFields?"))
         }
     } else {
         stop(paste("No genotype information provided, please specify either",
