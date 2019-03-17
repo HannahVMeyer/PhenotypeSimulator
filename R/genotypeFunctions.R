@@ -174,9 +174,9 @@ simulateGenotypes <- function(N, NrSNP=5000, frequencies=c(0.1, 0.2, 0.4),
 #' separated file, without information on individuals. From
 #' \url{http://www.haplotype.org/bimbam.html}: the first column of the mean
 #' genotype files is the SNP ID, the second and third columns are allele types
-#' with minor allele first. The rest columns are the mean genotypes of different
-#' individuals – numbers between 0 and 2 that represents the (posterior) mean
-#' genotype, or dosage of the minor allele.
+#' with minor allele first. The remaining columns are the mean genotypes of
+#' different individuals – numbers between 0 and 2 that represents the
+#' (posterior) mean genotype, or dosage of the minor allele.
 #' \item delim: a [delimter]-delimited file of [NrSNPs x NrSamples] genotypes
 #' with the snpIDs in the first column and the sampleIDs in the first row and
 #' genotypes encoded as numbers between 0 and 2 representing the (posterior)
@@ -579,7 +579,7 @@ getCausalSNPs <- function(N, NrCausalSNPs=20,  genotypes=NULL,
     }
     if (N < NrGenotypeSamples) {
         vmessage(c("Sampling", N, "samples from", NrGenotypeSamples,
-                   "genotypes provided"))
+                   "genotypes provided"), verbose = verbose)
         Nsamples <- sort(sample(NrGenotypeSamples, N))
         causalSNPs <- causalSNPs[Nsamples,]
     }
