@@ -16,7 +16,7 @@ In quantitative genetics, genotype to phenotype mapping is commonly realised by 
 <i class="fa fa-rocket" aria-hidden="true"></i> Installation
 ------------------------------------------------------------
 
-The current github version of *PhenotypeSimulator* is 0.3.1 and can be installed via:
+The current github version of *PhenotypeSimulator* is 0.3.2 and can be installed via:
 
 ``` r
 library(devtools)
