@@ -2,7 +2,7 @@
 % Please edit documentation in R/commandlineFunctions.R
 \name{simulatePhenotypes}
 \alias{simulatePhenotypes}
-\title{Command line execution for PhenotypeSimulator}
+\title{Command line execution for PhenotypeSimulator.}
 \usage{
 simulatePhenotypes()
 }

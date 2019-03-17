@@ -4,14 +4,15 @@
 \alias{runSimulation}
 \title{Run phenotype simulation.}
 \usage{
-runSimulation(N, P, genVar = NULL, h2s = NULL, theta = 0.8, h2bg = NULL,
-  eta = 0.8, noiseVar = NULL, rho = NULL, delta = NULL, gamma = 0.8,
-  phi = NULL, alpha = 0.8, tNrSNP = 5000, cNrSNP = 20,
-  SNPfrequencies = c(0.1, 0.2, 0.4), genotypefile = NULL, format = NULL,
-  genoFilePrefix = NULL, genoFileSuffix = NULL, genoDelimiter = ",",
-  skipFields = NULL, probabilities = FALSE, chr = NULL,
-  NrSNPsOnChromosome = NULL, NrChrCausal = NULL, kinshipfile = NULL,
-  kinshipHeader = FALSE, kinshipDelimiter = ",", standardise = TRUE,
+runSimulation(N, P, genVar = NULL, h2s = NULL, theta = 0.8,
+  h2bg = NULL, eta = 0.8, noiseVar = NULL, rho = NULL,
+  delta = NULL, gamma = 0.8, phi = NULL, alpha = 0.8,
+  tNrSNP = 5000, cNrSNP = 20, SNPfrequencies = c(0.1, 0.2, 0.4),
+  genotypefile = NULL, format = NULL, genoFilePrefix = NULL,
+  genoFileSuffix = NULL, genoDelimiter = ",", skipFields = NULL,
+  probabilities = FALSE, chr = NULL, NrSNPsOnChromosome = NULL,
+  NrChrCausal = NULL, kinshipfile = NULL, kinshipHeader = FALSE,
+  kinshipDelimiter = ",", standardise = TRUE,
   distBetaGenetic = "norm", mBetaGenetic = 0, sdBetaGenetic = 1,
   pTraitsAffectedGenetics = 1, pIndependentGenetic = 0.4,
   pTraitIndependentGenetic = 0.2, keepSameIndependentSNPs = FALSE,
@@ -21,11 +22,12 @@ runSimulation(N, P, genVar = NULL, h2s = NULL, theta = 0.8, h2bg = NULL,
   mBetaConfounders = 0, sdBetaConfounders = 1,
   pTraitsAffectedConfounders = 1, pIndependentConfounders = 0.4,
   pTraitIndependentConfounders = 0.2,
-  keepSameIndependentConfounders = FALSE, pcorr = 0.8, corrmatfile = NULL,
-  meanNoiseBg = 0, sdNoiseBg = 1, nonlinear = NULL, logbase = 10,
-  expbase = NULL, power = NULL, customTransform = NULL,
-  transformNeg = "abs", proportionNonlinear = 0, sampleID = "ID_",
-  phenoID = "Trait_", snpID = "SNP_", seed = 219453, verbose = FALSE)
+  keepSameIndependentConfounders = FALSE, pcorr = 0.8,
+  corrmatfile = NULL, meanNoiseBg = 0, sdNoiseBg = 1,
+  nonlinear = NULL, logbase = 10, expbase = NULL, power = NULL,
+  customTransform = NULL, transformNeg = "abs",
+  proportionNonlinear = 0, sampleID = "ID_", phenoID = "Trait_",
+  snpID = "SNP_", seed = 219453, verbose = FALSE)
 }
 \arguments{
 \item{N}{Number [integer] of samples to simulate.}

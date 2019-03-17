@@ -1,6 +1,6 @@
 context('Test output functions')
 
-tmp <- tempdir()
+tmp <- './tmpdata'
 simulation <- runSimulation(N=10, P=2, genVar=0.4, h2s=0.2, phi=0.8, delta=0.2)
 genotypes <- simulation$rawComponents$genotypes
 kinship <-  simulation$rawComponents$kinship
@@ -121,7 +121,7 @@ test_that('writeStandardOutput writes relevant main csv output', {
                                   sep="")))
     expect_true(file.exists(paste(testdir, "/Y_noiseFixed_Data_simulation.csv", 
                                   sep="")))
-    expect_true(file.exists(paste(testdir, "/genotypes_Data_simulation.csv", 
+    expect_true(file.exists(paste(testdir, "/Genotypes_Data_simulation.csv", 
                                   sep="")))
     expect_true(file.exists(paste(testdir, "/SNP_NrSNP20_Data_simulation.csv", 
                                   sep="")))
@@ -132,7 +132,7 @@ test_that('writeStandardOutput writes relevant main csv output', {
                                   sep="")))
     expect_true(file.exists(paste(testdir, "/Covs_effect_Data_simulation.csv", 
                                   sep="")))
-    expect_true(file.exists(paste(testdir, "/kinship_Data_simulation.csv", 
+    expect_true(file.exists(paste(testdir, "/Kinship_Data_simulation.csv", 
                                   sep="")))
     expect_true(file.exists(paste(testdir, "/varComponents_Data_simulation.csv", 
                                   sep="")))
@@ -140,6 +140,7 @@ test_that('writeStandardOutput writes relevant main csv output', {
                                   sep="")))
     expect_true(file.exists(paste(testdir, "/cov_genBg_Data_simulation.csv", 
                                   sep="")))
+    unlink(paste(testdir, "/*", sep=""))
 })
 
 test_that('writeStandardOutput writes additional csv output', {
@@ -183,6 +184,7 @@ test_that('writeStandardOutput writes additional csv output', {
     expect_true(file.exists(paste(testdir, 
                                   "/cov_noiseBg_shared_Data_simulation.csv", 
                                   sep="")))
+    unlink(paste(testdir, "/*", sep=""))
 })
 
 test_that('writeStandardOutput writes relevant main rds output', {
@@ -209,7 +211,7 @@ test_that('writeStandardOutput writes relevant main rds output', {
                                   sep="")))
     expect_true(file.exists(paste(testdir, "/Covs_effect_Data_simulation.rds", 
                                   sep="")))
-    expect_true(file.exists(paste(testdir, "/kinship_Data_simulation.rds", 
+    expect_true(file.exists(paste(testdir, "/Kinship_Data_simulation.rds", 
                                   sep="")))
     expect_true(file.exists(paste(testdir, "/varComponents_Data_simulation.rds", 
                                   sep="")))
@@ -217,8 +219,9 @@ test_that('writeStandardOutput writes relevant main rds output', {
                                   sep="")))
     expect_true(file.exists(paste(testdir, "/cov_genBg_Data_simulation.rds", 
                                   sep="")))
-    expect_true(file.exists(paste(testdir, "/genotypes_Data_simulation.rds", 
+    expect_true(file.exists(paste(testdir, "/Genotypes_Data_simulation.rds", 
                                   sep="")))
+    unlink(paste(testdir, "/*", sep=""))
 })
 
 test_that('writeStandardOutput writes additional rds output', {
@@ -262,4 +265,7 @@ test_that('writeStandardOutput writes additional rds output', {
     expect_true(file.exists(paste(testdir, 
                                   "/cov_noiseBg_shared_Data_simulation.rds", 
                                   sep="")))
+    unlink(paste(testdir, "/*", sep=""))
 })
+
+unlink(paste(tmp, "/*", sep=""))

@@ -10,3 +10,4 @@ genetic and noise components}
 PhenotypeSimulator: A package for simulating phenotypes from different
 genetic and noise components
 }
+\keyword{internal}

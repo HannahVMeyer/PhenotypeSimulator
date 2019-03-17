@@ -1,0 +1,9 @@
+pandoc: 1.19.2.1
+pkgdown: 1.1.0.9000
+pkgdown_sha: 6e70f7b8610b52658ada49e40e2d05bcf2c0616a
+articles:
+  PhenotypeSimulator: PhenotypeSimulator.html
+  Sample-scripts-external-genotype-simulation: Sample-scripts-external-genotype-simulation.html
+  Simulation-and-LinearModel: Simulation-and-LinearModel.html
+  SimulationBasedOnExampleData: SimulationBasedOnExampleData.html
+

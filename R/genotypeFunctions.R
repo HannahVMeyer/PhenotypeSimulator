@@ -25,7 +25,7 @@ getAlleleFrequencies <- function(snp) {
     return(c(p, 1-p))
 }
 
-#' Standardise genotypes
+#' Standardise genotypes.
 #'
 #' Genotypes are standardised as described in Yang et al:
 #' snp_standardised = (snp - 2 * ref_allele_freq)/

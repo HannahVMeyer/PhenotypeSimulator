@@ -1,4 +1,4 @@
-#' Command line execution for PhenotypeSimulator
+#' Command line execution for PhenotypeSimulator.
 #' 
 #' simulatePhenotypes runs without arguments. Upon call, it reads command-line
 #' parameters and supplies these to \code{\link{runSimulation}} and 

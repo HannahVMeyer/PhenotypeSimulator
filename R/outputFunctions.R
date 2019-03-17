@@ -1,4 +1,4 @@
-#' Write simulated data into formats used by standard GWAS software  
+#' Write simulated data into formats used by standard GWAS software. 
 #'
 #' writeStandardOutput can write genotypes and phenotypes as well as possible
 #' covariates and kinship matrices into a number of formats for standard GWAS 
@@ -665,11 +665,13 @@ savePheno <- function(simulatedData, directory, format=".csv",
                         paste(directory, "/Kinship",outstring,".csv", 
                               sep=""), 
                         sep=",", col.names=TRUE, row.names=FALSE)
+            colnames(rawComponents$evec_kinship) <- 
+                colnames(rawComponents$kinship)
             write.table(rawComponents$evec_kinship, paste(directory, 
                                             "/Kinship_eigenvec", outstring,
                                             ".csv", sep=""),
                         sep=",", quote=FALSE,
-                        col.names=colnames(rawComponents$kinship), 
+                        col.names=TRUE, 
                         row.names=FALSE)
             write.table(rawComponents$eval_kinship, paste(directory, 
                                             "/Kinship_eigenval", outstring,
@@ -795,12 +797,12 @@ savePheno <- function(simulatedData, directory, format=".csv",
         vmessage(c("Save genotypes to", directory), verbose=verbose)
         if ("csv" %in% format) {
             write.table(t(rawComponents$genotypes$genotypes), 
-                paste(directory, "/genotypes", outstring, ".csv", sep=""), 
+                paste(directory, "/Genotypes", outstring, ".csv", sep=""), 
                 sep=",", col.names=NA, row.names=TRUE, quote=FALSE)
         }
         if ("rds" %in% format) {
             saveRDS(t(rawComponents$genotypes$genotypes), 
-                    paste(directory, "/genotypes", outstring, ".rds", 
+                    paste(directory, "/Genotypes", outstring, ".rds", 
                           sep=""))
         }
     }

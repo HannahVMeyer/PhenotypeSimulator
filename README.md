@@ -1,59 +1,37 @@
-# PhenotypeSimulator
-*PhenotypeSimulator* allows for the flexible simulation of phenotypes from different genetic and non-genetic (noise) components. 
 
-In quantitative genetics, genotype to phenotype mapping is commonly realised by fitting a linear model to the genotype as the explanatory variable and the phenotype as the response variable. Other explanatory variable such as additional sample measures (e.g. age, height, weight) or batch effects can also be included. For linear mixed models, in addition to the fixed effects of the genotype and the covariates, different random effect components can be included, accounting for population structure in the study cohort or environmental effects. The application of linear and linear mixed models in quantitative genetics ranges from genetic studies in model organism such as yeast and *Arabidopsis thaliana* to human molecular, morphological or imaging derived traits. Developing new methods for increasing numbers of sample cohorts, phenotypic measurements or complexity of phenotypes to analyse, often requires the simulation of datasets with a specific underlying phenotype structure. 
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+[![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/PhenotypeSimulator)](https://cran.r-project.org/package=PhenotypeSimulator) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![Downloads](http://cranlogs.r-pkg.org/badges/grand-total/PhenotypeSimulator?color=blue)](http://cran.rstudio.com/web/packages/PhenotypeSimulator/index.html)
 
-*PhenotypeSimulator* allows for the simulation of complex phenotypes under different models, including genetic variant effects and infinitesimal genetic effects (reflecting population structure) as well as correlated, non-genetic covariates and observational noise effects. Different phenotypic effects can be combined into a final phenotype while controlling for the proportion of variance explained by each of the components. For each component, the number of variables, their distribution and the design of their effect across traits can be customised.
+<i class="fa fa-map" aria-hidden="true"></i> PhenotypeSimulator
+---------------------------------------------------------------
 
-The current github version of *PhenotypeSimulator* is: 0.2.2 and can be
-installed via
-```bash
-library(devtools)
-install_github("HannahVMeyer/PhenotypeSimulator")
+**PhenotypeSimulator** allows for the flexible simulation of phenotypes from different genetic and non-genetic (noise) components.
+
+In quantitative genetics, genotype to phenotype mapping is commonly realised by fitting a linear model to the genotype as the explanatory variable and the phenotype as the response variable. Other explanatory variable such as additional sample measures (e.g. age, height, weight) or batch effects can also be included. For linear mixed models, in addition to the fixed effects of the genotype and the covariates, different random effect components can be included, accounting for population structure in the study cohort or environmental effects. The application of linear and linear mixed models in quantitative genetics ranges from genetic studies in model organism such as yeast and *Arabidopsis thaliana* to human molecular, morphological or imaging derived traits. Developing new methods for increasing numbers of sample cohorts, phenotypic measurements or complexity of phenotypes to analyse, often requires the simulation of datasets with a specific underlying phenotype structure.
+
+**PhenotypeSimulator** allows for the simulation of complex phenotypes under different models, including genetic variant effects and infinitesimal genetic effects (reflecting population structure) as well as correlated, non-genetic covariates and observational noise effects. Different phenotypic effects can be combined into a final phenotype while controlling for the proportion of variance explained by each of the components. For each component, the number of variables, their distribution and the design of their effect across traits can be customised.
+
+<i class="fa fa-rocket" aria-hidden="true"></i> Installation
+------------------------------------------------------------
+
+Full documentation of **PhenotypeSimulator** is available at <http://HannahVMeyer.github.io/PhenotypeSimulator/>.
+
+The current github version of *PhenotypeSimulator* is 0.3.1 and can be installed via
+
+``` r
+# install.packages("devtools")
+devtools::install_github("HannahVMeyer/PhenotypeSimulator")
 ```
-The current CRAN version of *PhenotypeSimulator* is: 0.2.2
 
-## Minor changes from version 0.2.1 to version 0.2.2:
-1. Update readStandardGenotypes to be compatible with latest
-   release of data.table (v1.11.2), see
-   [here](https://github.com/HannahVMeyer/PhenotypeSimulator/issues/7)
+The current CRAN version of *PhenotypeSimulator* is 0.3.1 and can be installed via:
 
-## Minor changes from version 0.2.0 to version 0.2.1:
-1. Additional tests for compatibility of input parameters with variance
-   components functions, genotype functions and output functions.
-1. Bug fix in output function: savePheno now properly saves kinship matrix as
-   .rds.
+``` r
+install.packages("PhenotypeSimulator")
+```
 
-## Major changes from version 0.1.3 to version 0.2.0:
+A log of version changes can be found [here](https://github.com/HannahVMeyer/PhenotypeSimulator/blob/master/NEWS.md).
 
-**Input**
-1. *PhenotypeSimulator* now includes readStandardGenotypes which can read externally simulated or user-provided genotypes in plink, genome, oxgen (hapgen/impute2), bimbam or simple delimited format.
-1. A user-specified correlation matrix can be provided for the simulation of the correlatedBdEffects.
-1. Short option flags for command-line use of *PhenotypeSimulator* were removed.
+<i class="fa fa-pencil" aria-hidden="true"></i> Citation
+--------------------------------------------------------
 
-**Output**
-1. *PhenotypeSimulator* provides the option to save the simulated phenotypes and genotypes in formats compatible with a number of commonly used genetic association software (gemma, bimbam, plink, snptest) via writeStandardOutput.
-1. Intermediate phenotype components are now saved per default.
-1. Saving additional subsets of the simulated data has been removed.
-
-**Variance components**
-1. Genotype simulation and kinship estimation: functions for genotype simulation and kinship estimation have been rewritten for
-    significant speed-ups of the computation time [benchmarking](https://github.com/HannahVMeyer/PhenotypeSimulator-profiling).
-    
-1. geneticFixedEffects and noiseFixedEffects:
-    1. The effect size distributions of the shared effects are now modelled as the product of two exponential distributions
-        (to yield an approximately uniform distributions) or the product of a normal distribution with user-specified
-        parameters and a standard normal distribution.
-        
-    1. The independent effects can now be specified to affect the same subset or different subsets of traits (via 
-        keepSameIndependent).
-        
-    1. The overall number of traits affected by the effects can now be specified via pTraitsAffected.
-    
-
-1. correlatedBgEffects: the additional correlation between the traits can be specified by the user by providing an external
-    correlation matrix. 
-
-
-
-
+Meyer, HV & Birney E (2018) [PhenotypeSimulator: A comprehensive framework for simulating multi-trait, multi-locus genotype to phenotype relationships](https://doi.org/10.1093/bioinformatics/bty197), *Bioinformatics*, 34(17):2951–2956
