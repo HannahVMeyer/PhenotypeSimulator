@@ -219,7 +219,8 @@ test_that('getCausalSNPs returns correct output dimensions', {
 
 test_that('getKinship fails if neither kinshipfile nor genotype matrix are 
           provided',{
-              expect_error(getKinship(N=100), "Either X or kinshipfile must be provided")
+              expect_error(getKinship(N=100),
+                           "Either X or kinshipfile must be provided")
           })
 
 test_that('getKinship fails with non-existing kinship file',{
