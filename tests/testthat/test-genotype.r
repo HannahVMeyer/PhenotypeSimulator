@@ -241,7 +241,6 @@ test_that('getCausalSNPs samples from bimbam formated genotypes', {
                          format='bimbam', delim=",", verbose=FALSE)
     expect_equal(dim(tmp)[1], 50)
     expect_equal(dim(tmp)[2], 10)
-    
 })
 
 test_that('getCausalSNPs fails with sample error', {
