@@ -7,8 +7,8 @@
 getCausalSNPs(N, NrCausalSNPs = 20, genotypes = NULL, chr = NULL,
   NrSNPsOnChromosome = NULL, NrChrCausal = NULL,
   genoFilePrefix = NULL, genoFileSuffix = NULL, format = "delim",
-  delimiter = ",", skipFields = NULL, probabilities = FALSE,
-  sampleID = "ID_", verbose = TRUE)
+  delimiter = ",", header = FALSE, skipFields = NULL,
+  probabilities = FALSE, sampleID = "ID_", verbose = TRUE)
 }
 \arguments{
 \item{N}{Number [integer] of samples to simulate.}
@@ -18,14 +18,16 @@ getCausalSNPs(N, NrCausalSNPs = 20, genotypes = NULL, chr = NULL,
 \item{genotypes}{[NrSamples x totalNrSNPs] Matrix of genotypes [integer]/
 [double].}
 
-\item{chr}{Vector of chromosome(s) [integer] to chose NrCausalSNPs from; only 
+\item{chr}{Vector of chromosome(s) [integer] to chose NrCausalSNPs from; only
 used when external genotype data is provided i.e. !is.null(genoFilePrefix).}
 
-\item{NrSNPsOnChromosome}{Vector of number(s) of SNPs [integer] per entry in 
-chr (see above); has to be the same length as chr. If not provided, lines in 
-file will be counted (which can be slow for large files).}
+\item{NrSNPsOnChromosome}{Vector of number(s) of SNPs [integer] per entry in
+chr (see above); has to be the same length as chr. If not provided, number of
+SNPS in file will be determined from line count (which can be slow for large
+files); (optional) header lines will be ignored, so accurate number of SNPs
+not lines in file should be specified.}
 
-\item{NrChrCausal}{Number [integer] of causal chromosomes to sample 
+\item{NrChrCausal}{Number [integer] of causal chromosomes to sample
 NrCausalSNPs from (as opposed to the actual chromosomes to chose from via chr
 ); only used when external genotype data is provided i.e.
 !is.null(genoFilePrefix).}
@@ -33,25 +35,29 @@ NrCausalSNPs from (as opposed to the actual chromosomes to chose from via chr
 \item{genoFilePrefix}{full path/to/chromosome-wise-genotype-file-ending-
 before-"chrChromosomeNumber" (no '~' expansion!) [string].}
 
-\item{genoFileSuffix}{[string] Following chromosome number including 
+\item{genoFileSuffix}{[string] Following chromosome number including
 .fileformat (e.g. ".csv"); File described by genoFilePrefix-genoFileSuffix
 has to be a text format i.e. comma/tab/space separated.}
 
 \item{format}{Name [string] of genotype file format. Options are:
 "oxgen", "bimbam" or "delim". See \link{readStandardGenotypes} for details.}
 
-\item{delimiter}{Field separator [string] of genotypefile or 
+\item{delimiter}{Field separator [string] of genotypefile or
 genoFilePrefix-genoFileSuffix file if format == 'delim'.}
 
-\item{skipFields}{Number [integer] of fields (columns) to skip in 
+\item{header}{[logical] Can be set to indicate if
+genoFilePrefix-genoFileSuffix file has a header for format == 'delim'. 
+See details.}
+
+\item{skipFields}{Number [integer] of fields (columns) to skip in
 genoFilePrefix-genoFileSuffix file if format == 'delim'. See details.}
 
-\item{probabilities}{[boolean]. If set to TRUE, the genotypes in the files 
-described by genoFilePrefix-genoFileSuffix are provided as triplets of 
-probabilities (p(AA), p(Aa), p(aa)) and are converted into their expected 
+\item{probabilities}{[boolean]. If set to TRUE, the genotypes in the files
+described by genoFilePrefix-genoFileSuffix are provided as triplets of
+probabilities (p(AA), p(Aa), p(aa)) and are converted into their expected
 genotype frequencies by 0*p(AA) + p(Aa) + 2p(aa) via \link{probGen2expGen}.}
 
-\item{sampleID}{Prefix [string] for naming samples (will be followed by 
+\item{sampleID}{Prefix [string] for naming samples (will be followed by
 sample number from 1 to N when constructing id_samples)}
 
 \item{verbose}{[boolean] If TRUE, progress info is printed to standard out}
@@ -63,31 +69,33 @@ sample number from 1 to N when constructing id_samples)}
 \description{
 Draw random SNPs from genotypes provided or external genotype files.
 When drawing from external genotype files, only lines of randomly
-chosen SNPs are read, which is recommended for large genotype files. See 
+chosen SNPs are read, which is recommended for large genotype files. See
 details for more information. The latter option currently supports file in
 simple delim-formats (with specified delimiter and optional number of fields
 to skip) and the bimbam and the oxgen format.
 }
 \details{
-In order to chose SNPs from external genotype files without reading 
-them into memory, genotypes for each chromosome need to be accesible as 
-[SNPs x samples] in a separate file, containing "chrChromosomenumber" (e.g 
-chr22) in the file name (e.g. /path/to/dir/related_nopopstructure_chr22.csv).  
-All genotype files need to be saved in the same directory. genoFilePrefix 
-(/path/to/dir/related_nopopstructure_) and genoFileSuffix (.csv) specify the 
+In order to chose SNPs from external genotype files without reading
+them into memory, genotypes for each chromosome need to be accesible as
+[SNPs x samples] in a separate file, containing "chrChromosomenumber" (e.g
+chr22) in the file name (e.g. /path/to/dir/related_nopopstructure_chr22.csv).
+All genotype files need to be saved in the same directory. genoFilePrefix
+(/path/to/dir/related_nopopstructure_) and genoFileSuffix (.csv) specify the
 strings leading and following the "chrChromosomenumber". If format== delim,
-the first column in each file needs to be the SNP_ID and files cannot contain
-a header. Subsequent columns containing additional SNP information can be 
+the first column in each file needs to be the SNP_ID, the first row can
+either contain sample IDs or the first row of genotypes (specified with
+header). Subsequent columns containing additional SNP information can be
 skipped by setting skipFields. If format==oxgen or bimbam, files need to be
 in the oxgen or bimbam format (see \link{readStandardGenotypes} for details)
-and no additional informatiob about delim or skipFields have to be provided.
+and no additional information about delim, header or skipFields will be
+considered.
 getCausalSNPs generates a vector of chromosomes from which to sample the
 SNPs. For each of the chromosomes, it counts the number of SNPs in the
-chromosome file and creates vectors of random numbers ranging 
+chromosome file and creates vectors of random numbers ranging
 from 1:NrSNPSinFile. Only the lines corresponding to these numbers are then
-read into R. The example data provided for chromosome 22 contains genotypes 
-(50 samples) of the first 500 SNPs on chromosome 22 with a minor allele 
-frequency of greater than 2% from the European populations of the the 1000 
+read into R. The example data provided for chromosome 22 contains genotypes
+(50 samples) of the first 500 SNPs on chromosome 22 with a minor allele
+frequency of greater than 2% from the European populations of the the 1000
 Genomes project.
 }
 \examples{
@@ -100,10 +108,10 @@ NrCausalSNPs=10, genotypes=geno$genotypes)
 genotypeFile <- system.file("extdata/genotypes/",
 "genotypes_chr22.csv",
 package = "PhenotypeSimulator")
-genoFilePrefix <- gsub("chr.*", "", genotypeFile) 
-genoFileSuffix <- ".csv" 
-causalSNPsFromLines <- getCausalSNPs(N=50, NrCausalSNPs=10, chr=22, 
-genoFilePrefix=genoFilePrefix, 
+genoFilePrefix <- gsub("chr.*", "", genotypeFile)
+genoFileSuffix <- ".csv"
+causalSNPsFromLines <- getCausalSNPs(N=50, NrCausalSNPs=10, chr=22,
+genoFilePrefix=genoFilePrefix,
 genoFileSuffix=genoFileSuffix)
 }
 \seealso{

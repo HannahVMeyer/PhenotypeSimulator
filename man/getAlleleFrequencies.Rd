@@ -7,7 +7,7 @@
 getAlleleFrequencies(snp)
 }
 \arguments{
-\item{snp}{[N x 1] Vector of length [N] samples with genotypes of a single 
+\item{snp}{[N x 1] Vector of length [N] samples with genotypes of a single
 bi-allelic genetic variant/SNP encoded as 0,1 and 2.}
 }
 \value{

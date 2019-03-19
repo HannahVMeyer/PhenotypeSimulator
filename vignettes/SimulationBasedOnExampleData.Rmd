@@ -1,14 +1,22 @@
 ---
 title: "Using PhenotypeSimulator to simulate phenotypes based on an example dataset"
 author: "Hannah Meyer"
-date: "26/02/2018"
-output: pdf_document
+date: "`r Sys.Date()`"
+output:
+    pdf_document:
+        fig_caption: yes
+        toc: true
+        toc_depth: 2
 bibliography: Vignette-example-data.bib
 csl: plos-genetics.csl
 header-includes:
    - \usepackage[bf]{caption} 
    - \usepackage{float} 
    - \floatplacement{figure}{H} 
+vignette: >
+  %\VignetteIndexEntry{Simulation based on example data}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r setup, include=FALSE}

@@ -1,6 +1,6 @@
 Package: PhenotypeSimulator
 Title: Flexible Phenotype Simulation from Different Genetic and Noise Models
-Version: 0.3.1
+Version: 0.3.2
 Authors@R: c(
   person("Hannah", "Meyer", email = "hannah@ebi.ac.uk", role = c("aut", "cre"),
     comment = c(ORCID = "0000-0003-4564-0899")),
@@ -41,7 +41,8 @@ Imports:
     Rcpp (>= 0.12.11),
     ggplot2,
     reshape2,
-    dplyr
+    dplyr,
+    cowplot
 Suggests:
     testthat,
     knitr,
