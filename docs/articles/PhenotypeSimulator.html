@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">PhenotypeSimulator</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.1</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.2</span>
       </span>
     </div>
 
@@ -104,7 +104,7 @@
       <h1>Flexible phenotype simulation with PhenotypeSimulator</h1>
                         <h4 class="author">Hannah Meyer</h4>
             
-            <h4 class="date">2018-11-06</h4>
+            <h4 class="date">2019-03-20</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/HannahVMeyer/PhenotypeSimulator/blob/master/vignettes/PhenotypeSimulator.Rmd"><code>vignettes/PhenotypeSimulator.Rmd</code></a></small>
       <div class="hidden name"><code>PhenotypeSimulator.Rmd</code></div>
@@ -113,6 +113,8 @@
 
     
     
+<pre><code>## Warning: replacing previous import 'cowplot::ggsave' by 'ggplot2::ggsave'
+## when loading 'PhenotypeSimulator'</code></pre>
 <div id="introduction" class="section level1">
 <h1 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h1>
@@ -191,7 +193,8 @@ Y &lt;-<span class="st"> </span><span class="kw">scale</span>(genBg_shared_scale
 <span class="st">    </span>genBg_independent_scaled<span class="op">$</span>component <span class="op">+</span><span class="st"> </span>noiseBg_independent_scaled<span class="op">$</span>component)
 
 <span class="co"># transform phenotype non-linearly</span>
-Y_nl &lt;-<span class="st"> </span><span class="kw"><a href="../reference/transformNonlinear.html">transformNonlinear</a></span>(Y, <span class="dt">alpha=</span><span class="fl">0.7</span>, <span class="dt">method=</span><span class="st">"exp"</span>)</code></pre></div>
+Y_nl &lt;-<span class="st"> </span><span class="kw"><a href="../reference/transformNonlinear.html">transformNonlinear</a></span>(Y, <span class="dt">alpha=</span><span class="fl">0.7</span>, <span class="dt">method=</span><span class="st">"exp"</span>)
+<span class="co">#&gt; Use exp as transformation method</span></code></pre></div>
 </div>
 <div id="via-runsimulation" class="section level3">
 <h3 class="hasAnchor">
@@ -229,7 +232,9 @@ phenotype &lt;-<span class="st"> </span><span class="kw"><a href="../reference/r
 <span class="co">#&gt; Simulate infinitesimal genetic effects</span>
 <span class="co">#&gt; Simulate noise terms (noise model: noiseBgOnly)</span>
 <span class="co">#&gt; Simulate observational noise effects</span>
-<span class="co">#&gt; Construct final simulated phenotype</span></code></pre></div>
+<span class="co">#&gt; Construct final simulated phenotype</span>
+<span class="co">#&gt; Transform phenotypes</span>
+<span class="co">#&gt; Use exp as transformation method</span></code></pre></div>
 </div>
 </div>
 <div id="example-2-creating-a-phenotype-composed-of-five-components" class="section level2">

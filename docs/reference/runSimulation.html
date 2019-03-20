@@ -67,7 +67,7 @@ final phenotype. For details to all parameters, see the respective functions." /
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">PhenotypeSimulator</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.1</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.2</span>
       </span>
     </div>
 
@@ -156,11 +156,11 @@ final phenotype. For details to all parameters, see the respective functions.</p
   <span class='kw'>h2bg</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>eta</span> <span class='kw'>=</span> <span class='fl'>0.8</span>, <span class='kw'>noiseVar</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>rho</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>delta</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>gamma</span> <span class='kw'>=</span> <span class='fl'>0.8</span>, <span class='kw'>phi</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='fl'>0.8</span>,
   <span class='kw'>tNrSNP</span> <span class='kw'>=</span> <span class='fl'>5000</span>, <span class='kw'>cNrSNP</span> <span class='kw'>=</span> <span class='fl'>20</span>, <span class='kw'>SNPfrequencies</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>0.1</span>, <span class='fl'>0.2</span>, <span class='fl'>0.4</span>),
-  <span class='kw'>genotypefile</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>format</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>genoFilePrefix</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>genotypefile</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>format</span> <span class='kw'>=</span> <span class='st'>"delim"</span>, <span class='kw'>genoFilePrefix</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>genoFileSuffix</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>genoDelimiter</span> <span class='kw'>=</span> <span class='st'>","</span>, <span class='kw'>skipFields</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>probabilities</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>chr</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>NrSNPsOnChromosome</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>NrChrCausal</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>kinshipfile</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>kinshipHeader</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>kinshipDelimiter</span> <span class='kw'>=</span> <span class='st'>","</span>, <span class='kw'>standardise</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>header</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>probabilities</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>chr</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>NrSNPsOnChromosome</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>NrChrCausal</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>kinshipfile</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>kinshipHeader</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>kinshipDelimiter</span> <span class='kw'>=</span> <span class='st'>","</span>, <span class='kw'>standardise</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>distBetaGenetic</span> <span class='kw'>=</span> <span class='st'>"norm"</span>, <span class='kw'>mBetaGenetic</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>sdBetaGenetic</span> <span class='kw'>=</span> <span class='fl'>1</span>,
   <span class='kw'>pTraitsAffectedGenetics</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>pIndependentGenetic</span> <span class='kw'>=</span> <span class='fl'>0.4</span>,
   <span class='kw'>pTraitIndependentGenetic</span> <span class='kw'>=</span> <span class='fl'>0.2</span>, <span class='kw'>keepSameIndependentSNPs</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
@@ -288,6 +288,12 @@ format == delim.</p></td>
       <td><p>Number [integer] of fields (columns) in to skip in 
 genoFilePrefix-genoFileSuffix-file. See details in <a href='getCausalSNPs.html'>getCausalSNPs</a> if
 format == delim.</p></td>
+    </tr>
+    <tr>
+      <th>header</th>
+      <td><p>[logical] Can be set to indicate if
+genoFilePrefix-genoFileSuffix file has a header for format == 'delim'. 
+See details in <a href='getCausalSNPs.html'>getCausalSNPs</a>.</p></td>
     </tr>
     <tr>
       <th>probabilities</th>
@@ -471,8 +477,8 @@ the simulations of the observational noise effects.</p></td>
 (exponential), log (logarithm), poly (polynomial), sqrt (squareroot) or 
 custom (user-supplied function); if log or exp, base can be specified; if 
 poly, power can be specified; if custom, a custom function (see for details). 
-Non-linear transformation is optional, default is NULL ie no transformation (see 
-details).</p></td>
+Non-linear transformation is optional, default is NULL ie no transformation
+(see details).</p></td>
     </tr>
     <tr>
       <th>logbase</th>

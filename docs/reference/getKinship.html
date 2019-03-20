@@ -34,8 +34,8 @@
 
 <meta property="og:title" content="Get genetic kinship. — getKinship" />
 
-<meta property="og:description" content="Estimate kinship from standardised genotypes or read pre-computed kinship 
-file. Standardised genotypes can be obtained via 
+<meta property="og:description" content="Estimate kinship from standardised genotypes or read pre-computed kinship
+file. Standardised genotypes can be obtained via
 standardiseGenotypes." />
 <meta name="twitter:card" content="summary" />
 
@@ -66,7 +66,7 @@ standardiseGenotypes." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">PhenotypeSimulator</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.1</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.2</span>
       </span>
     </div>
 
@@ -144,8 +144,8 @@ standardiseGenotypes." />
 
     <div class="ref-description">
     
-    <p>Estimate kinship from standardised genotypes or read pre-computed kinship 
-file. Standardised genotypes can be obtained via 
+    <p>Estimate kinship from standardised genotypes or read pre-computed kinship
+file. Standardised genotypes can be obtained via
 <code><a href='standardiseGenotypes.html'>standardiseGenotypes</a></code>.</p>
     
     </div>
@@ -163,7 +163,7 @@ file. Standardised genotypes can be obtained via
     </tr>
     <tr>
       <th>sampleID</th>
-      <td><p>Prefix [string] for naming samples (will be followed by 
+      <td><p>Prefix [string] for naming samples (will be followed by
 sample number from 1 to N when constructing id_samples).</p></td>
     </tr>
     <tr>
@@ -172,7 +172,7 @@ sample number from 1 to N when constructing id_samples).</p></td>
     </tr>
     <tr>
       <th>kinshipfile</th>
-      <td><p>path/to/kinshipfile [string] to be read; either X or 
+      <td><p>path/to/kinshipfile [string] to be read; either X or
 kinshipfile must be provided.</p></td>
     </tr>
     <tr>
@@ -206,8 +206,8 @@ kinship estimation.</p></td>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>The kinship is estimated as \(K = XX_T\), with X the standardised
-genotypes of the samples. When estimating the kinship from the provided 
-genotypes, the kinship is normalised by the mean of its diagonal 
+genotypes of the samples. When estimating the kinship from the provided
+genotypes, the kinship is normalised by the mean of its diagonal
 elements and 1e-4 added to the diagonal for numerical stability.</p>
     
 

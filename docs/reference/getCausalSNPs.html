@@ -36,7 +36,7 @@
 
 <meta property="og:description" content="Draw random SNPs from genotypes provided or external genotype files.
 When drawing from external genotype files, only lines of randomly
-chosen SNPs are read, which is recommended for large genotype files. See 
+chosen SNPs are read, which is recommended for large genotype files. See
 details for more information. The latter option currently supports file in
 simple delim-formats (with specified delimiter and optional number of fields
 to skip) and the bimbam and the oxgen format." />
@@ -69,7 +69,7 @@ to skip) and the bimbam and the oxgen format." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">PhenotypeSimulator</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.1</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.2</span>
       </span>
     </div>
 
@@ -149,7 +149,7 @@ to skip) and the bimbam and the oxgen format." />
     
     <p>Draw random SNPs from genotypes provided or external genotype files.
 When drawing from external genotype files, only lines of randomly
-chosen SNPs are read, which is recommended for large genotype files. See 
+chosen SNPs are read, which is recommended for large genotype files. See
 details for more information. The latter option currently supports file in
 simple delim-formats (with specified delimiter and optional number of fields
 to skip) and the bimbam and the oxgen format.</p>
@@ -159,8 +159,8 @@ to skip) and the bimbam and the oxgen format.</p>
     <pre class="usage"><span class='fu'>getCausalSNPs</span>(<span class='no'>N</span>, <span class='kw'>NrCausalSNPs</span> <span class='kw'>=</span> <span class='fl'>20</span>, <span class='kw'>genotypes</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>chr</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>NrSNPsOnChromosome</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>NrChrCausal</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>genoFilePrefix</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>genoFileSuffix</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>format</span> <span class='kw'>=</span> <span class='st'>"delim"</span>,
-  <span class='kw'>delimiter</span> <span class='kw'>=</span> <span class='st'>","</span>, <span class='kw'>skipFields</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>probabilities</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>sampleID</span> <span class='kw'>=</span> <span class='st'>"ID_"</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
+  <span class='kw'>delimiter</span> <span class='kw'>=</span> <span class='st'>","</span>, <span class='kw'>header</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>skipFields</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>probabilities</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>sampleID</span> <span class='kw'>=</span> <span class='st'>"ID_"</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -180,18 +180,20 @@ to skip) and the bimbam and the oxgen format.</p>
     </tr>
     <tr>
       <th>chr</th>
-      <td><p>Vector of chromosome(s) [integer] to chose NrCausalSNPs from; only 
+      <td><p>Vector of chromosome(s) [integer] to chose NrCausalSNPs from; only
 used when external genotype data is provided i.e. !is.null(genoFilePrefix).</p></td>
     </tr>
     <tr>
       <th>NrSNPsOnChromosome</th>
-      <td><p>Vector of number(s) of SNPs [integer] per entry in 
-chr (see above); has to be the same length as chr. If not provided, lines in 
-file will be counted (which can be slow for large files).</p></td>
+      <td><p>Vector of number(s) of SNPs [integer] per entry in
+chr (see above); has to be the same length as chr. If not provided, number of
+SNPS in file will be determined from line count (which can be slow for large
+files); (optional) header lines will be ignored, so accurate number of SNPs
+not lines in file should be specified.</p></td>
     </tr>
     <tr>
       <th>NrChrCausal</th>
-      <td><p>Number [integer] of causal chromosomes to sample 
+      <td><p>Number [integer] of causal chromosomes to sample
 NrCausalSNPs from (as opposed to the actual chromosomes to chose from via chr
 ); only used when external genotype data is provided i.e.
 !is.null(genoFilePrefix).</p></td>
@@ -203,7 +205,7 @@ before-"chrChromosomeNumber" (no '~' expansion!) [string].</p></td>
     </tr>
     <tr>
       <th>genoFileSuffix</th>
-      <td><p>[string] Following chromosome number including 
+      <td><p>[string] Following chromosome number including
 .fileformat (e.g. ".csv"); File described by genoFilePrefix-genoFileSuffix
 has to be a text format i.e. comma/tab/space separated.</p></td>
     </tr>
@@ -214,24 +216,30 @@ has to be a text format i.e. comma/tab/space separated.</p></td>
     </tr>
     <tr>
       <th>delimiter</th>
-      <td><p>Field separator [string] of genotypefile or 
+      <td><p>Field separator [string] of genotypefile or
 genoFilePrefix-genoFileSuffix file if format == 'delim'.</p></td>
     </tr>
     <tr>
+      <th>header</th>
+      <td><p>[logical] Can be set to indicate if
+genoFilePrefix-genoFileSuffix file has a header for format == 'delim'. 
+See details.</p></td>
+    </tr>
+    <tr>
       <th>skipFields</th>
-      <td><p>Number [integer] of fields (columns) to skip in 
+      <td><p>Number [integer] of fields (columns) to skip in
 genoFilePrefix-genoFileSuffix file if format == 'delim'. See details.</p></td>
     </tr>
     <tr>
       <th>probabilities</th>
-      <td><p>[boolean]. If set to TRUE, the genotypes in the files 
-described by genoFilePrefix-genoFileSuffix are provided as triplets of 
-probabilities (p(AA), p(Aa), p(aa)) and are converted into their expected 
+      <td><p>[boolean]. If set to TRUE, the genotypes in the files
+described by genoFilePrefix-genoFileSuffix are provided as triplets of
+probabilities (p(AA), p(Aa), p(aa)) and are converted into their expected
 genotype frequencies by 0*p(AA) + p(Aa) + 2p(aa) via <a href='probGen2expGen.html'>probGen2expGen</a>.</p></td>
     </tr>
     <tr>
       <th>sampleID</th>
-      <td><p>Prefix [string] for naming samples (will be followed by 
+      <td><p>Prefix [string] for naming samples (will be followed by
 sample number from 1 to N when constructing id_samples)</p></td>
     </tr>
     <tr>
@@ -247,25 +255,27 @@ sample number from 1 to N when constructing id_samples)</p></td>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>In order to chose SNPs from external genotype files without reading 
-them into memory, genotypes for each chromosome need to be accesible as 
-[SNPs x samples] in a separate file, containing "chrChromosomenumber" (e.g 
-chr22) in the file name (e.g. /path/to/dir/related_nopopstructure_chr22.csv).  
-All genotype files need to be saved in the same directory. genoFilePrefix 
-(/path/to/dir/related_nopopstructure_) and genoFileSuffix (.csv) specify the 
+    <p>In order to chose SNPs from external genotype files without reading
+them into memory, genotypes for each chromosome need to be accesible as
+[SNPs x samples] in a separate file, containing "chrChromosomenumber" (e.g
+chr22) in the file name (e.g. /path/to/dir/related_nopopstructure_chr22.csv).
+All genotype files need to be saved in the same directory. genoFilePrefix
+(/path/to/dir/related_nopopstructure_) and genoFileSuffix (.csv) specify the
 strings leading and following the "chrChromosomenumber". If format== delim,
-the first column in each file needs to be the SNP_ID and files cannot contain
-a header. Subsequent columns containing additional SNP information can be 
+the first column in each file needs to be the SNP_ID, the first row can
+either contain sample IDs or the first row of genotypes (specified with
+header). Subsequent columns containing additional SNP information can be
 skipped by setting skipFields. If format==oxgen or bimbam, files need to be
 in the oxgen or bimbam format (see <a href='readStandardGenotypes.html'>readStandardGenotypes</a> for details)
-and no additional informatiob about delim or skipFields have to be provided.
+and no additional information about delim, header or skipFields will be
+considered.
 getCausalSNPs generates a vector of chromosomes from which to sample the
 SNPs. For each of the chromosomes, it counts the number of SNPs in the
-chromosome file and creates vectors of random numbers ranging 
+chromosome file and creates vectors of random numbers ranging
 from 1:NrSNPSinFile. Only the lines corresponding to these numbers are then
-read into R. The example data provided for chromosome 22 contains genotypes 
-(50 samples) of the first 500 SNPs on chromosome 22 with a minor allele 
-frequency of greater than 2<!-- % from the European populations of the the 1000  -->
+read into R. The example data provided for chromosome 22 contains genotypes
+(50 samples) of the first 500 SNPs on chromosome 22 with a minor allele
+frequency of greater than 2<!-- % from the European populations of the the 1000 -->
 Genomes project.</p>
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
