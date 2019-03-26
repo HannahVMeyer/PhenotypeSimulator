@@ -857,8 +857,6 @@ runSimulation <- function(N, P,
                                                    sampleID = sampleID, 
                                                    snpID = snpID, 
                                                    delimiter = genoDelimiter)
-                id_samples <- genotypes$id_samples
-                id_snps <- genotypes$id_snps
             }
             if (is.null(genotypes)) {
                 genotypes <- simulateGenotypes(N=N, NrSNP=tNrSNP, 
@@ -866,6 +864,9 @@ runSimulation <- function(N, P,
                                                sampleID=sampleID, 
                                                verbose=verbose)
             }
+            id_samples <- genotypes$id_samples
+            id_snps <- genotypes$id_snps
+            
             kinship <- getKinship(X=genotypes$genotypes, 
                                   N=N, standardise=standardise, 
                                   id_samples=id_samples,
