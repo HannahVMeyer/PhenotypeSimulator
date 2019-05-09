@@ -426,8 +426,10 @@ getCausalSNPs <- function(N, NrCausalSNPs=20,  genotypes=NULL,
                        , "Increase number of simulated genotypes in",
                        "simulateGenotypes or decrease number of causal SNPs"))
         }
-        causalSNPs <- genotypes[,sort(sample(ncol(genotypes), NrCausalSNPs))]
-        if (!is.numeric(as.matrix(causalSNPs))) {
+        drawSNPs <- sort(sample(ncol(genotypes), NrCausalSNPs))
+        causalSNPs <- as.matrix(genotypes[,drawSNPs])
+        colnames(causalSNPs) <-colnames(genotypes)[drawSNPs]
+        if (!is.numeric(causalSNPs)) {
             stop(paste("Provided genotypes are not numeric."))
         }
     } else if (!is.null(genoFilePrefix)) {
