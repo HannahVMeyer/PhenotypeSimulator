@@ -569,6 +569,9 @@ setModel <- function(genVar=NULL, h2s=NULL, theta=0.8, h2bg=NULL, eta=0.8,
 #' @param skipFields Number [integer] of fields (columns) in to skip in 
 #' genoFilePrefix-genoFileSuffix-file. See details in \link{getCausalSNPs} if
 #' format == delim. 
+#' @param header [logical] Can be set to indicate if
+#' genoFilePrefix-genoFileSuffix file has a header for format == 'delim'. 
+#' See details in \link{getCausalSNPs}.
 #' @param probabilities [bool]. If set to TRUE, the genotypes in the files 
 #' described by genoFilePrefix and genoFileSuffix are provided as triplets of 
 #' probablities (p(AA), p(Aa), p(aa)) and are converted into their expected 
@@ -650,8 +653,8 @@ setModel <- function(genVar=NULL, h2s=NULL, theta=0.8, h2bg=NULL, eta=0.8,
 #' (exponential), log (logarithm), poly (polynomial), sqrt (squareroot) or 
 #' custom (user-supplied function); if log or exp, base can be specified; if 
 #' poly, power can be specified; if custom, a custom function (see for details). 
-#' Non-linear transformation is optional, default is NULL ie no transformation (see 
-#' details).
+#' Non-linear transformation is optional, default is NULL ie no transformation
+#' (see details).
 #' @param logbase [int] base of logarithm for non-linear phenotype 
 #' transformation (see details).
 #' @param expbase [int] base of exponential function for non-linear phenotype 
@@ -711,6 +714,7 @@ runSimulation <- function(N, P,
                           genotypefile=NULL, format='delim',
                           genoFilePrefix=NULL, genoFileSuffix=NULL, 
                           genoDelimiter=",", skipFields=NULL, 
+                          header=FALSE,
                           probabilities=FALSE,
                           chr=NULL, NrSNPsOnChromosome=NULL, 
                           NrChrCausal=NULL,
@@ -797,6 +801,7 @@ runSimulation <- function(N, P,
                                     format=format,
                                     probabilities=probabilities,
                                     skipFields=skipFields,
+                                    header=header,
                                     delimiter=genoDelimiter, 
                                     sampleID=sampleID, 
                                     verbose=verbose)
@@ -852,8 +857,6 @@ runSimulation <- function(N, P,
                                                    sampleID = sampleID, 
                                                    snpID = snpID, 
                                                    delimiter = genoDelimiter)
-                id_samples <- genotypes$id_samples
-                id_snps <- genotypes$id_snps
             }
             if (is.null(genotypes)) {
                 genotypes <- simulateGenotypes(N=N, NrSNP=tNrSNP, 
@@ -861,6 +864,9 @@ runSimulation <- function(N, P,
                                                sampleID=sampleID, 
                                                verbose=verbose)
             }
+            id_samples <- genotypes$id_samples
+            id_snps <- genotypes$id_snps
+            
             kinship <- getKinship(X=genotypes$genotypes, 
                                   N=N, standardise=standardise, 
                                   id_samples=id_samples,

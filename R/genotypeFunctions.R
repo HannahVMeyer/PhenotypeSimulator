@@ -174,9 +174,9 @@ simulateGenotypes <- function(N, NrSNP=5000, frequencies=c(0.1, 0.2, 0.4),
 #' separated file, without information on individuals. From
 #' \url{http://www.haplotype.org/bimbam.html}: the first column of the mean
 #' genotype files is the SNP ID, the second and third columns are allele types
-#' with minor allele first. The rest columns are the mean genotypes of different
-#' individuals – numbers between 0 and 2 that represents the (posterior) mean
-#' genotype, or dosage of the minor allele.
+#' with minor allele first. The remaining columns are the mean genotypes of
+#' different individuals – numbers between 0 and 2 that represents the
+#' (posterior) mean genotype, or dosage of the minor allele.
 #' \item delim: a [delimter]-delimited file of [NrSNPs x NrSamples] genotypes
 #' with the snpIDs in the first column and the sampleIDs in the first row and
 #' genotypes encoded as numbers between 0 and 2 representing the (posterior)
@@ -346,8 +346,8 @@ readStandardGenotypes <- function(N, filename, format = NULL,
 #' @param NrSNPsOnChromosome Vector of number(s) of SNPs [integer] per entry in
 #' chr (see above); has to be the same length as chr. If not provided, number of
 #' SNPS in file will be determined from line count (which can be slow for large
-#' files); header lines will be ignored, so accurate number of SNPs not lines in
-#' file should be specified.
+#' files); (optional) header lines will be ignored, so accurate number of SNPs
+#' not lines in file should be specified.
 #' @param NrChrCausal Number [integer] of causal chromosomes to sample
 #' NrCausalSNPs from (as opposed to the actual chromosomes to chose from via chr
 #' ); only used when external genotype data is provided i.e.
@@ -363,6 +363,9 @@ readStandardGenotypes <- function(N, filename, format = NULL,
 #' genoFilePrefix-genoFileSuffix file if format == 'delim'.
 #' @param skipFields Number [integer] of fields (columns) to skip in
 #' genoFilePrefix-genoFileSuffix file if format == 'delim'. See details.
+#' @param header [logical] Can be set to indicate if
+#' genoFilePrefix-genoFileSuffix file has a header for format == 'delim'. 
+#' See details.
 #' @param probabilities [boolean]. If set to TRUE, the genotypes in the files
 #' described by genoFilePrefix-genoFileSuffix are provided as triplets of
 #' probabilities (p(AA), p(Aa), p(aa)) and are converted into their expected
@@ -379,11 +382,13 @@ readStandardGenotypes <- function(N, filename, format = NULL,
 #' All genotype files need to be saved in the same directory. genoFilePrefix
 #' (/path/to/dir/related_nopopstructure_) and genoFileSuffix (.csv) specify the
 #' strings leading and following the "chrChromosomenumber". If format== delim,
-#' the first column in each file needs to be the SNP_ID and files cannot contain
-#' a header. Subsequent columns containing additional SNP information can be
+#' the first column in each file needs to be the SNP_ID, the first row can
+#' either contain sample IDs or the first row of genotypes (specified with
+#' header). Subsequent columns containing additional SNP information can be
 #' skipped by setting skipFields. If format==oxgen or bimbam, files need to be
 #' in the oxgen or bimbam format (see \link{readStandardGenotypes} for details)
-#' and no additional informatiob about delim or skipFields have to be provided.
+#' and no additional information about delim, header or skipFields will be
+#' considered.
 #' getCausalSNPs generates a vector of chromosomes from which to sample the
 #' SNPs. For each of the chromosomes, it counts the number of SNPs in the
 #' chromosome file and creates vectors of random numbers ranging
@@ -414,7 +419,8 @@ getCausalSNPs <- function(N, NrCausalSNPs=20,  genotypes=NULL,
                           chr=NULL, NrSNPsOnChromosome=NULL,
                           NrChrCausal=NULL, genoFilePrefix=NULL,
                           genoFileSuffix=NULL, format='delim',
-                          delimiter=",", skipFields=NULL, probabilities=FALSE,
+                          delimiter=",", header=FALSE,
+                          skipFields=NULL, probabilities=FALSE,
                           sampleID="ID_", verbose=TRUE) {
     if (! is.null(genotypes)) {
         if (!(is.matrix(genotypes) || is.data.frame(genotypes))) {
@@ -469,7 +475,7 @@ getCausalSNPs <- function(N, NrCausalSNPs=20,  genotypes=NULL,
                  ", Information about SNPs on these chromosomes given for ",
                  length(NrSNPsOnChromosome), ".")
         }
-        
+        skipRows <- 0
         if (format == "oxgen") {
             delimiter <- " "
             skipFields <- 5
@@ -480,6 +486,7 @@ getCausalSNPs <- function(N, NrCausalSNPs=20,  genotypes=NULL,
             probabilities <- FALSE
         } else if (format == "delim") {
             if (is.null(skipFields)) skipFields <- 1
+            if (header) skipRows <- 1
         } else {
             stop("Format: ", format, "not supported for sampling genotypes
                      from file.")
@@ -502,7 +509,7 @@ getCausalSNPs <- function(N, NrCausalSNPs=20,  genotypes=NULL,
                 vmessage(c("Count number of SNPs on chromosome",
                            ChrCausal[chrom], "...", sep=""), verbose=verbose)
                 SNPsOnChromosome <- R.utils::countLines(chromosomefile) -
-                    skipFields
+                    skipRows
             } else {
                 SNPsOnChromosome <- NrSNPsOnChromosome[chrom]
             }
@@ -513,7 +520,7 @@ getCausalSNPs <- function(N, NrCausalSNPs=20,  genotypes=NULL,
             }
             vmessage(c("Sample SNPs on chromosome", ChrCausal[chrom], "..."),
                      verbose=verbose)
-            randomSNPindex <- sample((skipFields + 1):SNPsOnChromosome,
+            randomSNPindex <- sample((skipRows + 1):SNPsOnChromosome,
                                      NrCausalSNPsChr[chrom])
             randomSNPindex <- randomSNPindex[order(randomSNPindex,
                                                    decreasing=FALSE)]
@@ -544,15 +551,20 @@ getCausalSNPs <- function(N, NrCausalSNPs=20,  genotypes=NULL,
                 samples <- read.table(samplefile, sep=delimiter,
                                             stringsAsFactors=FALSE, skip=2)[,1]
             } else if (format == "bimbam") {
-                rownames(causalSNPsChr) <- apply(causalSNPsChr[,1:3], paste,
+                rownames(causalSNPsChr) <- apply(causalSNPsChr[,1:3], 1, paste,
                                                  collapse= "-")
-                samples <- paste(sampleID, 1:nrow(causalSNPs), sep="")
+                samples <- paste(sampleID, 1:nrow(causalSNPsChr), sep="")
             } else {
                 rownames(causalSNPsChr) <- causalSNPsChr[,1]
-                samples <- read.table(text=read_lines(chromosomefile, 1,
-                                                      sep="\n"),
-                                      sep=delimiter,
-                                      stringsAsFactors=FALSE)[,-1]
+                if (header) {
+                    samples <- read.table(text=read_lines(chromosomefile, 1,
+                                                          sep="\n"),
+                                          sep=delimiter,
+                                          stringsAsFactors=FALSE)[,-1]
+                } else {
+                    samples <- paste(sampleID, 1:nrow(causalSNPsChr), sep="")
+                }
+
             } 
             if (!is.null(skipFields)) {
                 causalSNPsChr <- causalSNPsChr[,-c(1:skipFields)]
@@ -581,7 +593,7 @@ getCausalSNPs <- function(N, NrCausalSNPs=20,  genotypes=NULL,
     }
     if (N < NrGenotypeSamples) {
         vmessage(c("Sampling", N, "samples from", NrGenotypeSamples,
-                   "genotypes provided"))
+                   "genotypes provided"), verbose = verbose)
         Nsamples <- sort(sample(NrGenotypeSamples, N))
         causalSNPs <- causalSNPs[Nsamples,]
     }

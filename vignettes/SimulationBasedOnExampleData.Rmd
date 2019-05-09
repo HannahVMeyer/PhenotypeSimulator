@@ -1,14 +1,22 @@
 ---
 title: "Using PhenotypeSimulator to simulate phenotypes based on an example dataset"
 author: "Hannah Meyer"
-date: "26/02/2018"
-output: pdf_document
+date: "`r Sys.Date()`"
+output:
+    pdf_document:
+        fig_caption: yes
+        toc: true
+        toc_depth: 2
 bibliography: Vignette-example-data.bib
 csl: plos-genetics.csl
 header-includes:
    - \usepackage[bf]{caption} 
    - \usepackage{float} 
    - \floatplacement{figure}{H} 
+vignette: >
+  %\VignetteIndexEntry{Simulation based on example data}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r setup, include=FALSE}
@@ -30,7 +38,7 @@ ventricle of the heart @deMarvao2014 @Biffi2017.
 
 
 ```{r, echo=FALSE, fig.cap="\\label{fig:wallthickness}**Left ventricular wall thickness and contributing factors.** Left ventricular wall thickness was measured at more than 27k positions in a cohort of 1,185 healthy volunteers. The average wall thickness at each position is depicted in saturated colours (the mesh depicts the right ventricle for reference). Heart wall thickness is determined by an interplay of genetic (green arrows) and non-genetic factors (grey arrows). Additional correlation between positional thickness can be observed for measures in close spatial proximity.", fig.align='center'}
-knitr::include_graphics("wallthickness.png")
+knitr::include_graphics("wallthickness-min.png")
 ```
 
 
@@ -56,8 +64,8 @@ to depict the correlation pattern.
 
 
 ```{r load real data}
-library(ggplot2)
 library(PhenotypeSimulator)
+library(ggplot2)
 
 pheno <- readRDS("./pheno_small.rds")
 covs <- readRDS("./covs.rds")
@@ -123,7 +131,7 @@ gplots::heatmap.2(cor_pheno, trace="none", dendrogram="none", keysize=1,
 
 ```{r, echo=FALSE, out.width='\\textwidth', fig.align='center',fig.cap="\\label{fig:corpheno}\\textbf{Correlation of left ventricular wall thickness measurements.}"}
 cor_pheno <- cor(pheno)
-knitr::include_graphics("cor_pheno.png")
+knitr::include_graphics("cor_pheno-min.png")
 ```
 
 ## Simulation
@@ -180,7 +188,7 @@ about the true underlying distributions of the covariates), they will serve as
 good approximations for simulating similar datasets as the one we based the 
 simulations on.
 
-```{r distribution simulated data, fig.cap="\\label{fig:distribution_simulated}**Distribution of simulated covariates.**", fig.align='center'}
+```{r simulation, fig.cap="\\label{fig:distribution_simulated}**Distribution of simulated covariates.**", fig.align='center'}
 covs_simulated_melt <- reshape2::melt(covs_simulated$cov, value.name="meassure", 
                             variable.name="covariate")
 covs_simulated_melt$covariate <- factor(covs_simulated_melt$covariate,
@@ -228,7 +236,7 @@ gplots::heatmap.2(cor(background_simulated$correlatedBg), trace="none",
 ```
 
 ```{r, echo=FALSE, out.width='\\textwidth', fig.align='center', fig.cap="\\label{fig:corsimulated}\\textbf{Correlation of simulated spatial proximity.}"}
-knitr::include_graphics("cor_simulated.png")
+knitr::include_graphics("cor_simulated-min.png")
 ```
 
 \newpage

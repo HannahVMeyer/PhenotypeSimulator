@@ -8,11 +8,11 @@ runSimulation(N, P, genVar = NULL, h2s = NULL, theta = 0.8,
   h2bg = NULL, eta = 0.8, noiseVar = NULL, rho = NULL,
   delta = NULL, gamma = 0.8, phi = NULL, alpha = 0.8,
   tNrSNP = 5000, cNrSNP = 20, SNPfrequencies = c(0.1, 0.2, 0.4),
-  genotypefile = NULL, format = NULL, genoFilePrefix = NULL,
+  genotypefile = NULL, format = "delim", genoFilePrefix = NULL,
   genoFileSuffix = NULL, genoDelimiter = ",", skipFields = NULL,
-  probabilities = FALSE, chr = NULL, NrSNPsOnChromosome = NULL,
-  NrChrCausal = NULL, kinshipfile = NULL, kinshipHeader = FALSE,
-  kinshipDelimiter = ",", standardise = TRUE,
+  header = FALSE, probabilities = FALSE, chr = NULL,
+  NrSNPsOnChromosome = NULL, NrChrCausal = NULL, kinshipfile = NULL,
+  kinshipHeader = FALSE, kinshipDelimiter = ",", standardise = TRUE,
   distBetaGenetic = "norm", mBetaGenetic = 0, sdBetaGenetic = 1,
   pTraitsAffectedGenetics = 1, pIndependentGenetic = 0.4,
   pTraitIndependentGenetic = 0.2, keepSameIndependentSNPs = FALSE,
@@ -94,6 +94,10 @@ format == delim.}
 \item{skipFields}{Number [integer] of fields (columns) in to skip in 
 genoFilePrefix-genoFileSuffix-file. See details in \link{getCausalSNPs} if
 format == delim.}
+
+\item{header}{[logical] Can be set to indicate if
+genoFilePrefix-genoFileSuffix file has a header for format == 'delim'. 
+See details in \link{getCausalSNPs}.}
 
 \item{probabilities}{[bool]. If set to TRUE, the genotypes in the files 
 described by genoFilePrefix and genoFileSuffix are provided as triplets of 
@@ -209,8 +213,8 @@ the simulations of the observational noise effects.}
 (exponential), log (logarithm), poly (polynomial), sqrt (squareroot) or 
 custom (user-supplied function); if log or exp, base can be specified; if 
 poly, power can be specified; if custom, a custom function (see for details). 
-Non-linear transformation is optional, default is NULL ie no transformation (see 
-details).}
+Non-linear transformation is optional, default is NULL ie no transformation
+(see details).}
 
 \item{logbase}{[int] base of logarithm for non-linear phenotype 
 transformation (see details).}

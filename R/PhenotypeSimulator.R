@@ -5,6 +5,7 @@
 #' @name PhenotypeSimulator
 #' @import snpStats
 #' @import ggplot2 
+#' @importFrom cowplot plot_grid
 #' @importFrom methods getPackageName as
 #' @importFrom stats median pnorm rbinom rnorm runif sd var na.omit rexp
 #' @importFrom utils read.table write.table 

@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">PhenotypeSimulator</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.1</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.2</span>
       </span>
     </div>
 
@@ -104,7 +104,7 @@
       <h1>Application of PhenotypeSimulator for a power analysis study</h1>
                         <h4 class="author">Hannah Meyer</h4>
             
-            <h4 class="date">2018-11-06</h4>
+            <h4 class="date">2019-03-20</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/HannahVMeyer/PhenotypeSimulator/blob/master/vignettes/Simulation-and-LinearModel.Rmd"><code>vignettes/Simulation-and-LinearModel.Rmd</code></a></small>
       <div class="hidden name"><code>Simulation-and-LinearModel.Rmd</code></div>
@@ -113,6 +113,8 @@
 
     
     
+<pre><code>## Warning: replacing previous import 'cowplot::ggsave' by 'ggplot2::ggsave'
+## when loading 'PhenotypeSimulator'</code></pre>
 <p>This vignette demonstrates the usage and application of <em>PhenotypeSimulator</em>. It illustrates the workflow for generating a genetic and phenotypic dataset used for a simple model comparison. First, it shows an example of how to simulate genome-wide SNPs from a re-sampling based approach ( <a href="http://mathgen.stats.ox.ac.uk/genetics_software/hapgen/hapgen2.html">Hapgen2</a>). The genotypes can then be used with <em>PhenotypeSimulator</em> to generate multiple correlated phenotypes with defined genetic and non-genetic fixed effects as well as correlation induced by kinship structure. The simulated phenotypes, genotypes, non-genetic covariates and kinship are then used with a linear mixed model framework ( <a href="http://www.xzlab.org/software/GEMMAmanual.pdf">GEMMA</a>) to investigate the power of multivariate (all phenotypes are analysed jointly) and univariate models (each phenotype is analysed separately) for genome-wide association studies (GWAS).</p>
 <p>Chunks that demonstrate the usage of external software in bash (Hapggen2 and GEMMA) and chunks that depend on the fully simulated genotypes or GWAS results are simply echoed and not evaluated. Chunks that show summary statistics and correlation plots are evaluated when building this vignette and use the summary data provided in the <code>extdata</code> folder of the package (the .Rmd version of the vignette shows the chunks saving the summary data).</p>
 <div id="genotype-simulation-via-hapgen2" class="section level2">
@@ -482,7 +484,7 @@ p_qq &lt;-<span class="st"> </span>p_qq <span class="op">+</span><span class="st
                                        <span class="dt">title.position=</span><span class="st">"top"</span>,
                                        <span class="dt">title.hjust =</span><span class="fl">0.5</span>)) <span class="op">+</span>
 <span class="st">    </span><span class="kw">geom_abline</span>(<span class="dt">intercept=</span><span class="dv">0</span>, <span class="dt">slope=</span><span class="dv">1</span>, <span class="dt">col=</span><span class="st">"black"</span>) <span class="op">+</span>
-<span class="st">    </span><span class="kw">geom_point</span>(<span class="dt">data=</span>dplyr<span class="op">::</span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(pvalues, causal <span class="op">==</span><span class="st"> "simulated causal"</span>), 
+<span class="st">    </span><span class="kw">geom_point</span>(<span class="dt">data=</span>dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(pvalues, causal <span class="op">==</span><span class="st"> "simulated causal"</span>), 
                 <span class="dt">color=</span><span class="st">'#1b9e77'</span>, <span class="kw">aes</span>(<span class="dt">shape=</span>trait)) <span class="op">+</span>
 <span class="st">    </span><span class="kw">xlab</span>(<span class="kw">expression</span>(Expected<span class="op">~</span><span class="er">~</span><span class="op">-</span>log[<span class="dv">10</span>](<span class="kw">italic</span>(p))) ) <span class="op">+</span>
 <span class="st">    </span><span class="kw">ylab</span>(<span class="kw">expression</span>(Observed<span class="op">~</span><span class="er">~</span><span class="op">-</span>log[<span class="dv">10</span>](<span class="kw">italic</span>(p)))) <span class="op">+</span>
@@ -497,15 +499,17 @@ p_qq &lt;-<span class="st"> </span>p_qq <span class="op">+</span><span class="st
             <span class="dt">legend.position =</span> <span class="st">"bottom"</span>,
             <span class="dt">legend.direction =</span> <span class="st">"horizontal"</span>)</code></pre></div>
 <div class="figure">
-<img src="../../../../../Library/Frameworks/R.framework/Versions/3.5/Resources/library/PhenotypeSimulator/extdata/resultsSimulationAndLinearModel/gwas_results_gemma_qqplot.png" alt="Quantile-quantile plots of p-values observed from the multivariate linear mixed model (mvLMM, traits:all) and the univariate linear mixed models (uvLMM, traits: trait1/trait2/trait3) fitted to each of about eight million genome-wide SNPs (grey), including the ten SNPs for which a phenotype effect was modelled (green)."><p class="caption">Quantile-quantile plots of p-values observed from the multivariate linear mixed model (mvLMM, traits:all) and the univariate linear mixed models (uvLMM, traits: trait1/trait2/trait3) fitted to each of about eight million genome-wide SNPs (grey), including the ten SNPs for which a phenotype effect was modelled (green).</p>
+<img src="../../../../../Library/Frameworks/R.framework/Versions/3.5/Resources/library/PhenotypeSimulator/extdata/resultsSimulationAndLinearModel/gwas_results_gemma_qqplot.png" alt="\label{fig:qqplot}Quantile-quantile plots of p-values observed from the multivariate linear mixed model (mvLMM, traits:all) and the univariate linear mixed models (uvLMM, traits: trait1/trait2/trait3) fitted to each of about eight million genome-wide SNPs (grey), including the ten SNPs for which a phenotype effect was modelled (green)." width="508"><p class="caption">
+Quantile-quantile plots of p-values observed from the multivariate linear mixed model (mvLMM, traits:all) and the univariate linear mixed models (uvLMM, traits: trait1/trait2/trait3) fitted to each of about eight million genome-wide SNPs (grey), including the ten SNPs for which a phenotype effect was modelled (green).
+</p>
 </div>
 <p>Counting the number of causal SNPs that both models can recover, we see that the multi-trait GWAS shows greater power compared to any of the single trait analyses. Here a total of four causal SNPs (Figure ) compared the combined count of the single-trait GWAS of three was detected with a p-values of less than the commonly applied GWAS threshold of <span class="math inline">\(5 \times 10^{-8}\)</span> (Table ). The p-values of the three univariate analyses were adjusted for multiple hypothesis testing (Bonferroni adjustment).</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sigSNPs &lt;-<span class="st"> </span>dplyr<span class="op">::</span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(pvalues, causal <span class="op">==</span><span class="st"> "simulated causal"</span>,
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sigSNPs &lt;-<span class="st"> </span>dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(pvalues, causal <span class="op">==</span><span class="st"> "simulated causal"</span>,
                          observed <span class="op">&lt;</span><span class="st"> </span><span class="dv">5</span><span class="op">*</span><span class="dv">10</span><span class="op">^-</span><span class="dv">8</span>)
 sigSNPs<span class="op">$</span>observed_adjusted &lt;-<span class="st"> </span>sigSNPs<span class="op">$</span>observed
 sigSNPs<span class="op">$</span>observed_adjusted[<span class="kw">which</span>(sigSNPs<span class="op">$</span>trait <span class="op">!=</span><span class="st"> "all"</span>)] &lt;-
 <span class="st">    </span><span class="dv">3</span><span class="op">*</span>sigSNPs<span class="op">$</span>observed[<span class="kw">which</span>(sigSNPs<span class="op">$</span>trait <span class="op">!=</span><span class="st"> "all"</span>)]
-sigSNPs &lt;-<span class="st"> </span>dplyr<span class="op">::</span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(sigSNPs, observed_adjusted <span class="op">&lt;</span><span class="st"> </span><span class="dv">5</span><span class="op">*</span><span class="dv">10</span><span class="op">^-</span><span class="dv">8</span>)</code></pre></div>
+sigSNPs &lt;-<span class="st"> </span>dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(sigSNPs, observed_adjusted <span class="op">&lt;</span><span class="st"> </span><span class="dv">5</span><span class="op">*</span><span class="dv">10</span><span class="op">^-</span><span class="dv">8</span>)</code></pre></div>
 <table class="table">
 <caption>P-values from multi-trait GWAS (model == mvLMM) and single-trait GWAS (model == uvLMM)</caption>
 <thead><tr class="header">
@@ -573,7 +577,7 @@ SNPeffect &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span c
 <span class="co"># names</span>
 SNPnames &lt;-<span class="st"> </span><span class="kw">gsub</span>(<span class="st">"</span><span class="ch">\\</span><span class="st">."</span>, <span class="st">"-"</span>, <span class="kw">gsub</span>(<span class="st">"X"</span>, <span class="st">""</span>, <span class="kw">colnames</span>(SNPs)))
 SNPnames &lt;-<span class="st"> </span>SNPnames[<span class="kw">order</span>(SNPnames)]
-simulated_withEffect &lt;-<span class="st"> </span>dplyr<span class="op">::</span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(pvalues, rsID <span class="op">%in%</span><span class="st"> </span>SNPnames)</code></pre></div>
+simulated_withEffect &lt;-<span class="st"> </span>dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(pvalues, rsID <span class="op">%in%</span><span class="st"> </span>SNPnames)</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># get the allele frequencies of the SNPs simulated to have an effect on the </span>
 <span class="co"># phenotype</span>
 freq &lt;-<span class="st"> </span><span class="kw">apply</span>(SNPs, <span class="dv">2</span>, getAlleleFrequencies)
@@ -588,7 +592,7 @@ effects<span class="op">$</span>type &lt;-<span class="st"> </span><span class="
 effects<span class="op">$</span>rsID &lt;-<span class="st"> </span><span class="kw">gsub</span>(<span class="st">"</span><span class="ch">\\</span><span class="st">."</span>, <span class="st">"-"</span>, <span class="kw">gsub</span>(<span class="st">'.*_'</span>, <span class="st">''</span>, effects<span class="op">$</span>name))
 effects<span class="op">$</span>trait &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="kw">paste</span>(<span class="st">"trait"</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">3</span>, <span class="dt">sep=</span><span class="st">""</span>), <span class="dv">10</span>)
 effects &lt;-<span class="st"> </span>effects[<span class="kw">order</span>(effects<span class="op">$</span>rsID),]
-effects &lt;-<span class="st"> </span>dplyr<span class="op">::</span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(effects, rsID <span class="op">%in%</span><span class="st"> </span>simulated_withEffect<span class="op">$</span>rsID)
+effects &lt;-<span class="st"> </span>dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(effects, rsID <span class="op">%in%</span><span class="st"> </span>simulated_withEffect<span class="op">$</span>rsID)
 
 simulated_withEffect &lt;-<span class="st"> </span>simulated_withEffect[<span class="kw">order</span>(simulated_withEffect[, <span class="dv">1</span>]),]
 simulated_withEffect<span class="op">$</span>beta &lt;-<span class="st"> </span><span class="ot">NA</span>
@@ -597,7 +601,7 @@ simulated_withEffect<span class="op">$</span>freq &lt;-<span class="st"> </span>
 
 <span class="co"># plot association p-values in relation to the absolute value of the simulated </span>
 <span class="co"># effect sizes and the SNPs allele frequencies</span>
-p &lt;-<span class="st"> </span><span class="kw">ggplot</span>(dplyr<span class="op">::</span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(simulated_withEffect, trait <span class="op">!=</span><span class="st"> "all"</span>))
+p &lt;-<span class="st"> </span><span class="kw">ggplot</span>(dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(simulated_withEffect, trait <span class="op">!=</span><span class="st"> "all"</span>))
 p &lt;-<span class="st"> </span>p <span class="op">+</span><span class="st"> </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">x=</span>freq, <span class="dt">y=</span><span class="op">-</span><span class="kw">log10</span>(observed), <span class="dt">color=</span><span class="kw">abs</span>(beta), <span class="dt">shape=</span>trait)) <span class="op">+</span>
 <span class="st">    </span><span class="kw">geom_hline</span>(<span class="dt">yintercept=</span><span class="op">-</span><span class="kw">log10</span>(<span class="dv">5</span><span class="op">*</span><span class="dv">10</span><span class="op">^</span>(<span class="op">-</span><span class="dv">8</span>)), <span class="dt">color=</span><span class="st">"darkgrey"</span>) <span class="op">+</span>
 <span class="st">    </span><span class="kw">scale_color_gradientn</span>(<span class="dt">colours=</span><span class="kw">c</span>(<span class="st">'#f0f9e8'</span>,<span class="st">'#ccebc5'</span>,<span class="st">'#a8ddb5'</span>,<span class="st">'#7bccc4'</span>,

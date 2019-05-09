@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">PhenotypeSimulator</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.1</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.2</span>
       </span>
     </div>
 
@@ -104,7 +104,7 @@
       <h1>Using PhenotypeSimulator to simulate phenotypes based on an example dataset</h1>
                         <h4 class="author">Hannah Meyer</h4>
             
-            <h4 class="date">26/02/2018</h4>
+            <h4 class="date">2019-03-20</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/HannahVMeyer/PhenotypeSimulator/blob/master/vignettes/SimulationBasedOnExampleData.Rmd"><code>vignettes/SimulationBasedOnExampleData.Rmd</code></a></small>
       <div class="hidden name"><code>SimulationBasedOnExampleData.Rmd</code></div>
@@ -116,7 +116,7 @@
 <p><em>PhenotypeSimulator</em> allows for the simulation of high-dimensional phenotypes comprised from a number of different components: genetic variant and population- genetic effects, non-genetic covariates, correlated and observational noise effects. In this vignette, we show the usefulness of being able to specify different phenotype components with distinct properties. We demonstrate how different phenotype components relate directly to a real high-dimensional, image-derived data set of cardiac morphology.</p>
 <p>Figure  shows the average left ventricular wall thickness of 1,185 healthy volunteers measured at more than 27,000 positions in the left ventricle of the heart <span class="citation">[1]</span> <span class="citation">[2]</span>.</p>
 <div class="figure" style="text-align: center">
-<img src="wallthickness.png" alt="\label{fig:wallthickness}**Left ventricular wall thickness and contributing factors.** Left ventricular wall thickness was measured at more than 27k positions in a cohort of 1,185 healthy volunteers. The average wall thickness at each position is depicted in saturated colours (the mesh depicts the right ventricle for reference). Heart wall thickness is determined by an interplay of genetic (green arrows) and non-genetic factors (grey arrows). Additional correlation between positional thickness can be observed for measures in close spatial proximity."><p class="caption">
+<img src="wallthickness.png" alt="\label{fig:wallthickness}**Left ventricular wall thickness and contributing factors.** Left ventricular wall thickness was measured at more than 27k positions in a cohort of 1,185 healthy volunteers. The average wall thickness at each position is depicted in saturated colours (the mesh depicts the right ventricle for reference). Heart wall thickness is determined by an interplay of genetic (green arrows) and non-genetic factors (grey arrows). Additional correlation between positional thickness can be observed for measures in close spatial proximity." width="236"><p class="caption">
 <strong>Left ventricular wall thickness and contributing factors.</strong> Left ventricular wall thickness was measured at more than 27k positions in a cohort of 1,185 healthy volunteers. The average wall thickness at each position is depicted in saturated colours (the mesh depicts the right ventricle for reference). Heart wall thickness is determined by an interplay of genetic (green arrows) and non-genetic factors (grey arrows). Additional correlation between positional thickness can be observed for measures in close spatial proximity.
 </p>
 </div>
@@ -127,9 +127,10 @@
 <a href="#cardiac-morphology-data" class="anchor"></a>Cardiac morphology data</h2>
 <p>The following section depicts data from 100 randomly selected participants of the 1,185 healthy volunteers of the original study. From the 27k heart wall thickness measurements, a subset of 1,000 measurements ie. phenotypes was chosen to depict the correlation pattern.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ggplot2)
-<span class="kw">library</span>(PhenotypeSimulator)
-
-pheno &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="st">"./pheno_small.rds"</span>)
+<span class="kw">library</span>(PhenotypeSimulator)</code></pre></div>
+<pre><code>## Warning: replacing previous import 'cowplot::ggsave' by 'ggplot2::ggsave'
+## when loading 'PhenotypeSimulator'</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">pheno &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="st">"./pheno_small.rds"</span>)
 covs &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="st">"./covs.rds"</span>)
 
 <span class="kw">dim</span>(pheno)</code></pre></div>
@@ -147,23 +148,23 @@ covs &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="
                                        <span class="st">"Slices"</span>),
                               <span class="dt">labels=</span> <span class="kw">c</span>(<span class="st">"Age [years]"</span>, <span class="st">"Height [cm]"</span>, 
                                         <span class="st">"Weight [kg]"</span>, <span class="st">"Sex"</span>, <span class="st">"Slices"</span>))
-p_cont &lt;-<span class="st"> </span><span class="kw"><a href="ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span>(dplyr<span class="op">::</span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(covs_melt, covariate <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">"Age [years]"</span>, 
+p_cont &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/ggplot">ggplot</a></span>(dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(covs_melt, covariate <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">"Age [years]"</span>, 
                                                            <span class="st">"Height [cm]"</span>, 
                                                            <span class="st">"Weight [kg]"</span>)), 
-                   <span class="kw"><a href="ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">x=</span>meassure))
-p_cont &lt;-<span class="st"> </span>p_cont <span class="op">+</span><span class="st"> </span><span class="kw"><a href="ggplot2.tidyverse.org/reference/geom_histogram.html">geom_histogram</a></span>(<span class="dt">binwidth=</span><span class="dv">1</span>) <span class="op">+</span>
-<span class="st">    </span><span class="kw"><a href="ggplot2.tidyverse.org/reference/facet_wrap.html">facet_wrap</a></span>(<span class="op">~</span>covariate, <span class="dt">scales =</span> <span class="st">"free"</span>) <span class="op">+</span>
-<span class="st">    </span><span class="kw"><a href="ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span>() <span class="op">+</span>
-<span class="st">    </span><span class="kw"><a href="ggplot2.tidyverse.org/reference/theme.html">theme</a></span>(<span class="dt">axis.title.x=</span><span class="kw"><a href="ggplot2.tidyverse.org/reference/element.html">element_blank</a></span>(),
-          <span class="dt">strip.background =</span> <span class="kw"><a href="ggplot2.tidyverse.org/reference/element.html">element_rect</a></span>(<span class="dt">fill=</span><span class="st">"white"</span>, <span class="dt">color=</span><span class="st">"black"</span>))
+                   <span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/aes">aes</a></span>(<span class="dt">x=</span>meassure))
+p_cont &lt;-<span class="st"> </span>p_cont <span class="op">+</span><span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/geom_histogram">geom_histogram</a></span>(<span class="dt">binwidth=</span><span class="dv">1</span>) <span class="op">+</span>
+<span class="st">    </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/facet_wrap">facet_wrap</a></span>(<span class="op">~</span>covariate, <span class="dt">scales =</span> <span class="st">"free"</span>) <span class="op">+</span>
+<span class="st">    </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/ggtheme">theme_bw</a></span>() <span class="op">+</span>
+<span class="st">    </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/theme">theme</a></span>(<span class="dt">axis.title.x=</span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/element">element_blank</a></span>(),
+          <span class="dt">strip.background =</span> <span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/element">element_rect</a></span>(<span class="dt">fill=</span><span class="st">"white"</span>, <span class="dt">color=</span><span class="st">"black"</span>))
 
-p_cat &lt;-<span class="st"> </span><span class="kw"><a href="ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span>(dplyr<span class="op">::</span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(covs_melt, covariate <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">"Sex"</span>, <span class="st">"Slices"</span>)), 
-                   <span class="kw"><a href="ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">x=</span>meassure))
-p_cat &lt;-<span class="st"> </span>p_cat <span class="op">+</span><span class="st"> </span><span class="kw"><a href="ggplot2.tidyverse.org/reference/geom_bar.html">geom_bar</a></span>(<span class="kw"><a href="ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">x=</span>meassure)) <span class="op">+</span>
-<span class="st">    </span><span class="kw"><a href="ggplot2.tidyverse.org/reference/facet_wrap.html">facet_wrap</a></span>(<span class="op">~</span>covariate, <span class="dt">scales =</span> <span class="st">"free"</span>) <span class="op">+</span>
-<span class="st">    </span><span class="kw"><a href="ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span>() <span class="op">+</span>
-<span class="st">    </span><span class="kw"><a href="ggplot2.tidyverse.org/reference/theme.html">theme</a></span>(<span class="dt">axis.title.x=</span><span class="kw"><a href="ggplot2.tidyverse.org/reference/element.html">element_blank</a></span>(),
-          <span class="dt">strip.background =</span> <span class="kw"><a href="ggplot2.tidyverse.org/reference/element.html">element_rect</a></span>(<span class="dt">fill=</span><span class="st">"white"</span>, <span class="dt">color=</span><span class="st">"black"</span>))
+p_cat &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/ggplot">ggplot</a></span>(dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(covs_melt, covariate <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">"Sex"</span>, <span class="st">"Slices"</span>)), 
+                   <span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/aes">aes</a></span>(<span class="dt">x=</span>meassure))
+p_cat &lt;-<span class="st"> </span>p_cat <span class="op">+</span><span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/geom_bar">geom_bar</a></span>(<span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/aes">aes</a></span>(<span class="dt">x=</span>meassure)) <span class="op">+</span>
+<span class="st">    </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/facet_wrap">facet_wrap</a></span>(<span class="op">~</span>covariate, <span class="dt">scales =</span> <span class="st">"free"</span>) <span class="op">+</span>
+<span class="st">    </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/ggtheme">theme_bw</a></span>() <span class="op">+</span>
+<span class="st">    </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/theme">theme</a></span>(<span class="dt">axis.title.x=</span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/element">element_blank</a></span>(),
+          <span class="dt">strip.background =</span> <span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/element">element_rect</a></span>(<span class="dt">fill=</span><span class="st">"white"</span>, <span class="dt">color=</span><span class="st">"black"</span>))
 
 combine &lt;-<span class="st"> </span>cowplot<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/cowplot/topics/plot_grid">plot_grid</a></span>(p_cont, p_cat, <span class="dt">nrow=</span><span class="dv">2</span>) 
 <span class="kw">print</span>(combine)</code></pre></div>
@@ -230,29 +231,29 @@ background_simulated &lt;-<span class="st"> </span><span class="kw"><a href="../
                               <span class="dt">labels=</span> <span class="kw">c</span>(<span class="st">"Age simulated"</span>, <span class="st">"Height simulated"</span>, 
                                         <span class="st">"Weight simulated"</span>, <span class="st">"Sex simulated"</span>, 
                                         <span class="st">"Slices simulated"</span>))
-p_cont &lt;-<span class="st"> </span><span class="kw"><a href="ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span>(dplyr<span class="op">::</span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(covs_simulated_melt, covariate <span class="op">%in%</span><span class="st"> </span>
+p_cont &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/ggplot">ggplot</a></span>(dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(covs_simulated_melt, covariate <span class="op">%in%</span><span class="st"> </span>
 <span class="st">                                   </span><span class="kw">c</span>(<span class="st">"Age simulated"</span>, <span class="st">"Height simulated"</span>, 
                                                            <span class="st">"Weight simulated"</span>)), 
-                   <span class="kw"><a href="ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">x=</span>meassure))
-p_cont &lt;-<span class="st"> </span>p_cont <span class="op">+</span><span class="st"> </span><span class="kw"><a href="ggplot2.tidyverse.org/reference/geom_histogram.html">geom_histogram</a></span>(<span class="dt">binwidth=</span><span class="dv">1</span>) <span class="op">+</span>
-<span class="st">    </span><span class="kw"><a href="ggplot2.tidyverse.org/reference/facet_wrap.html">facet_wrap</a></span>(<span class="op">~</span>covariate, <span class="dt">scales =</span> <span class="st">"free"</span>) <span class="op">+</span>
-<span class="st">    </span><span class="kw"><a href="ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span>() <span class="op">+</span>
-<span class="st">    </span><span class="kw"><a href="ggplot2.tidyverse.org/reference/theme.html">theme</a></span>(<span class="dt">axis.title.x=</span><span class="kw"><a href="ggplot2.tidyverse.org/reference/element.html">element_blank</a></span>(),
-          <span class="dt">strip.background =</span> <span class="kw"><a href="ggplot2.tidyverse.org/reference/element.html">element_rect</a></span>(<span class="dt">fill=</span><span class="st">"white"</span>, <span class="dt">color=</span><span class="st">"black"</span>))
+                   <span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/aes">aes</a></span>(<span class="dt">x=</span>meassure))
+p_cont &lt;-<span class="st"> </span>p_cont <span class="op">+</span><span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/geom_histogram">geom_histogram</a></span>(<span class="dt">binwidth=</span><span class="dv">1</span>) <span class="op">+</span>
+<span class="st">    </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/facet_wrap">facet_wrap</a></span>(<span class="op">~</span>covariate, <span class="dt">scales =</span> <span class="st">"free"</span>) <span class="op">+</span>
+<span class="st">    </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/ggtheme">theme_bw</a></span>() <span class="op">+</span>
+<span class="st">    </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/theme">theme</a></span>(<span class="dt">axis.title.x=</span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/element">element_blank</a></span>(),
+          <span class="dt">strip.background =</span> <span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/element">element_rect</a></span>(<span class="dt">fill=</span><span class="st">"white"</span>, <span class="dt">color=</span><span class="st">"black"</span>))
 
-p_cat &lt;-<span class="st"> </span><span class="kw"><a href="ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span>(dplyr<span class="op">::</span><span class="kw"><a href="http://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(covs_simulated_melt, covariate <span class="op">%in%</span><span class="st"> </span>
+p_cat &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/ggplot">ggplot</a></span>(dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(covs_simulated_melt, covariate <span class="op">%in%</span><span class="st"> </span>
 <span class="st">                                  </span><span class="kw">c</span>(<span class="st">"Sex simulated"</span>, <span class="st">"Slices simulated"</span>)), 
-                   <span class="kw"><a href="ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">x=</span>meassure))
-p_cat &lt;-<span class="st"> </span>p_cat <span class="op">+</span><span class="st"> </span><span class="kw"><a href="ggplot2.tidyverse.org/reference/geom_bar.html">geom_bar</a></span>(<span class="kw"><a href="ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">x=</span>meassure)) <span class="op">+</span>
-<span class="st">    </span><span class="kw"><a href="ggplot2.tidyverse.org/reference/facet_wrap.html">facet_wrap</a></span>(<span class="op">~</span>covariate, <span class="dt">scales =</span> <span class="st">"free"</span>) <span class="op">+</span>
-<span class="st">    </span><span class="kw"><a href="ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span>() <span class="op">+</span>
-<span class="st">    </span><span class="kw"><a href="ggplot2.tidyverse.org/reference/theme.html">theme</a></span>(<span class="dt">axis.title.x=</span><span class="kw"><a href="ggplot2.tidyverse.org/reference/element.html">element_blank</a></span>(),
-          <span class="dt">strip.background =</span> <span class="kw"><a href="ggplot2.tidyverse.org/reference/element.html">element_rect</a></span>(<span class="dt">fill=</span><span class="st">"white"</span>, <span class="dt">color=</span><span class="st">"black"</span>))
+                   <span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/aes">aes</a></span>(<span class="dt">x=</span>meassure))
+p_cat &lt;-<span class="st"> </span>p_cat <span class="op">+</span><span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/geom_bar">geom_bar</a></span>(<span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/aes">aes</a></span>(<span class="dt">x=</span>meassure)) <span class="op">+</span>
+<span class="st">    </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/facet_wrap">facet_wrap</a></span>(<span class="op">~</span>covariate, <span class="dt">scales =</span> <span class="st">"free"</span>) <span class="op">+</span>
+<span class="st">    </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/ggtheme">theme_bw</a></span>() <span class="op">+</span>
+<span class="st">    </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/theme">theme</a></span>(<span class="dt">axis.title.x=</span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/element">element_blank</a></span>(),
+          <span class="dt">strip.background =</span> <span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/element">element_rect</a></span>(<span class="dt">fill=</span><span class="st">"white"</span>, <span class="dt">color=</span><span class="st">"black"</span>))
 
 combine &lt;-<span class="st"> </span>cowplot<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/cowplot/topics/plot_grid">plot_grid</a></span>(p_cont, p_cat, <span class="dt">nrow=</span><span class="dv">2</span>) 
 <span class="kw">print</span>(combine)</code></pre></div>
 <div class="figure" style="text-align: center">
-<img src="SimulationBasedOnExampleData_files/figure-html/distribution%20simulated%20data-1.png" alt="\label{fig:distribution_simulated}**Distribution of simulated covariates.**" width="700"><p class="caption">
+<img src="SimulationBasedOnExampleData_files/figure-html/simulation-1.png" alt="\label{fig:distribution_simulated}**Distribution of simulated covariates.**" width="700"><p class="caption">
 <strong>Distribution of simulated covariates.</strong>
 </p>
 </div>

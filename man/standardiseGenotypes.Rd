@@ -22,7 +22,7 @@ geno <- cbind(rbinom(2000, 2, 0.3), rbinom(2000, 2, 0.4),rbinom(2000, 2, 0.5))
 geno_sd <- standardiseGenotypes(geno)
 }
 \references{
-Yang, J., Lee, S.H., Goddard, M.E., Visscher, P.M. (2011) GCTA: 
+Yang, J., Lee, S.H., Goddard, M.E., Visscher, P.M. (2011) GCTA:
 a tool for genome-wide complex trait analysis, AJHG: 88
 }
 \seealso{

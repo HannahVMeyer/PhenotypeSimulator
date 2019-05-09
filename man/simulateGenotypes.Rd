@@ -12,20 +12,20 @@ simulateGenotypes(N, NrSNP = 5000, frequencies = c(0.1, 0.2, 0.4),
 
 \item{NrSNP}{Number of SNPs to simulate.}
 
-\item{frequencies}{Vector of allele frequencies [double] from which to 
+\item{frequencies}{Vector of allele frequencies [double] from which to
 sample.}
 
-\item{sampleID}{Prefix [string] for naming samples (will be followed by 
+\item{sampleID}{Prefix [string] for naming samples (will be followed by
 sample number from 1 to N when constructing id_samples).}
 
-\item{snpID}{Prefix [string] for naming SNPs (will be followed by SNP number 
+\item{snpID}{Prefix [string] for naming SNPs (will be followed by SNP number
 from 1 to NrSNP when constructing id_snps).}
 
 \item{verbose}{[boolean] If TRUE, progress info is printed to standard out.}
 }
 \value{
-Named list with [N x NrSNP] matrix of simulated genotypes 
-(genotypes), their SNP frequencies (freq), a vector of sample IDs 
+Named list with [N x NrSNP] matrix of simulated genotypes
+(genotypes), their SNP frequencies (freq), a vector of sample IDs
 (id_samples) and a vector of SNP IDs (id_snps).
 }
 \description{
