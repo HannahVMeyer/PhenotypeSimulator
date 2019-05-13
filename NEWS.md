@@ -1,3 +1,22 @@
+# PhenotypeSimulator 0.3.3
+## Minor changes
+1. Fixed bug that failed to return causal SNP name when only one SNP was chosen
+   to be causal [issue
+   13](https://github.com/HannahVMeyer/PhenotypeSimulator/issues/13).
+
+# PhenotypeSimulator 0.3.2
+## Minor changes
+1. Option for external, delimited genotype file to contain a header;
+   additional checks to make sure the right data is received when
+   sampling from the genotypes file [issue 10](https://github.com/HannahVMeyer/PhenotypeSimulator/issues/10)
+1. Fixed bug for reading external genotypes file [issue
+   9](https://github.com/HannahVMeyer/PhenotypeSimulator/issues/9)
+
+# PhenotypeSimulator 0.3.1
+## Minor changes
+1. Adapted output file names for genotypes consistent with other
+   filenames from genotypes.txt to Genotypes.txt
+
 # PhenotypeSimulator 0.3.0
 ## Major changes
 1. Add option for non-linear transformation of simulated phenotypes: function (transformNonlinear)[https://github.com/HannahVMeyer/PhenotypeSimulator/blob/master/R/createphenotypeFunctions.R], accessible from [runSimulation](https://github.com/HannahVMeyer/PhenotypeSimulator/blob/master/R/createphenotypeFunctions.R). Both transformed and original phenotypes are automatically returned with [savePheno](https://github.com/HannahVMeyer/PhenotypeSimulator/blob/master/R/outputFunctions.R)
