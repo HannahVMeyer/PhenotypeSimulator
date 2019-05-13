@@ -26,7 +26,7 @@ Description: Simulation is a critical part of method development and assessment
     commonly used genetic association software ('gemma', 'bimbam', 'plink', 
     'snptest', 'LiMMBo'). 
 Depends:
-    R (>= 3.3.0)
+    R (>= 3.5.0)
 biocViews:
 LinkingTo:
     Rcpp
