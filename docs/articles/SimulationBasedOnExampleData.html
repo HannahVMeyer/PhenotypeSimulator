@@ -6,14 +6,13 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Using PhenotypeSimulator to simulate phenotypes based on an example dataset • PhenotypeSimulator</title>
-<link rel="shortcut icon" type="image/x-icon" href="../favicon.ico">
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script><!-- Font Awesome icons --><link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.1/clipboard.min.js" integrity="sha256-hIvIxeqhGZF+VVeM55k0mJvWpQ6gTkWk3Emc+NmowYA=" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
+<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous">
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
 <script src="../pkgdown.js"></script><meta property="og:title" content="Using PhenotypeSimulator to simulate phenotypes based on an example dataset">
 <meta property="og:description" content="">
 <meta name="twitter:card" content="summary">
-<!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!--[if lt IE 9]>
+<!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
@@ -31,7 +30,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">PhenotypeSimulator</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.3</span>
       </span>
     </div>
 
@@ -104,7 +103,7 @@
       <h1>Using PhenotypeSimulator to simulate phenotypes based on an example dataset</h1>
                         <h4 class="author">Hannah Meyer</h4>
             
-            <h4 class="date">2019-03-20</h4>
+            <h4 class="date">2019-05-13</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/HannahVMeyer/PhenotypeSimulator/blob/master/vignettes/SimulationBasedOnExampleData.Rmd"><code>vignettes/SimulationBasedOnExampleData.Rmd</code></a></small>
       <div class="hidden name"><code>SimulationBasedOnExampleData.Rmd</code></div>
@@ -116,7 +115,7 @@
 <p><em>PhenotypeSimulator</em> allows for the simulation of high-dimensional phenotypes comprised from a number of different components: genetic variant and population- genetic effects, non-genetic covariates, correlated and observational noise effects. In this vignette, we show the usefulness of being able to specify different phenotype components with distinct properties. We demonstrate how different phenotype components relate directly to a real high-dimensional, image-derived data set of cardiac morphology.</p>
 <p>Figure  shows the average left ventricular wall thickness of 1,185 healthy volunteers measured at more than 27,000 positions in the left ventricle of the heart <span class="citation">[1]</span> <span class="citation">[2]</span>.</p>
 <div class="figure" style="text-align: center">
-<img src="wallthickness.png" alt="\label{fig:wallthickness}**Left ventricular wall thickness and contributing factors.** Left ventricular wall thickness was measured at more than 27k positions in a cohort of 1,185 healthy volunteers. The average wall thickness at each position is depicted in saturated colours (the mesh depicts the right ventricle for reference). Heart wall thickness is determined by an interplay of genetic (green arrows) and non-genetic factors (grey arrows). Additional correlation between positional thickness can be observed for measures in close spatial proximity." width="236"><p class="caption">
+<img src="wallthickness-min.png" alt="\label{fig:wallthickness}**Left ventricular wall thickness and contributing factors.** Left ventricular wall thickness was measured at more than 27k positions in a cohort of 1,185 healthy volunteers. The average wall thickness at each position is depicted in saturated colours (the mesh depicts the right ventricle for reference). Heart wall thickness is determined by an interplay of genetic (green arrows) and non-genetic factors (grey arrows). Additional correlation between positional thickness can be observed for measures in close spatial proximity."><p class="caption">
 <strong>Left ventricular wall thickness and contributing factors.</strong> Left ventricular wall thickness was measured at more than 27k positions in a cohort of 1,185 healthy volunteers. The average wall thickness at each position is depicted in saturated colours (the mesh depicts the right ventricle for reference). Heart wall thickness is determined by an interplay of genetic (green arrows) and non-genetic factors (grey arrows). Additional correlation between positional thickness can be observed for measures in close spatial proximity.
 </p>
 </div>
@@ -126,65 +125,72 @@
 <h2 class="hasAnchor">
 <a href="#cardiac-morphology-data" class="anchor"></a>Cardiac morphology data</h2>
 <p>The following section depicts data from 100 randomly selected participants of the 1,185 healthy volunteers of the original study. From the 27k heart wall thickness measurements, a subset of 1,000 measurements ie. phenotypes was chosen to depict the correlation pattern.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ggplot2)
-<span class="kw">library</span>(PhenotypeSimulator)</code></pre></div>
-<pre><code>## Warning: replacing previous import 'cowplot::ggsave' by 'ggplot2::ggsave'
-## when loading 'PhenotypeSimulator'</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">pheno &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="st">"./pheno_small.rds"</span>)
-covs &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="st">"./covs.rds"</span>)
-
-<span class="kw">dim</span>(pheno)</code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(PhenotypeSimulator)</a></code></pre></div>
+<pre><code>## Registered S3 methods overwritten by 'ggplot2':
+##   method         from 
+##   [.quosures     rlang
+##   c.quosures     rlang
+##   print.quosures rlang</code></pre>
+<pre><code>## Registered S3 method overwritten by 'R.oo':
+##   method        from       
+##   throw.default R.methodsS3</code></pre>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(ggplot2)</a>
+<a class="sourceLine" id="cb4-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb4-3" data-line-number="3">pheno &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/readRDS">readRDS</a></span>(<span class="st">"./pheno_small.rds"</span>)</a>
+<a class="sourceLine" id="cb4-4" data-line-number="4">covs &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/readRDS">readRDS</a></span>(<span class="st">"./covs.rds"</span>)</a>
+<a class="sourceLine" id="cb4-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb4-6" data-line-number="6"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/dim">dim</a></span>(pheno)</a></code></pre></div>
 <pre><code>## [1] 1185 1000</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">dim</span>(covs)</code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/dim">dim</a></span>(covs)</a></code></pre></div>
 <pre><code>## [1] 100   5</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">colnames</span>(covs)</code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colnames">colnames</a></span>(covs)</a></code></pre></div>
 <pre><code>## [1] "Sex"    "Age"    "Height" "Weight" "Slices"</code></pre>
 <p>As example covariates of the dataset, age, height, weights, sex and the number slices in the 2D cardiac MRI were chosen (see original publication for details on phenotypes <span class="citation">[1]</span>). Figure  shows the distribution of these covariates across the 100 individuals.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">covs_melt &lt;-<span class="st"> </span>reshape2<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/reshape2/topics/melt">melt</a></span>(covs, <span class="dt">value.name=</span><span class="st">"meassure"</span>, 
-                            <span class="dt">variable.name=</span><span class="st">"covariate"</span>)</code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1">covs_melt &lt;-<span class="st"> </span>reshape2<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/reshape2/topics/melt">melt</a></span>(covs, <span class="dt">value.name=</span><span class="st">"meassure"</span>, </a>
+<a class="sourceLine" id="cb10-2" data-line-number="2">                            <span class="dt">variable.name=</span><span class="st">"covariate"</span>)</a></code></pre></div>
 <pre><code>## No id variables; using all as measure variables</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">covs_melt<span class="op">$</span>covariate &lt;-<span class="st"> </span><span class="kw">factor</span>(covs_melt<span class="op">$</span>covariate,
-                              <span class="dt">levels=</span><span class="kw">c</span>(<span class="st">"Age"</span>, <span class="st">"Height"</span>, <span class="st">"Weight"</span>, <span class="st">"Sex"</span>, 
-                                       <span class="st">"Slices"</span>),
-                              <span class="dt">labels=</span> <span class="kw">c</span>(<span class="st">"Age [years]"</span>, <span class="st">"Height [cm]"</span>, 
-                                        <span class="st">"Weight [kg]"</span>, <span class="st">"Sex"</span>, <span class="st">"Slices"</span>))
-p_cont &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/ggplot">ggplot</a></span>(dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(covs_melt, covariate <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">"Age [years]"</span>, 
-                                                           <span class="st">"Height [cm]"</span>, 
-                                                           <span class="st">"Weight [kg]"</span>)), 
-                   <span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/aes">aes</a></span>(<span class="dt">x=</span>meassure))
-p_cont &lt;-<span class="st"> </span>p_cont <span class="op">+</span><span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/geom_histogram">geom_histogram</a></span>(<span class="dt">binwidth=</span><span class="dv">1</span>) <span class="op">+</span>
-<span class="st">    </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/facet_wrap">facet_wrap</a></span>(<span class="op">~</span>covariate, <span class="dt">scales =</span> <span class="st">"free"</span>) <span class="op">+</span>
-<span class="st">    </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/ggtheme">theme_bw</a></span>() <span class="op">+</span>
-<span class="st">    </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/theme">theme</a></span>(<span class="dt">axis.title.x=</span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/element">element_blank</a></span>(),
-          <span class="dt">strip.background =</span> <span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/element">element_rect</a></span>(<span class="dt">fill=</span><span class="st">"white"</span>, <span class="dt">color=</span><span class="st">"black"</span>))
-
-p_cat &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/ggplot">ggplot</a></span>(dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(covs_melt, covariate <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">"Sex"</span>, <span class="st">"Slices"</span>)), 
-                   <span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/aes">aes</a></span>(<span class="dt">x=</span>meassure))
-p_cat &lt;-<span class="st"> </span>p_cat <span class="op">+</span><span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/geom_bar">geom_bar</a></span>(<span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/aes">aes</a></span>(<span class="dt">x=</span>meassure)) <span class="op">+</span>
-<span class="st">    </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/facet_wrap">facet_wrap</a></span>(<span class="op">~</span>covariate, <span class="dt">scales =</span> <span class="st">"free"</span>) <span class="op">+</span>
-<span class="st">    </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/ggtheme">theme_bw</a></span>() <span class="op">+</span>
-<span class="st">    </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/theme">theme</a></span>(<span class="dt">axis.title.x=</span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/element">element_blank</a></span>(),
-          <span class="dt">strip.background =</span> <span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/element">element_rect</a></span>(<span class="dt">fill=</span><span class="st">"white"</span>, <span class="dt">color=</span><span class="st">"black"</span>))
-
-combine &lt;-<span class="st"> </span>cowplot<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/cowplot/topics/plot_grid">plot_grid</a></span>(p_cont, p_cat, <span class="dt">nrow=</span><span class="dv">2</span>) 
-<span class="kw">print</span>(combine)</code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1">covs_melt<span class="op">$</span>covariate &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/factor">factor</a></span>(covs_melt<span class="op">$</span>covariate,</a>
+<a class="sourceLine" id="cb12-2" data-line-number="2">                              <span class="dt">levels=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"Age"</span>, <span class="st">"Height"</span>, <span class="st">"Weight"</span>, <span class="st">"Sex"</span>, </a>
+<a class="sourceLine" id="cb12-3" data-line-number="3">                                       <span class="st">"Slices"</span>),</a>
+<a class="sourceLine" id="cb12-4" data-line-number="4">                              <span class="dt">labels=</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"Age [years]"</span>, <span class="st">"Height [cm]"</span>, </a>
+<a class="sourceLine" id="cb12-5" data-line-number="5">                                        <span class="st">"Weight [kg]"</span>, <span class="st">"Sex"</span>, <span class="st">"Slices"</span>))</a>
+<a class="sourceLine" id="cb12-6" data-line-number="6">p_cont &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggplot2/topics/ggplot">ggplot</a></span>(dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(covs_melt, covariate <span class="op">%in%</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"Age [years]"</span>, </a>
+<a class="sourceLine" id="cb12-7" data-line-number="7">                                                           <span class="st">"Height [cm]"</span>, </a>
+<a class="sourceLine" id="cb12-8" data-line-number="8">                                                           <span class="st">"Weight [kg]"</span>)), </a>
+<a class="sourceLine" id="cb12-9" data-line-number="9">                   <span class="kw"><a href="https://www.rdocumentation.org/packages/ggplot2/topics/aes">aes</a></span>(<span class="dt">x=</span>meassure))</a>
+<a class="sourceLine" id="cb12-10" data-line-number="10">p_cont &lt;-<span class="st"> </span>p_cont <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggplot2/topics/geom_histogram">geom_histogram</a></span>(<span class="dt">binwidth=</span><span class="dv">1</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb12-11" data-line-number="11"><span class="st">    </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggplot2/topics/facet_wrap">facet_wrap</a></span>(<span class="op">~</span>covariate, <span class="dt">scales =</span> <span class="st">"free"</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb12-12" data-line-number="12"><span class="st">    </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggplot2/topics/ggtheme">theme_bw</a></span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb12-13" data-line-number="13"><span class="st">    </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggplot2/topics/theme">theme</a></span>(<span class="dt">axis.title.x=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggplot2/topics/element">element_blank</a></span>(),</a>
+<a class="sourceLine" id="cb12-14" data-line-number="14">          <span class="dt">strip.background =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/ggplot2/topics/element">element_rect</a></span>(<span class="dt">fill=</span><span class="st">"white"</span>, <span class="dt">color=</span><span class="st">"black"</span>))</a>
+<a class="sourceLine" id="cb12-15" data-line-number="15"></a>
+<a class="sourceLine" id="cb12-16" data-line-number="16">p_cat &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggplot2/topics/ggplot">ggplot</a></span>(dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(covs_melt, covariate <span class="op">%in%</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"Sex"</span>, <span class="st">"Slices"</span>)), </a>
+<a class="sourceLine" id="cb12-17" data-line-number="17">                   <span class="kw"><a href="https://www.rdocumentation.org/packages/ggplot2/topics/aes">aes</a></span>(<span class="dt">x=</span>meassure))</a>
+<a class="sourceLine" id="cb12-18" data-line-number="18">p_cat &lt;-<span class="st"> </span>p_cat <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggplot2/topics/geom_bar">geom_bar</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/ggplot2/topics/aes">aes</a></span>(<span class="dt">x=</span>meassure)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb12-19" data-line-number="19"><span class="st">    </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggplot2/topics/facet_wrap">facet_wrap</a></span>(<span class="op">~</span>covariate, <span class="dt">scales =</span> <span class="st">"free"</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb12-20" data-line-number="20"><span class="st">    </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggplot2/topics/ggtheme">theme_bw</a></span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb12-21" data-line-number="21"><span class="st">    </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggplot2/topics/theme">theme</a></span>(<span class="dt">axis.title.x=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggplot2/topics/element">element_blank</a></span>(),</a>
+<a class="sourceLine" id="cb12-22" data-line-number="22">          <span class="dt">strip.background =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/ggplot2/topics/element">element_rect</a></span>(<span class="dt">fill=</span><span class="st">"white"</span>, <span class="dt">color=</span><span class="st">"black"</span>))</a>
+<a class="sourceLine" id="cb12-23" data-line-number="23"></a>
+<a class="sourceLine" id="cb12-24" data-line-number="24">combine &lt;-<span class="st"> </span>cowplot<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/cowplot/topics/plot_grid">plot_grid</a></span>(p_cont, p_cat, <span class="dt">nrow=</span><span class="dv">2</span>) </a>
+<a class="sourceLine" id="cb12-25" data-line-number="25"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(combine)</a></code></pre></div>
 <div class="figure" style="text-align: center">
 <img src="SimulationBasedOnExampleData_files/figure-html/distribution-1.png" alt="\label{fig:distribution_covs}**Distribution of covariates.** Histograms of the reduced cohort data (100 individuals) for sex, age, height, weight and number of 2D cardiac MRI slices." width="700"><p class="caption">
 <strong>Distribution of covariates.</strong> Histograms of the reduced cohort data (100 individuals) for sex, age, height, weight and number of 2D cardiac MRI slices.
 </p>
 </div>
 <p>The correlation of the 1,000 left-ventricular wall thickness measurements is shown in Figure . While we don’t know the exact influences of each covariate, the genetic effects or the observational noise, we can clearly see that there is spatial correlation effect, where positions in proximity (close to the diagonal) in general are more correlated than more distant positions.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">cor_pheno &lt;-<span class="st"> </span><span class="kw">cor</span>(pheno)
-gplots<span class="op">::</span><span class="kw">heatmap.2</span>(cor_pheno, <span class="dt">trace=</span><span class="st">"none"</span>, <span class="dt">dendrogram=</span><span class="st">"none"</span>, <span class="dt">keysize=</span><span class="dv">1</span>,
-                  <span class="dt">col=</span><span class="kw">colorRampPalette</span>(<span class="kw">c</span>(<span class="st">"white"</span>, <span class="st">"#5BBCD6"</span>)),
-                  <span class="dt">labRow=</span><span class="ot">FALSE</span>, <span class="dt">labCol=</span><span class="ot">FALSE</span>,
-                  <span class="dt">breaks=</span><span class="kw">seq</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="fl">0.001</span>),
-                  <span class="dt">key.title=</span><span class="st">""</span>,
-                  <span class="dt">key.xlab=</span><span class="st">"Pearson's correlation coefficient"</span>,
-                  <span class="dt">key.ylab=</span><span class="st">""</span>,
-                  <span class="dt">density.info=</span><span class="st">"none"</span>)</code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1">cor_pheno &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/cor">cor</a></span>(pheno)</a>
+<a class="sourceLine" id="cb13-2" data-line-number="2">gplots<span class="op">::</span><span class="kw">heatmap.2</span>(cor_pheno, <span class="dt">trace=</span><span class="st">"none"</span>, <span class="dt">dendrogram=</span><span class="st">"none"</span>, <span class="dt">keysize=</span><span class="dv">1</span>,</a>
+<a class="sourceLine" id="cb13-3" data-line-number="3">                  <span class="dt">col=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/grDevices/topics/colorRamp">colorRampPalette</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"white"</span>, <span class="st">"#5BBCD6"</span>)),</a>
+<a class="sourceLine" id="cb13-4" data-line-number="4">                  <span class="dt">labRow=</span><span class="ot">FALSE</span>, <span class="dt">labCol=</span><span class="ot">FALSE</span>,</a>
+<a class="sourceLine" id="cb13-5" data-line-number="5">                  <span class="dt">breaks=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/seq">seq</a></span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="fl">0.001</span>),</a>
+<a class="sourceLine" id="cb13-6" data-line-number="6">                  <span class="dt">key.title=</span><span class="st">""</span>,</a>
+<a class="sourceLine" id="cb13-7" data-line-number="7">                  <span class="dt">key.xlab=</span><span class="st">"Pearson's correlation coefficient"</span>,</a>
+<a class="sourceLine" id="cb13-8" data-line-number="8">                  <span class="dt">key.ylab=</span><span class="st">""</span>,</a>
+<a class="sourceLine" id="cb13-9" data-line-number="9">                  <span class="dt">density.info=</span><span class="st">"none"</span>)</a></code></pre></div>
 <div class="figure" style="text-align: center">
-<img src="cor_pheno.png" alt="\label{fig:corpheno}\textbf{Correlation of left ventricular wall thickness measurements.}" width="\textwidth"><p class="caption">
+<img src="cor_pheno-min.png" alt="\label{fig:corpheno}\textbf{Correlation of left ventricular wall thickness measurements.}" width="\textwidth"><p class="caption">
 
 </p>
 </div>
@@ -193,81 +199,81 @@ gplots<span class="op">::</span><span class="kw">heatmap.2</span>(cor_pheno, <sp
 <h2 class="hasAnchor">
 <a href="#simulation" class="anchor"></a>Simulation</h2>
 <p>For the simulation of similar phenotype components as shown above, we make the assumption that the above distributions approximate a uniform (age), normal (weight, height) and binomial (sex) distribution. The slices are assumed to be uniformly drawn from four categories. In the following, we extract the relevant distribution parameters: mean and standard deviation for normal distribution, range for uniform distribution, and proportion of ones from binomial distribution. To approximate the spatial correlation, we get the 0.999 quantile of the correlation values.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">age_range &lt;-<span class="st"> </span><span class="kw">range</span>(covs<span class="op">$</span>Age)
-
-weight_mean &lt;-<span class="st"> </span><span class="kw">mean</span>(covs<span class="op">$</span>Weight)
-weight_sd &lt;-<span class="st"> </span><span class="kw">sd</span>(covs<span class="op">$</span>Weight)
-
-height_mean &lt;-<span class="st"> </span><span class="kw">mean</span>(covs<span class="op">$</span>Height)
-height_sd &lt;-<span class="st"> </span><span class="kw">sd</span>(covs<span class="op">$</span>Height)
-
-slices_categories &lt;-<span class="st"> </span><span class="kw">length</span>(<span class="kw">unique</span>(covs<span class="op">$</span>Slices))
-
-sex_proportion_male &lt;-<span class="st"> </span><span class="kw">length</span>(<span class="kw">which</span>(covs<span class="op">$</span>Sex<span class="op">==</span><span class="dv">1</span>))<span class="op">/</span><span class="kw">nrow</span>(covs)
-
-correlation &lt;-<span class="st"> </span><span class="kw">quantile</span>(<span class="kw">unlist</span>(cor_pheno[<span class="kw">lower.tri</span>(cor_pheno)]), <span class="fl">0.999</span>)</code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" data-line-number="1">age_range &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/range">range</a></span>(covs<span class="op">$</span>Age)</a>
+<a class="sourceLine" id="cb14-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb14-3" data-line-number="3">weight_mean &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/mean">mean</a></span>(covs<span class="op">$</span>Weight)</a>
+<a class="sourceLine" id="cb14-4" data-line-number="4">weight_sd &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/sd">sd</a></span>(covs<span class="op">$</span>Weight)</a>
+<a class="sourceLine" id="cb14-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb14-6" data-line-number="6">height_mean &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/mean">mean</a></span>(covs<span class="op">$</span>Height)</a>
+<a class="sourceLine" id="cb14-7" data-line-number="7">height_sd &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/sd">sd</a></span>(covs<span class="op">$</span>Height)</a>
+<a class="sourceLine" id="cb14-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb14-9" data-line-number="9">slices_categories &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/length">length</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/unique">unique</a></span>(covs<span class="op">$</span>Slices))</a>
+<a class="sourceLine" id="cb14-10" data-line-number="10"></a>
+<a class="sourceLine" id="cb14-11" data-line-number="11">sex_proportion_male &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/length">length</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/which">which</a></span>(covs<span class="op">$</span>Sex<span class="op">==</span><span class="dv">1</span>))<span class="op">/</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/nrow">nrow</a></span>(covs)</a>
+<a class="sourceLine" id="cb14-12" data-line-number="12"></a>
+<a class="sourceLine" id="cb14-13" data-line-number="13">correlation &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/quantile">quantile</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/unlist">unlist</a></span>(cor_pheno[<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/lower.tri">lower.tri</a></span>(cor_pheno)]), <span class="fl">0.999</span>)</a></code></pre></div>
 <p>We use these distribution parameters to simulate non-genetic covariate effects with <em>PhenotypeSimulator::noiseFixedEffects</em>. For the simulation of the spatial correlation effect, we use the above quantile cut-off for the construction of the correlation matrix with <em>PhenotypeSimulator::correlatedBgEffects</em>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">25</span>)
-covs_simulated &lt;-<span class="st"> </span><span class="kw"><a href="../reference/noiseFixedEffects.html">noiseFixedEffects</a></span>(<span class="dt">N=</span><span class="dv">100</span>, <span class="dt">P=</span><span class="dv">1000</span>, <span class="dt">NrFixedEffects =</span> <span class="dv">5</span>, 
-                                    <span class="dt">NrConfounders =</span> <span class="dv">1</span>,
-                  <span class="dt">distConfounders =</span> <span class="kw">c</span>(<span class="st">"unif"</span>, <span class="st">"norm"</span>, <span class="st">"norm"</span>, <span class="st">"cat_unif"</span>, <span class="st">"bin"</span>),
-                  <span class="dt">mConfounders =</span> <span class="kw">c</span>(<span class="kw">mean</span>(age_range), weight_mean, height_mean),
-                  <span class="dt">sdConfounders =</span> <span class="kw">c</span>(age_range[<span class="dv">2</span>] <span class="op">-</span><span class="kw">mean</span>(age_range), weight_sd, 
-                                    height_sd),
-                  <span class="dt">probConfounders =</span> sex_proportion_male,
-                  <span class="dt">catConfounders =</span> slices_categories)
-
-background_simulated &lt;-<span class="st"> </span><span class="kw"><a href="../reference/correlatedBgEffects.html">correlatedBgEffects</a></span>(<span class="dt">N=</span><span class="dv">100</span>, <span class="dt">P=</span><span class="dv">1000</span>, <span class="dt">pcorr=</span>correlation)</code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Random">set.seed</a></span>(<span class="dv">25</span>)</a>
+<a class="sourceLine" id="cb15-2" data-line-number="2">covs_simulated &lt;-<span class="st"> </span><span class="kw"><a href="../reference/noiseFixedEffects.html">noiseFixedEffects</a></span>(<span class="dt">N=</span><span class="dv">100</span>, <span class="dt">P=</span><span class="dv">1000</span>, <span class="dt">NrFixedEffects =</span> <span class="dv">5</span>, </a>
+<a class="sourceLine" id="cb15-3" data-line-number="3">                                    <span class="dt">NrConfounders =</span> <span class="dv">1</span>,</a>
+<a class="sourceLine" id="cb15-4" data-line-number="4">                  <span class="dt">distConfounders =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"unif"</span>, <span class="st">"norm"</span>, <span class="st">"norm"</span>, <span class="st">"cat_unif"</span>, <span class="st">"bin"</span>),</a>
+<a class="sourceLine" id="cb15-5" data-line-number="5">                  <span class="dt">mConfounders =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/mean">mean</a></span>(age_range), weight_mean, height_mean),</a>
+<a class="sourceLine" id="cb15-6" data-line-number="6">                  <span class="dt">sdConfounders =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(age_range[<span class="dv">2</span>] <span class="op">-</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/mean">mean</a></span>(age_range), weight_sd, </a>
+<a class="sourceLine" id="cb15-7" data-line-number="7">                                    height_sd),</a>
+<a class="sourceLine" id="cb15-8" data-line-number="8">                  <span class="dt">probConfounders =</span> sex_proportion_male,</a>
+<a class="sourceLine" id="cb15-9" data-line-number="9">                  <span class="dt">catConfounders =</span> slices_categories)</a>
+<a class="sourceLine" id="cb15-10" data-line-number="10"></a>
+<a class="sourceLine" id="cb15-11" data-line-number="11">background_simulated &lt;-<span class="st"> </span><span class="kw"><a href="../reference/correlatedBgEffects.html">correlatedBgEffects</a></span>(<span class="dt">N=</span><span class="dv">100</span>, <span class="dt">P=</span><span class="dv">1000</span>, <span class="dt">pcorr=</span>correlation)</a></code></pre></div>
 <p>Figure  and  show the simulated covariates and spatial correlation based on the parameters from the real data. While the distributions are not a perfect replication (as expected with small sample sizes and our initial assumptions about the true underlying distributions of the covariates), they will serve as good approximations for simulating similar datasets as the one we based the simulations on.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">covs_simulated_melt &lt;-<span class="st"> </span>reshape2<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/reshape2/topics/melt">melt</a></span>(covs_simulated<span class="op">$</span>cov, <span class="dt">value.name=</span><span class="st">"meassure"</span>, 
-                            <span class="dt">variable.name=</span><span class="st">"covariate"</span>)</code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" data-line-number="1">covs_simulated_melt &lt;-<span class="st"> </span>reshape2<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/reshape2/topics/melt">melt</a></span>(covs_simulated<span class="op">$</span>cov, <span class="dt">value.name=</span><span class="st">"meassure"</span>, </a>
+<a class="sourceLine" id="cb16-2" data-line-number="2">                            <span class="dt">variable.name=</span><span class="st">"covariate"</span>)</a></code></pre></div>
 <pre><code>## No id variables; using all as measure variables</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">covs_simulated_melt<span class="op">$</span>covariate &lt;-<span class="st"> </span><span class="kw">factor</span>(covs_simulated_melt<span class="op">$</span>covariate,
-                              <span class="dt">levels=</span><span class="kw">c</span>(<span class="st">"sharedConfounder1_unif1"</span>, 
-                                       <span class="st">"sharedConfounder2_norm1"</span>, 
-                                       <span class="st">"sharedConfounder3_norm1"</span>, 
-                                       <span class="st">"sharedConfounder5_bin1"</span>, 
-                                       <span class="st">"sharedConfounder4_cat_unif1"</span>),
-                              <span class="dt">labels=</span> <span class="kw">c</span>(<span class="st">"Age simulated"</span>, <span class="st">"Height simulated"</span>, 
-                                        <span class="st">"Weight simulated"</span>, <span class="st">"Sex simulated"</span>, 
-                                        <span class="st">"Slices simulated"</span>))
-p_cont &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/ggplot">ggplot</a></span>(dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(covs_simulated_melt, covariate <span class="op">%in%</span><span class="st"> </span>
-<span class="st">                                   </span><span class="kw">c</span>(<span class="st">"Age simulated"</span>, <span class="st">"Height simulated"</span>, 
-                                                           <span class="st">"Weight simulated"</span>)), 
-                   <span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/aes">aes</a></span>(<span class="dt">x=</span>meassure))
-p_cont &lt;-<span class="st"> </span>p_cont <span class="op">+</span><span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/geom_histogram">geom_histogram</a></span>(<span class="dt">binwidth=</span><span class="dv">1</span>) <span class="op">+</span>
-<span class="st">    </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/facet_wrap">facet_wrap</a></span>(<span class="op">~</span>covariate, <span class="dt">scales =</span> <span class="st">"free"</span>) <span class="op">+</span>
-<span class="st">    </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/ggtheme">theme_bw</a></span>() <span class="op">+</span>
-<span class="st">    </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/theme">theme</a></span>(<span class="dt">axis.title.x=</span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/element">element_blank</a></span>(),
-          <span class="dt">strip.background =</span> <span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/element">element_rect</a></span>(<span class="dt">fill=</span><span class="st">"white"</span>, <span class="dt">color=</span><span class="st">"black"</span>))
-
-p_cat &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/ggplot">ggplot</a></span>(dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(covs_simulated_melt, covariate <span class="op">%in%</span><span class="st"> </span>
-<span class="st">                                  </span><span class="kw">c</span>(<span class="st">"Sex simulated"</span>, <span class="st">"Slices simulated"</span>)), 
-                   <span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/aes">aes</a></span>(<span class="dt">x=</span>meassure))
-p_cat &lt;-<span class="st"> </span>p_cat <span class="op">+</span><span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/geom_bar">geom_bar</a></span>(<span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/aes">aes</a></span>(<span class="dt">x=</span>meassure)) <span class="op">+</span>
-<span class="st">    </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/facet_wrap">facet_wrap</a></span>(<span class="op">~</span>covariate, <span class="dt">scales =</span> <span class="st">"free"</span>) <span class="op">+</span>
-<span class="st">    </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/ggtheme">theme_bw</a></span>() <span class="op">+</span>
-<span class="st">    </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/theme">theme</a></span>(<span class="dt">axis.title.x=</span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/element">element_blank</a></span>(),
-          <span class="dt">strip.background =</span> <span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/element">element_rect</a></span>(<span class="dt">fill=</span><span class="st">"white"</span>, <span class="dt">color=</span><span class="st">"black"</span>))
-
-combine &lt;-<span class="st"> </span>cowplot<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/cowplot/topics/plot_grid">plot_grid</a></span>(p_cont, p_cat, <span class="dt">nrow=</span><span class="dv">2</span>) 
-<span class="kw">print</span>(combine)</code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" data-line-number="1">covs_simulated_melt<span class="op">$</span>covariate &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/factor">factor</a></span>(covs_simulated_melt<span class="op">$</span>covariate,</a>
+<a class="sourceLine" id="cb18-2" data-line-number="2">                              <span class="dt">levels=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"sharedConfounder1_unif1"</span>, </a>
+<a class="sourceLine" id="cb18-3" data-line-number="3">                                       <span class="st">"sharedConfounder2_norm1"</span>, </a>
+<a class="sourceLine" id="cb18-4" data-line-number="4">                                       <span class="st">"sharedConfounder3_norm1"</span>, </a>
+<a class="sourceLine" id="cb18-5" data-line-number="5">                                       <span class="st">"sharedConfounder5_bin1"</span>, </a>
+<a class="sourceLine" id="cb18-6" data-line-number="6">                                       <span class="st">"sharedConfounder4_cat_unif1"</span>),</a>
+<a class="sourceLine" id="cb18-7" data-line-number="7">                              <span class="dt">labels=</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"Age simulated"</span>, <span class="st">"Height simulated"</span>, </a>
+<a class="sourceLine" id="cb18-8" data-line-number="8">                                        <span class="st">"Weight simulated"</span>, <span class="st">"Sex simulated"</span>, </a>
+<a class="sourceLine" id="cb18-9" data-line-number="9">                                        <span class="st">"Slices simulated"</span>))</a>
+<a class="sourceLine" id="cb18-10" data-line-number="10">p_cont &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggplot2/topics/ggplot">ggplot</a></span>(dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(covs_simulated_melt, covariate <span class="op">%in%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb18-11" data-line-number="11"><span class="st">                                   </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"Age simulated"</span>, <span class="st">"Height simulated"</span>, </a>
+<a class="sourceLine" id="cb18-12" data-line-number="12">                                                           <span class="st">"Weight simulated"</span>)), </a>
+<a class="sourceLine" id="cb18-13" data-line-number="13">                   <span class="kw"><a href="https://www.rdocumentation.org/packages/ggplot2/topics/aes">aes</a></span>(<span class="dt">x=</span>meassure))</a>
+<a class="sourceLine" id="cb18-14" data-line-number="14">p_cont &lt;-<span class="st"> </span>p_cont <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggplot2/topics/geom_histogram">geom_histogram</a></span>(<span class="dt">binwidth=</span><span class="dv">1</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb18-15" data-line-number="15"><span class="st">    </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggplot2/topics/facet_wrap">facet_wrap</a></span>(<span class="op">~</span>covariate, <span class="dt">scales =</span> <span class="st">"free"</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb18-16" data-line-number="16"><span class="st">    </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggplot2/topics/ggtheme">theme_bw</a></span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb18-17" data-line-number="17"><span class="st">    </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggplot2/topics/theme">theme</a></span>(<span class="dt">axis.title.x=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggplot2/topics/element">element_blank</a></span>(),</a>
+<a class="sourceLine" id="cb18-18" data-line-number="18">          <span class="dt">strip.background =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/ggplot2/topics/element">element_rect</a></span>(<span class="dt">fill=</span><span class="st">"white"</span>, <span class="dt">color=</span><span class="st">"black"</span>))</a>
+<a class="sourceLine" id="cb18-19" data-line-number="19"></a>
+<a class="sourceLine" id="cb18-20" data-line-number="20">p_cat &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggplot2/topics/ggplot">ggplot</a></span>(dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(covs_simulated_melt, covariate <span class="op">%in%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb18-21" data-line-number="21"><span class="st">                                  </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"Sex simulated"</span>, <span class="st">"Slices simulated"</span>)), </a>
+<a class="sourceLine" id="cb18-22" data-line-number="22">                   <span class="kw"><a href="https://www.rdocumentation.org/packages/ggplot2/topics/aes">aes</a></span>(<span class="dt">x=</span>meassure))</a>
+<a class="sourceLine" id="cb18-23" data-line-number="23">p_cat &lt;-<span class="st"> </span>p_cat <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggplot2/topics/geom_bar">geom_bar</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/ggplot2/topics/aes">aes</a></span>(<span class="dt">x=</span>meassure)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb18-24" data-line-number="24"><span class="st">    </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggplot2/topics/facet_wrap">facet_wrap</a></span>(<span class="op">~</span>covariate, <span class="dt">scales =</span> <span class="st">"free"</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb18-25" data-line-number="25"><span class="st">    </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggplot2/topics/ggtheme">theme_bw</a></span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb18-26" data-line-number="26"><span class="st">    </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggplot2/topics/theme">theme</a></span>(<span class="dt">axis.title.x=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/ggplot2/topics/element">element_blank</a></span>(),</a>
+<a class="sourceLine" id="cb18-27" data-line-number="27">          <span class="dt">strip.background =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/ggplot2/topics/element">element_rect</a></span>(<span class="dt">fill=</span><span class="st">"white"</span>, <span class="dt">color=</span><span class="st">"black"</span>))</a>
+<a class="sourceLine" id="cb18-28" data-line-number="28"></a>
+<a class="sourceLine" id="cb18-29" data-line-number="29">combine &lt;-<span class="st"> </span>cowplot<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/cowplot/topics/plot_grid">plot_grid</a></span>(p_cont, p_cat, <span class="dt">nrow=</span><span class="dv">2</span>) </a>
+<a class="sourceLine" id="cb18-30" data-line-number="30"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/print">print</a></span>(combine)</a></code></pre></div>
 <div class="figure" style="text-align: center">
 <img src="SimulationBasedOnExampleData_files/figure-html/simulation-1.png" alt="\label{fig:distribution_simulated}**Distribution of simulated covariates.**" width="700"><p class="caption">
 <strong>Distribution of simulated covariates.</strong>
 </p>
 </div>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">gplots<span class="op">::</span><span class="kw">heatmap.2</span>(<span class="kw">cor</span>(background_simulated<span class="op">$</span>correlatedBg), <span class="dt">trace=</span><span class="st">"none"</span>, 
-                  <span class="dt">dendrogram=</span><span class="st">"none"</span>, 
-                  <span class="dt">keysize=</span><span class="dv">1</span>, <span class="dt">col=</span><span class="kw">colorRampPalette</span>(<span class="kw">c</span>(<span class="st">"white"</span>, <span class="st">"#5BBCD6"</span>)),
-                  <span class="dt">labRow=</span><span class="ot">FALSE</span>, <span class="dt">labCol=</span><span class="ot">FALSE</span>,
-                  <span class="dt">breaks=</span><span class="kw">seq</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="fl">0.001</span>),
-                  <span class="dt">key.title=</span><span class="st">""</span>,
-                  <span class="dt">key.xlab=</span><span class="st">"Pearson's correlation coefficient"</span>,
-                  <span class="dt">key.ylab=</span><span class="st">""</span>,
-                  <span class="dt">density.info=</span><span class="st">"none"</span>)</code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb19-1" data-line-number="1">gplots<span class="op">::</span><span class="kw">heatmap.2</span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/cor">cor</a></span>(background_simulated<span class="op">$</span>correlatedBg), <span class="dt">trace=</span><span class="st">"none"</span>, </a>
+<a class="sourceLine" id="cb19-2" data-line-number="2">                  <span class="dt">dendrogram=</span><span class="st">"none"</span>, </a>
+<a class="sourceLine" id="cb19-3" data-line-number="3">                  <span class="dt">keysize=</span><span class="dv">1</span>, <span class="dt">col=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/grDevices/topics/colorRamp">colorRampPalette</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"white"</span>, <span class="st">"#5BBCD6"</span>)),</a>
+<a class="sourceLine" id="cb19-4" data-line-number="4">                  <span class="dt">labRow=</span><span class="ot">FALSE</span>, <span class="dt">labCol=</span><span class="ot">FALSE</span>,</a>
+<a class="sourceLine" id="cb19-5" data-line-number="5">                  <span class="dt">breaks=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/seq">seq</a></span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="fl">0.001</span>),</a>
+<a class="sourceLine" id="cb19-6" data-line-number="6">                  <span class="dt">key.title=</span><span class="st">""</span>,</a>
+<a class="sourceLine" id="cb19-7" data-line-number="7">                  <span class="dt">key.xlab=</span><span class="st">"Pearson's correlation coefficient"</span>,</a>
+<a class="sourceLine" id="cb19-8" data-line-number="8">                  <span class="dt">key.ylab=</span><span class="st">""</span>,</a>
+<a class="sourceLine" id="cb19-9" data-line-number="9">                  <span class="dt">density.info=</span><span class="st">"none"</span>)</a></code></pre></div>
 <div class="figure" style="text-align: center">
-<img src="cor_simulated.png" alt="\label{fig:corsimulated}\textbf{Correlation of simulated spatial proximity.}" width="\textwidth"><p class="caption">
+<img src="cor_simulated-min.png" alt="\label{fig:corsimulated}\textbf{Correlation of simulated spatial proximity.}" width="\textwidth"><p class="caption">
 
 </p>
 </div>
@@ -307,9 +313,8 @@ combine &lt;-<span class="st"> </span>cowplot<span class="op">::</span><span cla
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="http://pkgdown.r-lib.org/">pkgdown</a>.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
 </div>
-
       </footer>
 </div>
 
