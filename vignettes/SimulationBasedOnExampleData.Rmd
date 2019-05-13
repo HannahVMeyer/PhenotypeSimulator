@@ -21,7 +21,6 @@ vignette: >
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-directory <- "."
 ```
 
 *PhenotypeSimulator* allows for the simulation of high-dimensional phenotypes
@@ -38,7 +37,8 @@ ventricle of the heart @deMarvao2014 @Biffi2017.
 
 
 ```{r, echo=FALSE, fig.cap="\\label{fig:wallthickness}**Left ventricular wall thickness and contributing factors.** Left ventricular wall thickness was measured at more than 27k positions in a cohort of 1,185 healthy volunteers. The average wall thickness at each position is depicted in saturated colours (the mesh depicts the right ventricle for reference). Heart wall thickness is determined by an interplay of genetic (green arrows) and non-genetic factors (grey arrows). Additional correlation between positional thickness can be observed for measures in close spatial proximity.", fig.align='center'}
-knitr::include_graphics("wallthickness-min.png")
+knitr::include_graphics(system.file("extdata/vignettes/wallthickness-min.png",
+                                    package = "PhenotypeSimulator"))
 ```
 
 
@@ -67,8 +67,13 @@ to depict the correlation pattern.
 library(PhenotypeSimulator)
 library(ggplot2)
 
-pheno <- readRDS("./pheno_small.rds")
-covs <- readRDS("./covs.rds")
+phenofile <- system.file("extdata/vignettes/pheno_small.rds", 
+                            package = "PhenotypeSimulator")
+covsfile <- system.file("extdata/vignettes/covs.rds", 
+                            package = "PhenotypeSimulator")
+
+pheno <- readRDS(phenofile)
+covs <- readRDS(covsfile)
 
 dim(pheno)
 dim(covs)
@@ -131,7 +136,8 @@ gplots::heatmap.2(cor_pheno, trace="none", dendrogram="none", keysize=1,
 
 ```{r, echo=FALSE, out.width='\\textwidth', fig.align='center',fig.cap="\\label{fig:corpheno}\\textbf{Correlation of left ventricular wall thickness measurements.}"}
 cor_pheno <- cor(pheno)
-knitr::include_graphics("cor_pheno-min.png")
+knitr::include_graphics(system.file("extdata/vignettes/cor_pheno-min.png",
+            package = "PhenotypeSimulator"))
 ```
 
 ## Simulation
@@ -235,8 +241,9 @@ gplots::heatmap.2(cor(background_simulated$correlatedBg), trace="none",
                   density.info="none")
 ```
 
-```{r, echo=FALSE, out.width='\\textwidth', fig.align='center', fig.cap="\\label{fig:corsimulated}\\textbf{Correlation of simulated spatial proximity.}"}
-knitr::include_graphics("cor_simulated-min.png")
+```{r load simulated background, echo=FALSE, out.width='\\textwidth', fig.align='center', fig.cap="\\label{fig:corsimulated}\\textbf{Correlation of simulated spatial proximity.}"}
+knitr::include_graphics(system.file("extdata/vignettes/cor_simulated-min.png",
+            package = "PhenotypeSimulator"))
 ```
 
 \newpage
