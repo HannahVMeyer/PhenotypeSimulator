@@ -52,7 +52,7 @@ knitr::include_graphics("docs/simulatedPhenotypes.png")
 
 ## <i class="fa fa-rocket" aria-hidden="true"></i> Installation
 
-The current github version of *PhenotypeSimulator* is 0.3.2 and can be
+The current github version of *PhenotypeSimulator* is 0.3.3 and can be
 installed via:
 ```{r, eval=FALSE}
 library(devtools)
