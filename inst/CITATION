@@ -1,0 +1,20 @@
+citHeader("To cite PhenotypeSimulator in publications use:")
+
+citEntry(entry = "Article",
+  title        = "PhenotypeSimulator: A comprehensive framework for simulating multi-trait, multi-locus genotype to phenotype relationships",
+  author       = personList(as.person("Hannah V Meyer"),
+                   as.person("Ewan Birney")),
+  journal      = "Bioinformatics",
+  year         = "2018",
+  volume       = "34",
+  number       = "17",
+  pages        = "2951--2956",
+  url          = "https://doi.org/10.1093/bioinformatics/bty197",
+
+  textVersion  =
+  paste("Hannah V Meyer, Ewan Birney (2018).",
+        "PhenotypeSimulator: A comprehensive framework for simulating multi-trait, multi-locus genotype to phenotype relationships.",
+        "Bioinformatics, 34(17), 2951-2956.",
+        "URL https://doi.org/10.1093/bioinformatics/bty197.")
+)
+
