@@ -284,9 +284,9 @@ expGen2probGen <- function(geno) {
 testNumerics <- function(numbers, positives=NULL, integers=NULL, 
                          proportions=NULL) {
     notNullnotNumeric <- function(x) !is.null(x) && !is.numeric(x)
-    notNullnotPositive <- function(x) !is.null(x)  && x <= 0
-    notNullnotInteger <- function(x) !is.null(x)  && x%%1!=0 
-    notNullNotInRange <- function(x) !is.null(x)  && (x < 0 || x > 1) 
+    notNullnotPositive <- function(x) !is.null(x)  && any(x <= 0)
+    notNullnotInteger <- function(x) !is.null(x)  && any(x%%1!=0) 
+    notNullNotInRange <- function(x) !is.null(x)  && (any(x < 0) || any(x > 1)) 
     if (any(sapply(numbers, notNullnotNumeric))) {
         notNumbers <- which(sapply(numbers, notNullnotNumeric))
         stop(paste(names(numbers)[notNumbers], collapse=","), 
