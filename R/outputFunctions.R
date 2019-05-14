@@ -65,7 +65,7 @@
 #' \item snptest format: consists of two files, the genotype file ending in .gen 
 #' (genotypes_snptest.gen) and the sample file ending in .sample 
 #' (Ysim_snptest.sample). From
-#'  \url{http://www.stats.ox.ac.uk/~marchini/software/gwas/file_format.html}:
+#'  \url{https://www.well.ox.ac.uk/~gav/snptest/#input_file_formats}:
 #' The genotype file stores data on a one-line-per-SNP format. The first 5 
 #' entries of each line should be the SNP ID, RS ID of the SNP, base-pair 
 #' position of the SNP, the allele coded A and the allele coded B. The SNP ID 

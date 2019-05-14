@@ -151,7 +151,7 @@ simulateGenotypes <- function(N, NrSNP=5000, frequencies=c(0.1, 0.2, 0.4),
 #' specifying the filepath, only the core of the name without the ending should
 #' be specified (i.e. for geno.gen and geno.sample, geno should be specified).
 #' From
-#'  \url{http://www.stats.ox.ac.uk/~marchini/software/gwas/file_format.html}:
+#'  \url{https://www.well.ox.ac.uk/~gav/snptest/#input_file_formats}:
 #' The genotype file stores data on a one-line-per-SNP format. The first five
 #' entries of each line should be the SNP ID, RS ID of the SNP, base-pair
 #' position of the SNP, the allele coded A and the allele coded B. The SNP ID
