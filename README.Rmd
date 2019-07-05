@@ -15,7 +15,7 @@ knitr::opts_chunk$set(
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/PhenotypeSimulator)](https://cran.r-project.org/package=PhenotypeSimulator)
 [![Build Status](https://travis-ci.org/HannahVMeyer/PhenotypeSimulator.svg?branch=master)](https://travis-ci.org/HannahVMeyer/PhenotypeSimulator)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Downloads](http://cranlogs.r-pkg.org/badges/grand-total/PhenotypeSimulator?color=red)](https://CRAN.R-project.org/package=PhenotypeSimulator)
+[![Downloads](http://cranlogs.r-pkg.org/badges/grand-total/PhenotypeSimulator?color=blue)](https://CRAN.R-project.org/package=PhenotypeSimulator)
 
 
 ## <i class="fa fa-map" aria-hidden="true"></i> PhenotypeSimulator
