@@ -6,9 +6,9 @@
 Status](https://travis-ci.org/HannahVMeyer/PhenotypeSimulator.svg?branch=master)](https://travis-ci.org/HannahVMeyer/PhenotypeSimulator)
 [![License:
 MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Downloads](http://cranlogs.r-pkg.org/badges/grand-total/PhenotypeSimulator?color=red)](https://CRAN.R-project.org/package=PhenotypeSimulator)
+[![Downloads](http://cranlogs.r-pkg.org/badges/grand-total/PhenotypeSimulator?color=blue)](http://cran.rstudio.com/web/packages/PhenotypeSimulator/index.html)
 
-## <i class="fa fa-map" aria-hidden="true"></i> PhenotypeSimulator
+## <i class="fa fa-cubes" aria-hidden="true"></i> PhenotypeSimulator
 
 **PhenotypeSimulator** allows for the flexible simulation of phenotypes
 from different genetic and non-genetic (noise) components.
@@ -39,17 +39,16 @@ the components. For each component, the number of variables, their
 distribution and the design of their effect across traits can be
 customised.
 
+<img src="docs/simulatedPhenotypes.png" width="100%" />
+
 ## <i class="fa fa-rocket" aria-hidden="true"></i> Installation
 
-Full documentation of **PhenotypeSimulator** is available at
-<http://HannahVMeyer.github.io/PhenotypeSimulator/>.
-
 The current github version of *PhenotypeSimulator* is 0.3.3 and can be
-installed via
+installed via:
 
 ``` r
-# install.packages("devtools")
-devtools::install_github("HannahVMeyer/PhenotypeSimulator")
+library(devtools)
+install_github("HannahVMeyer/PhenotypeSimulator")
 ```
 
 The current CRAN version of *PhenotypeSimulator* is 0.3.3 and can be
