@@ -1,0 +1,13 @@
+^docs$
+^_pkgdown\.yml$
+^.*\.Rproj$
+^\.Rproj\.user$
+^cran-comments\.md$
+^README\.Rmd$
+^README\.html$
+^README-.*\.png$
+^INDEX\.Rmd$
+^INDEX\.html$
+^doc$
+^Meta$
+^CRAN-RELEASE$
