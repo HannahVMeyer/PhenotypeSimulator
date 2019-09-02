@@ -7,9 +7,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Flexible phenotype simulation with PhenotypeSimulator • PhenotypeSimulator</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../pkgdown.js"></script><meta property="og:title" content="Flexible phenotype simulation with PhenotypeSimulator">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous">
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
+<script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
+<meta property="og:title" content="Flexible phenotype simulation with PhenotypeSimulator">
 <meta property="og:description" content="">
 <meta name="twitter:card" content="summary">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
@@ -97,13 +99,14 @@
 <!--/.navbar -->
 
       
+
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1>Flexible phenotype simulation with PhenotypeSimulator</h1>
                         <h4 class="author">Hannah Meyer</h4>
             
-            <h4 class="date">2019-07-05</h4>
+            <h4 class="date">2019-09-02</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/HannahVMeyer/PhenotypeSimulator/blob/master/vignettes/PhenotypeSimulator.Rmd"><code>vignettes/PhenotypeSimulator.Rmd</code></a></small>
       <div class="hidden name"><code>PhenotypeSimulator.Rmd</code></div>
@@ -161,7 +164,7 @@
 <a class="sourceLine" id="cb1-6" data-line-number="6"></a>
 <a class="sourceLine" id="cb1-7" data-line-number="7"><span class="co"># simulate simple bi-allelic genotypes and estimate kinship</span></a>
 <a class="sourceLine" id="cb1-8" data-line-number="8">genotypes &lt;-<span class="st"> </span><span class="kw"><a href="../reference/simulateGenotypes.html">simulateGenotypes</a></span>(<span class="dt">N =</span> <span class="dv">100</span>, <span class="dt">NrSNP =</span> <span class="dv">10000</span>, </a>
-<a class="sourceLine" id="cb1-9" data-line-number="9">                               <span class="dt">frequencies =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="fl">0.05</span>, <span class="fl">0.1</span>, <span class="fl">0.3</span>, <span class="fl">0.4</span>), </a>
+<a class="sourceLine" id="cb1-9" data-line-number="9">                               <span class="dt">frequencies =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">0.05</span>, <span class="fl">0.1</span>, <span class="fl">0.3</span>, <span class="fl">0.4</span>), </a>
 <a class="sourceLine" id="cb1-10" data-line-number="10">                               <span class="dt">verbose =</span> <span class="ot">FALSE</span>)</a>
 <a class="sourceLine" id="cb1-11" data-line-number="11">genotypes_sd &lt;-<span class="st"> </span><span class="kw"><a href="../reference/standardiseGenotypes.html">standardiseGenotypes</a></span>(genotypes<span class="op">$</span>genotypes)</a>
 <a class="sourceLine" id="cb1-12" data-line-number="12">kinship &lt;-<span class="st"> </span><span class="kw"><a href="../reference/getKinship.html">getKinship</a></span>(<span class="dt">N=</span><span class="dv">100</span>, <span class="dt">X=</span>genotypes_sd, <span class="dt">verbose =</span> <span class="ot">FALSE</span>)</a>
@@ -186,7 +189,7 @@
 <a class="sourceLine" id="cb1-31" data-line-number="31"><span class="co">#&gt; [1] TRUE</span></a>
 <a class="sourceLine" id="cb1-32" data-line-number="32"></a>
 <a class="sourceLine" id="cb1-33" data-line-number="33"><span class="co"># combine components into final phenotype</span></a>
-<a class="sourceLine" id="cb1-34" data-line-number="34">Y &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/scale">scale</a></span>(genBg_shared_scaled<span class="op">$</span>component <span class="op">+</span><span class="st"> </span>noiseBg_shared_scaled<span class="op">$</span>component <span class="op">+</span></a>
+<a class="sourceLine" id="cb1-34" data-line-number="34">Y &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/scale.html">scale</a></span>(genBg_shared_scaled<span class="op">$</span>component <span class="op">+</span><span class="st"> </span>noiseBg_shared_scaled<span class="op">$</span>component <span class="op">+</span></a>
 <a class="sourceLine" id="cb1-35" data-line-number="35"><span class="st">    </span>genBg_independent_scaled<span class="op">$</span>component <span class="op">+</span><span class="st"> </span>noiseBg_independent_scaled<span class="op">$</span>component)</a>
 <a class="sourceLine" id="cb1-36" data-line-number="36"></a>
 <a class="sourceLine" id="cb1-37" data-line-number="37"><span class="co"># transform phenotype non-linearly</span></a>
@@ -205,7 +208,7 @@
 <a class="sourceLine" id="cb2-6" data-line-number="6"></a>
 <a class="sourceLine" id="cb2-7" data-line-number="7"><span class="co"># random genetic variance: h2b </span></a>
 <a class="sourceLine" id="cb2-8" data-line-number="8">phenotype &lt;-<span class="st"> </span><span class="kw"><a href="../reference/runSimulation.html">runSimulation</a></span>(<span class="dt">N =</span> <span class="dv">100</span>, <span class="dt">P =</span> <span class="dv">15</span>,  <span class="dt">tNrSNP =</span> <span class="dv">10000</span>, </a>
-<a class="sourceLine" id="cb2-9" data-line-number="9">                           <span class="dt">SNPfrequencies =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="fl">0.05</span>, <span class="fl">0.1</span>,<span class="fl">0.3</span>,<span class="fl">0.4</span>), </a>
+<a class="sourceLine" id="cb2-9" data-line-number="9">                           <span class="dt">SNPfrequencies =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">0.05</span>, <span class="fl">0.1</span>,<span class="fl">0.3</span>,<span class="fl">0.4</span>), </a>
 <a class="sourceLine" id="cb2-10" data-line-number="10">                           <span class="dt">genVar =</span> <span class="fl">0.4</span>, <span class="dt">h2bg =</span> <span class="dv">1</span>, <span class="dt">phi =</span> <span class="dv">1</span>, </a>
 <a class="sourceLine" id="cb2-11" data-line-number="11">                           <span class="dt">verbose =</span> <span class="ot">TRUE</span>, <span class="dt">nonlinear=</span><span class="st">"exp"</span>, </a>
 <a class="sourceLine" id="cb2-12" data-line-number="12">                           <span class="dt">proportionNonlinear =</span> <span class="fl">0.7</span>)</a>
@@ -244,12 +247,12 @@
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="co"># read genotypes from external file</span></a>
 <a class="sourceLine" id="cb3-2" data-line-number="2"><span class="co"># use one of the sample genotype file provided in the </span></a>
 <a class="sourceLine" id="cb3-3" data-line-number="3"><span class="co"># extdata/genotypes/subfolders (e.g.extdata/genotypes/hapgen )</span></a>
-<a class="sourceLine" id="cb3-4" data-line-number="4">genotypefile &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/system.file">system.file</a></span>(<span class="st">"extdata/genotypes/hapgen"</span>, </a>
+<a class="sourceLine" id="cb3-4" data-line-number="4">genotypefile &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"extdata/genotypes/hapgen"</span>, </a>
 <a class="sourceLine" id="cb3-5" data-line-number="5">                            <span class="st">"genotypes_hapgen.controls.gen"</span>, </a>
 <a class="sourceLine" id="cb3-6" data-line-number="6">                            <span class="dt">package =</span> <span class="st">"PhenotypeSimulator"</span>)</a>
 <a class="sourceLine" id="cb3-7" data-line-number="7"><span class="co"># remove the .gen ending (oxgen specific endings .gen and .sample are added </span></a>
 <a class="sourceLine" id="cb3-8" data-line-number="8"><span class="co"># automatically )</span></a>
-<a class="sourceLine" id="cb3-9" data-line-number="9">genotypefile &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/grep">gsub</a></span>(<span class="st">"</span><span class="ch">\\</span><span class="st">.gen"</span>,<span class="st">""</span>, genotypefile)</a>
+<a class="sourceLine" id="cb3-9" data-line-number="9">genotypefile &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/grep.html">gsub</a></span>(<span class="st">"</span><span class="ch">\\</span><span class="st">.gen"</span>,<span class="st">""</span>, genotypefile)</a>
 <a class="sourceLine" id="cb3-10" data-line-number="10"></a>
 <a class="sourceLine" id="cb3-11" data-line-number="11">genotypes &lt;-<span class="st"> </span><span class="kw"><a href="../reference/readStandardGenotypes.html">readStandardGenotypes</a></span>(<span class="dt">N=</span><span class="dv">100</span>, <span class="dt">filename =</span> genotypefile,</a>
 <a class="sourceLine" id="cb3-12" data-line-number="12">                                    <span class="dt">format=</span><span class="st">"oxgen"</span>,</a>
@@ -274,12 +277,12 @@
 <a class="sourceLine" id="cb3-31" data-line-number="31"><span class="co"># * 1 categorical (4 categories) independent  covariate effect</span></a>
 <a class="sourceLine" id="cb3-32" data-line-number="32"><span class="co"># * 2 normally distributed independent and shared covariate effects</span></a>
 <a class="sourceLine" id="cb3-33" data-line-number="33">noiseFixed &lt;-<span class="st"> </span><span class="kw"><a href="../reference/noiseFixedEffects.html">noiseFixedEffects</a></span>(<span class="dt">N =</span> <span class="dv">100</span>, <span class="dt">P =</span> <span class="dv">15</span>, <span class="dt">NrFixedEffects =</span> <span class="dv">4</span>, </a>
-<a class="sourceLine" id="cb3-34" data-line-number="34">                                <span class="dt">NrConfounders =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">2</span>),</a>
-<a class="sourceLine" id="cb3-35" data-line-number="35">                                <span class="dt">pIndependentConfounders =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="fl">0.5</span>),  </a>
-<a class="sourceLine" id="cb3-36" data-line-number="36">                                <span class="dt">distConfounders =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"bin"</span>, <span class="st">"cat_norm"</span>, </a>
+<a class="sourceLine" id="cb3-34" data-line-number="34">                                <span class="dt">NrConfounders =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">2</span>),</a>
+<a class="sourceLine" id="cb3-35" data-line-number="35">                                <span class="dt">pIndependentConfounders =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="fl">0.5</span>),  </a>
+<a class="sourceLine" id="cb3-36" data-line-number="36">                                <span class="dt">distConfounders =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"bin"</span>, <span class="st">"cat_norm"</span>, </a>
 <a class="sourceLine" id="cb3-37" data-line-number="37">                                                    <span class="st">"cat_unif"</span>, <span class="st">"norm"</span>),</a>
 <a class="sourceLine" id="cb3-38" data-line-number="38">                                <span class="dt">probConfounders =</span> <span class="fl">0.2</span>, </a>
-<a class="sourceLine" id="cb3-39" data-line-number="39">                                <span class="dt">catConfounders =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">3</span>, <span class="dv">4</span>))</a>
+<a class="sourceLine" id="cb3-39" data-line-number="39">                                <span class="dt">catConfounders =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">3</span>, <span class="dv">4</span>))</a>
 <a class="sourceLine" id="cb3-40" data-line-number="40"></a>
 <a class="sourceLine" id="cb3-41" data-line-number="41"><span class="co"># simulate correlated effects with max correlation of 0.8</span></a>
 <a class="sourceLine" id="cb3-42" data-line-number="42">correlatedBg &lt;-<span class="st"> </span><span class="kw"><a href="../reference/correlatedBgEffects.html">correlatedBgEffects</a></span>(<span class="dt">N =</span> <span class="dv">100</span>, <span class="dt">P =</span> <span class="dv">15</span>, <span class="dt">pcorr =</span> <span class="fl">0.8</span>)</a>
@@ -328,7 +331,7 @@
 <a class="sourceLine" id="cb3-85" data-line-number="85"><span class="co">#&gt; [1] TRUE</span></a>
 <a class="sourceLine" id="cb3-86" data-line-number="86"></a>
 <a class="sourceLine" id="cb3-87" data-line-number="87"><span class="co"># combine components into final phenotype</span></a>
-<a class="sourceLine" id="cb3-88" data-line-number="88">Y &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/scale">scale</a></span>(genBg_shared_scaled<span class="op">$</span>component <span class="op">+</span><span class="st"> </span>noiseBg_shared_scaled<span class="op">$</span>component <span class="op">+</span></a>
+<a class="sourceLine" id="cb3-88" data-line-number="88">Y &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/scale.html">scale</a></span>(genBg_shared_scaled<span class="op">$</span>component <span class="op">+</span><span class="st"> </span>noiseBg_shared_scaled<span class="op">$</span>component <span class="op">+</span></a>
 <a class="sourceLine" id="cb3-89" data-line-number="89"><span class="st">        </span>genBg_independent_scaled<span class="op">$</span>component <span class="op">+</span><span class="st"> </span>noiseBg_independent_scaled<span class="op">$</span>component <span class="op">+</span></a>
 <a class="sourceLine" id="cb3-90" data-line-number="90"><span class="st">        </span>genFixed_shared_scaled<span class="op">$</span>component <span class="op">+</span><span class="st"> </span>noiseFixed_shared_scaled<span class="op">$</span>component <span class="op">+</span></a>
 <a class="sourceLine" id="cb3-91" data-line-number="91"><span class="st">        </span>genFixed_independent_scaled<span class="op">$</span>component <span class="op">+</span><span class="st"> </span>noiseFixed_independent_scaled<span class="op">$</span>component <span class="op">+</span></a>
@@ -343,10 +346,10 @@
 <a class="sourceLine" id="cb4-3" data-line-number="3">phenotype &lt;-<span class="st"> </span><span class="kw"><a href="../reference/runSimulation.html">runSimulation</a></span>(<span class="dt">N =</span> <span class="dv">100</span>, <span class="dt">P =</span> <span class="dv">15</span>, <span class="dt">genotypefile =</span> genotypefile, </a>
 <a class="sourceLine" id="cb4-4" data-line-number="4">    <span class="dt">format =</span> <span class="st">"oxgen"</span>, <span class="dt">cNrSNP =</span> <span class="dv">30</span>, <span class="dt">genVar =</span> genVar, <span class="dt">h2s =</span> h2s, </a>
 <a class="sourceLine" id="cb4-5" data-line-number="5">    <span class="dt">phi =</span> <span class="fl">0.6</span>, <span class="dt">delta =</span> <span class="fl">0.3</span>, <span class="dt">distBetaGenetic =</span> <span class="st">"unif"</span>, <span class="dt">mBetaGenetic =</span> <span class="fl">0.5</span>, </a>
-<a class="sourceLine" id="cb4-6" data-line-number="6">    <span class="dt">sdBetaGenetic =</span> <span class="dv">1</span>, <span class="dt">NrFixedEffects =</span> <span class="dv">4</span>, <span class="dt">NrConfounders =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">1</span>, </a>
-<a class="sourceLine" id="cb4-7" data-line-number="7">        <span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">2</span>), <span class="dt">pIndependentConfounders =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="fl">0.5</span>), </a>
-<a class="sourceLine" id="cb4-8" data-line-number="8">    <span class="dt">distConfounders =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"bin"</span>, <span class="st">"cat_norm"</span>, <span class="st">"cat_unif"</span>, <span class="st">"norm"</span>), </a>
-<a class="sourceLine" id="cb4-9" data-line-number="9">    <span class="dt">probConfounders =</span> <span class="fl">0.2</span>, <span class="dt">catConfounders =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">3</span>, <span class="dv">4</span>), <span class="dt">pcorr =</span> <span class="fl">0.8</span>, </a>
+<a class="sourceLine" id="cb4-6" data-line-number="6">    <span class="dt">sdBetaGenetic =</span> <span class="dv">1</span>, <span class="dt">NrFixedEffects =</span> <span class="dv">4</span>, <span class="dt">NrConfounders =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">1</span>, </a>
+<a class="sourceLine" id="cb4-7" data-line-number="7">        <span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">2</span>), <span class="dt">pIndependentConfounders =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="fl">0.5</span>), </a>
+<a class="sourceLine" id="cb4-8" data-line-number="8">    <span class="dt">distConfounders =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"bin"</span>, <span class="st">"cat_norm"</span>, <span class="st">"cat_unif"</span>, <span class="st">"norm"</span>), </a>
+<a class="sourceLine" id="cb4-9" data-line-number="9">    <span class="dt">probConfounders =</span> <span class="fl">0.2</span>, <span class="dt">catConfounders =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">3</span>, <span class="dv">4</span>), <span class="dt">pcorr =</span> <span class="fl">0.8</span>, </a>
 <a class="sourceLine" id="cb4-10" data-line-number="10">    <span class="dt">verbose =</span> <span class="ot">TRUE</span>)</a>
 <a class="sourceLine" id="cb4-11" data-line-number="11"><span class="co">#&gt; Set seed: 219453</span></a>
 <a class="sourceLine" id="cb4-12" data-line-number="12"><span class="co">#&gt; The total noise variance (noiseVar) is: 0.4</span></a>
@@ -439,19 +442,19 @@
 </table>
 <p>The heatmap images below show the values of the phenotype itself (left) and of the correlation between the phenotypic traits (right). The code to produce the images can be seen below (for all subsequent images of the same type the code is not echo-ed).</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="co">### show 'image' of phenotype and correlation between phenotypic traits</span></a>
-<a class="sourceLine" id="cb5-2" data-line-number="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/image">image</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/t">t</a></span>(phenotype<span class="op">$</span>phenoComponentsFinal<span class="op">$</span>Y), <span class="dt">main=</span><span class="st">"Phenotype: [samples x traits]"</span>, </a>
+<a class="sourceLine" id="cb5-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/graphics/image.html">image</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/t.html">t</a></span>(phenotype<span class="op">$</span>phenoComponentsFinal<span class="op">$</span>Y), <span class="dt">main=</span><span class="st">"Phenotype: [samples x traits]"</span>, </a>
 <a class="sourceLine" id="cb5-3" data-line-number="3">      <span class="dt">axes=</span><span class="ot">FALSE</span>, <span class="dt">cex.main=</span><span class="fl">0.8</span>)</a>
-<a class="sourceLine" id="cb5-4" data-line-number="4"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/mtext">mtext</a></span>(<span class="dt">side =</span> <span class="dv">1</span>, <span class="dt">text =</span> <span class="st">"Samples"</span>, <span class="dt">line =</span> <span class="dv">1</span>)</a>
-<a class="sourceLine" id="cb5-5" data-line-number="5"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/mtext">mtext</a></span>(<span class="dt">side =</span> <span class="dv">2</span>, <span class="dt">text =</span> <span class="st">"Traits"</span>, <span class="dt">line =</span> <span class="dv">1</span>)</a>
-<a class="sourceLine" id="cb5-6" data-line-number="6"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/image">image</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/cor">cor</a></span>(phenotype<span class="op">$</span>phenoComponentsFinal<span class="op">$</span>Y), </a>
+<a class="sourceLine" id="cb5-4" data-line-number="4"><span class="kw"><a href="https://rdrr.io/r/graphics/mtext.html">mtext</a></span>(<span class="dt">side =</span> <span class="dv">1</span>, <span class="dt">text =</span> <span class="st">"Samples"</span>, <span class="dt">line =</span> <span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb5-5" data-line-number="5"><span class="kw"><a href="https://rdrr.io/r/graphics/mtext.html">mtext</a></span>(<span class="dt">side =</span> <span class="dv">2</span>, <span class="dt">text =</span> <span class="st">"Traits"</span>, <span class="dt">line =</span> <span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb5-6" data-line-number="6"><span class="kw"><a href="https://rdrr.io/r/graphics/image.html">image</a></span>(<span class="kw"><a href="https://rdrr.io/r/stats/cor.html">cor</a></span>(phenotype<span class="op">$</span>phenoComponentsFinal<span class="op">$</span>Y), </a>
 <a class="sourceLine" id="cb5-7" data-line-number="7">      <span class="dt">main=</span><span class="st">"Correlation of traits [traits x traits]"</span>, <span class="dt">axes=</span><span class="ot">FALSE</span>, <span class="dt">cex.main=</span><span class="fl">0.8</span>)</a>
-<a class="sourceLine" id="cb5-8" data-line-number="8"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/mtext">mtext</a></span>(<span class="dt">side =</span> <span class="dv">1</span>, <span class="dt">text =</span> <span class="st">"Traits"</span>, <span class="dt">line =</span> <span class="dv">1</span>)</a>
-<a class="sourceLine" id="cb5-9" data-line-number="9"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/mtext">mtext</a></span>(<span class="dt">side =</span> <span class="dv">2</span>, <span class="dt">text =</span> <span class="st">"Traits"</span>, <span class="dt">line =</span> <span class="dv">1</span>)</a></code></pre></div>
+<a class="sourceLine" id="cb5-8" data-line-number="8"><span class="kw"><a href="https://rdrr.io/r/graphics/mtext.html">mtext</a></span>(<span class="dt">side =</span> <span class="dv">1</span>, <span class="dt">text =</span> <span class="st">"Traits"</span>, <span class="dt">line =</span> <span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb5-9" data-line-number="9"><span class="kw"><a href="https://rdrr.io/r/graphics/mtext.html">mtext</a></span>(<span class="dt">side =</span> <span class="dv">2</span>, <span class="dt">text =</span> <span class="st">"Traits"</span>, <span class="dt">line =</span> <span class="dv">1</span>)</a></code></pre></div>
 <p><img src="PhenotypeSimulator_files/figure-html/unnamed-chunk-7-1.png" width="326.4"><img src="PhenotypeSimulator_files/figure-html/unnamed-chunk-7-2.png" width="326.4"></p>
 <p>The final phenotype and all its components can be saved via <code>savePheno</code>. <code>savePheno</code> takes the output of <code>runSimulation</code> and saves its components, if saveIntermediate is set to TRUE, intermediate phenotype componentes (such as shared and inpendent variance components are saved); if genotypes were simulated or read from external files and a kinhsip estimated thereof, they will also be saved. The user needs to have writing permission to the specified genotype and phenotype directories. The code below saves the genotypes/phenotypes as .csv files into the subdirectory “test_simulation” of the directories /tmp/genotypes and /tmp/phenotypes. The genotypes are additionally saved in binary plink format, i.e. .bed, .bim and .fam. If the user has writing permissions and the directories do not exist yet, they will be created.</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1">out &lt;-<span class="st"> </span><span class="kw"><a href="../reference/savePheno.html">savePheno</a></span>(phenotype, <span class="dt">directory=</span><span class="st">"/tmp"</span>,</a>
 <a class="sourceLine" id="cb6-2" data-line-number="2">                 <span class="dt">outstring=</span><span class="st">"test_simulation"</span>,</a>
-<a class="sourceLine" id="cb6-3" data-line-number="3">                 <span class="dt">format=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"csv"</span>, <span class="st">"plink"</span>), <span class="dt">verbose=</span><span class="ot">FALSE</span>)</a></code></pre></div>
+<a class="sourceLine" id="cb6-3" data-line-number="3">                 <span class="dt">format=</span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"csv"</span>, <span class="st">"plink"</span>), <span class="dt">verbose=</span><span class="ot">FALSE</span>)</a></code></pre></div>
 </div>
 </div>
 </div>
@@ -490,7 +493,7 @@
 <a class="sourceLine" id="cb8-2" data-line-number="2"><span class="co"># simulate 10,000 bi-allelic SNP genotypes for 100 samples with randomly drawn </span></a>
 <a class="sourceLine" id="cb8-3" data-line-number="3"><span class="co"># allele frequencies of 0.05, 0.1, 0.3 and 0.4. </span></a>
 <a class="sourceLine" id="cb8-4" data-line-number="4">genotypes &lt;-<span class="st"> </span><span class="kw"><a href="../reference/simulateGenotypes.html">simulateGenotypes</a></span>(<span class="dt">N =</span> <span class="dv">100</span>, <span class="dt">NrSNP =</span> <span class="dv">10000</span>, </a>
-<a class="sourceLine" id="cb8-5" data-line-number="5">                               <span class="dt">frequencies =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="fl">0.05</span>, <span class="fl">0.1</span>, <span class="fl">0.3</span>,<span class="fl">0.4</span>), </a>
+<a class="sourceLine" id="cb8-5" data-line-number="5">                               <span class="dt">frequencies =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">0.05</span>, <span class="fl">0.1</span>, <span class="fl">0.3</span>,<span class="fl">0.4</span>), </a>
 <a class="sourceLine" id="cb8-6" data-line-number="6">                               <span class="dt">verbose =</span> <span class="ot">FALSE</span>)</a>
 <a class="sourceLine" id="cb8-7" data-line-number="7"></a>
 <a class="sourceLine" id="cb8-8" data-line-number="8"><span class="co"># draw 10 causal SNPs from the genotype matrix (use non-standardised allele </span></a>
@@ -501,12 +504,12 @@
 <a class="sourceLine" id="cb9-2" data-line-number="2"><span class="co"># read genotypes from external file</span></a>
 <a class="sourceLine" id="cb9-3" data-line-number="3"><span class="co"># use one of the sample genotype file provided in the </span></a>
 <a class="sourceLine" id="cb9-4" data-line-number="4"><span class="co"># extdata/genotypes/subfolders (e.g.extdata/genotypes/hapgen )</span></a>
-<a class="sourceLine" id="cb9-5" data-line-number="5">genotypefile &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/system.file">system.file</a></span>(<span class="st">"extdata/genotypes/hapgen"</span>, </a>
+<a class="sourceLine" id="cb9-5" data-line-number="5">genotypefile &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"extdata/genotypes/hapgen"</span>, </a>
 <a class="sourceLine" id="cb9-6" data-line-number="6">                            <span class="st">"genotypes_hapgen.controls.gen"</span>, </a>
 <a class="sourceLine" id="cb9-7" data-line-number="7">                            <span class="dt">package =</span> <span class="st">"PhenotypeSimulator"</span>)</a>
 <a class="sourceLine" id="cb9-8" data-line-number="8"><span class="co"># remove the .gen ending (oxbgen specific endings .gen and .sample are added </span></a>
 <a class="sourceLine" id="cb9-9" data-line-number="9"><span class="co"># automatically )</span></a>
-<a class="sourceLine" id="cb9-10" data-line-number="10">genotypefile &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/grep">gsub</a></span>(<span class="st">"</span><span class="ch">\\</span><span class="st">.gen"</span>,<span class="st">""</span>, genotypefile)</a>
+<a class="sourceLine" id="cb9-10" data-line-number="10">genotypefile &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/grep.html">gsub</a></span>(<span class="st">"</span><span class="ch">\\</span><span class="st">.gen"</span>,<span class="st">""</span>, genotypefile)</a>
 <a class="sourceLine" id="cb9-11" data-line-number="11"></a>
 <a class="sourceLine" id="cb9-12" data-line-number="12">genotypes &lt;-<span class="st"> </span><span class="kw"><a href="../reference/readStandardGenotypes.html">readStandardGenotypes</a></span>(<span class="dt">N =</span> <span class="dv">100</span>, <span class="dt">filename =</span> genotypefile,</a>
 <a class="sourceLine" id="cb9-13" data-line-number="13">                                    <span class="dt">format=</span><span class="st">"oxgen"</span>,</a>
@@ -518,9 +521,9 @@
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1"><span class="co">## c) draw 10 causal SNPs from external genotype files: sample 10 SNPs from </span></a>
 <a class="sourceLine" id="cb10-2" data-line-number="2"><span class="co">## chromosome 22</span></a>
 <a class="sourceLine" id="cb10-3" data-line-number="3"><span class="co"># use sample genotype file provided in the extdata/genotypes folder</span></a>
-<a class="sourceLine" id="cb10-4" data-line-number="4">genotypeFile &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/system.file">system.file</a></span>(<span class="st">"extdata/genotypes/"</span>, <span class="st">"genotypes_chr22.csv"</span>, </a>
+<a class="sourceLine" id="cb10-4" data-line-number="4">genotypeFile &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"extdata/genotypes/"</span>, <span class="st">"genotypes_chr22.csv"</span>, </a>
 <a class="sourceLine" id="cb10-5" data-line-number="5">                            <span class="dt">package =</span> <span class="st">"PhenotypeSimulator"</span>)</a>
-<a class="sourceLine" id="cb10-6" data-line-number="6">genoFilePrefix &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/grep">gsub</a></span>(<span class="st">"chr.*"</span>, <span class="st">""</span>, genotypeFile) </a>
+<a class="sourceLine" id="cb10-6" data-line-number="6">genoFilePrefix &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/grep.html">gsub</a></span>(<span class="st">"chr.*"</span>, <span class="st">""</span>, genotypeFile) </a>
 <a class="sourceLine" id="cb10-7" data-line-number="7">genoFileSuffix &lt;-<span class="st"> ".csv"</span> </a>
 <a class="sourceLine" id="cb10-8" data-line-number="8"></a>
 <a class="sourceLine" id="cb10-9" data-line-number="9">causalSNPsSampledFromFile &lt;-<span class="st"> </span><span class="kw"><a href="../reference/getCausalSNPs.html">getCausalSNPs</a></span>(<span class="dt">N =</span> <span class="dv">10</span>, <span class="dt">NrCausalSNPs =</span> <span class="dv">10</span>, <span class="dt">chr =</span> <span class="dv">22</span>, </a>
@@ -549,14 +552,14 @@
 <p>Infinitesimal genetic effects are simulated via <code>geneticBgEffects</code> based on the kinship estimates of the (simulated) samples. They can also be distinguished into a shared and independent effect. Both components are modeled by combining three matrix components : i) the kinship matrix <span class="math inline">\(K\)</span> [N x N] which is treated as the sample-design matrix (the genetic profile of the samples), ii) a matrix <span class="math inline">\(B\)</span> [N x P] with <span class="math inline">\(vec(B)\)</span> drawn from a normal distribution and iii) the trait design matrix <span class="math inline">\(A\)</span> [P x P]. For the independent effect, <span class="math inline">\(A\)</span> is a diagonal matrix with normally distributed values. <span class="math inline">\(A\)</span> of the shared effect is a matrix of row rank one, with normally distributed entries in row 1 and zeros elsewhere. The three matrices are multiplied to obtain the desired final effect matrix <span class="math inline">\(E\)</span>: <span class="math inline">\(E = chol(K)BA\)</span>. As for the genetic variant effects, the kinship can either be estimated from simulated genotypes or read from file. The kinship is estimated as <span class="math inline">\(K = XX_T\)</span>, with X the standardised genotypes of the samples. When estimating the kinship from the provided genotypes, the kinship is normalised by the mean of its diagonal elements and 1e-4 added to the diagonal for numerical stability. The provided kinship contains estimates for 50 samples across the entire genome.</p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1"><span class="co">## a) Estimate kinship from simulated genotypes</span></a>
 <a class="sourceLine" id="cb12-2" data-line-number="2">genotypes &lt;-<span class="st"> </span><span class="kw"><a href="../reference/simulateGenotypes.html">simulateGenotypes</a></span>(<span class="dt">N =</span> <span class="dv">100</span>, <span class="dt">NrSNP =</span> <span class="dv">10000</span>, </a>
-<a class="sourceLine" id="cb12-3" data-line-number="3">                               <span class="dt">frequencies =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="fl">0.05</span>, <span class="fl">0.1</span>, <span class="fl">0.3</span>,<span class="fl">0.4</span>), </a>
+<a class="sourceLine" id="cb12-3" data-line-number="3">                               <span class="dt">frequencies =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">0.05</span>, <span class="fl">0.1</span>, <span class="fl">0.3</span>,<span class="fl">0.4</span>), </a>
 <a class="sourceLine" id="cb12-4" data-line-number="4">                               <span class="dt">verbose =</span> <span class="ot">FALSE</span>)</a>
 <a class="sourceLine" id="cb12-5" data-line-number="5"></a>
 <a class="sourceLine" id="cb12-6" data-line-number="6">genotypes_sd &lt;-<span class="st"> </span><span class="kw"><a href="../reference/standardiseGenotypes.html">standardiseGenotypes</a></span>(genotypes<span class="op">$</span>genotypes)</a>
 <a class="sourceLine" id="cb12-7" data-line-number="7">kinship &lt;-<span class="st"> </span><span class="kw"><a href="../reference/getKinship.html">getKinship</a></span>(<span class="dt">N=</span><span class="dv">100</span>, <span class="dt">X=</span>genotypes_sd, <span class="dt">verbose =</span> <span class="ot">FALSE</span>)</a>
 <a class="sourceLine" id="cb12-8" data-line-number="8"></a>
 <a class="sourceLine" id="cb12-9" data-line-number="9"><span class="co">## b) Read kinship from external kinship file</span></a>
-<a class="sourceLine" id="cb12-10" data-line-number="10">kinshipFile &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/system.file">system.file</a></span>(<span class="st">"extdata/kinship/"</span>, <span class="st">"kinship.csv"</span>, </a>
+<a class="sourceLine" id="cb12-10" data-line-number="10">kinshipFile &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"extdata/kinship/"</span>, <span class="st">"kinship.csv"</span>, </a>
 <a class="sourceLine" id="cb12-11" data-line-number="11">                           <span class="dt">package =</span> <span class="st">"PhenotypeSimulator"</span>)</a>
 <a class="sourceLine" id="cb12-12" data-line-number="12">kinshipFromFile &lt;-<span class="st"> </span><span class="kw"><a href="../reference/getKinship.html">getKinship</a></span>(<span class="dt">N=</span><span class="dv">50</span>, <span class="dt">kinshipfile =</span> kinshipFile, </a>
 <a class="sourceLine" id="cb12-13" data-line-number="13">                              <span class="dt">verbose =</span> <span class="ot">FALSE</span>)</a>
@@ -605,13 +608,13 @@
 <a class="sourceLine" id="cb14-5" data-line-number="5"><span class="co"># correlation structure of the traits: strong the closer to the diagonal, </span></a>
 <a class="sourceLine" id="cb14-6" data-line-number="6"><span class="co"># little correlation at the furthest distance to the diagonal </span></a>
 <a class="sourceLine" id="cb14-7" data-line-number="7">furthestDistCorr &lt;-<span class="st"> </span><span class="fl">0.4</span><span class="op">^</span>(<span class="dv">10-1</span>)</a>
-<a class="sourceLine" id="cb14-8" data-line-number="8"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/pairs">pairs</a></span>(correlatedNoise<span class="op">$</span>correlatedBg, <span class="dt">pch =</span> <span class="st">"."</span>, </a>
-<a class="sourceLine" id="cb14-9" data-line-number="9">      <span class="dt">main=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/paste">paste</a></span>(<span class="st">"Correlation at furthest distance to diagonal:</span><span class="ch">\n</span><span class="st">"</span>,</a>
+<a class="sourceLine" id="cb14-8" data-line-number="8"><span class="kw"><a href="https://rdrr.io/r/graphics/pairs.html">pairs</a></span>(correlatedNoise<span class="op">$</span>correlatedBg, <span class="dt">pch =</span> <span class="st">"."</span>, </a>
+<a class="sourceLine" id="cb14-9" data-line-number="9">      <span class="dt">main=</span><span class="kw"><a href="https://rdrr.io/r/base/paste.html">paste</a></span>(<span class="st">"Correlation at furthest distance to diagonal:</span><span class="ch">\n</span><span class="st">"</span>,</a>
 <a class="sourceLine" id="cb14-10" data-line-number="10">                 furthestDistCorr), <span class="dt">cex.main=</span><span class="fl">0.8</span>)</a>
-<a class="sourceLine" id="cb14-11" data-line-number="11"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/image">image</a></span>(correlatedNoise<span class="op">$</span>correlatedBg, <span class="dt">main=</span><span class="st">"Correlated effects"</span>,  <span class="dt">axes=</span><span class="ot">FALSE</span>, </a>
+<a class="sourceLine" id="cb14-11" data-line-number="11"><span class="kw"><a href="https://rdrr.io/r/graphics/image.html">image</a></span>(correlatedNoise<span class="op">$</span>correlatedBg, <span class="dt">main=</span><span class="st">"Correlated effects"</span>,  <span class="dt">axes=</span><span class="ot">FALSE</span>, </a>
 <a class="sourceLine" id="cb14-12" data-line-number="12">      <span class="dt">cex.main=</span><span class="fl">0.8</span>)</a>
-<a class="sourceLine" id="cb14-13" data-line-number="13"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/mtext">mtext</a></span>(<span class="dt">side =</span> <span class="dv">1</span>, <span class="dt">text =</span> <span class="st">"Samples"</span>, <span class="dt">line =</span> <span class="dv">1</span>)</a>
-<a class="sourceLine" id="cb14-14" data-line-number="14"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/mtext">mtext</a></span>(<span class="dt">side =</span> <span class="dv">2</span>, <span class="dt">text =</span> <span class="st">"Traits"</span>, <span class="dt">line =</span> <span class="dv">1</span>)</a></code></pre></div>
+<a class="sourceLine" id="cb14-13" data-line-number="13"><span class="kw"><a href="https://rdrr.io/r/graphics/mtext.html">mtext</a></span>(<span class="dt">side =</span> <span class="dv">1</span>, <span class="dt">text =</span> <span class="st">"Samples"</span>, <span class="dt">line =</span> <span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb14-14" data-line-number="14"><span class="kw"><a href="https://rdrr.io/r/graphics/mtext.html">mtext</a></span>(<span class="dt">side =</span> <span class="dv">2</span>, <span class="dt">text =</span> <span class="st">"Traits"</span>, <span class="dt">line =</span> <span class="dv">1</span>)</a></code></pre></div>
 <p><img src="PhenotypeSimulator_files/figure-html/unnamed-chunk-19-1.png" width="326.4"><img src="PhenotypeSimulator_files/figure-html/unnamed-chunk-19-2.png" width="326.4"></p>
 </div>
 <div id="observational-noise-effects" class="section level2">
@@ -655,17 +658,20 @@
 </div>
 
 
+
       <footer><div class="copyright">
   <p>Developed by Hannah Meyer.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.9100.</p>
 </div>
+
       </footer>
 </div>
 
   
+
 
   </body>
 </html>

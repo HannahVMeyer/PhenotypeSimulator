@@ -1,5 +1,4 @@
 ^docs$
-^_pkgdown\.yml$
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^cran-comments\.md$
@@ -12,3 +11,4 @@
 ^doc$
 ^Meta$
 ^CRAN-RELEASE$
+pkgdown
