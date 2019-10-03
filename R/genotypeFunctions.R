@@ -30,8 +30,15 @@ getAlleleFrequencies <- function(snp) {
 #' Genotypes are standardised as described in Yang et al:
 #' snp_standardised = (snp - 2 * ref_allele_freq)/
 #' sqrt(2 * ref_allele_freq * alt_allele_freq).
+#' 
+#' Missing genotypes can be mean-imputed and rounded to nearest integer
+#' before standardisation. If genotypes contain missing values and impute is set
+#' to FALSE, \code{standardiseGenotypes} will return an error.
 #'
 #' @param geno [N x NrSNP] Matrix/dataframe of genotypes [integer]/[double].
+#' @param impute [logical] Indicating if missing genotypes should be imputed; if
+#' set FALSE and data contains missing values,  \code{standardiseGenotypes} will
+#' return an error.
 #' @return [N x NrSNP] Matrix of standardised genotypes [double].
 #' @seealso \code{\link{getAlleleFrequencies}}
 #' @export
@@ -40,7 +47,15 @@ getAlleleFrequencies <- function(snp) {
 #' @examples
 #' geno <- cbind(rbinom(2000, 2, 0.3), rbinom(2000, 2, 0.4),rbinom(2000, 2, 0.5))
 #' geno_sd <- standardiseGenotypes(geno)
-standardiseGenotypes <- function(geno) {
+standardiseGenotypes <- function(geno, impute=FALSE) {
+    if (any(is.na(geno)) & !impute) {
+        stop("Missing genotypes found and impute=FALSE, cannot standardise",
+             "genotypes; remove missing genotypes or set impute=TRUE for mean",
+             "imputation of genotypes")
+    }
+    if (any(is.na(geno)) & impute) {
+        geno <- round(apply(as.matrix(geno), 2, Hmisc::impute, fun=mean))
+    }
     allele_freq <-  sapply(data.frame(geno),  getAlleleFrequencies)
     var_geno <- sqrt(2*allele_freq[1,]*allele_freq[2,])
     var_geno[var_geno == 0] <- 1

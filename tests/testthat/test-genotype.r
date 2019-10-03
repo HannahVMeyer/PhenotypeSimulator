@@ -123,6 +123,15 @@ test_that('readStandardGenotypes subsampling works', {
     expect_equal(length(geno$id_samples), 50)
 })
 
+test_that('standardiseGenotypes fails with missing values error', {
+    expect_error(standardiseGenotypes(geno=c(1,2,2,NA), impute=FALSE),
+                 "Missing genotypes found and impute=FALSE")
+})
+test_that('standardiseGenotypes works with missing values', {
+    expect_equal(sum(standardiseGenotypes(geno=c(1,1,1,NA), impute=TRUE)),
+                 0)
+})
+
 
 test_that('getCausalSNPs fails with missing input error', {
     expect_error(getCausalSNPs(N=100, NrCausalSNPs = 20, verbose=FALSE),
