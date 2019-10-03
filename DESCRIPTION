@@ -33,6 +33,7 @@ LinkingTo:
 Imports:
     methods,
     optparse,
+    Hmisc,
     R.utils,
     mvtnorm,
     snpStats,
