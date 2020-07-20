@@ -44,7 +44,7 @@ customised.
 Full documentation of **PhenotypeSimulator** is available at
 <http://HannahVMeyer.github.io/PhenotypeSimulator/>.
 
-The current github version of *PhenotypeSimulator* is 0.3.3 and can be
+The current github version of *PhenotypeSimulator* is 0.3.4 and can be
 installed via
 
 ``` r
