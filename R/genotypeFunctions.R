@@ -59,7 +59,7 @@ standardiseGenotypes <- function(geno, impute=FALSE) {
     allele_freq <-  sapply(data.frame(geno),  getAlleleFrequencies)
     var_geno <- sqrt(2*allele_freq[1,]*allele_freq[2,])
     var_geno[var_geno == 0] <- 1
-    geno_mean <- sweep(geno, 2, 2*allele_freq[1,], "-")
+    geno_mean <- sweep(geno, 2, 2*allele_freq[2,], "-")
     geno_sd <- sweep(geno_mean, 2, var_geno, "/")
     return (geno_sd)
 }
