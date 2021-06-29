@@ -524,6 +524,7 @@ simulatePhenotypes <- function() {
                                      header=args$header,
                                      sampleID=args$sampleID,
                                      phenoID=args$phenoID,
+                                     genotypefile = args$genotypefile,
                                      genoFilePrefix=args$genoFilePrefix,
                                      genoFileSuffix=args$genoFileSuffix,
                                      SNPfrequencies=SNPfrequencies,
