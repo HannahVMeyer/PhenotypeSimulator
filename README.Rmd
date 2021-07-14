@@ -49,7 +49,7 @@ be customised.
 ## <i class="fa fa-rocket" aria-hidden="true"></i> Installation
 
 Full documentation of **PhenotypeSimulator** is available at
-http://HannahVMeyer.github.io/PhenotypeSimulator/.
+https://HannahVMeyer.github.io/PhenotypeSimulator/.
 
 The current github version of *PhenotypeSimulator* is 0.3.4 and can be
 installed via
