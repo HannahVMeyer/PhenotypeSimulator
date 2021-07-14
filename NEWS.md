@@ -1,3 +1,18 @@
+# PhenotypeSimulator 0.3.4
+## Minor changes
+1. Fixed missing --genotypefile flag [issue 27](https://github.com/HannahVMeyer/PhenotypeSimulator/issues/27)
+2. Update vignettes with new location for impute files and commands to get the
+CEU samples [issue 24](https://github.com/HannahVMeyer/PhenotypeSimulator/issues/24),
+thanks to @zfuller5280 for the suggestion!)
+3. Standardise genotypes on row with major alleles [issue 21](https://github.com/HannahVMeyer/PhenotypeSimulator/issues/21).
+Thank you for the detailed bug report by @alanw1!
+4. Add option to imput missing genotypes to standardise genotype function;
+otherwise, if genotypes are missing, function will fail
+[issue 17](https://github.com/HannahVMeyer/PhenotypeSimulator/issues/17)
+5. Fix function description and passing of SNP IDs in readStandardGenotypes with
+delim option [issue 25](https://github.com/HannahVMeyer/PhenotypeSimulator/issues/25),
+thanks @BSchmidt1.
+
 # PhenotypeSimulator 0.3.3
 ## Minor changes
 1. Fixed bug that failed to return causal SNP name when only one SNP was chosen

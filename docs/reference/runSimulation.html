@@ -8,21 +8,29 @@
 
 <title>Run phenotype simulation. — runSimulation • PhenotypeSimulator</title>
 
+
 <!-- jquery -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous" />
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
+
+<!-- bootstrap-toc -->
+<link rel="stylesheet" href="../bootstrap-toc.css">
+<script src="../bootstrap-toc.js"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script>
 
-<!-- sticky kit -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
+<!-- headroom.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
@@ -30,13 +38,15 @@
 
 
 
-<meta property="og:title" content="Run phenotype simulation. — runSimulation" />
+  <link href="../extra.css" rel="stylesheet">
+  
 
+<meta property="og:title" content="Run phenotype simulation. — runSimulation" />
 <meta property="og:description" content="runSimulation wraps around setModel, the phenotype component functions 
 (genFixedEffects, genBgEffects, noiseBgEffects, noiseFixedEffects and 
 correlatedBgEffects), rescales each component and combines them into the 
 final phenotype. For details to all parameters, see the respective functions." />
-<meta name="twitter:card" content="summary" />
+
 
 
 
@@ -50,9 +60,10 @@ final phenotype. For details to all parameters, see the respective functions." /
 <![endif]-->
 
 
+
   </head>
 
-  <body>
+  <body data-spy="scroll" data-target="#toc">
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-standard navbar-fixed-top" role="navigation">
@@ -66,7 +77,7 @@ final phenotype. For details to all parameters, see the respective functions." /
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">PhenotypeSimulator</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.4</span>
       </span>
     </div>
 
@@ -74,13 +85,13 @@ final phenotype. For details to all parameters, see the respective functions." /
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fa fa-home"></span>
+    <span class="fas fa-home"></span>
      
   </a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    <span class="fa fa-file"></span>
+    <span class="fas fa-file"></span>
      
     documentation
      
@@ -102,25 +113,24 @@ final phenotype. For details to all parameters, see the respective functions." /
   </ul>
 </li>
       </ul>
-      
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="../news/index.html">
-    <span class="fa fa-newspaper-o"></span>
+    <span class="fas fa-newspaper-o"></span>
      
     news
   </a>
 </li>
 <li>
   <a href="../reference/index.html">
-    <span class="fa fa-code"></span>
+    <span class="fas fa-code"></span>
      
     functions
   </a>
 </li>
 <li>
   <a href="https://github.com/HannahVMeyer/PhenotypeSimulator">
-    <span class="fa fa-github fa-lg"></span>
+    <span class="fas fa-github fa-lg"></span>
      
     github
   </a>
@@ -132,6 +142,7 @@ final phenotype. For details to all parameters, see the respective functions." /
 </div><!--/.navbar -->
 
       
+
       </header>
 
 <div class="row">
@@ -143,39 +154,37 @@ final phenotype. For details to all parameters, see the respective functions." /
     </div>
 
     <div class="ref-description">
-    
     <p>runSimulation wraps around setModel, the phenotype component functions 
 (genFixedEffects, genBgEffects, noiseBgEffects, noiseFixedEffects and 
 correlatedBgEffects), rescales each component and combines them into the 
 final phenotype. For details to all parameters, see the respective functions.</p>
-    
     </div>
 
-    <pre class="usage"><span class='fu'>runSimulation</span>(<span class='no'>N</span>, <span class='no'>P</span>, <span class='kw'>genVar</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>h2s</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>theta</span> <span class='kw'>=</span> <span class='fl'>0.8</span>,
-  <span class='kw'>h2bg</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>eta</span> <span class='kw'>=</span> <span class='fl'>0.8</span>, <span class='kw'>noiseVar</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>rho</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>delta</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>gamma</span> <span class='kw'>=</span> <span class='fl'>0.8</span>, <span class='kw'>phi</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='fl'>0.8</span>,
-  <span class='kw'>tNrSNP</span> <span class='kw'>=</span> <span class='fl'>5000</span>, <span class='kw'>cNrSNP</span> <span class='kw'>=</span> <span class='fl'>20</span>, <span class='kw'>SNPfrequencies</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>0.1</span>, <span class='fl'>0.2</span>, <span class='fl'>0.4</span>),
-  <span class='kw'>genotypefile</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>format</span> <span class='kw'>=</span> <span class='st'>"delim"</span>, <span class='kw'>genoFilePrefix</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>genoFileSuffix</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>genoDelimiter</span> <span class='kw'>=</span> <span class='st'>","</span>, <span class='kw'>skipFields</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>header</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>probabilities</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>chr</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>NrSNPsOnChromosome</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>NrChrCausal</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>kinshipfile</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>kinshipHeader</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>kinshipDelimiter</span> <span class='kw'>=</span> <span class='st'>","</span>, <span class='kw'>standardise</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>distBetaGenetic</span> <span class='kw'>=</span> <span class='st'>"norm"</span>, <span class='kw'>mBetaGenetic</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>sdBetaGenetic</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>pTraitsAffectedGenetics</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>pIndependentGenetic</span> <span class='kw'>=</span> <span class='fl'>0.4</span>,
-  <span class='kw'>pTraitIndependentGenetic</span> <span class='kw'>=</span> <span class='fl'>0.2</span>, <span class='kw'>keepSameIndependentSNPs</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>NrFixedEffects</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>NrConfounders</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>distConfounders</span> <span class='kw'>=</span> <span class='st'>"norm"</span>,
-  <span class='kw'>mConfounders</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>sdConfounders</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>catConfounders</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>probConfounders</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>distBetaConfounders</span> <span class='kw'>=</span> <span class='st'>"norm"</span>,
-  <span class='kw'>mBetaConfounders</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>sdBetaConfounders</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>pTraitsAffectedConfounders</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>pIndependentConfounders</span> <span class='kw'>=</span> <span class='fl'>0.4</span>,
-  <span class='kw'>pTraitIndependentConfounders</span> <span class='kw'>=</span> <span class='fl'>0.2</span>,
-  <span class='kw'>keepSameIndependentConfounders</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>pcorr</span> <span class='kw'>=</span> <span class='fl'>0.8</span>,
-  <span class='kw'>corrmatfile</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>meanNoiseBg</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>sdNoiseBg</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>nonlinear</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>logbase</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>expbase</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>power</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>customTransform</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>transformNeg</span> <span class='kw'>=</span> <span class='st'>"abs"</span>,
-  <span class='kw'>proportionNonlinear</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>sampleID</span> <span class='kw'>=</span> <span class='st'>"ID_"</span>, <span class='kw'>phenoID</span> <span class='kw'>=</span> <span class='st'>"Trait_"</span>,
-  <span class='kw'>snpID</span> <span class='kw'>=</span> <span class='st'>"SNP_"</span>, <span class='kw'>seed</span> <span class='kw'>=</span> <span class='fl'>219453</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
-    
+    <pre class="usage"><span class='fu'>runSimulation</span><span class='op'>(</span><span class='va'>N</span>, <span class='va'>P</span>, genVar <span class='op'>=</span> <span class='cn'>NULL</span>, h2s <span class='op'>=</span> <span class='cn'>NULL</span>, theta <span class='op'>=</span> <span class='fl'>0.8</span>,
+  h2bg <span class='op'>=</span> <span class='cn'>NULL</span>, eta <span class='op'>=</span> <span class='fl'>0.8</span>, noiseVar <span class='op'>=</span> <span class='cn'>NULL</span>, rho <span class='op'>=</span> <span class='cn'>NULL</span>,
+  delta <span class='op'>=</span> <span class='cn'>NULL</span>, gamma <span class='op'>=</span> <span class='fl'>0.8</span>, phi <span class='op'>=</span> <span class='cn'>NULL</span>, alpha <span class='op'>=</span> <span class='fl'>0.8</span>,
+  tNrSNP <span class='op'>=</span> <span class='fl'>5000</span>, cNrSNP <span class='op'>=</span> <span class='fl'>20</span>, SNPfrequencies <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>, <span class='fl'>0.2</span>, <span class='fl'>0.4</span><span class='op'>)</span>,
+  genotypefile <span class='op'>=</span> <span class='cn'>NULL</span>, format <span class='op'>=</span> <span class='st'>"delim"</span>, genoFilePrefix <span class='op'>=</span> <span class='cn'>NULL</span>,
+  genoFileSuffix <span class='op'>=</span> <span class='cn'>NULL</span>, genoDelimiter <span class='op'>=</span> <span class='st'>","</span>, skipFields <span class='op'>=</span> <span class='cn'>NULL</span>,
+  header <span class='op'>=</span> <span class='cn'>FALSE</span>, probabilities <span class='op'>=</span> <span class='cn'>FALSE</span>, chr <span class='op'>=</span> <span class='cn'>NULL</span>,
+  NrSNPsOnChromosome <span class='op'>=</span> <span class='cn'>NULL</span>, NrChrCausal <span class='op'>=</span> <span class='cn'>NULL</span>, kinshipfile <span class='op'>=</span> <span class='cn'>NULL</span>,
+  kinshipHeader <span class='op'>=</span> <span class='cn'>FALSE</span>, kinshipDelimiter <span class='op'>=</span> <span class='st'>","</span>, standardise <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  distBetaGenetic <span class='op'>=</span> <span class='st'>"norm"</span>, mBetaGenetic <span class='op'>=</span> <span class='fl'>0</span>, sdBetaGenetic <span class='op'>=</span> <span class='fl'>1</span>,
+  pTraitsAffectedGenetics <span class='op'>=</span> <span class='fl'>1</span>, pIndependentGenetic <span class='op'>=</span> <span class='fl'>0.4</span>,
+  pTraitIndependentGenetic <span class='op'>=</span> <span class='fl'>0.2</span>, keepSameIndependentSNPs <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  NrFixedEffects <span class='op'>=</span> <span class='fl'>1</span>, NrConfounders <span class='op'>=</span> <span class='fl'>10</span>, distConfounders <span class='op'>=</span> <span class='st'>"norm"</span>,
+  mConfounders <span class='op'>=</span> <span class='fl'>0</span>, sdConfounders <span class='op'>=</span> <span class='fl'>1</span>, catConfounders <span class='op'>=</span> <span class='cn'>NULL</span>,
+  probConfounders <span class='op'>=</span> <span class='cn'>NULL</span>, distBetaConfounders <span class='op'>=</span> <span class='st'>"norm"</span>,
+  mBetaConfounders <span class='op'>=</span> <span class='fl'>0</span>, sdBetaConfounders <span class='op'>=</span> <span class='fl'>1</span>,
+  pTraitsAffectedConfounders <span class='op'>=</span> <span class='fl'>1</span>, pIndependentConfounders <span class='op'>=</span> <span class='fl'>0.4</span>,
+  pTraitIndependentConfounders <span class='op'>=</span> <span class='fl'>0.2</span>,
+  keepSameIndependentConfounders <span class='op'>=</span> <span class='cn'>FALSE</span>, pcorr <span class='op'>=</span> <span class='fl'>0.8</span>,
+  corrmatfile <span class='op'>=</span> <span class='cn'>NULL</span>, meanNoiseBg <span class='op'>=</span> <span class='fl'>0</span>, sdNoiseBg <span class='op'>=</span> <span class='fl'>1</span>,
+  nonlinear <span class='op'>=</span> <span class='cn'>NULL</span>, logbase <span class='op'>=</span> <span class='fl'>10</span>, expbase <span class='op'>=</span> <span class='cn'>NULL</span>, power <span class='op'>=</span> <span class='cn'>NULL</span>,
+  customTransform <span class='op'>=</span> <span class='cn'>NULL</span>, transformNeg <span class='op'>=</span> <span class='st'>"abs"</span>,
+  proportionNonlinear <span class='op'>=</span> <span class='fl'>0</span>, sampleID <span class='op'>=</span> <span class='st'>"ID_"</span>, phenoID <span class='op'>=</span> <span class='st'>"Trait_"</span>,
+  snpID <span class='op'>=</span> <span class='st'>"SNP_"</span>, seed <span class='op'>=</span> <span class='fl'>219453</span>, verbose <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre>
+
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
@@ -256,7 +265,7 @@ sample.</p></td>
     <tr>
       <th>genotypefile</th>
       <td><p>Needed when reading external genotypes (into memory), 
-path/to/genotype file [string] in format specified by <a href='https://www.rdocumentation.org/packages/base/topics/format'>format</a>.</p></td>
+path/to/genotype file [string] in format specified by <a href='https://rdrr.io/r/base/format.html'>format</a>.</p></td>
     </tr>
     <tr>
       <th>format</th>
@@ -536,7 +545,7 @@ SNP number from 1 to NrSNP when constructing SNP IDs).</p></td>
       <td><p>[boolean]; If TRUE, progress info is printed to standard out</p></td>
     </tr>
     </table>
-    
+
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>Named list of i) dataframe of proportion of variance 
@@ -547,7 +556,6 @@ phenotype components (phenoComponentsIntermediate), iv) a named list of
 parameters describing the model setup (setup) and v) a named list of raw 
 components (rawComponents) used for genetic effect simulation (genotypes 
 and/or kinship, eigenvalues and eigenvectors of kinship)</p>
-    
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>Phenotypes are modeled under a linear additive model where
@@ -559,39 +567,29 @@ Optionally the phenotypes can be non-linearly transformed via:
 Y_trans = (1-alpha) x Y + alpha x f(Y). Alpha is the proportion of non-
 linearity of the phenotype and f is a non-linear transformation, and one of
 exp, log or sqrt.</p>
-    
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><a href='setModel.html'>setModel</a>, <a href='geneticFixedEffects.html'>geneticFixedEffects</a>,
  <a href='geneticBgEffects.html'>geneticBgEffects</a>, <a href='noiseBgEffects.html'>noiseBgEffects</a>, <a href='noiseFixedEffects.html'>noiseFixedEffects</a>,
 <a href='correlatedBgEffects.html'>correlatedBgEffects</a> and <a href='rescaleVariance.html'>rescaleVariance</a>.</p></div>
-    
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># simulate phenotype of 100 samples, 10 traits from genetic and noise </span>
 <span class='co'># background effects, with variance explained of 0.2 and 0.8 respectively</span>
-<span class='no'>genVar</span> <span class='kw'>=</span> <span class='fl'>0.2</span>
-<span class='no'>simulatedPhenotype</span> <span class='kw'>&lt;-</span> <span class='fu'>runSimulation</span>(<span class='kw'>N</span><span class='kw'>=</span><span class='fl'>100</span>, <span class='kw'>P</span><span class='kw'>=</span><span class='fl'>5</span>, <span class='kw'>cNrSNP</span><span class='kw'>=</span><span class='fl'>10</span>,
-<span class='kw'>genVar</span><span class='kw'>=</span><span class='no'>genVar</span>, <span class='kw'>h2s</span><span class='kw'>=</span><span class='fl'>1</span>, <span class='kw'>phi</span><span class='kw'>=</span><span class='fl'>1</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: The genetic model does not contain infinitesimal genetic effects but the total number of SNPs to simulate (tNrSNP: 5000 ) is larger than the number of genetic </span>
+<span class='va'>genVar</span> <span class='op'>=</span> <span class='fl'>0.2</span>
+<span class='va'>simulatedPhenotype</span> <span class='op'>&lt;-</span> <span class='fu'>runSimulation</span><span class='op'>(</span>N<span class='op'>=</span><span class='fl'>100</span>, P<span class='op'>=</span><span class='fl'>5</span>, cNrSNP<span class='op'>=</span><span class='fl'>10</span>,
+genVar<span class='op'>=</span><span class='va'>genVar</span>, h2s<span class='op'>=</span><span class='fl'>1</span>, phi<span class='op'>=</span><span class='fl'>1</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='warning'>Warning: The genetic model does not contain infinitesimal genetic effects but the total number of SNPs to simulate (tNrSNP: 5000 ) is larger than the number of genetic </span>
 #&gt; <span class='warning'>                            variant effects SNPs (cNrSNP: 10 ). If genotypes are not needed, consider setting </span>
 #&gt; <span class='warning'>                            tNrSNPs=cNrSNPs to speed up computation</span></div></pre>
   </div>
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <h2>Contents</h2>
-    <ul class="nav nav-pills nav-stacked">
-      <li><a href="#arguments">Arguments</a></li>
-      
-      <li><a href="#value">Value</a></li>
-
-      <li><a href="#details">Details</a></li>
-
-      <li><a href="#see-also">See also</a></li>
-      
-      <li><a href="#examples">Examples</a></li>
-    </ul>
-
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+    <nav id="toc" data-toggle="toc" class="sticky-top">
+      <h2 data-toc-skip>Contents</h2>
+    </nav>
   </div>
 </div>
+
 
       <footer>
       <div class="copyright">
@@ -599,13 +597,16 @@ exp, log or sqrt.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
+
       </footer>
    </div>
 
   
 
+
   </body>
 </html>
+
 

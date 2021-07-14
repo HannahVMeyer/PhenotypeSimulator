@@ -102,8 +102,9 @@ Download [hapgen2](http://mathgen.stats.ox.ac.uk/genetics_software/hapgen/hapgen
 [hapgen example files](http://mathgen.stats.ox.ac.uk/genetics_software/hapgen/download/example/hapgen2.example.tgz)
 and the 1000Genomes data from the
 [impute2 webpage](https://mathgen.stats.ox.ac.uk/impute/impute_v1.html#Using_IMPUTE_with_the_HapMap_Data)
-as starting point for the resampling-based genotype simulation with hapgen2. The
-example files contain example haplotypes (ex.haps), legend files  (ex.leg) map
+as starting point for the resampling-based genotype simulation with hapgen2. 
+For formating of the 1000Genomes data, have a look at this [vignette](https://hannahvmeyer.github.io/PhenotypeSimulator/articles/genotype-simulation-via-Hapgen2).
+The example files contain example haplotypes (ex.haps), legend files  (ex.leg) map
 (ex.map) and TagSNP files (ex.tags). The following examples simulates genotype
 data for 100 controls and 0 cases with 1000 SNPs from chromosome 1.
 PhenotypeSimulator::readStandardGenotypes reads the resulting .gen and .samples
@@ -117,9 +118,9 @@ cd ~/PhenotypeSimulator/inst/extdata/genotypes/hapgen
 # contains 1000Genomes haplotype data used for sampling
 hapdir=/path/to/CEU.0908.impute.files
 
-hapgen2 -m $hapdir/genetic_map_chr1_combined_b36.txt \
+hapgen2 -m $hapdir/genetic_map_chr1_combined_b37.txt \
         -l ex.leg \
-        -h $hapdir/CEU.0908.chr1.hap \
+        -h $hapdir/chr1.ceu_subset.hap \
         -o genotypes_hapgen \
         -n 100 0 \
         -dl 45162 0 0 0 \

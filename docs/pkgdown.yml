@@ -1,9 +1,10 @@
-pandoc: 2.3.1
-pkgdown: 1.3.0
+pandoc: 2.7.3
+pkgdown: 1.6.1
 pkgdown_sha: ~
 articles:
   PhenotypeSimulator: PhenotypeSimulator.html
-  Sample-scripts-external-genotype-simulation: Sample-scripts-external-genotype-simulation.html
   Simulation-and-LinearModel: Simulation-and-LinearModel.html
   SimulationBasedOnExampleData: SimulationBasedOnExampleData.html
+  sample-scripts-external-genotype-simulation: sample-scripts-external-genotype-simulation.html
+last_built: 2021-07-14T16:12Z
 

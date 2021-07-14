@@ -8,21 +8,29 @@
 
 <title>Simulate genetic variant effects. — geneticFixedEffects • PhenotypeSimulator</title>
 
+
 <!-- jquery -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous" />
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
+
+<!-- bootstrap-toc -->
+<link rel="stylesheet" href="../bootstrap-toc.css">
+<script src="../bootstrap-toc.js"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script>
 
-<!-- sticky kit -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
+<!-- headroom.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
@@ -30,14 +38,16 @@
 
 
 
-<meta property="og:title" content="Simulate genetic variant effects. — geneticFixedEffects" />
+  <link href="../extra.css" rel="stylesheet">
+  
 
+<meta property="og:title" content="Simulate genetic variant effects. — geneticFixedEffects" />
 <meta property="og:description" content="geneticFixedEffects takes genetic variants which should be added as genetic 
 variant effects to the phenotype. These variants can have the same effects 
 across all traits (shared) or can be independent across traits (independent); 
 in addition, only a certain proportion of traits can be affected by the 
 genetic variants." />
-<meta name="twitter:card" content="summary" />
+
 
 
 
@@ -51,9 +61,10 @@ genetic variants." />
 <![endif]-->
 
 
+
   </head>
 
-  <body>
+  <body data-spy="scroll" data-target="#toc">
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-standard navbar-fixed-top" role="navigation">
@@ -67,7 +78,7 @@ genetic variants." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">PhenotypeSimulator</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.4</span>
       </span>
     </div>
 
@@ -75,13 +86,13 @@ genetic variants." />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fa fa-home"></span>
+    <span class="fas fa-home"></span>
      
   </a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    <span class="fa fa-file"></span>
+    <span class="fas fa-file"></span>
      
     documentation
      
@@ -103,25 +114,24 @@ genetic variants." />
   </ul>
 </li>
       </ul>
-      
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="../news/index.html">
-    <span class="fa fa-newspaper-o"></span>
+    <span class="fas fa-newspaper-o"></span>
      
     news
   </a>
 </li>
 <li>
   <a href="../reference/index.html">
-    <span class="fa fa-code"></span>
+    <span class="fas fa-code"></span>
      
     functions
   </a>
 </li>
 <li>
   <a href="https://github.com/HannahVMeyer/PhenotypeSimulator">
-    <span class="fa fa-github fa-lg"></span>
+    <span class="fas fa-github fa-lg"></span>
      
     github
   </a>
@@ -133,6 +143,7 @@ genetic variants." />
 </div><!--/.navbar -->
 
       
+
       </header>
 
 <div class="row">
@@ -144,21 +155,19 @@ genetic variants." />
     </div>
 
     <div class="ref-description">
-    
     <p>geneticFixedEffects takes genetic variants which should be added as genetic 
 variant effects to the phenotype. These variants can have the same effects 
 across all traits (shared) or can be independent across traits (independent); 
 in addition, only a certain proportion of traits can be affected by the 
 genetic variants.</p>
-    
     </div>
 
-    <pre class="usage"><span class='fu'>geneticFixedEffects</span>(<span class='no'>X_causal</span>, <span class='no'>P</span>, <span class='no'>N</span>, <span class='kw'>phenoID</span> <span class='kw'>=</span> <span class='st'>"Trait_"</span>,
-  <span class='kw'>id_samples</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/colnames'>rownames</a></span>(<span class='no'>X_causal</span>), <span class='kw'>id_phenos</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>pTraitsAffected</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>pIndependentGenetic</span> <span class='kw'>=</span> <span class='fl'>0.4</span>,
-  <span class='kw'>pTraitIndependentGenetic</span> <span class='kw'>=</span> <span class='fl'>0.2</span>, <span class='kw'>keepSameIndependent</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>distBeta</span> <span class='kw'>=</span> <span class='st'>"norm"</span>, <span class='kw'>mBeta</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>sdBeta</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
-    
+    <pre class="usage"><span class='fu'>geneticFixedEffects</span><span class='op'>(</span><span class='va'>X_causal</span>, <span class='va'>P</span>, <span class='va'>N</span>, phenoID <span class='op'>=</span> <span class='st'>"Trait_"</span>,
+  id_samples <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>rownames</a></span><span class='op'>(</span><span class='va'>X_causal</span><span class='op'>)</span>, id_phenos <span class='op'>=</span> <span class='cn'>NULL</span>,
+  pTraitsAffected <span class='op'>=</span> <span class='fl'>1</span>, pIndependentGenetic <span class='op'>=</span> <span class='fl'>0.4</span>,
+  pTraitIndependentGenetic <span class='op'>=</span> <span class='fl'>0.2</span>, keepSameIndependent <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  distBeta <span class='op'>=</span> <span class='st'>"norm"</span>, mBeta <span class='op'>=</span> <span class='fl'>0</span>, sdBeta <span class='op'>=</span> <span class='fl'>1</span>, verbose <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre>
+
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
@@ -233,7 +242,7 @@ of normal/uniform distribution for effect sizes of SNPs.</p></td>
       <td><p>[boolean] If TRUE, progress info is printed to standard out</p></td>
     </tr>
     </table>
-    
+
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>Named list of shared fixed genetic effects (shared: [N x P] matrix), 
@@ -241,26 +250,21 @@ independent fixed genetic effects (independent: [N x P] matrix),
 the causal SNPs labeled as shared or independent effect 
 (cov: [NrCausalSNPs x N] matrix) and the simulated effect sizes of the causal 
 SNPs (cov_effect: [P x NrCausalSNPs] dataframe).</p>
-    
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>genotypes</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='simulateGenotypes.html'>simulateGenotypes</a></span>(<span class='kw'>N</span><span class='kw'>=</span><span class='fl'>100</span>, <span class='kw'>NrSNP</span><span class='kw'>=</span><span class='fl'>20</span>, <span class='kw'>verbose</span><span class='kw'>=</span><span class='fl'>FALSE</span>)
-<span class='no'>causalSNPs</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='getCausalSNPs.html'>getCausalSNPs</a></span>(<span class='kw'>N</span><span class='kw'>=</span><span class='fl'>100</span>, <span class='kw'>genotypes</span><span class='kw'>=</span><span class='no'>genotypes</span>$<span class='no'>genotypes</span>)
-<span class='no'>geneticFixed</span> <span class='kw'>&lt;-</span> <span class='fu'>geneticFixedEffects</span>(<span class='kw'>N</span><span class='kw'>=</span><span class='fl'>100</span>, <span class='kw'>X_causal</span><span class='kw'>=</span><span class='no'>causalSNPs</span>,
-<span class='kw'>P</span><span class='kw'>=</span><span class='fl'>10</span>)</div></pre>
+    <pre class="examples"><div class='input'><span class='va'>genotypes</span> <span class='op'>&lt;-</span> <span class='fu'><a href='simulateGenotypes.html'>simulateGenotypes</a></span><span class='op'>(</span>N<span class='op'>=</span><span class='fl'>100</span>, NrSNP<span class='op'>=</span><span class='fl'>20</span>, verbose<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span>
+<span class='va'>causalSNPs</span> <span class='op'>&lt;-</span> <span class='fu'><a href='getCausalSNPs.html'>getCausalSNPs</a></span><span class='op'>(</span>N<span class='op'>=</span><span class='fl'>100</span>, genotypes<span class='op'>=</span><span class='va'>genotypes</span><span class='op'>$</span><span class='va'>genotypes</span><span class='op'>)</span>
+<span class='va'>geneticFixed</span> <span class='op'>&lt;-</span> <span class='fu'>geneticFixedEffects</span><span class='op'>(</span>N<span class='op'>=</span><span class='fl'>100</span>, X_causal<span class='op'>=</span><span class='va'>causalSNPs</span>, 
+P<span class='op'>=</span><span class='fl'>10</span><span class='op'>)</span>
+</div></pre>
   </div>
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <h2>Contents</h2>
-    <ul class="nav nav-pills nav-stacked">
-      <li><a href="#arguments">Arguments</a></li>
-      
-      <li><a href="#value">Value</a></li>
-      
-      <li><a href="#examples">Examples</a></li>
-    </ul>
-
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+    <nav id="toc" data-toggle="toc" class="sticky-top">
+      <h2 data-toc-skip>Contents</h2>
+    </nav>
   </div>
 </div>
+
 
       <footer>
       <div class="copyright">
@@ -268,13 +272,16 @@ SNPs (cov_effect: [P x NrCausalSNPs] dataframe).</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
+
       </footer>
    </div>
 
   
 
+
   </body>
 </html>
+
 

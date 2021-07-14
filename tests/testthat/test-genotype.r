@@ -22,10 +22,32 @@ test_that('getAlleleFrequencies fails with dimension error', {
 
 test_that('standardiseGenotypes returns output matrix/dataframe of same 
           dimension as input matrix/dataframe', {
-    geno <- cbind(rbinom(100, 2, 0.3), rbinom(100, 2, 0.4))
+              geno <- cbind(rbinom(100, 2, 0.3), rbinom(100, 2, 0.4))
+              geno_sd <- standardiseGenotypes(geno)
+              expect_equal(dim(geno), dim(geno_sd))
+          })
+
+test_that('standardiseGenotypes returns genotypes with mean 0 and sd 1', {
+    geno <- cbind(rbinom(10000, 2, 0.3), rbinom(10000, 2, 0.4))
     geno_sd <- standardiseGenotypes(geno)
+    expect_equal(colMeans(geno_sd), expected = c(0,0),
+                 tolerance = 10e-3)
+    expect_equal(apply(geno_sd, 2, sd), expected = c(1,1),
+                 tolerance = 10e-3)
+    
     expect_equal(dim(geno), dim(geno_sd))
 })
+
+
+test_that('standardiseGenotypes fails with missing values error', {
+    expect_error(standardiseGenotypes(geno=c(1,2,2,NA), impute=FALSE),
+                 "Missing genotypes found and impute=FALSE")
+})
+test_that('standardiseGenotypes works with missing values', {
+    expect_equal(sum(standardiseGenotypes(geno=c(1,1,1,NA), impute=TRUE)),
+                 0)
+})
+
 
 test_that('simulateGenotypes fails with range error', {
     expect_error(simulateGenotypes(N=10, NrSNP=10, freq=c(-0.1, 0.4)), 
@@ -102,6 +124,20 @@ test_that('readStandardGenotypes returns correctly formated genotypes HAPGEN2', 
     expect_true(all(data_hapgen$genotypes %in% c(0,1,2)))
 })
 
+test_that('readStandardGenotypes returns correctly formated delim genotypes', {
+    filename_delim  <- system.file("extdata/genotypes/",
+                                   "genotypes_chr22.csv", 
+                                   package = "PhenotypeSimulator") 
+    data_delim <- readStandardGenotypes(N=50, filename=filename_delim, 
+                                        format="delim")
+    expect_equal(dim(data_delim$genotypes)[1], length(data_delim$id_samples))
+    expect_equal(dim(data_delim$genotypes)[2], length(data_delim$id_snps))
+    expect_identical(data_delim$id_snps[1], "22-16050408-rs149201999")
+    expect_identical(data_delim$id_samples[1], "ID_1")
+    expect_true(is.null(data_delim$format_files))
+    expect_true(all(data_delim$genotypes %in% c(0,1,2)))
+})
+
 test_that('readStandardGenotypes fails with sample error', {
     filename_plink  <- system.file("extdata/genotypes/plink/",
                                    "genotypes_plink.bed",
@@ -123,6 +159,68 @@ test_that('readStandardGenotypes subsampling works', {
     expect_equal(length(geno$id_samples), 50)
 })
 
+
+
+test_that('getKinship fails if neither kinshipfile nor genotype matrix are 
+          provided',{
+              expect_error(getKinship(N=100),
+                           "Either X or kinshipfile must be provided")
+          })
+
+test_that('getKinship fails with non-existing kinship file',{
+    expect_error(getKinship(N=100, kinshipfile="~/test/kinship"), 
+                 "does not exist")
+})
+
+
+test_that('getKinship returns positive semi-definite matrix',{
+    geno <- simulateGenotypes(N=100, NrSNP=10, verbose=FALSE)
+    kin <- getKinship(N=100, X=geno$genotypes, verbose=FALSE)
+    kin_eigen <- as.complex(eigen(kin, only.values = TRUE)$values)
+    expect_true(all(Re(kin_eigen) > 0))
+})
+
+test_that('getKinship fails with sample error', {
+    kinshipfile <- system.file("extdata/kinship", "kinship.csv",
+                               package = "PhenotypeSimulator")
+    expect_error(getKinship(N=1000, kinshipfile=kinshipfile, verbose=FALSE),
+                 "Number of samples specifid is greater than number")
+})
+
+test_that('getKinship fails with sample ID error', {
+    kinshipfile <- system.file("extdata/kinship", "kinship.csv",
+                               package = "PhenotypeSimulator")
+    expect_error(getKinship(N=10, kinshipfile=kinshipfile, 
+                            id_samples = paste("Sample_", 1:10, sep=""),
+                            verbose=FALSE),
+                 "Not all id_samples are present")
+})
+
+test_that('getKinship fails with sample ID to sample mismatch error', {
+    kinshipfile <- system.file("extdata/kinship", "kinship.csv",
+                               package = "PhenotypeSimulator")
+    expect_error(getKinship(N=10, kinshipfile=kinshipfile, 
+                            id_samples = paste("Sample_", 1:12, sep=""),
+                            verbose=FALSE),
+                 "Length of id_samples")
+})
+
+test_that('getKinship returns kinship of correct dimensions', {
+    kinshipfile <- system.file("extdata/kinship", "kinship.csv",
+                               package = "PhenotypeSimulator")
+    K <- getKinship(N=50, kinshipfile=kinshipfile, verbose=FALSE)
+    expect_equal(dim(K), c(50,50))
+})
+
+
+test_that('getKinship sampling by sample ID works', {
+    kinshipfile <- system.file("extdata/kinship", "kinship.csv",
+                               package = "PhenotypeSimulator")
+    K <- getKinship(N=10, kinshipfile=kinshipfile, 
+                    id_samples = paste("ID_", 1:10, sep=""),
+                    verbose=FALSE)
+    expect_equal(dim(K), c(10,10))
+})
 
 test_that('getCausalSNPs fails with missing input error', {
     expect_error(getCausalSNPs(N=100, NrCausalSNPs = 20, verbose=FALSE),
@@ -187,62 +285,6 @@ test_that('getCausalSNPs fails with SNP number error', {
                  "Number of causal SNPs to be chosen from chromosome")
 })
 
-test_that('getCausalSNPs fails with delimiter error', {
-    genotypeFile <- system.file("extdata/genotypes/",
-                                "genotypes_chr22.csv",
-                                package = "PhenotypeSimulator")
-    genoFilePrefix <- gsub("chr.*", "", genotypeFile)
-    genoFileSuffix <- ".csv"
-    expect_error(getCausalSNPs(N=50, NrCausalSNPs=10, chr=22, 
-                               genoFilePrefix=genoFilePrefix, 
-                               genoFileSuffix=genoFileSuffix,
-                               delim="\t", verbose=FALSE),
-                 "Delimiter specified for genoFilePrefix-genoFileSuffix")
-})
-
-test_that('getCausalSNPs samples from oxgen formated genotypes', {
-    genotypeFile  <- system.file("extdata/genotypes/hapgen/",
-                                    "genotypes_hapgen_chr22.gen",
-                                    package = "PhenotypeSimulator") 
-    genoFilePrefix <- gsub("chr.*", "", genotypeFile)
-    genoFileSuffix <- ".gen"
-    tmp <- getCausalSNPs(N=50, NrCausalSNPs=10, chr=22, 
-                               genoFilePrefix=genoFilePrefix, 
-                               genoFileSuffix=genoFileSuffix,
-                               format='oxgen', verbose=FALSE)
-    expect_equal(dim(tmp)[1], 50)
-    expect_equal(dim(tmp)[2], 10)
-
-})
-
-test_that('getCausalSNPs samples from delim formated genotypes', {
-    genotypeFile <- system.file("extdata/genotypes/",
-                                "genotypes_chr22.csv",
-                                package = "PhenotypeSimulator")
-    genoFilePrefix <- gsub("chr.*", "", genotypeFile)
-    genoFileSuffix <- ".csv"
-    tmp <- getCausalSNPs(N=50, NrCausalSNPs=10, chr=22, 
-                         genoFilePrefix=genoFilePrefix, 
-                         genoFileSuffix=genoFileSuffix,
-                         format='delim', delim=",", verbose=FALSE)
-    expect_equal(dim(tmp)[1], 50)
-    expect_equal(dim(tmp)[2], 10)
-})
-
-test_that('getCausalSNPs samples from bimbam formated genotypes', {
-    genotypeFile <- system.file("extdata/genotypes/",
-                                "genotypes_chr22.bimbam",
-                                package = "PhenotypeSimulator")
-    genoFilePrefix <- gsub("chr.*", "", genotypeFile)
-    genoFileSuffix <- ".bimbam"
-    tmp <- getCausalSNPs(N=50, NrCausalSNPs=10, chr=22, 
-                         genoFilePrefix=genoFilePrefix, 
-                         genoFileSuffix=genoFileSuffix,
-                         format='bimbam', delim=",", verbose=FALSE)
-    expect_equal(dim(tmp)[1], 50)
-    expect_equal(dim(tmp)[2], 10)
-})
-
 test_that('getCausalSNPs fails with sample error', {
     geno <- simulateGenotypes(N=100, NrSNP=10, verbose=FALSE)
     expect_error(getCausalSNPs(N=1000, NrCausalSNPs = 10, 
@@ -259,64 +301,60 @@ test_that('getCausalSNPs returns correct output dimensions', {
                  c(100,10))
 })
 
-test_that('getKinship fails if neither kinshipfile nor genotype matrix are 
-          provided',{
-              expect_error(getKinship(N=100),
-                           "Either X or kinshipfile must be provided")
-          })
+test_that('getCausalSNPs samples from oxgen formated genotypes', {
+    genotypeFile  <- system.file("extdata/genotypes/hapgen/",
+                                 "genotypes_hapgen_chr22.gen",
+                                 package = "PhenotypeSimulator") 
+    genoFilePrefix <- gsub("chr.*", "", genotypeFile)
+    genoFileSuffix <- ".gen"
+    tmp <- getCausalSNPs(N=50, NrCausalSNPs=10, chr=22, 
+                         genoFilePrefix=genoFilePrefix, 
+                         genoFileSuffix=genoFileSuffix,
+                         format='oxgen', verbose=FALSE)
+    expect_equal(dim(tmp)[1], 50)
+    expect_equal(dim(tmp)[2], 10)
+    
+})
 
-test_that('getKinship fails with non-existing kinship file',{
-    expect_error(getKinship(N=100, kinshipfile="~/test/kinship"), 
-                 "does not exist")
+test_that('getCausalSNPs fails with delimiter error', {
+    genotypeFile <- system.file("extdata/genotypes",
+                                "genotypes_chr22.csv",
+                                package = "PhenotypeSimulator")
+    genoFilePrefix <- gsub("chr.*", "", genotypeFile)
+    genoFileSuffix <- ".csv"
+    expect_error(getCausalSNPs(N=50, NrCausalSNPs=10, chr=22, 
+                               genoFilePrefix=genoFilePrefix, 
+                               genoFileSuffix=genoFileSuffix,
+                               delim="\t", verbose=FALSE),
+                 "Delimiter specified for genoFilePrefix-genoFileSuffix")
 })
 
 
-test_that('getKinship returns positive semi-definite matrix',{
-    geno <- simulateGenotypes(N=100, NrSNP=10, verbose=FALSE)
-    kin <- getKinship(N=100, X=geno$genotypes, verbose=FALSE)
-    kin_eigen <- as.complex(eigen(kin, only.values = TRUE)$values)
-    expect_true(all(Re(kin_eigen) > 0))
-})
-
-test_that('getKinship fails with sample error', {
-    kinshipfile <- system.file("extdata/kinship", "kinship.csv",
-                               package = "PhenotypeSimulator")
-    expect_error(getKinship(N=1000, kinshipfile=kinshipfile, verbose=FALSE),
-                 "Number of samples specifid is greater than number")
-})
-
-test_that('getKinship fails with sample ID error', {
-    kinshipfile <- system.file("extdata/kinship", "kinship.csv",
-                               package = "PhenotypeSimulator")
-    expect_error(getKinship(N=10, kinshipfile=kinshipfile, 
-                            id_samples = paste("Sample_", 1:10, sep=""),
-                            verbose=FALSE),
-                 "Not all id_samples are present")
-})
-
-test_that('getKinship fails with sample ID to sample mismatch error', {
-    kinshipfile <- system.file("extdata/kinship", "kinship.csv",
-                               package = "PhenotypeSimulator")
-    expect_error(getKinship(N=10, kinshipfile=kinshipfile, 
-                            id_samples = paste("Sample_", 1:12, sep=""),
-                            verbose=FALSE),
-                 "Length of id_samples")
-})
-
-test_that('getKinship returns kinship of correct dimensions', {
-    kinshipfile <- system.file("extdata/kinship", "kinship.csv",
-                               package = "PhenotypeSimulator")
-    K <- getKinship(N=50, kinshipfile=kinshipfile, verbose=FALSE)
-    expect_equal(dim(K), c(50,50))
+test_that('getCausalSNPs samples from delim formated genotypes', {
+    genotypeFile <- system.file("extdata/genotypes/",
+                                "genotypes_chr22.csv",
+                                package = "PhenotypeSimulator")
+    genoFilePrefix <- gsub("chr.*", "", genotypeFile)
+    genoFileSuffix <- ".csv"
+    tmp <- getCausalSNPs(N=50, NrCausalSNPs=10, chr=22, 
+                         genoFilePrefix=genoFilePrefix, 
+                         genoFileSuffix=genoFileSuffix,
+                         format='delim', delim=",", verbose=FALSE)
+    expect_equal(dim(tmp)[1], 50)
+    expect_equal(dim(tmp)[2], 10)
 })
 
 
-test_that('getKinship sampling by sample ID works', {
-    kinshipfile <- system.file("extdata/kinship", "kinship.csv",
-                               package = "PhenotypeSimulator")
-    K <- getKinship(N=10, kinshipfile=kinshipfile, 
-                    id_samples = paste("ID_", 1:10, sep=""),
-                    verbose=FALSE)
-    expect_equal(dim(K), c(10,10))
+test_that('getCausalSNPs samples from bimbam formated genotypes', {
+    genotypeFile <- system.file("extdata/genotypes",
+                                "genotypes_chr22.bimbam",
+                                package = "PhenotypeSimulator")
+    genoFilePrefix <- gsub("chr.*", "", genotypeFile)
+    genoFileSuffix <- ".bimbam"
+    tmp <- getCausalSNPs(N=50, NrCausalSNPs=10, chr=22, 
+                         genoFilePrefix=genoFilePrefix, 
+                         genoFileSuffix=genoFileSuffix,
+                         format='bimbam', delim=",", verbose=FALSE)
+    expect_equal(dim(tmp)[1], 50)
+    expect_equal(dim(tmp)[2], 10)
 })
-

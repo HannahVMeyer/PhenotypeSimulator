@@ -8,21 +8,29 @@
 
 <title>Simulate noise fixed effects. — noiseFixedEffects • PhenotypeSimulator</title>
 
+
 <!-- jquery -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous" />
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
+
+<!-- bootstrap-toc -->
+<link rel="stylesheet" href="../bootstrap-toc.css">
+<script src="../bootstrap-toc.js"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script>
 
-<!-- sticky kit -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
+<!-- headroom.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
@@ -30,8 +38,10 @@
 
 
 
-<meta property="og:title" content="Simulate noise fixed effects. — noiseFixedEffects" />
+  <link href="../extra.css" rel="stylesheet">
+  
 
+<meta property="og:title" content="Simulate noise fixed effects. — noiseFixedEffects" />
 <meta property="og:description" content="noiseFixedEffects simulates a number of non-genetic covariate effects 
 (confounders). Confounders can have effects across all traits (shared) 
 or to a number of traits only (independent); in addition, only a certain 
@@ -42,7 +52,7 @@ simulated from a uniform or normal distribution. Multiple confounder sets
 drawn from different distributions/different parameters of the same 
 distribution can be simulated by specifying NrFixedEffects and supplying the 
 respective distribution parameters." />
-<meta name="twitter:card" content="summary" />
+
 
 
 
@@ -56,9 +66,10 @@ respective distribution parameters." />
 <![endif]-->
 
 
+
   </head>
 
-  <body>
+  <body data-spy="scroll" data-target="#toc">
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-standard navbar-fixed-top" role="navigation">
@@ -72,7 +83,7 @@ respective distribution parameters." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">PhenotypeSimulator</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.4</span>
       </span>
     </div>
 
@@ -80,13 +91,13 @@ respective distribution parameters." />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fa fa-home"></span>
+    <span class="fas fa-home"></span>
      
   </a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    <span class="fa fa-file"></span>
+    <span class="fas fa-file"></span>
      
     documentation
      
@@ -108,25 +119,24 @@ respective distribution parameters." />
   </ul>
 </li>
       </ul>
-      
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="../news/index.html">
-    <span class="fa fa-newspaper-o"></span>
+    <span class="fas fa-newspaper-o"></span>
      
     news
   </a>
 </li>
 <li>
   <a href="../reference/index.html">
-    <span class="fa fa-code"></span>
+    <span class="fas fa-code"></span>
      
     functions
   </a>
 </li>
 <li>
   <a href="https://github.com/HannahVMeyer/PhenotypeSimulator">
-    <span class="fa fa-github fa-lg"></span>
+    <span class="fas fa-github fa-lg"></span>
      
     github
   </a>
@@ -138,6 +148,7 @@ respective distribution parameters." />
 </div><!--/.navbar -->
 
       
+
       </header>
 
 <div class="row">
@@ -149,7 +160,6 @@ respective distribution parameters." />
     </div>
 
     <div class="ref-description">
-    
     <p>noiseFixedEffects simulates a number of non-genetic covariate effects 
 (confounders). Confounders can have effects across all traits (shared) 
 or to a number of traits only (independent); in addition, only a certain 
@@ -160,18 +170,17 @@ simulated from a uniform or normal distribution. Multiple confounder sets
 drawn from different distributions/different parameters of the same 
 distribution can be simulated by specifying NrFixedEffects and supplying the 
 respective distribution parameters.</p>
-    
     </div>
 
-    <pre class="usage"><span class='fu'>noiseFixedEffects</span>(<span class='no'>N</span>, <span class='no'>P</span>, <span class='kw'>NrConfounders</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>sampleID</span> <span class='kw'>=</span> <span class='st'>"ID_"</span>,
-  <span class='kw'>phenoID</span> <span class='kw'>=</span> <span class='st'>"Trait_"</span>, <span class='kw'>id_samples</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>id_phenos</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>pTraitsAffected</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>NrFixedEffects</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>pIndependentConfounders</span> <span class='kw'>=</span> <span class='fl'>0.4</span>, <span class='kw'>pTraitIndependentConfounders</span> <span class='kw'>=</span> <span class='fl'>0.2</span>,
-  <span class='kw'>keepSameIndependent</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>distConfounders</span> <span class='kw'>=</span> <span class='st'>"norm"</span>,
-  <span class='kw'>mConfounders</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>sdConfounders</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>catConfounders</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>probConfounders</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>distBeta</span> <span class='kw'>=</span> <span class='st'>"norm"</span>, <span class='kw'>mBeta</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>sdBeta</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
-    
+    <pre class="usage"><span class='fu'>noiseFixedEffects</span><span class='op'>(</span><span class='va'>N</span>, <span class='va'>P</span>, NrConfounders <span class='op'>=</span> <span class='fl'>10</span>, sampleID <span class='op'>=</span> <span class='st'>"ID_"</span>,
+  phenoID <span class='op'>=</span> <span class='st'>"Trait_"</span>, id_samples <span class='op'>=</span> <span class='cn'>NULL</span>, id_phenos <span class='op'>=</span> <span class='cn'>NULL</span>,
+  pTraitsAffected <span class='op'>=</span> <span class='fl'>1</span>, NrFixedEffects <span class='op'>=</span> <span class='fl'>1</span>,
+  pIndependentConfounders <span class='op'>=</span> <span class='fl'>0.4</span>, pTraitIndependentConfounders <span class='op'>=</span> <span class='fl'>0.2</span>,
+  keepSameIndependent <span class='op'>=</span> <span class='cn'>FALSE</span>, distConfounders <span class='op'>=</span> <span class='st'>"norm"</span>,
+  mConfounders <span class='op'>=</span> <span class='fl'>0</span>, sdConfounders <span class='op'>=</span> <span class='fl'>1</span>, catConfounders <span class='op'>=</span> <span class='cn'>NULL</span>,
+  probConfounders <span class='op'>=</span> <span class='cn'>NULL</span>, distBeta <span class='op'>=</span> <span class='st'>"norm"</span>, mBeta <span class='op'>=</span> <span class='fl'>0</span>, sdBeta <span class='op'>=</span> <span class='fl'>1</span>,
+  verbose <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre>
+
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
@@ -280,7 +289,7 @@ of normal/uniform distribution for effect sizes of confounders.</p></td>
       <td><p>[boolean] If TRUE, progress info is printed to standard out</p></td>
     </tr>
     </table>
-    
+
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>Named list of shared confounder effects (shared: [N x P] matrix), 
@@ -288,52 +297,44 @@ independent confoudner effects (independent: [N x P] matrix),
 the confounders labeled as shared or independent effect 
 (cov: [NrConfounders x N] matrix) and the simulated effect sizes of the 
 confounders (cov_effect: [P x NrConfounders] dataframe).</p>
-    
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><code><a href='simulateDist.html'>simulateDist</a></code></p></div>
-    
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># fixed noise effect with default setting</span>
-<span class='no'>noiseFE</span> <span class='kw'>&lt;-</span> <span class='fu'>noiseFixedEffects</span>(<span class='kw'>P</span><span class='kw'>=</span><span class='fl'>5</span>, <span class='kw'>N</span><span class='kw'>=</span><span class='fl'>20</span>)
+<span class='va'>noiseFE</span> <span class='op'>&lt;-</span> <span class='fu'>noiseFixedEffects</span><span class='op'>(</span>P<span class='op'>=</span><span class='fl'>5</span>, N<span class='op'>=</span><span class='fl'>20</span><span class='op'>)</span>
 
 <span class='co'># 1 categorical fixed noise effect with uniform distribution of the </span>
 <span class='co'># categories</span>
-<span class='no'>noiseFE_catUnif</span> <span class='kw'>&lt;-</span> <span class='fu'>noiseFixedEffects</span>(<span class='kw'>P</span><span class='kw'>=</span><span class='fl'>10</span>, <span class='kw'>N</span><span class='kw'>=</span><span class='fl'>20</span>, <span class='kw'>NrConfounders</span><span class='kw'>=</span><span class='fl'>1</span>,
-<span class='kw'>distConfounders</span><span class='kw'>=</span><span class='st'>"cat_unif"</span>, <span class='kw'>catConfounders</span><span class='kw'>=</span><span class='fl'>3</span>)
+<span class='va'>noiseFE_catUnif</span> <span class='op'>&lt;-</span> <span class='fu'>noiseFixedEffects</span><span class='op'>(</span>P<span class='op'>=</span><span class='fl'>10</span>, N<span class='op'>=</span><span class='fl'>20</span>, NrConfounders<span class='op'>=</span><span class='fl'>1</span>, 
+distConfounders<span class='op'>=</span><span class='st'>"cat_unif"</span>, catConfounders<span class='op'>=</span><span class='fl'>3</span><span class='op'>)</span>
 
 <span class='co'># 10 fixed noise effect with uniform distribution between 1 and 5 (3 +/- 2) </span>
 <span class='co'># categories</span>
-<span class='no'>noiseFE_uniformConfounders_normBetas</span> <span class='kw'>&lt;-</span> <span class='fu'>noiseFixedEffects</span>(<span class='kw'>P</span><span class='kw'>=</span><span class='fl'>10</span>, <span class='kw'>N</span><span class='kw'>=</span><span class='fl'>20</span>,
-<span class='kw'>NrConfounders</span><span class='kw'>=</span><span class='fl'>10</span>, <span class='kw'>distConfounders</span><span class='kw'>=</span><span class='st'>"unif"</span>, <span class='kw'>mConfounders</span><span class='kw'>=</span><span class='fl'>3</span>, <span class='kw'>sdConfounders</span><span class='kw'>=</span><span class='fl'>2</span>,
-<span class='kw'>distBeta</span><span class='kw'>=</span><span class='st'>"norm"</span>,  <span class='kw'>sdBeta</span><span class='kw'>=</span><span class='fl'>2</span>)
+<span class='va'>noiseFE_uniformConfounders_normBetas</span> <span class='op'>&lt;-</span> <span class='fu'>noiseFixedEffects</span><span class='op'>(</span>P<span class='op'>=</span><span class='fl'>10</span>, N<span class='op'>=</span><span class='fl'>20</span>, 
+NrConfounders<span class='op'>=</span><span class='fl'>10</span>, distConfounders<span class='op'>=</span><span class='st'>"unif"</span>, mConfounders<span class='op'>=</span><span class='fl'>3</span>, sdConfounders<span class='op'>=</span><span class='fl'>2</span>, 
+distBeta<span class='op'>=</span><span class='st'>"norm"</span>,  sdBeta<span class='op'>=</span><span class='fl'>2</span><span class='op'>)</span>
 
  <span class='co'># 4 fixed noise effect with binomial distribution with p=0.2 </span>
-<span class='no'>noiseFE_binomialConfounders_uniformBetas</span> <span class='kw'>&lt;-</span> <span class='fu'>noiseFixedEffects</span>(<span class='kw'>P</span><span class='kw'>=</span><span class='fl'>10</span>, <span class='kw'>N</span><span class='kw'>=</span><span class='fl'>20</span>,
-<span class='kw'>NrConfounders</span><span class='kw'>=</span><span class='fl'>4</span>, <span class='kw'>distConfounders</span><span class='kw'>=</span><span class='st'>"bin"</span>, <span class='kw'>probConfounders</span><span class='kw'>=</span><span class='fl'>0.2</span>, <span class='kw'>distBeta</span><span class='kw'>=</span><span class='st'>"norm"</span>,
-<span class='kw'>sdBeta</span><span class='kw'>=</span><span class='fl'>2</span>)
+<span class='va'>noiseFE_binomialConfounders_uniformBetas</span> <span class='op'>&lt;-</span> <span class='fu'>noiseFixedEffects</span><span class='op'>(</span>P<span class='op'>=</span><span class='fl'>10</span>, N<span class='op'>=</span><span class='fl'>20</span>, 
+NrConfounders<span class='op'>=</span><span class='fl'>4</span>, distConfounders<span class='op'>=</span><span class='st'>"bin"</span>, probConfounders<span class='op'>=</span><span class='fl'>0.2</span>, distBeta<span class='op'>=</span><span class='st'>"norm"</span>, 
+sdBeta<span class='op'>=</span><span class='fl'>2</span><span class='op'>)</span>
 
  <span class='co'># 2 fixed noise effect with 1 binomial confounders and 1 normally </span>
  <span class='co'># distributed confounder; the latter only affects 2 traits </span>
- <span class='no'>noiseFE_binomialandNormalConfounders</span> <span class='kw'>&lt;-</span> <span class='fu'>noiseFixedEffects</span>(<span class='kw'>P</span><span class='kw'>=</span><span class='fl'>10</span>, <span class='kw'>N</span><span class='kw'>=</span><span class='fl'>20</span>,
- <span class='kw'>NrFixedEffects</span><span class='kw'>=</span><span class='fl'>2</span>, <span class='kw'>pTraitsAffected</span> <span class='kw'>=</span><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span> (<span class='fl'>1</span>,<span class='fl'>0.2</span>), <span class='kw'>NrConfounders</span><span class='kw'>=</span><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>2</span>,<span class='fl'>2</span>),
- <span class='kw'>distConfounders</span><span class='kw'>=</span><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"bin"</span>, <span class='st'>"norm"</span>),  <span class='kw'>probConfounders</span><span class='kw'>=</span><span class='fl'>0.2</span>)</div></pre>
+ <span class='va'>noiseFE_binomialandNormalConfounders</span> <span class='op'>&lt;-</span> <span class='fu'>noiseFixedEffects</span><span class='op'>(</span>P<span class='op'>=</span><span class='fl'>10</span>, N<span class='op'>=</span><span class='fl'>20</span>, 
+ NrFixedEffects<span class='op'>=</span><span class='fl'>2</span>, pTraitsAffected <span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span> <span class='op'>(</span><span class='fl'>1</span>,<span class='fl'>0.2</span><span class='op'>)</span>, NrConfounders<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>2</span>,<span class='fl'>2</span><span class='op'>)</span>, 
+ distConfounders<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"bin"</span>, <span class='st'>"norm"</span><span class='op'>)</span>,  probConfounders<span class='op'>=</span><span class='fl'>0.2</span><span class='op'>)</span>
+</div></pre>
   </div>
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <h2>Contents</h2>
-    <ul class="nav nav-pills nav-stacked">
-      <li><a href="#arguments">Arguments</a></li>
-      
-      <li><a href="#value">Value</a></li>
-
-      <li><a href="#see-also">See also</a></li>
-      
-      <li><a href="#examples">Examples</a></li>
-    </ul>
-
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+    <nav id="toc" data-toggle="toc" class="sticky-top">
+      <h2 data-toc-skip>Contents</h2>
+    </nav>
   </div>
 </div>
+
 
       <footer>
       <div class="copyright">
@@ -341,13 +342,16 @@ confounders (cov_effect: [P x NrConfounders] dataframe).</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
+
       </footer>
    </div>
 
   
 
+
   </body>
 </html>
+
 
