@@ -1,6 +1,7 @@
 #' PhenotypeSimulator: A package for simulating phenotypes from different
 #' genetic and noise components
 #'
+#' Type, Name and Dependencies
 #' @docType package
 #' @name PhenotypeSimulator
 #' @import snpStats
