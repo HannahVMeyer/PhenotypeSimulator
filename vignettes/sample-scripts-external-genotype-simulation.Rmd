@@ -103,7 +103,7 @@ Download [hapgen2](http://mathgen.stats.ox.ac.uk/genetics_software/hapgen/hapgen
 and the 1000Genomes data from the
 [impute2 webpage](https://mathgen.stats.ox.ac.uk/impute/impute_v1.html#Using_IMPUTE_with_the_HapMap_Data)
 as starting point for the resampling-based genotype simulation with hapgen2. 
-For formating of the 1000Genomes data, have a look at this [vignette](https://hannahvmeyer.github.io/PhenotypeSimulator/articles/genotype-simulation-via-Hapgen2).
+For formating of the 1000Genomes data, have a look at this [vignette](https://hannahvmeyer.github.io/PhenotypeSimulator/articles/Simulation-and-LinearModel.html#genotype-simulation-via-hapgen2).
 The example files contain example haplotypes (ex.haps), legend files  (ex.leg) map
 (ex.map) and TagSNP files (ex.tags). The following examples simulates genotype
 data for 100 controls and 0 cases with 1000 SNPs from chromosome 1.
