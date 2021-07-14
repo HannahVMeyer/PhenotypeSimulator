@@ -30,8 +30,15 @@ getAlleleFrequencies <- function(snp) {
 #' Genotypes are standardised as described in Yang et al:
 #' snp_standardised = (snp - 2 * ref_allele_freq)/
 #' sqrt(2 * ref_allele_freq * alt_allele_freq).
+#' 
+#' Missing genotypes can be mean-imputed and rounded to nearest integer
+#' before standardisation. If genotypes contain missing values and impute is set
+#' to FALSE, \code{standardiseGenotypes} will return an error.
 #'
 #' @param geno [N x NrSNP] Matrix/dataframe of genotypes [integer]/[double].
+#' @param impute [logical] Indicating if missing genotypes should be imputed; if
+#' set FALSE and data contains missing values,  \code{standardiseGenotypes} will
+#' return an error.
 #' @return [N x NrSNP] Matrix of standardised genotypes [double].
 #' @seealso \code{\link{getAlleleFrequencies}}
 #' @export
@@ -40,11 +47,19 @@ getAlleleFrequencies <- function(snp) {
 #' @examples
 #' geno <- cbind(rbinom(2000, 2, 0.3), rbinom(2000, 2, 0.4),rbinom(2000, 2, 0.5))
 #' geno_sd <- standardiseGenotypes(geno)
-standardiseGenotypes <- function(geno) {
+standardiseGenotypes <- function(geno, impute=FALSE) {
+    if (any(is.na(geno)) & !impute) {
+        stop("Missing genotypes found and impute=FALSE, cannot standardise",
+             "genotypes; remove missing genotypes or set impute=TRUE for mean",
+             "imputation of genotypes")
+    }
+    if (any(is.na(geno)) & impute) {
+        geno <- round(apply(as.matrix(geno), 2, Hmisc::impute, fun=mean))
+    }
     allele_freq <-  sapply(data.frame(geno),  getAlleleFrequencies)
     var_geno <- sqrt(2*allele_freq[1,]*allele_freq[2,])
     var_geno[var_geno == 0] <- 1
-    geno_mean <- sweep(geno, 2, 2*allele_freq[1,], "-")
+    geno_mean <- sweep(geno, 2, 2*allele_freq[2,], "-")
     geno_sd <- sweep(geno_mean, 2, var_geno, "/")
     return (geno_sd)
 }
@@ -177,12 +192,12 @@ simulateGenotypes <- function(N, NrSNP=5000, frequencies=c(0.1, 0.2, 0.4),
 #' with minor allele first. The remaining columns are the mean genotypes of
 #' different individuals – numbers between 0 and 2 that represents the
 #' (posterior) mean genotype, or dosage of the minor allele.
-#' \item delim: a [delimter]-delimited file of [NrSNPs x NrSamples] genotypes
-#' with the snpIDs in the first column and the sampleIDs in the first row and
-#' genotypes encoded as numbers between 0 and 2 representing the (posterior)
-#' mean genotype, or dosage of the minor allele. Can be user-genotypes or
-#' genotypes simulated with foward-time algorithms such as simupop
-#' (\url{http://simupop.sourceforge.net/Main/HomePage}) or MetaSim
+#' \item delim: a [delimter]-delimited file of [(NrSNPs+1) x (NrSamples+1)]
+#' genotypes with the snpIDs in the first column and the sampleIDs in the first
+#' row and genotypes encoded as numbers between 0 and 2 representing the
+#' (posterior) mean genotype, or dosage of the minor allele. Can be
+#' user-genotypes or genotypes simulated with foward-time algorithms such as
+#' simupop (\url{http://simupop.sourceforge.net/Main/HomePage}) or MetaSim
 #' (\url{project.org/web/packages/rmetasim/vignettes/CreatingLandscapes.html}),
 #' that allow for user-specified output formats.
 #' }}
@@ -218,6 +233,12 @@ simulateGenotypes <- function(N, NrSNP=5000, frequencies=c(0.1, 0.2, 0.4),
 #' filename_plink <- gsub("\\.bed", "", filename_plink)
 #' data_plink <- readStandardGenotypes(N=100, filename=filename_plink,
 #' format="plink")
+#' 
+#' filename_delim  <- system.file("extdata/genotypes/",
+#' "genotypes_chr22.csv",
+#' package = "PhenotypeSimulator")
+#' data_delim <- readStandardGenotypes(N=50, filename=filename_delim,
+#' format="delim")
 readStandardGenotypes <- function(N, filename, format = NULL,
                                   verbose=TRUE, sampleID = "ID_",
                                   snpID = "SNP_", delimiter = ",") {
@@ -300,11 +321,11 @@ readStandardGenotypes <- function(N, filename, format = NULL,
         }
         id_samples <- paste(sampleID, 1:N, "_", gsub(":", "", data$V1), sep="")
         id_snps <- paste(snpID, 0:(ncol(genotypes) -1), sep="")
-        format_files = NULL
+        format_files <- NULL
     } else if (format == "delim") {
-        data <- data.table::fread(filename, data.table=FALSE,
+        data <- data.table::fread(filename, data.table=FALSE, header=TRUE,
                                   sep=delimiter)
-        id_snps <- data$V1
+        id_snps <- data[,1]
         genotypes <- t(data[,-1])
         colnames(genotypes) <- id_snps
         if (N > nrow(genotypes)) {

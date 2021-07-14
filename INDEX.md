@@ -43,7 +43,7 @@ customised.
 
 ## <i class="fa fa-rocket" aria-hidden="true"></i> Installation
 
-The current github version of *PhenotypeSimulator* is 0.3.3 and can be
+The current github version of *PhenotypeSimulator* is 0.3.4 and can be
 installed via:
 
 ``` r

@@ -4,10 +4,14 @@
 \alias{standardiseGenotypes}
 \title{Standardise genotypes.}
 \usage{
-standardiseGenotypes(geno)
+standardiseGenotypes(geno, impute = FALSE)
 }
 \arguments{
 \item{geno}{[N x NrSNP] Matrix/dataframe of genotypes [integer]/[double].}
+
+\item{impute}{[logical] Indicating if missing genotypes should be imputed; if
+set FALSE and data contains missing values,  \code{standardiseGenotypes} will
+return an error.}
 }
 \value{
 [N x NrSNP] Matrix of standardised genotypes [double].
@@ -16,6 +20,11 @@ standardiseGenotypes(geno)
 Genotypes are standardised as described in Yang et al:
 snp_standardised = (snp - 2 * ref_allele_freq)/
 sqrt(2 * ref_allele_freq * alt_allele_freq).
+}
+\details{
+Missing genotypes can be mean-imputed and rounded to nearest integer
+before standardisation. If genotypes contain missing values and impute is set
+to FALSE, \code{standardiseGenotypes} will return an error.
 }
 \examples{
 geno <- cbind(rbinom(2000, 2, 0.3), rbinom(2000, 2, 0.4),rbinom(2000, 2, 0.5))
