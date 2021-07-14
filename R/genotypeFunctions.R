@@ -184,20 +184,20 @@ simulateGenotypes <- function(N, NrSNP=5000, frequencies=c(0.1, 0.2, 0.4),
 #' \item genome: The entire output of genome can be saved via `genome -options >
 #' outputfile`. The /path/to/outputfile should be provided and this function
 #' extracts the relevant genotype information from this output file.
-#' \url{http://csg.sph.umich.edu/liang/genome}
+#' \url{http://csg.sph.umich.edu/liang/genome/}
 #' \item bimbam: Mean genotype file format of bimbam which is a single, comma-
-#' separated file, without information on individuals. From
-#' \url{http://www.haplotype.org/bimbam.html}: the first column of the mean
-#' genotype files is the SNP ID, the second and third columns are allele types
-#' with minor allele first. The remaining columns are the mean genotypes of
-#' different individuals – numbers between 0 and 2 that represents the
-#' (posterior) mean genotype, or dosage of the minor allele.
-#' \item delim: a [delimter]-delimited file of [(NrSNPs+1) x (NrSamples+1)]
-#' genotypes with the snpIDs in the first column and the sampleIDs in the first
-#' row and genotypes encoded as numbers between 0 and 2 representing the
-#' (posterior) mean genotype, or dosage of the minor allele. Can be
-#' user-genotypes or genotypes simulated with foward-time algorithms such as
-#' simupop (\url{http://simupop.sourceforge.net/Main/HomePage}) or MetaSim
+#' separated file, without information on individuals. From the documentation
+#' for bimbam at \url{http://www.haplotype.org/software.html}: the first column
+#' of the mean genotype files is the SNP ID, the second and third columns are
+#' allele types with minor allele first. The remaining columns are the mean
+#' genotypes of different individuals – numbers between 0 and 2 that represents
+#' the (posterior) mean genotype, or dosage of the minor allele. \item delim: a
+#' [delimter]-delimited file of [(NrSNPs+1) x (NrSamples+1)] genotypes with the
+#' snpIDs in the first column and the sampleIDs in the first row and genotypes
+#' encoded as numbers between 0 and 2 representing the (posterior) mean
+#' genotype, or dosage of the minor allele. Can be user-genotypes or genotypes
+#' simulated with foward-time algorithms such as simupop
+#' (\url{http://simupop.sourceforge.net/Main/HomePage}) or MetaSim
 #' (\url{project.org/web/packages/rmetasim/vignettes/CreatingLandscapes.html}),
 #' that allow for user-specified output formats.
 #' }}

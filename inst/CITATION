@@ -9,7 +9,6 @@ citEntry(entry = "Article",
   volume       = "34",
   number       = "17",
   pages        = "2951--2956",
-  url          = "https://doi.org/10.1093/bioinformatics/bty197",
 
   textVersion  =
   paste("Hannah V Meyer, Ewan Birney (2018).",
