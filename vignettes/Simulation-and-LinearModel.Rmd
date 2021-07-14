@@ -22,15 +22,40 @@ library("ggplot2")
 
 
 
-This vignette demonstrates the usage and application of *PhenotypeSimulator*. It illustrates the workflow for generating a genetic and phenotypic dataset used for a simple model comparison. First, it shows an example of how to simulate genome-wide SNPs from a re-sampling based approach ( [Hapgen2](http://mathgen.stats.ox.ac.uk/genetics_software/hapgen/hapgen2.html)). The genotypes can then be used with *PhenotypeSimulator* to generate multiple correlated phenotypes with defined genetic and non-genetic fixed effects as well as correlation induced by kinship structure. The simulated phenotypes, genotypes, non-genetic covariates and kinship are then used with a linear mixed model framework ( [GEMMA](http://www.xzlab.org/software/GEMMAmanual.pdf)) to investigate the power of multivariate (all phenotypes are analysed jointly) and univariate models (each phenotype is analysed separately) for genome-wide association studies (GWAS). 
+This vignette demonstrates the usage and application of *PhenotypeSimulator*. It
+illustrates the workflow for generating a genetic and phenotypic dataset used
+for a simple model comparison. First, it shows an example of how to simulate
+genome-wide SNPs from a re-sampling based approach
+([Hapgen2](http://mathgen.stats.ox.ac.uk/genetics_software/hapgen/hapgen2.html)).
+The genotypes can then be used with *PhenotypeSimulator* to generate multiple
+correlated phenotypes with defined genetic and non-genetic fixed effects as well
+as correlation induced by kinship structure. The simulated phenotypes,
+genotypes, non-genetic covariates and kinship are then used with a linear mixed
+model framework ( [GEMMA](http://www.xzlab.org/software/GEMMAmanual.pdf)) to
+investigate the power of multivariate (all phenotypes are analysed jointly) and
+univariate models (each phenotype is analysed separately) for genome-wide
+association studies (GWAS).
+Chunks that demonstrate the usage of external software in bash (Hapggen2 and
+GEMMA) and chunks that depend on the fully simulated genotypes or GWAS results
+are simply echoed and not evaluated. Chunks that show summary statistics and
+correlation plots are evaluated when building this vignette and use the summary
+data provided in the `extdata` folder of the package (the .Rmd version of the
+vignette shows the chunks saving the summary data).
 
-Chunks that demonstrate the usage of external software in bash (Hapggen2 and GEMMA) and chunks that depend on the fully simulated genotypes or GWAS results are simply echoed and not evaluated. Chunks that show summary statistics and correlation plots are evaluated when building this vignette and use the summary data provided in the `extdata` folder of the package (the .Rmd version of the vignette shows the chunks saving the summary data).
-
-##Genotype simulation via Hapgen2
-
-Hapgen2 @Su2011 is a resampling-based genotype simulation tool. As such it needs a reference data set from which to sample genotypes. In the following, the 1000Genomes data from the [impute2 webpage](https://mathgen.stats.ox.ac.uk/impute/impute_v1.html#Using_IMPUTE_with_the_HapMap_Data) was used as the reference dataset. Hapgen2 and its user manual can be found and downloaded from [here](http://mathgen.stats.ox.ac.uk/genetics_software/hapgen/hapgen2.html). 
-
-The following code chunk simulates genotypes for 1000 control individuals (no cases) on chromosomes chr1 to chr22. Subsequently, the number of variants on chr5, chr7 and chr11 are counted. These chromosomes were arbitrarily chosen to contain the causal variants. We will use those numbers later as input for *PhenotypeSimulator* (providing the number of variants on the causal chromosomes is optional, but will speed up the simulation procedure).
+## Genotype simulation via Hapgen2
+Hapgen2 @Su2011 is a resampling-based genotype simulation tool. As such it needs
+a reference data set from which to sample genotypes. In the following, the
+1000Genomes data from the [impute2
+webpage](https://mathgen.stats.ox.ac.uk/impute/impute_v1.html#Using_IMPUTE_with_the_HapMap_Data)
+was used as the reference dataset. Hapgen2 and its user manual can be found and
+downloaded from
+[here](http://mathgen.stats.ox.ac.uk/genetics_software/hapgen/hapgen2.html).
+The following code chunk simulates genotypes for 1000 control individuals (no
+cases) on chromosomes chr1 to chr22. Subsequently, the number of variants on
+chr5, chr7 and chr11 are counted. These chromosomes were arbitrarily chosen to
+contain the causal variants. We will use those numbers later as input for
+*PhenotypeSimulator* (providing the number of variants on the causal chromosomes
+is optional, but will speed up the simulation procedure).
 
 ```{bash, eval=FALSE}
 hapdir=~/data/hmeyer/Supplementary/CEU.0908.impute.files
@@ -54,7 +79,16 @@ chr7=`wc -l $hapdir/genotypes_chr7_hapgen.controls.gen |cut -d " " -f 1`
 chr11=`wc -l $hapdir/genotypes_chr11_hapgen.controls.gen |cut -d " " -f 1`
 ```
 
-For the estimation of the kinship between the individuals we make use of [PLINK](https://www.cog-genomics.org/plink2) @Chang2015. By specifying --oxford-single-chr, we indicate that the input format is the 'oxford' format (.gen/.sample format, see [here](http://www.stats.ox.ac.uk/~marchini/software/gwas/file_format.html)) and convert the data into plink format (--make-bed). We then strictly prune the genotypes ( --indep-pairwise and --extract) and save the chromosome-wide output file names into a file. This file is used for merging the chromosome-wide files into a single, genome-wide genotype file. Finally, we use this pruned, genome-wide SNP file to estimate the genetic relationship of the samples.
+For the estimation of the kinship between the individuals we make use of
+[PLINK](https://www.cog-genomics.org/plink2) @Chang2015. By specifying
+--oxford-single-chr, we indicate that the input format is the 'oxford' format
+(.gen/.sample format, see
+[here](http://www.stats.ox.ac.uk/~marchini/software/gwas/file_format.html)) and
+convert the data into plink format (--make-bed). We then strictly prune the
+genotypes ( --indep-pairwise and --extract) and save the chromosome-wide output
+file names into a file. This file is used for merging the chromosome-wide files
+into a single, genome-wide genotype file. Finally, we use this pruned,
+genome-wide SNP file to estimate the genetic relationship of the samples.
 
 ```{bash, eval=FALSE}
 cd $hapdir
@@ -130,9 +164,25 @@ write.table(kinship_decomposed$vectors,
 			sep="\t", col.names=FALSE, row.names=FALSE)
 ```
 
-##Phenotype simulation via PhenotypeSimulator
+## Phenotype simulation via PhenotypeSimulator
 
-We simulate a phenotype set consisting of three traits for 1000 samples with ten genetic variant effects shared across all traits (`theta=1`; SNPs randomly sampled from the simulated genotypes) and four non-genetic covariate effects. Additional correlation between the phenotypes is simulated, induced by i) the genetic structure of the individuals (infinitesimal genetic effect through estimated kinship), ii) a correleated non-genetic effect (i.e. correlated measurement noise) and iii) an observational noise effect. For each effect component its proportion of the total genetic variance is specified (the NrSNPsChromsome in the `runSimulation` function are the values we obtained from "chr5=`wc -l $hapdir/genotypes_chr5_hapgen.controls.gen |cut -d " " -f 1`" etc. above). The non-genetic covariates consist of four independent components, two following a binomial and two following a normal distribution. The genetic variant effect was simulated to only show shared effects across traits. The remainder of the components were simulated with 80\% of their variance shared across all traits, while the rest remained independent. The total genetic variance accounted to 40\% leaving 60\% of variance explained by the noise terms. 
+We simulate a phenotype set consisting of three traits for 1000 samples with ten
+genetic variant effects shared across all traits (`theta=1`; SNPs randomly
+sampled from the simulated genotypes) and four non-genetic covariate effects.
+Additional correlation between the phenotypes is simulated, induced by i) the
+genetic structure of the individuals (infinitesimal genetic effect through
+estimated kinship), ii) a correleated non-genetic effect (i.e. correlated
+measurement noise) and iii) an observational noise effect. For each effect
+component its proportion of the total genetic variance is specified (the
+NrSNPsChromsome in the `runSimulation` function are the values we obtained from
+"chr5=`wc -l $hapdir/genotypes_chr5_hapgen.controls.gen |cut -d " " -f 1`" etc.
+above). The non-genetic covariates consist of four independent components, two
+following a binomial and two following a normal distribution. The genetic
+variant effect was simulated to only show shared effects across traits. The
+remainder of the components were simulated with 80\% of their variance shared
+across all traits, while the rest remained independent. The total genetic
+variance accounted to 40\% leaving 60\% of variance explained by the noise
+terms.
 
 
 ```{r, eval=FALSE}
@@ -181,7 +231,12 @@ saveRDS(simulation$phenoComponentsFinal,
         paste(savedir, "/simulation_phenoComponentsFinal.rds", sep=""))
 ```
 
-Figure \ref{fig:heatmaps} shows heatmaps of the trait-trait correlation (Pearson correlation) of the final phenotype $\mathbf{Y}$ and its five phenotype components: genetic variant effects $\mathbf{XB}$, non-genetic covariate effects $\mathbf{WA}$, relatedness effects $\mathbf{U}$ (infinitesimal genetic effects), non-genetic correlated effects $\mathbf{T}$ and observational noise $\mathbf{\Psi}$.
+Figure \ref{fig:heatmaps} shows heatmaps of the trait-trait correlation (Pearson
+correlation) of the final phenotype $\mathbf{Y}$ and its five phenotype
+components: genetic variant effects $\mathbf{XB}$, non-genetic covariate effects
+$\mathbf{WA}$, relatedness effects $\mathbf{U}$ (infinitesimal genetic effects),
+non-genetic correlated effects $\mathbf{T}$ and observational noise
+$\mathbf{\Psi}$.
 
 ```{r, echo=FALSE}
 savedir <- paste(system.file("extdata", package="PhenotypeSimulator"), 
@@ -263,7 +318,11 @@ ggsave(plot=p_corr,
         units="mm", width=86, height=60)
 ```
 
-The phenotypes, kinship, non-genetic covariates and the intermediate phenotype components (such as shared and independendent genetic variant effects) are saved to datadir. In addition to saving all components in .csv format, we also specify gemma as an output format. This option will create phenotype, kinship and covariate files that can directly be used as input for GEMMA. 
+The phenotypes, kinship, non-genetic covariates and the intermediate phenotype
+components (such as shared and independendent genetic variant effects) are saved
+to datadir. In addition to saving all components in .csv format, we also specify
+gemma as an output format. This option will create phenotype, kinship and
+covariate files that can directly be used as input for GEMMA.
 
 ```{r, eval=FALSE}
 # Save phenotypes, kinship and non-genetic covariates in csv and 
@@ -273,7 +332,12 @@ outdirectory <- savePheno(simulation, directory = datadir,
                             saveIntermediate=TRUE)
 ```
 
-As the simulated genotype dataset was large, we chose to sample from the number of variants on the causal chromosomes and did not read the entire genotype data set into memory. As such, the genotypes themselves are not yet in GEMMA specific format. The following code chunk (obtained from the [GEMMA user manual](http://www.xzlab.org/software/GEMMAmanual.pdf)) reformats the oxford format (.gen/.sample), to the GEMMA (or BIMBAM format):
+As the simulated genotype dataset was large, we chose to sample from the number
+of variants on the causal chromosomes and did not read the entire genotype data
+set into memory. As such, the genotypes themselves are not yet in GEMMA specific
+format. The following code chunk (obtained from the [GEMMA user
+manual](http://www.xzlab.org/software/GEMMAmanual.pdf)) reformats the oxford
+format (.gen/.sample), to the GEMMA (or BIMBAM format):
 
 ```{bash, eval=FALSE}
 for chr in `seq 1 22`; do
@@ -287,35 +351,61 @@ done
 ```
 
 
-##Genome-wide association study via GEMMA
+## Genome-wide association study via GEMMA
 
-One application of *PhenotypeSimulator* is generating phenotypes for model evaluation. As a case study, we show the use of the simulated phenotypes to evaluate the power of multivariate (all phenotypes are analysed jointly) and univariate models (each phenotype is analyses separately) for GWAS where multiple traits per individual are available. 
+One application of *PhenotypeSimulator* is generating phenotypes for model
+evaluation. As a case study, we show the use of the simulated phenotypes to
+evaluate the power of multivariate (all phenotypes are analysed jointly) and
+univariate models (each phenotype is analyses separately) for GWAS where
+multiple traits per individual are available.
+The univariate and multivariate linear mixed model as implemented in
+[GEMMA](http://www.xzlab.org/software/GEMMAmanual.pdf) @Zhou2014 are briefly
+described below.
 
-The univariate and multivariate linear mixed model as implemented in [GEMMA](http://www.xzlab.org/software/GEMMAmanual.pdf) @Zhou2014 are briefly described below.
+**Univariate linear mixed model. **
+In the univariate linear mixed model, the $N \times 1$ vector of a single
+phenotype from $N$ samples is modeled as the sum of a genetic fixed effect with
+the $N \times 1$ vector of genetic variant $\mathbf{x}$ and its effect size
+$\beta$, $\mathbf{W} = (\mathbf{w}_1, \dot, \mathbf{w}_c)$ is an $N \times C$
+matrix of $C$ covariates (fixed effects) including a column of 1s (implemented
+in *PhenotypeSimulator* via intercept_gemma=TRUE); $\alpha$ is a $C$-vector of
+the corresponding coefficients including the intercept; $\mathbf{u}$ is an
+$N$-vector of random genetic effects; $\mathbf{e}$ is an $N$-vector of
+observational noise. $\sigma_g$ and $\sigma_e$ are the variance of the genetic
+and nosie random effects; $\mathbf{K}$ is the known $N \times N$ relatedness
+matrix and $\mathbf{I}_n$ is an  $N \times N$  identity matrix. $MVN_N$  denotes
+the $N$-dimensional multivariate normal distribution.
+$$\mathbf{y} = \mathbf{x}\beta + \mathbf{W}\alpha + \mathbf{u} + \mathbf{e}$$
+with $$\mathbf{u} \sim MVN_{N}(0, \sigma_g \text{K})$$ and $$\mathbf{e} \sim
+MVN_{N}(0, \sigma_e I_N)$$
 
-**Univariate linear mixed model**
+**Multivariate linear mixed model. **
+The univariate linear mixed model can be extended to the multivariate linear
+mixed model with: $$\mathbf{Y} = x\beta^T + \mathbf{WA} + \mathbf{U} +
+\mathbf{E}$$ with $$\mathbf{U} \sim MN_{N\times P}(0, \mathbf{K},
+\mathbf{V}_g)$$ and $$\mathbf{E} \sim MN_{N\times P}(0, \mathbf{I}_N,
+\mathbf{V}_e)$$
+where $\mathbf{Y}$ is the $N \times P$ vector of $P$ phenotype from $N$ samples,
+$\mathbf{x}$ the  $N \times 1$ vector of genetic variant  and its $P \times 1$
+effect size vector $\mathbf{\beta}$.  $\mathbf{W} = (\mathbf{w}_1, \dot,
+\mathbf{w}_c)$ is an $N \times C$ matrix of $C$ covariates (fixed effects)
+including a column of 1s; $A$ is the $C \times P$-matrix of the corresponding
+coefficients including the intercept; $\mathbf{U}$ is an $N \times P$-matrix of
+random genetic effects; $\mathbf{E}$ is an $N \times P$-matrix of observational
+noise. $\mathbf{V}_g$ and $\mathbf{V}_e$ are the $P \times P$ symmetric matrices
+of the genetic and noise variance components; $\mathbf{K}$ is the known $N
+\times N$ relatedness matrix and $\mathbf{I}_n$ is an  $N \times N$  identity
+matrix. $MN(\mu, \mathbf{V}_1, \mathbf{V}_2)$ denotes a matrix normal
+distribution with mean = $\mu$, the column covariance $\mathbf{V}_1$ and the row
+covariance $\mathbf{V}_2$.
 
-In the univariate linear mixed model, the $N \times 1$ vector of a single phenotype from $N$ samples is modeled as the sum of a genetic fixed effect with the $N \times 1$ vector of genetic variant $\mathbf{x}$ and its effect size $\beta$, $\mathbf{W} = (\mathbf{w}_1, \dot, \mathbf{w}_c)$ is an $N \times C$ matrix of $C$ covariates (fixed effects) including a column of 1s (implemented in *PhenotypeSimulator* via intercept_gemma=TRUE); $\alpha$ is a $C$-vector
-of the corresponding coefficients including the intercept; $\mathbf{u}$ is an $N$-vector of random genetic effects; $\mathbf{e}$ is an $N$-vector of observational noise. $\sigma_g$ and $\sigma_e$ are the variance of the genetic and nosie random effects; $\mathbf{K}$ is the known $N \times N$ relatedness matrix and $\mathbf{I}_n$ is an  $N \times N$  identity matrix. $MVN_N$  denotes the $N$-dimensional multivariate normal distribution.
-
-$$\mathbf{y} = \mathbf{x}\beta + \mathbf{W}\alpha + \mathbf{u} + \mathbf{e}$$ 
-with 
-$$\mathbf{u} \sim MVN_{N}(0, \sigma_g \text{K})$$ and 
-$$\mathbf{e} \sim MVN_{N}(0, \sigma_e I_N)$$
-
-
-**Multivariate linear mixed model**
-
-The univariate linear mixed model can be extended to the multivariate linear mixed model with:
-$$\mathbf{Y} = x\beta^T + \mathbf{WA} + \mathbf{U} + \mathbf{E}$$ 
-with 
-$$\mathbf{U} \sim MN_{N\times P}(0, \mathbf{K}, \mathbf{V}_g)$$ and
-$$\mathbf{E} \sim MN_{N\times P}(0, \mathbf{I}_N, \mathbf{V}_e)$$
-
-where $\mathbf{Y}$ is the $N \times P$ vector of $P$ phenotype from $N$ samples, $\mathbf{x}$ the  $N \times 1$ vector of genetic variant  and its $P \times 1$ effect size vector $\mathbf{\beta}$.  $\mathbf{W} = (\mathbf{w}_1, \dot, \mathbf{w}_c)$ is an $N \times C$ matrix of $C$ covariates (fixed effects) including a column of 1s; $A$ is the $C \times P$-matrix
-of the corresponding coefficients including the intercept; $\mathbf{U}$ is an $N \times P$-matrix of random genetic effects; $\mathbf{E}$ is an $N \times P$-matrix of observational noise. $\mathbf{V}_g$ and $\mathbf{V}_e$ are the $P \times P$ symmetric matrices of the genetic and noise variance components; $\mathbf{K}$ is the known $N \times N$ relatedness matrix and $\mathbf{I}_n$ is an  $N \times N$  identity matrix. $MN(\mu, \mathbf{V}_1, \mathbf{V}_2)$ denotes a matrix normal distribution with mean = $\mu$, the column covariance $\mathbf{V}_1$ and the row covariance $\mathbf{V}_2$.  
-
-We use these models for the multi-trait analyses of the three simulated phenotypes  (multivariate linear mixed model, flags: -lmm 2  and -n 1 2 3) and the independent analyses of each of the three phenotypes (univariate linear mixed model, flags: -lmm 2  and -n 1 or -n 2 or -n 3). We disable the automatic minor allele frequency filtering by setting -maf 0. The following code chunk shows the GEMMA (version 0.96) setup to run these models on a per chromosome basis 
+We use these models for the multi-trait analyses of the three simulated
+phenotypes  (multivariate linear mixed model, flags: -lmm 2  and -n 1 2 3) and
+the independent analyses of each of the three phenotypes (univariate linear
+mixed model, flags: -lmm 2  and -n 1 or -n 2 or -n 3). We disable the automatic
+minor allele frequency filtering by setting -maf 0. The following code chunk
+shows the GEMMA (version 0.96) setup to run these models on a per chromosome
+basis
 
 ```{bash, eval=FALSE}
 hapdir=/homes//hannah/data/hmeyer/Supplementary/CEU.0908.impute.files
@@ -380,7 +470,10 @@ for chr in `seq 1 22`; do
 done
 ```
 
-Subsequently, we extract the columns of interest for the power analysis (simply based on p-values). The last column contains the p-value of th analyses, the second column contains the genetic variant identifier. We extract these columns and write the per-chromosome files into a genome-wide file.
+Subsequently, we extract the columns of interest for the power analysis (simply
+based on p-values). The last column contains the p-value of th analyses, the
+second column contains the genetic variant identifier. We extract these columns
+and write the per-chromosome files into a genome-wide file.
 
 
 ```{bash, eval=FALSE}
@@ -400,9 +493,9 @@ for chr in `seq 1 22`; do
 done
 ```
 
-
-
-The quantile-quantile plots of p-values observed from the univariate and multivariate LMMs fitted to all genome-wide SNPs are depicted in Figure \ref{fig:qqplot}. 
+The quantile-quantile plots of p-values observed from the univariate and
+multivariate LMMs fitted to all genome-wide SNPs are depicted in Figure
+\ref{fig:qqplot}.
 
 ```{r, eval=FALSE}
 datadir="/homes/hannah/tmp/phenotypeSimulator"
@@ -494,7 +587,13 @@ ggsave(plot=p_qq,
 knitr::include_graphics(paste(savedir, "/gwas_results_gemma_qqplot.png", sep=""))
 ```
 
-Counting the number of causal SNPs that both models can recover, we see that the multi-trait GWAS shows greater power compared to any of the single trait analyses. Here a total of four causal SNPs (Figure \ref{fig:qqplot}) compared the combined count of the single-trait GWAS of three was detected with a p-values of less than the commonly applied GWAS threshold of $5 \times 10^{-8}$ (Table \ref{tab:sigSNPs}). The p-values of the three univariate analyses were adjusted for multiple hypothesis testing (Bonferroni adjustment).
+Counting the number of causal SNPs that both models can recover, we see that the
+multi-trait GWAS shows greater power compared to any of the single trait
+analyses. Here a total of four causal SNPs (Figure \ref{fig:qqplot}) compared
+the combined count of the single-trait GWAS of three was detected with a
+p-values of less than the commonly applied GWAS threshold of $5 \times 10^{-8}$
+(Table \ref{tab:sigSNPs}). The p-values of the three univariate analyses were
+adjusted for multiple hypothesis testing (Bonferroni adjustment).
 
 ```{r, eval=FALSE}
 sigSNPs <- dplyr::filter(pvalues, causal == "simulated causal",
@@ -524,7 +623,14 @@ knitr::kable(sigSNPs[, c(1,4,5,7)],
 ```
 
 
-The ability of linear (mixed) models to detect the SNPs for which a phenotype effect was modelled depends on the allele frequencies of these SNPs and the effect size @Cohen1992,@Halsey2015: the higher the effect size and/or the allele frequencies the better the power to detect the SNP effects. The p-values of all SNPs with simulated effect on the phenotypes in relation to their allele frequencies and simulated effect sizes are depicted in Figure \ref{fig:freq-beta}. There is a strong trend for SNPs with high allele frequencies and large simulated effect sizes to have low p-values. 
+The ability of linear (mixed) models to detect the SNPs for which a phenotype
+effect was modelled depends on the allele frequencies of these SNPs and the
+effect size @Cohen1992,@Halsey2015: the higher the effect size and/or the allele
+frequencies the better the power to detect the SNP effects. The p-values of all
+SNPs with simulated effect on the phenotypes in relation to their allele
+frequencies and simulated effect sizes are depicted in Figure
+\ref{fig:freq-beta}. There is a strong trend for SNPs with high allele
+frequencies and large simulated effect sizes to have low p-values.
 
 ```{r, eval=FALSE}
 # Read the SNPs simulated to have an effect on the phenotype and their SNP 
@@ -544,7 +650,9 @@ simulated_withEffect <- dplyr::filter(pvalues, rsID %in% SNPnames)
 ```
 
 ```{r, echo=FALSE, eval=FALSE}
-write.table(simulated_withEffect, paste(savedir,"/simulated_withEffect.csv", sep=""), col.names=TRUE, quote=FALSE,row.names=FALSE)
+write.table(simulated_withEffect,
+            paste(savedir,"/simulated_withEffect.csv", sep=""), col.names=TRUE,
+            quote=FALSE,row.names=FALSE)
 ```
 
 ```{r, echo=FALSE, eval=TRUE}
@@ -581,7 +689,8 @@ simulated_withEffect$freq <- rep(minor[which(SNPnames %in% effects$rsID)], each=
 # plot association p-values in relation to the absolute value of the simulated 
 # effect sizes and the SNPs allele frequencies
 p <- ggplot(dplyr::filter(simulated_withEffect, trait != "all"))
-p <- p + geom_point(aes(x=freq, y=-log10(observed), color=abs(beta), shape=trait)) +
+p <- p +
+    geom_point(aes(x=freq, y=-log10(observed), color=abs(beta), shape=trait)) +
     geom_hline(yintercept=-log10(5*10^(-8)), color="darkgrey") +
     scale_color_gradientn(colours=c('#f0f9e8','#ccebc5','#a8ddb5','#7bccc4',
                                     '#4eb3d3','#2b8cbe','#08589e'),
@@ -592,6 +701,7 @@ p <- p + geom_point(aes(x=freq, y=-log10(observed), color=abs(beta), shape=trait
     theme_bw()
 print(p)
 ```
+
 ```{r echo=FALSE, eval=FALSE, out.width='100%'}
 ggsave(plot=p, 
 		filename=paste(savedir, "/effectsizes-freq-pvalues.pdf", sep=""), 
