@@ -124,6 +124,20 @@ test_that('readStandardGenotypes returns correctly formated genotypes HAPGEN2', 
     expect_true(all(data_hapgen$genotypes %in% c(0,1,2)))
 })
 
+test_that('readStandardGenotypes returns correctly formated delim genotypes', {
+    filename_delim  <- system.file("extdata/genotypes/",
+                                   "genotypes_chr22.csv", 
+                                   package = "PhenotypeSimulator") 
+    data_delim <- readStandardGenotypes(N=50, filename=filename_delim, 
+                                        format="delim")
+    expect_equal(dim(data_delim$genotypes)[1], length(data_delim$id_samples))
+    expect_equal(dim(data_delim$genotypes)[2], length(data_delim$id_snps))
+    expect_identical(data_delim$id_snps[1], "22-16050408-rs149201999")
+    expect_identical(data_delim$id_samples[1], "ID_1")
+    expect_true(is.null(data_delim$format_files))
+    expect_true(all(data_delim$genotypes %in% c(0,1,2)))
+})
+
 test_that('readStandardGenotypes fails with sample error', {
     filename_plink  <- system.file("extdata/genotypes/plink/",
                                    "genotypes_plink.bed",

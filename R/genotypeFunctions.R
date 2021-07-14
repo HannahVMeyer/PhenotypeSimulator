@@ -192,12 +192,12 @@ simulateGenotypes <- function(N, NrSNP=5000, frequencies=c(0.1, 0.2, 0.4),
 #' with minor allele first. The remaining columns are the mean genotypes of
 #' different individuals – numbers between 0 and 2 that represents the
 #' (posterior) mean genotype, or dosage of the minor allele.
-#' \item delim: a [delimter]-delimited file of [NrSNPs x NrSamples] genotypes
-#' with the snpIDs in the first column and the sampleIDs in the first row and
-#' genotypes encoded as numbers between 0 and 2 representing the (posterior)
-#' mean genotype, or dosage of the minor allele. Can be user-genotypes or
-#' genotypes simulated with foward-time algorithms such as simupop
-#' (\url{http://simupop.sourceforge.net/Main/HomePage}) or MetaSim
+#' \item delim: a [delimter]-delimited file of [(NrSNPs+1) x (NrSamples+1)]
+#' genotypes with the snpIDs in the first column and the sampleIDs in the first
+#' row and genotypes encoded as numbers between 0 and 2 representing the
+#' (posterior) mean genotype, or dosage of the minor allele. Can be
+#' user-genotypes or genotypes simulated with foward-time algorithms such as
+#' simupop (\url{http://simupop.sourceforge.net/Main/HomePage}) or MetaSim
 #' (\url{project.org/web/packages/rmetasim/vignettes/CreatingLandscapes.html}),
 #' that allow for user-specified output formats.
 #' }}
@@ -233,6 +233,12 @@ simulateGenotypes <- function(N, NrSNP=5000, frequencies=c(0.1, 0.2, 0.4),
 #' filename_plink <- gsub("\\.bed", "", filename_plink)
 #' data_plink <- readStandardGenotypes(N=100, filename=filename_plink,
 #' format="plink")
+#' 
+#' filename_delim  <- system.file("extdata/genotypes/",
+#' "genotypes_chr22.csv",
+#' package = "PhenotypeSimulator")
+#' data_delim <- readStandardGenotypes(N=50, filename=filename_delim,
+#' format="delim")
 readStandardGenotypes <- function(N, filename, format = NULL,
                                   verbose=TRUE, sampleID = "ID_",
                                   snpID = "SNP_", delimiter = ",") {
@@ -315,11 +321,11 @@ readStandardGenotypes <- function(N, filename, format = NULL,
         }
         id_samples <- paste(sampleID, 1:N, "_", gsub(":", "", data$V1), sep="")
         id_snps <- paste(snpID, 0:(ncol(genotypes) -1), sep="")
-        format_files = NULL
+        format_files <- NULL
     } else if (format == "delim") {
-        data <- data.table::fread(filename, data.table=FALSE,
+        data <- data.table::fread(filename, data.table=FALSE, header=TRUE,
                                   sep=delimiter)
-        id_snps <- data$V1
+        id_snps <- data[,1]
         genotypes <- t(data[,-1])
         colnames(genotypes) <- id_snps
         if (N > nrow(genotypes)) {
