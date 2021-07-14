@@ -616,7 +616,8 @@ ggsave(plot=p_qq,
 ```
 
 ```{r qqplot, echo=FALSE, fig.cap="\\label{fig:qqplot}Quantile-quantile plots of p-values observed from the multivariate linear mixed model (mvLMM, traits:all) and the univariate linear mixed models (uvLMM, traits: trait1/trait2/trait3) fitted to each of about eight million genome-wide SNPs (grey), including the ten SNPs for which a phenotype effect was modelled (green)." }
-knitr::include_graphics("../docs/articles/Simulation-and-LinearModel_files/figure-html/qqplot-1.png")
+#knitr::include_graphics("../docs/articles/Simulation-and-LinearModel_files/figure-html/qqplot-1.png")
+knitr::include_graphics("gwas_results_gemma_qqplot.png")
 ```
 
 

@@ -4,8 +4,14 @@
 \alias{simulateDist}
 \title{Data simulation for different distributions.}
 \usage{
-simulateDist(x, dist = c("unif", "norm", "bin", "cat_norm", "cat_unif"),
-  m = NULL, std = 1, categories = NULL, prob = NULL)
+simulateDist(
+  x,
+  dist = c("unif", "norm", "bin", "cat_norm", "cat_unif"),
+  m = NULL,
+  std = 1,
+  categories = NULL,
+  prob = NULL
+)
 }
 \arguments{
 \item{x}{The number [integer] of observations to simulate.}

@@ -4,14 +4,29 @@
 \alias{noiseFixedEffects}
 \title{Simulate noise fixed effects.}
 \usage{
-noiseFixedEffects(N, P, NrConfounders = 10, sampleID = "ID_",
-  phenoID = "Trait_", id_samples = NULL, id_phenos = NULL,
-  pTraitsAffected = 1, NrFixedEffects = 1,
-  pIndependentConfounders = 0.4, pTraitIndependentConfounders = 0.2,
-  keepSameIndependent = FALSE, distConfounders = "norm",
-  mConfounders = 0, sdConfounders = 1, catConfounders = NULL,
-  probConfounders = NULL, distBeta = "norm", mBeta = 0, sdBeta = 1,
-  verbose = FALSE)
+noiseFixedEffects(
+  N,
+  P,
+  NrConfounders = 10,
+  sampleID = "ID_",
+  phenoID = "Trait_",
+  id_samples = NULL,
+  id_phenos = NULL,
+  pTraitsAffected = 1,
+  NrFixedEffects = 1,
+  pIndependentConfounders = 0.4,
+  pTraitIndependentConfounders = 0.2,
+  keepSameIndependent = FALSE,
+  distConfounders = "norm",
+  mConfounders = 0,
+  sdConfounders = 1,
+  catConfounders = NULL,
+  probConfounders = NULL,
+  distBeta = "norm",
+  mBeta = 0,
+  sdBeta = 1,
+  verbose = FALSE
+)
 }
 \arguments{
 \item{N}{Number [integer] of samples to simulate.}

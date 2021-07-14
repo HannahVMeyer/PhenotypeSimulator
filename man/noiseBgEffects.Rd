@@ -4,9 +4,18 @@
 \alias{noiseBgEffects}
 \title{Simulate observational noise effects.}
 \usage{
-noiseBgEffects(N, P, mean = 0, sd = 1, sampleID = "ID_",
-  phenoID = "Trait_", shared = TRUE, independent = TRUE,
-  id_samples = NULL, id_phenos = NULL)
+noiseBgEffects(
+  N,
+  P,
+  mean = 0,
+  sd = 1,
+  sampleID = "ID_",
+  phenoID = "Trait_",
+  shared = TRUE,
+  independent = TRUE,
+  id_samples = NULL,
+  id_phenos = NULL
+)
 }
 \arguments{
 \item{N}{Number [integer] of samples to simulate.}

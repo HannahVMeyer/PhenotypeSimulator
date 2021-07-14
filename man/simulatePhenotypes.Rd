@@ -19,18 +19,18 @@ command line, the help function can be called via
 # (not run)
 # Simulate simple phenotype of genetic and noise background effects only:
 # (not run)
-# Rscript -e "PhenotypeSimulator::simulatePhenotypes()" \\
-#--args \\ 
-#--NrSamples=100 --NrPhenotypes=15 \\
-#--tNrSNPs=10000 --cNrSNPs=30 \\
-#--SNPfrequencies=0.05,0.1,0.3,0.4 \\
-#--genVar=0.4 --h2s=0.025 --phi=0.6 --delta=0.3 --gamma=1 \\
-#--pcorr=0.8 \\
-#--NrFixedEffects=4 --NrConfounders=1,2,1,2 \\
-#--pIndependentConfounders=0,1,1,0.5 \\
-#--distConfounders=bin,cat_norm,cat_unif,norm \\
-#--probConfounders=0.2 \\
-#--catConfounders=0,3,4,0 \\
-#--directory=/tmp \\
-#--showProgress \\
+# Rscript -e "PhenotypeSimulator::simulatePhenotypes()" \
+#--args \ 
+#--NrSamples=100 --NrPhenotypes=15 \
+#--tNrSNPs=10000 --cNrSNPs=30 \
+#--SNPfrequencies=0.05,0.1,0.3,0.4 \
+#--genVar=0.4 --h2s=0.025 --phi=0.6 --delta=0.3 --gamma=1 \
+#--pcorr=0.8 \
+#--NrFixedEffects=4 --NrConfounders=1,2,1,2 \
+#--pIndependentConfounders=0,1,1,0.5 \
+#--distConfounders=bin,cat_norm,cat_unif,norm \
+#--probConfounders=0.2 \
+#--catConfounders=0,3,4,0 \
+#--directory=/tmp \
+#--showProgress \
 }

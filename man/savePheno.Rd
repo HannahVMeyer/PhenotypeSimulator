@@ -4,8 +4,15 @@
 \alias{savePheno}
 \title{Save final phenotype and phenotype components.}
 \usage{
-savePheno(simulatedData, directory, format = ".csv", outstring = "",
-  saveIntermediate = TRUE, intercept_gemma = TRUE, verbose = TRUE)
+savePheno(
+  simulatedData,
+  directory,
+  format = ".csv",
+  outstring = "",
+  saveIntermediate = TRUE,
+  intercept_gemma = TRUE,
+  verbose = TRUE
+)
 }
 \arguments{
 \item{simulatedData}{Named list of i) dataframe of proportion of variance 

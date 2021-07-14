@@ -4,9 +4,17 @@
 \alias{correlatedBgEffects}
 \title{Simulate correlated background effects.}
 \usage{
-correlatedBgEffects(N, P, pcorr = NULL, corr_mat = NULL,
-  sampleID = "ID_", phenoID = "Trait_", id_samples = NULL,
-  id_phenos = NULL, verbose = FALSE)
+correlatedBgEffects(
+  N,
+  P,
+  pcorr = NULL,
+  corr_mat = NULL,
+  sampleID = "ID_",
+  phenoID = "Trait_",
+  id_samples = NULL,
+  id_phenos = NULL,
+  verbose = FALSE
+)
 }
 \arguments{
 \item{N}{Number [integer] of samples to simulate.}

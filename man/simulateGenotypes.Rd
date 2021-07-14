@@ -4,8 +4,14 @@
 \alias{simulateGenotypes}
 \title{Simulate bi-allelic genotypes.}
 \usage{
-simulateGenotypes(N, NrSNP = 5000, frequencies = c(0.1, 0.2, 0.4),
-  sampleID = "ID_", snpID = "SNP_", verbose = TRUE)
+simulateGenotypes(
+  N,
+  NrSNP = 5000,
+  frequencies = c(0.1, 0.2, 0.4),
+  sampleID = "ID_",
+  snpID = "SNP_",
+  verbose = TRUE
+)
 }
 \arguments{
 \item{N}{Number of samples for which to simulate bi-allelic genotypes.}

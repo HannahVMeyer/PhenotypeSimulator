@@ -4,9 +4,16 @@
 \alias{geneticBgEffects}
 \title{Simulate infinitesimal genetic effects (reflecting sample kinship).}
 \usage{
-geneticBgEffects(P, N, kinship, phenoID = "Trait_",
-  id_samples = colnames(kinship), shared = TRUE, independent = TRUE,
-  id_phenos = NULL)
+geneticBgEffects(
+  P,
+  N,
+  kinship,
+  phenoID = "Trait_",
+  id_samples = colnames(kinship),
+  shared = TRUE,
+  independent = TRUE,
+  id_phenos = NULL
+)
 }
 \arguments{
 \item{P}{Number [integer] of phenotypes to simulate .}

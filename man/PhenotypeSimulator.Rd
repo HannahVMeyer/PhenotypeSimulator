@@ -3,11 +3,9 @@
 \docType{package}
 \name{PhenotypeSimulator}
 \alias{PhenotypeSimulator}
-\alias{PhenotypeSimulator-package}
 \title{PhenotypeSimulator: A package for simulating phenotypes from different
 genetic and noise components}
 \description{
-PhenotypeSimulator: A package for simulating phenotypes from different
-genetic and noise components
+Type, Name and Dependencies
 }
 \keyword{internal}

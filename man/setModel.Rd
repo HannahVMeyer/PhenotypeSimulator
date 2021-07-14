@@ -4,13 +4,28 @@
 \alias{setModel}
 \title{Set simulation model.}
 \usage{
-setModel(genVar = NULL, h2s = NULL, theta = 0.8, h2bg = NULL,
-  eta = 0.8, noiseVar = NULL, delta = NULL, gamma = 0.8,
-  rho = NULL, phi = NULL, alpha = 0.8, pcorr = 0.6,
-  pIndependentConfounders = 0.4, pTraitIndependentConfounders = 0.2,
-  pIndependentGenetic = 0.4, pTraitIndependentGenetic = 0.2,
-  proportionNonlinear = 0, cNrSNP = NULL, NrConfounders = 10,
-  verbose = TRUE)
+setModel(
+  genVar = NULL,
+  h2s = NULL,
+  theta = 0.8,
+  h2bg = NULL,
+  eta = 0.8,
+  noiseVar = NULL,
+  delta = NULL,
+  gamma = 0.8,
+  rho = NULL,
+  phi = NULL,
+  alpha = 0.8,
+  pcorr = 0.6,
+  pIndependentConfounders = 0.4,
+  pTraitIndependentConfounders = 0.2,
+  pIndependentGenetic = 0.4,
+  pTraitIndependentGenetic = 0.2,
+  proportionNonlinear = 0,
+  cNrSNP = NULL,
+  NrConfounders = 10,
+  verbose = TRUE
+)
 }
 \arguments{
 \item{genVar}{Total genetic variance [double].}

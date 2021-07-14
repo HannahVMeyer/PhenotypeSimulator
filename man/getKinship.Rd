@@ -4,9 +4,17 @@
 \alias{getKinship}
 \title{Get genetic kinship.}
 \usage{
-getKinship(N, sampleID = "ID_", X = NULL, kinshipfile = NULL,
-  id_samples = NULL, standardise = FALSE, sep = ",", header = TRUE,
-  verbose = TRUE)
+getKinship(
+  N,
+  sampleID = "ID_",
+  X = NULL,
+  kinshipfile = NULL,
+  id_samples = NULL,
+  standardise = FALSE,
+  sep = ",",
+  header = TRUE,
+  verbose = TRUE
+)
 }
 \arguments{
 \item{N}{Number [integer] of samples to simulate.}

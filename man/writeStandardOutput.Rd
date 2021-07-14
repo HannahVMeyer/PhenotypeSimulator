@@ -4,13 +4,26 @@
 \alias{writeStandardOutput}
 \title{Write simulated data into formats used by standard GWAS software.}
 \usage{
-writeStandardOutput(directory, phenotypes = NULL, genotypes = NULL,
-  additionalPhenotypes = NULL, covariates = NULL, kinship = NULL,
-  eval_kinship = NULL, evec_kinship = NULL, id_samples, id_snps,
-  id_phenos, outstring = NULL, standardInput_samples = NULL,
-  standardInput_genotypes = NULL, format = NULL,
-  intercept_gemma = FALSE, nameAdditional = "_nonLinear",
-  verbose = TRUE)
+writeStandardOutput(
+  directory,
+  phenotypes = NULL,
+  genotypes = NULL,
+  additionalPhenotypes = NULL,
+  covariates = NULL,
+  kinship = NULL,
+  eval_kinship = NULL,
+  evec_kinship = NULL,
+  id_samples,
+  id_snps,
+  id_phenos,
+  outstring = NULL,
+  standardInput_samples = NULL,
+  standardInput_genotypes = NULL,
+  format = NULL,
+  intercept_gemma = FALSE,
+  nameAdditional = "_nonLinear",
+  verbose = TRUE
+)
 }
 \arguments{
 \item{directory}{Absolute path (no tilde expansion) to parent directory 
@@ -127,34 +140,34 @@ covariates, P for Continuous Phenotype, B for Binary Phenotype (0 = Controls,
 1 = Cases). c) Individual information: one line for each individual 
 containing the information specified by the entries of the header line.
 Entries of the sample file are separated by spaces.
-\item bimbam format: consists of a) a simple, tab-separated phenotype file 
-without sample or phenotype header/index (Ysim_bimbam.txt) and b) the mean 
-genotype file format which is a single file, without information on individuals: 
-(genotypes.bimbam). From \url{http://www.haplotype.org/bimbam.html}: 
-The first column of the mean genotype files is the SNP ID, the second and 
-third columns are allele types with minor allele first. The rest columns are 
-the mean genotypes of different individuals – numbers between 0 and 2 that 
-represents the (posterior) mean genotype, or dosage of the minor allele.
-\item gemma format: consists of a) a simple, tab-separated phenotype file 
-without sample or phenotype header/index (Ysim_gemma.txt) and b) the mean 
-genotype file format which is a single file, without information on 
-individuals(genotypes.gemma); a) and b) both the same as above for bimbam 
-format). In addition and if applicable, c) a kinship file (kinship_gemma.txt)
-and d) covariate file (Covs_gemma.txt). From 
-\url{http://www.xzlab.org/software/GEMMAmanual.pdf}: The kinship file 
-contains a NrSample × NrSample matrix, where each row and each column 
-corresponds to individuals in the same order as in the mean genotype file, 
-and ith row and jth column is a number indicating the relatedness value 
-between ith and jth individuals. The covariates file has the same format as 
-the phenotype file dsecribed above and must contain a column of 1’s if one 
+\item bimbam format: consists of a) a simple, tab-separated phenotype file
+without sample or phenotype header/index (Ysim_bimbam.txt) and b) the mean
+genotype file format which is a single file, without information on
+individuals: (genotypes.bimbam). From the bimbam documentation at
+\url{http://www.haplotype.org/software.html}: The first column of the mean
+genotype files is the SNP ID, the second and third columns are allele types
+with minor allele first. The rest columns are the mean genotypes of different
+individuals – numbers between 0 and 2 that represents the (posterior) mean
+genotype, or dosage of the minor allele. \item gemma format: consists of a) a
+simple, tab-separated phenotype file without sample or phenotype header/index
+(Ysim_gemma.txt) and b) the mean genotype file format which is a single file,
+without information on individuals(genotypes.gemma); a) and b) both the same
+as above for bimbam format). In addition and if applicable, c) a kinship file
+(kinship_gemma.txt) and d) covariate file (Covs_gemma.txt). From
+\url{http://www.xzlab.org/software/GEMMAmanual.pdf}: The kinship file
+contains a NrSample × NrSample matrix, where each row and each column
+corresponds to individuals in the same order as in the mean genotype file,
+and ith row and jth column is a number indicating the relatedness value
+between ith and jth individuals. The covariates file has the same format as
+the phenotype file dsecribed above and must contain a column of 1’s if one
 wants to include an intercept term (set parameter intercept_gemma=TRUE).
-\item limmbo format: consists of a) a comma-separated phenotype file 
-without sample IDs as index and phenotype IDs as header (Ysim_limmbo.csv),
-b) the mean genotype file format with one genetic variant per line. The
-first column contains the variant ID, column 2-N+1 contain the genotype code
-(numbers between 0 and 2 that represent the (posterior) mean genotype/dosage
-of the minor allele) for N samples, c)  a kinship file (kinship_limmbo.csv)
-and d) covariate file (covs_limmbo.csv). From
+\item limmbo format: consists of a) a comma-separated phenotype file without
+sample IDs as index and phenotype IDs as header (Ysim_limmbo.csv), b) the
+mean genotype file format with one genetic variant per line. The first column
+contains the variant ID, column 2-N+1 contain the genotype code (numbers
+between 0 and 2 that represent the (posterior) mean genotype/dosage of the
+minor allele) for N samples, c)  a kinship file (kinship_limmbo.csv) and d)
+covariate file (covs_limmbo.csv). From
 
 }
 }

@@ -4,11 +4,23 @@
 \alias{getCausalSNPs}
 \title{Draw random SNPs from genotypes.}
 \usage{
-getCausalSNPs(N, NrCausalSNPs = 20, genotypes = NULL, chr = NULL,
-  NrSNPsOnChromosome = NULL, NrChrCausal = NULL,
-  genoFilePrefix = NULL, genoFileSuffix = NULL, format = "delim",
-  delimiter = ",", header = FALSE, skipFields = NULL,
-  probabilities = FALSE, sampleID = "ID_", verbose = TRUE)
+getCausalSNPs(
+  N,
+  NrCausalSNPs = 20,
+  genotypes = NULL,
+  chr = NULL,
+  NrSNPsOnChromosome = NULL,
+  NrChrCausal = NULL,
+  genoFilePrefix = NULL,
+  genoFileSuffix = NULL,
+  format = "delim",
+  delimiter = ",",
+  header = FALSE,
+  skipFields = NULL,
+  probabilities = FALSE,
+  sampleID = "ID_",
+  verbose = TRUE
+)
 }
 \arguments{
 \item{N}{Number [integer] of samples to simulate.}
