@@ -6,20 +6,20 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Using PhenotypeSimulator to simulate phenotypes based on an example dataset • PhenotypeSimulator</title>
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
+<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
+<script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
 <script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
 <meta property="og:title" content="Using PhenotypeSimulator to simulate phenotypes based on an example dataset">
-<meta property="og:description" content="">
-<meta name="twitter:card" content="summary">
+<meta property="og:description" content="PhenotypeSimulator">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
 </head>
-<body>
+<body data-spy="scroll" data-target="#toc">
     <div class="container template-article">
       <header><div class="navbar navbar-standard navbar-fixed-top" role="navigation">
   <div class="container">
@@ -32,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">PhenotypeSimulator</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.4</span>
       </span>
     </div>
 
@@ -40,13 +40,13 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="../index.html">
-    <span class="fa fa-home"></span>
+    <span class="fas fa-home"></span>
      
   </a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    <span class="fa fa-file"></span>
+    <span class="fas fa-file"></span>
      
     documentation
      
@@ -71,21 +71,21 @@
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="../news/index.html">
-    <span class="fa fa-newspaper-o"></span>
+    <span class="fas fa-newspaper-o"></span>
      
     news
   </a>
 </li>
 <li>
   <a href="../reference/index.html">
-    <span class="fa fa-code"></span>
+    <span class="fas fa-code"></span>
      
     functions
   </a>
 </li>
 <li>
   <a href="https://github.com/HannahVMeyer/PhenotypeSimulator">
-    <span class="fa fa-github fa-lg"></span>
+    <span class="fas fa-github fa-lg"></span>
      
     github
   </a>
@@ -100,13 +100,13 @@
 
       
 
-      </header><div class="row">
+      </header><script src="SimulationBasedOnExampleData_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1>Using PhenotypeSimulator to simulate phenotypes based on an example dataset</h1>
+      <h1 data-toc-skip>Using PhenotypeSimulator to simulate phenotypes based on an example dataset</h1>
                         <h4 class="author">Hannah Meyer</h4>
             
-            <h4 class="date">2019-09-02</h4>
+            <h4 class="date">2021-07-14</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/HannahVMeyer/PhenotypeSimulator/blob/master/vignettes/SimulationBasedOnExampleData.Rmd"><code>vignettes/SimulationBasedOnExampleData.Rmd</code></a></small>
       <div class="hidden name"><code>SimulationBasedOnExampleData.Rmd</code></div>
@@ -118,7 +118,7 @@
 <p><em>PhenotypeSimulator</em> allows for the simulation of high-dimensional phenotypes comprised from a number of different components: genetic variant and population- genetic effects, non-genetic covariates, correlated and observational noise effects. In this vignette, we show the usefulness of being able to specify different phenotype components with distinct properties. We demonstrate how different phenotype components relate directly to a real high-dimensional, image-derived data set of cardiac morphology.</p>
 <p>Figure  shows the average left ventricular wall thickness of 1,185 healthy volunteers measured at more than 27,000 positions in the left ventricle of the heart <span class="citation">[1]</span> <span class="citation">[2]</span>.</p>
 <div class="figure" style="text-align: center">
-<img src="" alt="\label{fig:wallthickness}**Left ventricular wall thickness and contributing factors.** Left ventricular wall thickness was measured at more than 27k positions in a cohort of 1,185 healthy volunteers. The average wall thickness at each position is depicted in saturated colours (the mesh depicts the right ventricle for reference). Heart wall thickness is determined by an interplay of genetic (green arrows) and non-genetic factors (grey arrows). Additional correlation between positional thickness can be observed for measures in close spatial proximity."><p class="caption">
+<img src="../../../../../private/var/folders/rc/xlxbh6n92qzbm6dh_qqcd56h0000gq/T/RtmpKT8ktk/temp_libpath125b9230ff1f8/PhenotypeSimulator/extdata/vignettes/wallthickness-min.png" alt="\label{fig:wallthickness}**Left ventricular wall thickness and contributing factors.** Left ventricular wall thickness was measured at more than 27k positions in a cohort of 1,185 healthy volunteers. The average wall thickness at each position is depicted in saturated colours (the mesh depicts the right ventricle for reference). Heart wall thickness is determined by an interplay of genetic (green arrows) and non-genetic factors (grey arrows). Additional correlation between positional thickness can be observed for measures in close spatial proximity." width="236"><p class="caption">
 <strong>Left ventricular wall thickness and contributing factors.</strong> Left ventricular wall thickness was measured at more than 27k positions in a cohort of 1,185 healthy volunteers. The average wall thickness at each position is depicted in saturated colours (the mesh depicts the right ventricle for reference). Heart wall thickness is determined by an interplay of genetic (green arrows) and non-genetic factors (grey arrows). Additional correlation between positional thickness can be observed for measures in close spatial proximity.
 </p>
 </div>
@@ -128,72 +128,75 @@
 <h2 class="hasAnchor">
 <a href="#cardiac-morphology-data" class="anchor"></a>Cardiac morphology data</h2>
 <p>The following section depicts data from 100 randomly selected participants of the 1,185 healthy volunteers of the original study. From the 27k heart wall thickness measurements, a subset of 1,000 measurements ie. phenotypes was chosen to depict the correlation pattern.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(PhenotypeSimulator)</a></code></pre></div>
-<pre><code>## Registered S3 method overwritten by 'R.oo':
-##   method        from       
-##   throw.default R.methodsS3</code></pre>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(ggplot2)</a>
-<a class="sourceLine" id="cb3-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb3-3" data-line-number="3">phenofile &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"extdata/vignettes/pheno_small.rds"</span>, </a>
-<a class="sourceLine" id="cb3-4" data-line-number="4">                            <span class="dt">package =</span> <span class="st">"PhenotypeSimulator"</span>)</a>
-<a class="sourceLine" id="cb3-5" data-line-number="5">covsfile &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"extdata/vignettes/covs.rds"</span>, </a>
-<a class="sourceLine" id="cb3-6" data-line-number="6">                            <span class="dt">package =</span> <span class="st">"PhenotypeSimulator"</span>)</a>
-<a class="sourceLine" id="cb3-7" data-line-number="7"></a>
-<a class="sourceLine" id="cb3-8" data-line-number="8">pheno &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/readRDS.html">readRDS</a></span>(phenofile)</a>
-<a class="sourceLine" id="cb3-9" data-line-number="9">covs &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/readRDS.html">readRDS</a></span>(covsfile)</a>
-<a class="sourceLine" id="cb3-10" data-line-number="10"></a>
-<a class="sourceLine" id="cb3-11" data-line-number="11"><span class="kw"><a href="https://rdrr.io/r/base/dim.html">dim</a></span>(pheno)</a></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/HannahVMeyer/PhenotypeSimulator">PhenotypeSimulator</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org">ggplot2</a></span><span class="op">)</span>
+
+<span class="va">phenofile</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"extdata/vignettes/pheno_small.rds"</span>, 
+                            package <span class="op">=</span> <span class="st">"PhenotypeSimulator"</span><span class="op">)</span>
+<span class="va">covsfile</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"extdata/vignettes/covs.rds"</span>, 
+                            package <span class="op">=</span> <span class="st">"PhenotypeSimulator"</span><span class="op">)</span>
+
+<span class="va">pheno</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html">readRDS</a></span><span class="op">(</span><span class="va">phenofile</span><span class="op">)</span>
+<span class="va">covs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html">readRDS</a></span><span class="op">(</span><span class="va">covsfile</span><span class="op">)</span>
+
+<span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">pheno</span><span class="op">)</span></code></pre></div>
 <pre><code>## [1]  100 1000</code></pre>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/dim.html">dim</a></span>(covs)</a></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">covs</span><span class="op">)</span></code></pre></div>
 <pre><code>## [1] 100   5</code></pre>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span>(covs)</a></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">covs</span><span class="op">)</span></code></pre></div>
 <pre><code>## [1] "Sex"    "Age"    "Height" "Weight" "Slices"</code></pre>
 <p>As example covariates of the dataset, age, height, weights, sex and the number slices in the 2D cardiac MRI were chosen (see original publication for details on phenotypes <span class="citation">[1]</span>). Figure  shows the distribution of these covariates across the 100 individuals.</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1">covs_melt &lt;-<span class="st"> </span>reshape2<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/reshape2/man/melt.html">melt</a></span>(covs, <span class="dt">value.name=</span><span class="st">"meassure"</span>, </a>
-<a class="sourceLine" id="cb9-2" data-line-number="2">                            <span class="dt">variable.name=</span><span class="st">"covariate"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">covs_melt</span> <span class="op">&lt;-</span> <span class="fu">reshape2</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/reshape2/man/melt.html">melt</a></span><span class="op">(</span><span class="va">covs</span>, value.name<span class="op">=</span><span class="st">"meassure"</span>, 
+                            variable.name<span class="op">=</span><span class="st">"covariate"</span><span class="op">)</span></code></pre></div>
 <pre><code>## No id variables; using all as measure variables</code></pre>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1">covs_melt<span class="op">$</span>covariate &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/factor.html">factor</a></span>(covs_melt<span class="op">$</span>covariate,</a>
-<a class="sourceLine" id="cb11-2" data-line-number="2">                              <span class="dt">levels=</span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Age"</span>, <span class="st">"Height"</span>, <span class="st">"Weight"</span>, <span class="st">"Sex"</span>, </a>
-<a class="sourceLine" id="cb11-3" data-line-number="3">                                       <span class="st">"Slices"</span>),</a>
-<a class="sourceLine" id="cb11-4" data-line-number="4">                              <span class="dt">labels=</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Age [years]"</span>, <span class="st">"Height [cm]"</span>, </a>
-<a class="sourceLine" id="cb11-5" data-line-number="5">                                        <span class="st">"Weight [kg]"</span>, <span class="st">"Sex"</span>, <span class="st">"Slices"</span>))</a>
-<a class="sourceLine" id="cb11-6" data-line-number="6">p_cont &lt;-<span class="st"> </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span>(dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(covs_melt, covariate <span class="op">%in%</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Age [years]"</span>, </a>
-<a class="sourceLine" id="cb11-7" data-line-number="7">                                                           <span class="st">"Height [cm]"</span>, </a>
-<a class="sourceLine" id="cb11-8" data-line-number="8">                                                           <span class="st">"Weight [kg]"</span>)), </a>
-<a class="sourceLine" id="cb11-9" data-line-number="9">                   <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">x=</span>meassure))</a>
-<a class="sourceLine" id="cb11-10" data-line-number="10">p_cont &lt;-<span class="st"> </span>p_cont <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/geom_histogram.html">geom_histogram</a></span>(<span class="dt">binwidth=</span><span class="dv">1</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb11-11" data-line-number="11"><span class="st">    </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html">facet_wrap</a></span>(<span class="op">~</span>covariate, <span class="dt">scales =</span> <span class="st">"free"</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb11-12" data-line-number="12"><span class="st">    </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span>() <span class="op">+</span></a>
-<a class="sourceLine" id="cb11-13" data-line-number="13"><span class="st">    </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span>(<span class="dt">axis.title.x=</span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_blank</a></span>(),</a>
-<a class="sourceLine" id="cb11-14" data-line-number="14">          <span class="dt">strip.background =</span> <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_rect</a></span>(<span class="dt">fill=</span><span class="st">"white"</span>, <span class="dt">color=</span><span class="st">"black"</span>))</a>
-<a class="sourceLine" id="cb11-15" data-line-number="15"></a>
-<a class="sourceLine" id="cb11-16" data-line-number="16">p_cat &lt;-<span class="st"> </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span>(dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(covs_melt, covariate <span class="op">%in%</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Sex"</span>, <span class="st">"Slices"</span>)), </a>
-<a class="sourceLine" id="cb11-17" data-line-number="17">                   <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">x=</span>meassure))</a>
-<a class="sourceLine" id="cb11-18" data-line-number="18">p_cat &lt;-<span class="st"> </span>p_cat <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/geom_bar.html">geom_bar</a></span>(<span class="kw"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">x=</span>meassure)) <span class="op">+</span></a>
-<a class="sourceLine" id="cb11-19" data-line-number="19"><span class="st">    </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html">facet_wrap</a></span>(<span class="op">~</span>covariate, <span class="dt">scales =</span> <span class="st">"free"</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb11-20" data-line-number="20"><span class="st">    </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span>() <span class="op">+</span></a>
-<a class="sourceLine" id="cb11-21" data-line-number="21"><span class="st">    </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span>(<span class="dt">axis.title.x=</span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_blank</a></span>(),</a>
-<a class="sourceLine" id="cb11-22" data-line-number="22">          <span class="dt">strip.background =</span> <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_rect</a></span>(<span class="dt">fill=</span><span class="st">"white"</span>, <span class="dt">color=</span><span class="st">"black"</span>))</a>
-<a class="sourceLine" id="cb11-23" data-line-number="23"></a>
-<a class="sourceLine" id="cb11-24" data-line-number="24">combine &lt;-<span class="st"> </span>cowplot<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/cowplot/man/plot_grid.html">plot_grid</a></span>(p_cont, p_cat, <span class="dt">nrow=</span><span class="dv">2</span>) </a>
-<a class="sourceLine" id="cb11-25" data-line-number="25"><span class="kw"><a href="https://rdrr.io/r/base/print.html">print</a></span>(combine)</a></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">covs_melt</span><span class="op">$</span><span class="va">covariate</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">covs_melt</span><span class="op">$</span><span class="va">covariate</span>,
+                              levels<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Age"</span>, <span class="st">"Height"</span>, <span class="st">"Weight"</span>, <span class="st">"Sex"</span>, 
+                                       <span class="st">"Slices"</span><span class="op">)</span>,
+                              labels<span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Age [years]"</span>, <span class="st">"Height [cm]"</span>, 
+                                        <span class="st">"Weight [kg]"</span>, <span class="st">"Sex"</span>, <span class="st">"Slices"</span><span class="op">)</span><span class="op">)</span>
+<span class="va">p_cont</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">covs_melt</span>, <span class="va">covariate</span> <span class="op">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Age [years]"</span>, 
+                                                           <span class="st">"Height [cm]"</span>, 
+                                                           <span class="st">"Weight [kg]"</span><span class="op">)</span><span class="op">)</span>, 
+                   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">meassure</span><span class="op">)</span><span class="op">)</span>
+<span class="va">p_cont</span> <span class="op">&lt;-</span> <span class="va">p_cont</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_histogram.html">geom_histogram</a></span><span class="op">(</span>binwidth<span class="op">=</span><span class="fl">1</span><span class="op">)</span> <span class="op">+</span>
+    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html">facet_wrap</a></span><span class="op">(</span><span class="op">~</span><span class="va">covariate</span>, scales <span class="op">=</span> <span class="st">"free"</span><span class="op">)</span> <span class="op">+</span>
+    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
+    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>axis.title.x<span class="op">=</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_blank</a></span><span class="op">(</span><span class="op">)</span>,
+          strip.background <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_rect</a></span><span class="op">(</span>fill<span class="op">=</span><span class="st">"white"</span>, color<span class="op">=</span><span class="st">"black"</span><span class="op">)</span><span class="op">)</span>
+
+<span class="va">p_cat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">covs_melt</span>, <span class="va">covariate</span> <span class="op">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Sex"</span>, <span class="st">"Slices"</span><span class="op">)</span><span class="op">)</span>, 
+                   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">meassure</span><span class="op">)</span><span class="op">)</span>
+<span class="va">p_cat</span> <span class="op">&lt;-</span> <span class="va">p_cat</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_bar.html">geom_bar</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">meassure</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html">facet_wrap</a></span><span class="op">(</span><span class="op">~</span><span class="va">covariate</span>, scales <span class="op">=</span> <span class="st">"free"</span><span class="op">)</span> <span class="op">+</span>
+    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
+    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>axis.title.x<span class="op">=</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_blank</a></span><span class="op">(</span><span class="op">)</span>,
+          strip.background <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_rect</a></span><span class="op">(</span>fill<span class="op">=</span><span class="st">"white"</span>, color<span class="op">=</span><span class="st">"black"</span><span class="op">)</span><span class="op">)</span>
+
+<span class="va">combine</span> <span class="op">&lt;-</span> <span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://wilkelab.org/cowplot/reference/plot_grid.html">plot_grid</a></span><span class="op">(</span><span class="va">p_cont</span>, <span class="va">p_cat</span>, nrow<span class="op">=</span><span class="fl">2</span><span class="op">)</span> 
+<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">combine</span><span class="op">)</span></code></pre></div>
 <div class="figure" style="text-align: center">
 <img src="SimulationBasedOnExampleData_files/figure-html/distribution-1.png" alt="\label{fig:distribution_covs}**Distribution of covariates.** Histograms of the reduced cohort data (100 individuals) for sex, age, height, weight and number of 2D cardiac MRI slices." width="700"><p class="caption">
 <strong>Distribution of covariates.</strong> Histograms of the reduced cohort data (100 individuals) for sex, age, height, weight and number of 2D cardiac MRI slices.
 </p>
 </div>
 <p>The correlation of the 1,000 left-ventricular wall thickness measurements is shown in Figure . While we don’t know the exact influences of each covariate, the genetic effects or the observational noise, we can clearly see that there is spatial correlation effect, where positions in proximity (close to the diagonal) in general are more correlated than more distant positions.</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1">cor_pheno &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/stats/cor.html">cor</a></span>(pheno)</a>
-<a class="sourceLine" id="cb12-2" data-line-number="2">gplots<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/gplots/man/heatmap.2.html">heatmap.2</a></span>(cor_pheno, <span class="dt">trace=</span><span class="st">"none"</span>, <span class="dt">dendrogram=</span><span class="st">"none"</span>, <span class="dt">keysize=</span><span class="dv">1</span>,</a>
-<a class="sourceLine" id="cb12-3" data-line-number="3">                  <span class="dt">col=</span><span class="kw"><a href="https://rdrr.io/r/grDevices/colorRamp.html">colorRampPalette</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"white"</span>, <span class="st">"#5BBCD6"</span>)),</a>
-<a class="sourceLine" id="cb12-4" data-line-number="4">                  <span class="dt">labRow=</span><span class="ot">FALSE</span>, <span class="dt">labCol=</span><span class="ot">FALSE</span>,</a>
-<a class="sourceLine" id="cb12-5" data-line-number="5">                  <span class="dt">breaks=</span><span class="kw"><a href="https://rdrr.io/r/base/seq.html">seq</a></span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="fl">0.001</span>),</a>
-<a class="sourceLine" id="cb12-6" data-line-number="6">                  <span class="dt">key.title=</span><span class="st">""</span>,</a>
-<a class="sourceLine" id="cb12-7" data-line-number="7">                  <span class="dt">key.xlab=</span><span class="st">"Pearson's correlation coefficient"</span>,</a>
-<a class="sourceLine" id="cb12-8" data-line-number="8">                  <span class="dt">key.ylab=</span><span class="st">""</span>,</a>
-<a class="sourceLine" id="cb12-9" data-line-number="9">                  <span class="dt">density.info=</span><span class="st">"none"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">cor_pheno</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cor</a></span><span class="op">(</span><span class="va">pheno</span><span class="op">)</span>
+<span class="fu">gplots</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/gplots/man/heatmap.2.html">heatmap.2</a></span><span class="op">(</span><span class="va">cor_pheno</span>, trace<span class="op">=</span><span class="st">"none"</span>, dendrogram<span class="op">=</span><span class="st">"none"</span>, keysize<span class="op">=</span><span class="fl">1</span>,
+                  col<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/grDevices/colorRamp.html">colorRampPalette</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"white"</span>, <span class="st">"#5BBCD6"</span><span class="op">)</span><span class="op">)</span>,
+                  labRow<span class="op">=</span><span class="cn">FALSE</span>, labCol<span class="op">=</span><span class="cn">FALSE</span>,
+                  breaks<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">1</span>,<span class="fl">0.001</span><span class="op">)</span>,
+                  key.title<span class="op">=</span><span class="st">""</span>,
+                  key.xlab<span class="op">=</span><span class="st">"Pearson's correlation coefficient"</span>,
+                  key.ylab<span class="op">=</span><span class="st">""</span>,
+                  density.info<span class="op">=</span><span class="st">"none"</span><span class="op">)</span></code></pre></div>
 <div class="figure" style="text-align: center">
-<img src="" alt="\label{fig:corpheno}\textbf{Correlation of left ventricular wall thickness measurements.}" width="\textwidth"><p class="caption">
+<img src="../docs/articles/SimulationBasedOnExampleData_files/figure-html/pheno-1.png" alt="\label{fig:corpheno}\textbf{Correlation of left ventricular wall thickness measurements.}" width="\textwidth"><p class="caption">
 
 </p>
 </div>
@@ -202,85 +205,90 @@
 <h2 class="hasAnchor">
 <a href="#simulation" class="anchor"></a>Simulation</h2>
 <p>For the simulation of similar phenotype components as shown above, we make the assumption that the above distributions approximate a uniform (age), normal (weight, height) and binomial (sex) distribution. The slices are assumed to be uniformly drawn from four categories. In the following, we extract the relevant distribution parameters: mean and standard deviation for normal distribution, range for uniform distribution, and proportion of ones from binomial distribution. To approximate the spatial correlation, we get the 0.999 quantile of the correlation values.</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1">age_range &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/range.html">range</a></span>(covs<span class="op">$</span>Age)</a>
-<a class="sourceLine" id="cb13-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb13-3" data-line-number="3">weight_mean &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/mean.html">mean</a></span>(covs<span class="op">$</span>Weight)</a>
-<a class="sourceLine" id="cb13-4" data-line-number="4">weight_sd &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span>(covs<span class="op">$</span>Weight)</a>
-<a class="sourceLine" id="cb13-5" data-line-number="5"></a>
-<a class="sourceLine" id="cb13-6" data-line-number="6">height_mean &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/mean.html">mean</a></span>(covs<span class="op">$</span>Height)</a>
-<a class="sourceLine" id="cb13-7" data-line-number="7">height_sd &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span>(covs<span class="op">$</span>Height)</a>
-<a class="sourceLine" id="cb13-8" data-line-number="8"></a>
-<a class="sourceLine" id="cb13-9" data-line-number="9">slices_categories &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/length.html">length</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/unique.html">unique</a></span>(covs<span class="op">$</span>Slices))</a>
-<a class="sourceLine" id="cb13-10" data-line-number="10"></a>
-<a class="sourceLine" id="cb13-11" data-line-number="11">sex_proportion_male &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/length.html">length</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/which.html">which</a></span>(covs<span class="op">$</span>Sex<span class="op">==</span><span class="dv">1</span>))<span class="op">/</span><span class="kw"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span>(covs)</a>
-<a class="sourceLine" id="cb13-12" data-line-number="12"></a>
-<a class="sourceLine" id="cb13-13" data-line-number="13">correlation &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/stats/quantile.html">quantile</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/unlist.html">unlist</a></span>(cor_pheno[<span class="kw"><a href="https://rdrr.io/r/base/lower.tri.html">lower.tri</a></span>(cor_pheno)]), <span class="fl">0.999</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">age_range</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/range.html">range</a></span><span class="op">(</span><span class="va">covs</span><span class="op">$</span><span class="va">Age</span><span class="op">)</span>
+
+<span class="va">weight_mean</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">covs</span><span class="op">$</span><span class="va">Weight</span><span class="op">)</span>
+<span class="va">weight_sd</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">covs</span><span class="op">$</span><span class="va">Weight</span><span class="op">)</span>
+
+<span class="va">height_mean</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">covs</span><span class="op">$</span><span class="va">Height</span><span class="op">)</span>
+<span class="va">height_sd</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">covs</span><span class="op">$</span><span class="va">Height</span><span class="op">)</span>
+
+<span class="va">slices_categories</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span><span class="op">(</span><span class="va">covs</span><span class="op">$</span><span class="va">Slices</span><span class="op">)</span><span class="op">)</span>
+
+<span class="va">sex_proportion_male</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/which.html">which</a></span><span class="op">(</span><span class="va">covs</span><span class="op">$</span><span class="va">Sex</span><span class="op">==</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">covs</span><span class="op">)</span>
+
+<span class="va">correlation</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html">quantile</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unlist.html">unlist</a></span><span class="op">(</span><span class="va">cor_pheno</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/lower.tri.html">lower.tri</a></span><span class="op">(</span><span class="va">cor_pheno</span><span class="op">)</span><span class="op">]</span><span class="op">)</span>, <span class="fl">0.999</span><span class="op">)</span></code></pre></div>
 <p>We use these distribution parameters to simulate non-genetic covariate effects with <em>PhenotypeSimulator::noiseFixedEffects</em>. For the simulation of the spatial correlation effect, we use the above quantile cut-off for the construction of the correlation matrix with <em>PhenotypeSimulator::correlatedBgEffects</em>.</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="dv">25</span>)</a>
-<a class="sourceLine" id="cb14-2" data-line-number="2">covs_simulated &lt;-<span class="st"> </span><span class="kw"><a href="../reference/noiseFixedEffects.html">noiseFixedEffects</a></span>(<span class="dt">N=</span><span class="dv">100</span>, <span class="dt">P=</span><span class="dv">1000</span>, <span class="dt">NrFixedEffects =</span> <span class="dv">5</span>, </a>
-<a class="sourceLine" id="cb14-3" data-line-number="3">                                    <span class="dt">NrConfounders =</span> <span class="dv">1</span>,</a>
-<a class="sourceLine" id="cb14-4" data-line-number="4">                  <span class="dt">distConfounders =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"unif"</span>, <span class="st">"norm"</span>, <span class="st">"norm"</span>, <span class="st">"cat_unif"</span>, <span class="st">"bin"</span>),</a>
-<a class="sourceLine" id="cb14-5" data-line-number="5">                  <span class="dt">mConfounders =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/mean.html">mean</a></span>(age_range), weight_mean, height_mean),</a>
-<a class="sourceLine" id="cb14-6" data-line-number="6">                  <span class="dt">sdConfounders =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(age_range[<span class="dv">2</span>] <span class="op">-</span><span class="kw"><a href="https://rdrr.io/r/base/mean.html">mean</a></span>(age_range), weight_sd, </a>
-<a class="sourceLine" id="cb14-7" data-line-number="7">                                    height_sd),</a>
-<a class="sourceLine" id="cb14-8" data-line-number="8">                  <span class="dt">probConfounders =</span> sex_proportion_male,</a>
-<a class="sourceLine" id="cb14-9" data-line-number="9">                  <span class="dt">catConfounders =</span> slices_categories)</a>
-<a class="sourceLine" id="cb14-10" data-line-number="10"></a>
-<a class="sourceLine" id="cb14-11" data-line-number="11">background_simulated &lt;-<span class="st"> </span><span class="kw"><a href="../reference/correlatedBgEffects.html">correlatedBgEffects</a></span>(<span class="dt">N=</span><span class="dv">100</span>, <span class="dt">P=</span><span class="dv">1000</span>, <span class="dt">pcorr=</span>correlation)</a></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">25</span><span class="op">)</span>
+<span class="va">covs_simulated</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/noiseFixedEffects.html">noiseFixedEffects</a></span><span class="op">(</span>N<span class="op">=</span><span class="fl">100</span>, P<span class="op">=</span><span class="fl">1000</span>, NrFixedEffects <span class="op">=</span> <span class="fl">5</span>, 
+                                    NrConfounders <span class="op">=</span> <span class="fl">1</span>,
+                  distConfounders <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"unif"</span>, <span class="st">"norm"</span>, <span class="st">"norm"</span>, <span class="st">"cat_unif"</span>, <span class="st">"bin"</span><span class="op">)</span>,
+                  mConfounders <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">age_range</span><span class="op">)</span>, <span class="va">weight_mean</span>, <span class="va">height_mean</span><span class="op">)</span>,
+                  sdConfounders <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">age_range</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">age_range</span><span class="op">)</span>, <span class="va">weight_sd</span>, 
+                                    <span class="va">height_sd</span><span class="op">)</span>,
+                  probConfounders <span class="op">=</span> <span class="va">sex_proportion_male</span>,
+                  catConfounders <span class="op">=</span> <span class="va">slices_categories</span><span class="op">)</span>
+
+<span class="va">background_simulated</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/correlatedBgEffects.html">correlatedBgEffects</a></span><span class="op">(</span>N<span class="op">=</span><span class="fl">100</span>, P<span class="op">=</span><span class="fl">1000</span>, pcorr<span class="op">=</span><span class="va">correlation</span><span class="op">)</span></code></pre></div>
 <p>Figure  and  show the simulated covariates and spatial correlation based on the parameters from the real data. While the distributions are not a perfect replication (as expected with small sample sizes and our initial assumptions about the true underlying distributions of the covariates), they will serve as good approximations for simulating similar datasets as the one we based the simulations on.</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1">covs_simulated_melt &lt;-<span class="st"> </span>reshape2<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/reshape2/man/melt.html">melt</a></span>(covs_simulated<span class="op">$</span>cov, <span class="dt">value.name=</span><span class="st">"meassure"</span>, </a>
-<a class="sourceLine" id="cb15-2" data-line-number="2">                            <span class="dt">variable.name=</span><span class="st">"covariate"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">covs_simulated_melt</span> <span class="op">&lt;-</span> <span class="fu">reshape2</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/reshape2/man/melt.html">melt</a></span><span class="op">(</span><span class="va">covs_simulated</span><span class="op">$</span><span class="va">cov</span>, value.name<span class="op">=</span><span class="st">"meassure"</span>, 
+                            variable.name<span class="op">=</span><span class="st">"covariate"</span><span class="op">)</span></code></pre></div>
 <pre><code>## No id variables; using all as measure variables</code></pre>
-<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" data-line-number="1">covs_simulated_melt<span class="op">$</span>covariate &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/factor.html">factor</a></span>(covs_simulated_melt<span class="op">$</span>covariate,</a>
-<a class="sourceLine" id="cb17-2" data-line-number="2">                              <span class="dt">levels=</span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"sharedConfounder1_unif1"</span>, </a>
-<a class="sourceLine" id="cb17-3" data-line-number="3">                                       <span class="st">"sharedConfounder2_norm1"</span>, </a>
-<a class="sourceLine" id="cb17-4" data-line-number="4">                                       <span class="st">"sharedConfounder3_norm1"</span>, </a>
-<a class="sourceLine" id="cb17-5" data-line-number="5">                                       <span class="st">"sharedConfounder5_bin1"</span>, </a>
-<a class="sourceLine" id="cb17-6" data-line-number="6">                                       <span class="st">"sharedConfounder4_cat_unif1"</span>),</a>
-<a class="sourceLine" id="cb17-7" data-line-number="7">                              <span class="dt">labels=</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Age simulated"</span>, <span class="st">"Height simulated"</span>, </a>
-<a class="sourceLine" id="cb17-8" data-line-number="8">                                        <span class="st">"Weight simulated"</span>, <span class="st">"Sex simulated"</span>, </a>
-<a class="sourceLine" id="cb17-9" data-line-number="9">                                        <span class="st">"Slices simulated"</span>))</a>
-<a class="sourceLine" id="cb17-10" data-line-number="10">p_cont &lt;-<span class="st"> </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span>(dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(covs_simulated_melt, covariate <span class="op">%in%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb17-11" data-line-number="11"><span class="st">                                   </span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Age simulated"</span>, <span class="st">"Height simulated"</span>, </a>
-<a class="sourceLine" id="cb17-12" data-line-number="12">                                                           <span class="st">"Weight simulated"</span>)), </a>
-<a class="sourceLine" id="cb17-13" data-line-number="13">                   <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">x=</span>meassure))</a>
-<a class="sourceLine" id="cb17-14" data-line-number="14">p_cont &lt;-<span class="st"> </span>p_cont <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/geom_histogram.html">geom_histogram</a></span>(<span class="dt">binwidth=</span><span class="dv">1</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb17-15" data-line-number="15"><span class="st">    </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html">facet_wrap</a></span>(<span class="op">~</span>covariate, <span class="dt">scales =</span> <span class="st">"free"</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb17-16" data-line-number="16"><span class="st">    </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span>() <span class="op">+</span></a>
-<a class="sourceLine" id="cb17-17" data-line-number="17"><span class="st">    </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span>(<span class="dt">axis.title.x=</span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_blank</a></span>(),</a>
-<a class="sourceLine" id="cb17-18" data-line-number="18">          <span class="dt">strip.background =</span> <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_rect</a></span>(<span class="dt">fill=</span><span class="st">"white"</span>, <span class="dt">color=</span><span class="st">"black"</span>))</a>
-<a class="sourceLine" id="cb17-19" data-line-number="19"></a>
-<a class="sourceLine" id="cb17-20" data-line-number="20">p_cat &lt;-<span class="st"> </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span>(dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(covs_simulated_melt, covariate <span class="op">%in%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb17-21" data-line-number="21"><span class="st">                                  </span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Sex simulated"</span>, <span class="st">"Slices simulated"</span>)), </a>
-<a class="sourceLine" id="cb17-22" data-line-number="22">                   <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">x=</span>meassure))</a>
-<a class="sourceLine" id="cb17-23" data-line-number="23">p_cat &lt;-<span class="st"> </span>p_cat <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/geom_bar.html">geom_bar</a></span>(<span class="kw"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">x=</span>meassure)) <span class="op">+</span></a>
-<a class="sourceLine" id="cb17-24" data-line-number="24"><span class="st">    </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html">facet_wrap</a></span>(<span class="op">~</span>covariate, <span class="dt">scales =</span> <span class="st">"free"</span>) <span class="op">+</span></a>
-<a class="sourceLine" id="cb17-25" data-line-number="25"><span class="st">    </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span>() <span class="op">+</span></a>
-<a class="sourceLine" id="cb17-26" data-line-number="26"><span class="st">    </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span>(<span class="dt">axis.title.x=</span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_blank</a></span>(),</a>
-<a class="sourceLine" id="cb17-27" data-line-number="27">          <span class="dt">strip.background =</span> <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_rect</a></span>(<span class="dt">fill=</span><span class="st">"white"</span>, <span class="dt">color=</span><span class="st">"black"</span>))</a>
-<a class="sourceLine" id="cb17-28" data-line-number="28"></a>
-<a class="sourceLine" id="cb17-29" data-line-number="29">combine &lt;-<span class="st"> </span>cowplot<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/cowplot/man/plot_grid.html">plot_grid</a></span>(p_cont, p_cat, <span class="dt">nrow=</span><span class="dv">2</span>) </a>
-<a class="sourceLine" id="cb17-30" data-line-number="30"><span class="kw"><a href="https://rdrr.io/r/base/print.html">print</a></span>(combine)</a></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">covs_simulated_melt</span><span class="op">$</span><span class="va">covariate</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">covs_simulated_melt</span><span class="op">$</span><span class="va">covariate</span>,
+                              levels<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"sharedConfounder1_unif1"</span>, 
+                                       <span class="st">"sharedConfounder2_norm1"</span>, 
+                                       <span class="st">"sharedConfounder3_norm1"</span>, 
+                                       <span class="st">"sharedConfounder5_bin1"</span>, 
+                                       <span class="st">"sharedConfounder4_cat_unif1"</span><span class="op">)</span>,
+                              labels<span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Age simulated"</span>, <span class="st">"Height simulated"</span>, 
+                                        <span class="st">"Weight simulated"</span>, <span class="st">"Sex simulated"</span>, 
+                                        <span class="st">"Slices simulated"</span><span class="op">)</span><span class="op">)</span>
+<span class="va">p_cont</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">covs_simulated_melt</span>, <span class="va">covariate</span> <span class="op">%in%</span> 
+                                   <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Age simulated"</span>, <span class="st">"Height simulated"</span>, 
+                                                           <span class="st">"Weight simulated"</span><span class="op">)</span><span class="op">)</span>, 
+                   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">meassure</span><span class="op">)</span><span class="op">)</span>
+<span class="va">p_cont</span> <span class="op">&lt;-</span> <span class="va">p_cont</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_histogram.html">geom_histogram</a></span><span class="op">(</span>binwidth<span class="op">=</span><span class="fl">1</span><span class="op">)</span> <span class="op">+</span>
+    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html">facet_wrap</a></span><span class="op">(</span><span class="op">~</span><span class="va">covariate</span>, scales <span class="op">=</span> <span class="st">"free"</span><span class="op">)</span> <span class="op">+</span>
+    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
+    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>axis.title.x<span class="op">=</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_blank</a></span><span class="op">(</span><span class="op">)</span>,
+          strip.background <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_rect</a></span><span class="op">(</span>fill<span class="op">=</span><span class="st">"white"</span>, color<span class="op">=</span><span class="st">"black"</span><span class="op">)</span><span class="op">)</span>
+
+<span class="va">p_cat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">covs_simulated_melt</span>, <span class="va">covariate</span> <span class="op">%in%</span> 
+                                  <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Sex simulated"</span>, <span class="st">"Slices simulated"</span><span class="op">)</span><span class="op">)</span>, 
+                   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">meassure</span><span class="op">)</span><span class="op">)</span>
+<span class="va">p_cat</span> <span class="op">&lt;-</span> <span class="va">p_cat</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_bar.html">geom_bar</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">meassure</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html">facet_wrap</a></span><span class="op">(</span><span class="op">~</span><span class="va">covariate</span>, scales <span class="op">=</span> <span class="st">"free"</span><span class="op">)</span> <span class="op">+</span>
+    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
+    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>axis.title.x<span class="op">=</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_blank</a></span><span class="op">(</span><span class="op">)</span>,
+          strip.background <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_rect</a></span><span class="op">(</span>fill<span class="op">=</span><span class="st">"white"</span>, color<span class="op">=</span><span class="st">"black"</span><span class="op">)</span><span class="op">)</span>
+
+<span class="va">combine</span> <span class="op">&lt;-</span> <span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://wilkelab.org/cowplot/reference/plot_grid.html">plot_grid</a></span><span class="op">(</span><span class="va">p_cont</span>, <span class="va">p_cat</span>, nrow<span class="op">=</span><span class="fl">2</span><span class="op">)</span> 
+<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">combine</span><span class="op">)</span></code></pre></div>
 <div class="figure" style="text-align: center">
 <img src="SimulationBasedOnExampleData_files/figure-html/simulation-1.png" alt="\label{fig:distribution_simulated}**Distribution of simulated covariates.**" width="700"><p class="caption">
 <strong>Distribution of simulated covariates.</strong>
 </p>
 </div>
-<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" data-line-number="1">gplots<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/gplots/man/heatmap.2.html">heatmap.2</a></span>(<span class="kw"><a href="https://rdrr.io/r/stats/cor.html">cor</a></span>(background_simulated<span class="op">$</span>correlatedBg), <span class="dt">trace=</span><span class="st">"none"</span>, </a>
-<a class="sourceLine" id="cb18-2" data-line-number="2">                  <span class="dt">dendrogram=</span><span class="st">"none"</span>, </a>
-<a class="sourceLine" id="cb18-3" data-line-number="3">                  <span class="dt">keysize=</span><span class="dv">1</span>, <span class="dt">col=</span><span class="kw"><a href="https://rdrr.io/r/grDevices/colorRamp.html">colorRampPalette</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"white"</span>, <span class="st">"#5BBCD6"</span>)),</a>
-<a class="sourceLine" id="cb18-4" data-line-number="4">                  <span class="dt">labRow=</span><span class="ot">FALSE</span>, <span class="dt">labCol=</span><span class="ot">FALSE</span>,</a>
-<a class="sourceLine" id="cb18-5" data-line-number="5">                  <span class="dt">breaks=</span><span class="kw"><a href="https://rdrr.io/r/base/seq.html">seq</a></span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="fl">0.001</span>),</a>
-<a class="sourceLine" id="cb18-6" data-line-number="6">                  <span class="dt">key.title=</span><span class="st">""</span>,</a>
-<a class="sourceLine" id="cb18-7" data-line-number="7">                  <span class="dt">key.xlab=</span><span class="st">"Pearson's correlation coefficient"</span>,</a>
-<a class="sourceLine" id="cb18-8" data-line-number="8">                  <span class="dt">key.ylab=</span><span class="st">""</span>,</a>
-<a class="sourceLine" id="cb18-9" data-line-number="9">                  <span class="dt">density.info=</span><span class="st">"none"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">gplots</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/gplots/man/heatmap.2.html">heatmap.2</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cor</a></span><span class="op">(</span><span class="va">background_simulated</span><span class="op">$</span><span class="va">correlatedBg</span><span class="op">)</span>, trace<span class="op">=</span><span class="st">"none"</span>, 
+                  dendrogram<span class="op">=</span><span class="st">"none"</span>, 
+                  keysize<span class="op">=</span><span class="fl">1</span>, col<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/grDevices/colorRamp.html">colorRampPalette</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"white"</span>, <span class="st">"#5BBCD6"</span><span class="op">)</span><span class="op">)</span>,
+                  labRow<span class="op">=</span><span class="cn">FALSE</span>, labCol<span class="op">=</span><span class="cn">FALSE</span>,
+                  breaks<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">1</span>,<span class="fl">0.001</span><span class="op">)</span>,
+                  key.title<span class="op">=</span><span class="st">""</span>,
+                  key.xlab<span class="op">=</span><span class="st">"Pearson's correlation coefficient"</span>,
+                  key.ylab<span class="op">=</span><span class="st">""</span>,
+                  density.info<span class="op">=</span><span class="st">"none"</span><span class="op">)</span></code></pre></div>
 <div class="figure" style="text-align: center">
-<img src="" alt="\label{fig:corsimulated}\textbf{Correlation of simulated spatial proximity.}" width="\textwidth"><p class="caption">
+<img src="../docs/articles/SimulationBasedOnExampleData_files/figure-html/background-1.png" alt="\label{fig:corsimulated}\textbf{Correlation of simulated spatial proximity.}" width="\textwidth"><p class="caption">
 
 </p>
 </div>
-
+<div style="page-break-after: always;"></div>
 </div>
 <div id="references" class="section level2 unnumbered">
 <h2 class="hasAnchor">
@@ -290,23 +298,17 @@
 <p>1. Marvao A de, Dawes TJ, Shi W, Minas C, Keenan NG, Diamond T, et al. Population-based studies of myocardial hypertrophy: high resolution cardiovascular magnetic resonance atlases improve statistical power. Journal of Cardiovascular Magnetic Resonance. 2014;16: 16. doi:<a href="https://doi.org/10.1186/1532-429X-16-16">10.1186/1532-429X-16-16</a></p>
 </div>
 <div id="ref-Biffi2017">
-<p>2. Biffi C, Marvao A de, Attard MI, Dawes TJ, Whiffin N, Bai W, et al. Three-dimensional Cardiovascular Imaging-Genetics: A Mass Univariate Framework. Bioinformatics. 2017; doi:<a href="https://doi.org/10.1093/bioinformatics/btx552">10.1093/bioinformatics/btx552</a></p>
+<p>2. Biffi C, Marvao A de, Attard MI, Dawes TJW, Whiffin N, Bai W, et al. Three-dimensional Cardiovascular Imaging-Genetics: A Mass Univariate Framework. Bioinformatics. 2017. doi:<a href="https://doi.org/10.1093/bioinformatics/btx552">10.1093/bioinformatics/btx552</a></p>
 </div>
 </div>
 </div>
   </div>
 
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-        <div id="tocnav">
-      <h2 class="hasAnchor">
-<a href="#tocnav" class="anchor"></a>Contents</h2>
-      <ul class="nav nav-pills nav-stacked">
-<li><a href="#cardiac-morphology-data">Cardiac morphology data</a></li>
-      <li><a href="#simulation">Simulation</a></li>
-      <li><a href="#references">References</a></li>
-      </ul>
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+
+        <nav id="toc" data-toggle="toc"><h2 data-toc-skip>Contents</h2>
+    </nav>
 </div>
-      </div>
 
 </div>
 
@@ -317,7 +319,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.9100.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

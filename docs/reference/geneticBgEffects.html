@@ -8,23 +8,29 @@
 
 <title>Simulate infinitesimal genetic effects (reflecting sample kinship). — geneticBgEffects • PhenotypeSimulator</title>
 
+
 <!-- jquery -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous" />
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
+
+<!-- bootstrap-toc -->
+<link rel="stylesheet" href="../bootstrap-toc.css">
+<script src="../bootstrap-toc.js"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script>
 
 <!-- headroom.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
@@ -34,12 +40,12 @@
 
   <link href="../extra.css" rel="stylesheet">
   
-<meta property="og:title" content="Simulate infinitesimal genetic effects (reflecting sample kinship). — geneticBgEffects" />
 
+<meta property="og:title" content="Simulate infinitesimal genetic effects (reflecting sample kinship). — geneticBgEffects" />
 <meta property="og:description" content="geneticBgEffects simulates an infinitesimal genetic effects with a proportion 
 of the effect shared across samples and a proportion independent across 
 samples; they are based on the kinship estimates of the (simulated) samples." />
-<meta name="twitter:card" content="summary" />
+
 
 
 
@@ -56,7 +62,7 @@ samples; they are based on the kinship estimates of the (simulated) samples." />
 
   </head>
 
-  <body>
+  <body data-spy="scroll" data-target="#toc">
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-standard navbar-fixed-top" role="navigation">
@@ -70,7 +76,7 @@ samples; they are based on the kinship estimates of the (simulated) samples." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">PhenotypeSimulator</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.4</span>
       </span>
     </div>
 
@@ -78,13 +84,13 @@ samples; they are based on the kinship estimates of the (simulated) samples." />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fa fa-home"></span>
+    <span class="fas fa-home"></span>
      
   </a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    <span class="fa fa-file"></span>
+    <span class="fas fa-file"></span>
      
     documentation
      
@@ -106,25 +112,24 @@ samples; they are based on the kinship estimates of the (simulated) samples." />
   </ul>
 </li>
       </ul>
-      
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="../news/index.html">
-    <span class="fa fa-newspaper-o"></span>
+    <span class="fas fa-newspaper-o"></span>
      
     news
   </a>
 </li>
 <li>
   <a href="../reference/index.html">
-    <span class="fa fa-code"></span>
+    <span class="fas fa-code"></span>
      
     functions
   </a>
 </li>
 <li>
   <a href="https://github.com/HannahVMeyer/PhenotypeSimulator">
-    <span class="fa fa-github fa-lg"></span>
+    <span class="fas fa-github fa-lg"></span>
      
     github
   </a>
@@ -148,17 +153,15 @@ samples; they are based on the kinship estimates of the (simulated) samples." />
     </div>
 
     <div class="ref-description">
-    
     <p>geneticBgEffects simulates an infinitesimal genetic effects with a proportion 
 of the effect shared across samples and a proportion independent across 
 samples; they are based on the kinship estimates of the (simulated) samples.</p>
-    
     </div>
 
-    <pre class="usage"><span class='fu'>geneticBgEffects</span>(<span class='no'>P</span>, <span class='no'>N</span>, <span class='no'>kinship</span>, <span class='kw'>phenoID</span> <span class='kw'>=</span> <span class='st'>"Trait_"</span>,
-  <span class='kw'>id_samples</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>colnames</a></span>(<span class='no'>kinship</span>), <span class='kw'>shared</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>independent</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>id_phenos</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
-    
+    <pre class="usage"><span class='fu'>geneticBgEffects</span><span class='op'>(</span><span class='va'>P</span>, <span class='va'>N</span>, <span class='va'>kinship</span>, phenoID <span class='op'>=</span> <span class='st'>"Trait_"</span>,
+  id_samples <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>colnames</a></span><span class='op'>(</span><span class='va'>kinship</span><span class='op'>)</span>, shared <span class='op'>=</span> <span class='cn'>TRUE</span>, independent <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  id_phenos <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
+
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
@@ -200,7 +203,7 @@ shared or independent has to be set to TRUE.</p></td>
 constructed by paste(phenoID, 1:P, sep="").</p></td>
     </tr>
     </table>
-    
+
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>Named list of shared infinitesimal genetic effects (shared: [N x P] 
@@ -209,7 +212,6 @@ matrix), the covariance term of the shared effect (cov_shared: [P x P]
 matrix), the covariance term of the independent effect (cov_independent: 
 [P x P] matrix), the eigenvectors (eigenvec_kinship: [N x N]) and eigenvalues
  (eigenval_kinship: [N]) of the kinship matrix.</p>
-    
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>For the simulation of the infinitesimal genetic effects, three 
@@ -220,26 +222,18 @@ independent effect, A is a diagonal matrix with normally distributed values.
 A for the shared effect is a matrix of rowrank one, with normally distributed 
 entries in row 1 and zeros elsewhere. To construct the final effects, the 
 three matrices are multiplied as: E = cholesky(K)BA^T.</p>
-    
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>genotypes</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='simulateGenotypes.html'>simulateGenotypes</a></span>(<span class='kw'>N</span><span class='kw'>=</span><span class='fl'>100</span>, <span class='kw'>NrSNP</span><span class='kw'>=</span><span class='fl'>400</span>, <span class='kw'>verbose</span><span class='kw'>=</span><span class='fl'>FALSE</span>)
-<span class='no'>kinship</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='getKinship.html'>getKinship</a></span>(<span class='kw'>N</span><span class='kw'>=</span><span class='fl'>100</span>, <span class='kw'>X</span><span class='kw'>=</span><span class='no'>genotypes</span>$<span class='no'>genotypes</span>, <span class='kw'>standardise</span><span class='kw'>=</span><span class='fl'>TRUE</span>,
-<span class='kw'>verbose</span><span class='kw'>=</span><span class='fl'>FALSE</span>)
-<span class='no'>geneticBg</span> <span class='kw'>&lt;-</span> <span class='fu'>geneticBgEffects</span>(<span class='kw'>N</span><span class='kw'>=</span><span class='fl'>100</span>, <span class='kw'>P</span><span class='kw'>=</span><span class='fl'>10</span>, <span class='kw'>kinship</span><span class='kw'>=</span><span class='no'>kinship</span>)</div></pre>
+    <pre class="examples"><div class='input'><span class='va'>genotypes</span> <span class='op'>&lt;-</span> <span class='fu'><a href='simulateGenotypes.html'>simulateGenotypes</a></span><span class='op'>(</span>N<span class='op'>=</span><span class='fl'>100</span>, NrSNP<span class='op'>=</span><span class='fl'>400</span>, verbose<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span>
+<span class='va'>kinship</span> <span class='op'>&lt;-</span> <span class='fu'><a href='getKinship.html'>getKinship</a></span><span class='op'>(</span>N<span class='op'>=</span><span class='fl'>100</span>, X<span class='op'>=</span><span class='va'>genotypes</span><span class='op'>$</span><span class='va'>genotypes</span>, standardise<span class='op'>=</span><span class='cn'>TRUE</span>, 
+verbose<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span>
+<span class='va'>geneticBg</span> <span class='op'>&lt;-</span> <span class='fu'>geneticBgEffects</span><span class='op'>(</span>N<span class='op'>=</span><span class='fl'>100</span>, P<span class='op'>=</span><span class='fl'>10</span>, kinship<span class='op'>=</span><span class='va'>kinship</span><span class='op'>)</span>
+</div></pre>
   </div>
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <h2>Contents</h2>
-    <ul class="nav nav-pills nav-stacked">
-      <li><a href="#arguments">Arguments</a></li>
-      
-      <li><a href="#value">Value</a></li>
-
-      <li><a href="#details">Details</a></li>
-      
-      <li><a href="#examples">Examples</a></li>
-    </ul>
-
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+    <nav id="toc" data-toggle="toc" class="sticky-top">
+      <h2 data-toc-skip>Contents</h2>
+    </nav>
   </div>
 </div>
 
@@ -250,7 +244,7 @@ three matrices are multiplied as: E = cholesky(K)BA^T.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.9100.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

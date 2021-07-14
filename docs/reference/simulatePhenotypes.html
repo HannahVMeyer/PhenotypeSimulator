@@ -8,23 +8,29 @@
 
 <title>Command line execution for PhenotypeSimulator. — simulatePhenotypes • PhenotypeSimulator</title>
 
+
 <!-- jquery -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous" />
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
+
+<!-- bootstrap-toc -->
+<link rel="stylesheet" href="../bootstrap-toc.css">
+<script src="../bootstrap-toc.js"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script>
 
 <!-- headroom.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
@@ -34,8 +40,8 @@
 
   <link href="../extra.css" rel="stylesheet">
   
-<meta property="og:title" content="Command line execution for PhenotypeSimulator. — simulatePhenotypes" />
 
+<meta property="og:title" content="Command line execution for PhenotypeSimulator. — simulatePhenotypes" />
 <meta property="og:description" content="simulatePhenotypes runs without arguments. Upon call, it reads command-line
 parameters and supplies these to runSimulation and 
 savePheno. For details on input to runSimulation 
@@ -43,7 +49,7 @@ and savePheno, please refer to their help pages. For help on
 the command line arguments that can be passed, see examples below. From the 
 command line, the help function can be called via 
 'Rscript -e &quot;PhenotypeSimulator::simulatePhenotypes()&quot; --args --help" />
-<meta name="twitter:card" content="summary" />
+
 
 
 
@@ -60,7 +66,7 @@ command line, the help function can be called via
 
   </head>
 
-  <body>
+  <body data-spy="scroll" data-target="#toc">
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-standard navbar-fixed-top" role="navigation">
@@ -74,7 +80,7 @@ command line, the help function can be called via
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">PhenotypeSimulator</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.4</span>
       </span>
     </div>
 
@@ -82,13 +88,13 @@ command line, the help function can be called via
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fa fa-home"></span>
+    <span class="fas fa-home"></span>
      
   </a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    <span class="fa fa-file"></span>
+    <span class="fas fa-file"></span>
      
     documentation
      
@@ -110,25 +116,24 @@ command line, the help function can be called via
   </ul>
 </li>
       </ul>
-      
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="../news/index.html">
-    <span class="fa fa-newspaper-o"></span>
+    <span class="fas fa-newspaper-o"></span>
      
     news
   </a>
 </li>
 <li>
   <a href="../reference/index.html">
-    <span class="fa fa-code"></span>
+    <span class="fas fa-code"></span>
      
     functions
   </a>
 </li>
 <li>
   <a href="https://github.com/HannahVMeyer/PhenotypeSimulator">
-    <span class="fa fa-github fa-lg"></span>
+    <span class="fas fa-github fa-lg"></span>
      
     github
   </a>
@@ -152,7 +157,6 @@ command line, the help function can be called via
     </div>
 
     <div class="ref-description">
-    
     <p>simulatePhenotypes runs without arguments. Upon call, it reads command-line
 parameters and supplies these to <code><a href='runSimulation.html'>runSimulation</a></code> and 
 <code><a href='savePheno.html'>savePheno</a></code>. For details on input to <code><a href='runSimulation.html'>runSimulation</a></code> 
@@ -160,39 +164,36 @@ and <code><a href='savePheno.html'>savePheno</a></code>, please refer to their h
 the command line arguments that can be passed, see examples below. From the 
 command line, the help function can be called via 
 'Rscript -e "PhenotypeSimulator::simulatePhenotypes()" --args --help</p>
-    
     </div>
 
-    <pre class="usage"><span class='fu'>simulatePhenotypes</span>()</pre>
-        
+    <pre class="usage"><span class='fu'>simulatePhenotypes</span><span class='op'>(</span><span class='op'>)</span></pre>
+
+
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'># (not run)
-# Simulate simple phenotype of genetic and noise background effects only:
-# (not run)
-# Rscript -e "PhenotypeSimulator::simulatePhenotypes()" \
-#--args \ 
-#--NrSamples=100 --NrPhenotypes=15 \
-#--tNrSNPs=10000 --cNrSNPs=30 \
-#--SNPfrequencies=0.05,0.1,0.3,0.4 \
-#--genVar=0.4 --h2s=0.025 --phi=0.6 --delta=0.3 --gamma=1 \
-#--pcorr=0.8 \
-#--NrFixedEffects=4 --NrConfounders=1,2,1,2 \
-#--pIndependentConfounders=0,1,1,0.5 \
-#--distConfounders=bin,cat_norm,cat_unif,norm \
-#--probConfounders=0.2 \
-#--catConfounders=0,3,4,0 \
-#--directory=/tmp \
-#--showProgress \
+    <pre class="examples"><div class='input'><span class='co'># (not run)</span>
+<span class='co'># Simulate simple phenotype of genetic and noise background effects only:</span>
+<span class='co'># (not run)</span>
+<span class='co'># Rscript -e "PhenotypeSimulator::simulatePhenotypes()" \</span>
+<span class='co'>#--args \ </span>
+<span class='co'>#--NrSamples=100 --NrPhenotypes=15 \</span>
+<span class='co'>#--tNrSNPs=10000 --cNrSNPs=30 \</span>
+<span class='co'>#--SNPfrequencies=0.05,0.1,0.3,0.4 \</span>
+<span class='co'>#--genVar=0.4 --h2s=0.025 --phi=0.6 --delta=0.3 --gamma=1 \</span>
+<span class='co'>#--pcorr=0.8 \</span>
+<span class='co'>#--NrFixedEffects=4 --NrConfounders=1,2,1,2 \</span>
+<span class='co'>#--pIndependentConfounders=0,1,1,0.5 \</span>
+<span class='co'>#--distConfounders=bin,cat_norm,cat_unif,norm \</span>
+<span class='co'>#--probConfounders=0.2 \</span>
+<span class='co'>#--catConfounders=0,3,4,0 \</span>
+<span class='co'>#--directory=/tmp \</span>
+<span class='co'>#--showProgress \</span>
 </div></pre>
   </div>
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <h2>Contents</h2>
-    <ul class="nav nav-pills nav-stacked">
-            
-      <li><a href="#examples">Examples</a></li>
-    </ul>
-
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+    <nav id="toc" data-toggle="toc" class="sticky-top">
+      <h2 data-toc-skip>Contents</h2>
+    </nav>
   </div>
 </div>
 
@@ -203,7 +204,7 @@ command line, the help function can be called via
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.9100.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

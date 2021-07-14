@@ -77,7 +77,7 @@ grep -Fn CEU ALL_1000G_phase1integrated_v3.sample
 
 for chr in `seq 1 22`; do
     cut -f 413-497 -d " " ALL_1000G_phase1integrated_v3_chr${chr}_impute.hap \ 
-    > ${chr}.ceu_subset.hap
+    > chr${chr}.ceu_subset.hap
 done
 ```
 
@@ -99,7 +99,7 @@ for chr in `seq 1 22`; do
 
     hapgen2 -m $hapdir/genetic_map_chr${chr}_combined_b37.txt \
             -l $hapdir/ALL_1000G_phase1integrated_v3_chr${chr}_impute.legend \
-            -h $hapdir/ALL_1000G_phase1integrated_v3_chr${chr}_impute.hap \
+            -h $hapdir/chr${chr}.ceu_subset.hap \
             -o $hapdir/genotypes_chr${chr}_hapgen \
             -n 1000 0 \
             -dl $dummyDL 0 0 0 \
@@ -615,9 +615,10 @@ ggsave(plot=p_qq,
 		units="mm", width=86, height=100)
 ```
 
-```{r, echo=FALSE, fig.cap="\\label{fig:qqplot}Quantile-quantile plots of p-values observed from the multivariate linear mixed model (mvLMM, traits:all) and the univariate linear mixed models (uvLMM, traits: trait1/trait2/trait3) fitted to each of about eight million genome-wide SNPs (grey), including the ten SNPs for which a phenotype effect was modelled (green)." }
-knitr::include_graphics(paste(savedir, "/gwas_results_gemma_qqplot.png", sep=""))
+```{r qqplot, echo=FALSE, fig.cap="\\label{fig:qqplot}Quantile-quantile plots of p-values observed from the multivariate linear mixed model (mvLMM, traits:all) and the univariate linear mixed models (uvLMM, traits: trait1/trait2/trait3) fitted to each of about eight million genome-wide SNPs (grey), including the ten SNPs for which a phenotype effect was modelled (green)." }
+knitr::include_graphics("../docs/articles/Simulation-and-LinearModel_files/figure-html/qqplot-1.png")
 ```
+
 
 Counting the number of causal SNPs that both models can recover, we see that the
 multi-trait GWAS shows greater power compared to any of the single trait
