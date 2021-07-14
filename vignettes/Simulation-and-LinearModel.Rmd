@@ -46,9 +46,42 @@ vignette shows the chunks saving the summary data).
 Hapgen2 @Su2011 is a resampling-based genotype simulation tool. As such it needs
 a reference data set from which to sample genotypes. In the following, the
 1000Genomes data from the [impute2
-webpage](https://mathgen.stats.ox.ac.uk/impute/impute_v1.html#Using_IMPUTE_with_the_HapMap_Data)
-was used as the reference dataset. Hapgen2 and its user manual can be found and
-downloaded from
+webpage](https://mathgen.stats.ox.ac.uk/impute/data_download_1000G_phase1_integrated.html)
+are used as the reference dataset. We first download the data, unzip them and
+filter for central European samples (CEU):
+
+```{bash, eval=FALSE}
+#hapdir=~/data/hmeyer/Supplementary/CEU.0908.impute.files
+dir=~/data/hmeyer/Supplementary
+mkdir $dir
+cd $dir
+
+wget https://mathgen.stats.ox.ac.uk/impute/ALL_1000G_phase1integrated_v3_impute.tgz
+tar ALL_1000G_phase1integrated_v3_impute.tgz
+
+hapdir=$dir/ALL_1000G_phase1integrated_v3_impute
+cd $hapdir
+
+for chr in `seq 1 22`; do
+    gunzip ALL_1000G_phase1integrated_v3_chr${chr}_impute.hap.gz
+    gunzip ALL_1000G_phase1integrated_v3_chr${chr}_impute.legend.gz
+done
+```
+
+To find the column numbers of the CEU samples, we search in the samples file for
+CEU and see that they are in columns 413-497. We then extract these columns from
+the all .hap files:
+
+```{bash, eval=FALSE}
+grep -Fn CEU ALL_1000G_phase1integrated_v3.sample 
+
+for chr in `seq 1 22`; do
+    cut -f 413-497 -d " " ALL_1000G_phase1integrated_v3_chr${chr}_impute.hap \ 
+    > ${chr}.ceu_subset.hap
+done
+```
+
+Hapgen2 and its user manual can be found and downloaded from
 [here](http://mathgen.stats.ox.ac.uk/genetics_software/hapgen/hapgen2.html).
 The following code chunk simulates genotypes for 1000 control individuals (no
 cases) on chromosomes chr1 to chr22. Subsequently, the number of variants on
@@ -58,16 +91,15 @@ contain the causal variants. We will use those numbers later as input for
 is optional, but will speed up the simulation procedure).
 
 ```{bash, eval=FALSE}
-hapdir=~/data/hmeyer/Supplementary/CEU.0908.impute.files
 
 for chr in `seq 1 22`; do
 	# Can't get hapgen to work witout the -dl flag (should be possible since 
 	#v2.0.2) so create dummy variable, that can be passed on
-    dummyDL=`sed -n '2'p $hapdir/CEU.0908.chr${chr}.legend | cut -d ' '  -f 2`
+    dummyDL=`sed -n '2'p $hapdir/ALL_1000G_phase1integrated_v3_chr${chr}_impute.legend | cut -d ' '  -f 2`
 
-    hapgen2 -m $hapdir/genetic_map_chr${chr}_combined_b36.txt \
-            -l $hapdir/CEU.0908.chr${chr}.legend \
-            -h $hapdir/CEU.0908.chr${chr}.hap \
+    hapgen2 -m $hapdir/genetic_map_chr${chr}_combined_b37.txt \
+            -l $hapdir/ALL_1000G_phase1integrated_v3_chr${chr}_impute.legend \
+            -h $hapdir/ALL_1000G_phase1integrated_v3_chr${chr}_impute.hap \
             -o $hapdir/genotypes_chr${chr}_hapgen \
             -n 1000 0 \
             -dl $dummyDL 0 0 0 \
