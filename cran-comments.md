@@ -9,3 +9,5 @@
 
 * This is a new release.
 * Minor bug fixes and additions to vignettes, all documented in NEWS.md 
+* Resubmission changes: removed reference/URL to package no longer available
+on CRAN

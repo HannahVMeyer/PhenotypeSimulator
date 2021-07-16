@@ -197,8 +197,7 @@ simulateGenotypes <- function(N, NrSNP=5000, frequencies=c(0.1, 0.2, 0.4),
 #' encoded as numbers between 0 and 2 representing the (posterior) mean
 #' genotype, or dosage of the minor allele. Can be user-genotypes or genotypes
 #' simulated with foward-time algorithms such as simupop
-#' (\url{http://simupop.sourceforge.net/Main/HomePage}) or MetaSim
-#' (\url{project.org/web/packages/rmetasim/vignettes/CreatingLandscapes.html}),
+#' (\url{http://simupop.sourceforge.net/Main/HomePage})
 #' that allow for user-specified output formats.
 #' }}
 #'
