@@ -16,7 +16,7 @@ from different genetic and non-genetic (noise) components.
 In quantitative genetics, genotype to phenotype mapping is commonly
 realised by fitting a linear model to the genotype as the explanatory
 variable and the phenotype as the response variable. Other explanatory
-variable such as additional sample measures (e.g. age, height, weight)
+variable such as additional sample measures (e.g. age, height, weight)
 or batch effects can also be included. For linear mixed models, in
 addition to the fixed effects of the genotype and the covariates,
 different random effect components can be included, accounting for
@@ -51,7 +51,7 @@ library(devtools)
 install_github("HannahVMeyer/PhenotypeSimulator")
 ```
 
-The current CRAN version of *PhenotypeSimulator* is 0.3.3 and can be
+The current CRAN version of *PhenotypeSimulator* is 0.3.4 and can be
 installed via:
 
 ``` r

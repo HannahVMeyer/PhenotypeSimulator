@@ -52,7 +52,7 @@ installed via
 devtools::install_github("HannahVMeyer/PhenotypeSimulator")
 ```
 
-The current CRAN version of *PhenotypeSimulator* is 0.3.3 and can be
+The current CRAN version of *PhenotypeSimulator* is 0.3.4 and can be
 installed via:
 
 ``` r
