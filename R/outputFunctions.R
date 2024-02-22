@@ -796,9 +796,9 @@ savePheno <- function(simulatedData, directory, format=".csv",
     if (!is.null(rawComponents$genotypes)) {
         vmessage(c("Save genotypes to", directory), verbose=verbose)
         if ("csv" %in% format) {
-            write.table(t(rawComponents$genotypes$genotypes), 
-                paste(directory, "/Genotypes", outstring, ".csv", sep=""), 
-                sep=",", col.names=NA, row.names=TRUE, quote=FALSE)
+            # write.table(t(rawComponents$genotypes$genotypes), 
+            #     paste(directory, "/Genotypes", outstring, ".csv", sep=""), 
+            #     sep=",", col.names=NA, row.names=TRUE, quote=FALSE)
         }
         if ("rds" %in% format) {
             saveRDS(t(rawComponents$genotypes$genotypes), 
